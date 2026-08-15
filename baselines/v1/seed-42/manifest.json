@@ -1,0 +1,64 @@
+{
+  "baseline_id": "v1-seed-42",
+  "created_utc": "2026-08-15T14:51:45Z",
+  "seed": 42,
+  "verification": "hand-verified",
+  "engine_version": "1.2.0",
+  "engine_commit": "62689cab52be061c416aaaf55e4223bba344da6b",
+  "ruleset_version": null,
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, 'path  sha256\\n', sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration",
+    "count-narration", "coverage", "date", "date-agreement", "departure",
+    "naming", "outcome", "partition-sum", "quantity", "shape", "succession",
+    "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "deficiencies": [
+    "query-coverage-unstructured",
+    "retrieval-contains-generated-echo-line"
+  ],
+  "deficiency_statements": {
+    "query-coverage-unstructured": "v1's query-side coverage exists only as unstructured captured stdout. It is readable but not machine-diffable. A rule going non-zero to zero on the query path cannot be detected by a golden diff against this baseline.",
+    "retrieval-contains-generated-echo-line": "retrieval-baseline.txt contains one generated line — question 11's planner echo — and is therefore not fully deterministic. The retrieved event sets are identical across all 16 questions; only the echo varies. Reproducing the file requires the planner, which is why retrieval_reproduction is skipped."
+  },
+  "verification_results": {
+    "checker_reproduction": "passed",
+    "checker_reproduction_runs": 2,
+    "chronicle_byte_identical": true,
+    "unverified_byte_identical": true,
+    "renders_unchanged_by_recheck": true,
+    "retrieval_reproduction": "skipped-requires-inference"
+  },
+  "notes": [
+    "The chronicle, the held-out sections and renders.json were taken from a directory named 'pre-v1.2-generation'. The chronicle is nonetheless the correct baseline: both v1.2 reports state the post-v1.2 chronicle is byte-identical — same 8 suspect tokens, same 3 sections held out — and no chronicle was written to out/ afterwards.",
+    "The findings sidecar in that same directory was NOT correct. It is pre-v1.2 checker output, and the directory holds a mix. The anchor here was reproduced from renders.json by the checker at engine_commit; the pre-v1.2 file is archived beside it as chronicle-42.findings.pre-v1.2.json with role historical-not-anchor and must never be used as a diff target.",
+    "The prose is hand-verified. The findings sidecar is derived — a pure function of (renders.json, checker code), recomputable at zero inference cost through 'wb book --check-only'. That is why it could be reproduced rather than copied without weakening the baseline.",
+    "Question set archived as C# source (QuerySuite.cs), not as data. Teaching the suite to emit it as data is a Stage 4 item.",
+    "QuerySuite.cs is pinned '-text' in .gitattributes as of commit c368a6f, so the 9312-byte LF form recorded here is a property of the artefact rather than of the checkout.",
+    "answers-final.txt is the v1 query artefact: all 16 answers, the per-answer finding lines (zero on all sixteen) and the coverage table, as captured stdout. No query-side findings sidecar exists and none was manufactured for this baseline."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-42.md", "source_path": "archive/2026-08-15-pre-v1.2-generation/chronicle-42.md", "sha256": "9ab9be0b359c2a6b1ac661020b957f811fd47c020388faf1e0775e3568c789ba", "bytes": 22386, "role": "artefact" },
+    { "filename": "chronicle-42.unverified.md", "source_path": "archive/2026-08-15-pre-v1.2-generation/chronicle-42.unverified.md", "sha256": "42e38aea3d5edfdfc110e7cb6714f71d72fc59dd8f70e6ca186758784daba052", "bytes": 4825, "role": "artefact" },
+    { "filename": "chronicle-42.findings.json", "source_path": "produced by 'wb book --check-only' from renders.json at engine_commit (verification 5a)", "sha256": "972ba60df4eb1f952586a57bd943e623d242264ab2e4ff413d3847164c01ccad", "bytes": 50778, "role": "anchor" },
+    { "filename": "chronicle-42.findings.pre-v1.2.json", "source_path": "archive/2026-08-15-pre-v1.2-generation/chronicle-42.findings.json", "sha256": "61593ee507c3e417779afe15a3d4e7ee38a013486696fceb1b82a21ddc3eb6d4", "bytes": 50935, "role": "historical-not-anchor" },
+    { "filename": "renders.json", "source_path": "archive/2026-08-15-pre-v1.2-generation/renders.json", "sha256": "2e198d907cfd5ca720ca4b358ac839f5c1e9b6f00f5024af36f6f76fce7674d3", "bytes": 346335, "role": "artefact" },
+    { "filename": "answers-final.txt", "source_path": "out/answers-final.txt", "sha256": "3d5461797110b7e5c509a1093d8d5f7eac358a7b3a58bf5c3f060114d56148e7", "bytes": 5584, "role": "artefact" },
+    { "filename": "retrieval-baseline.txt", "source_path": "out/retrieval-baseline.txt", "sha256": "79d0c27035f051eb2569a2ad3e83ffb420aa6c318fd44771a3565c02babf5070", "bytes": 10323, "role": "artefact" },
+    { "filename": "QuerySuite.cs", "source_path": "src/WorldBuilder.Inference/QuerySuite.cs", "sha256": "cb1990f77620467c28c171959351225cc8d9682ec0a23a376d656b57aec28ff9", "bytes": 9312, "role": "artefact" },
+    { "filename": "world-42.jsonl", "source_path": "out/world-42.jsonl", "sha256": "c5ef7936c783bc2ffe63fa2a1502421bd538b01968de4c7df3ee8c43f5428d37", "bytes": 616220, "role": "artefact" },
+    { "filename": "world-42.log", "source_path": "out/world-42.log", "sha256": "7c9013ed91970ec1f223538ae3ae785bc56427277fa50765dbe969802ee4caf5", "bytes": 102208, "role": "artefact" }
+  ]
+}

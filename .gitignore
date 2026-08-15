@@ -7,3 +7,9 @@ obj/
 out/
 *.jsonl
 *.log
+
+# A sealed baseline is an archive, not output. *.jsonl and *.log above would
+# otherwise silently drop world-42.jsonl and world-42.log from every baseline --
+# the same way they left out/ untracked until the artefacts were force-added --
+# and a baseline missing two of its ten files still looks complete on disk.
+!baselines/**

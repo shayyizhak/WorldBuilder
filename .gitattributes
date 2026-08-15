@@ -6,8 +6,9 @@
 # a rewritten artefact cannot be regenerated back to its verified bytes.
 #
 # -text disables all end-of-line conversion for these paths in both directions.
-archive/** -text
-out/**     -text
+archive/**   -text
+out/**       -text
+baselines/** -text
 
 # The question set is archived as source, so it is an artefact as well as code and
 # needs the same pin. Without it the file hashes 9478 bytes on a CRLF checkout and
