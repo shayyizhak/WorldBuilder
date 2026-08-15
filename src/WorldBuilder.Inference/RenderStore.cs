@@ -36,9 +36,22 @@ public sealed record Render
     public int OutputTokens { get; init; }
     public int ElapsedMs { get; init; }
 
+    /// <summary>
+    /// The hash of the pack this was rendered from — see <see cref="ContextPack.InputHash"/>.
+    ///
+    /// Empty on entries written before the inputs were hashed. Those are not rejected: the v1
+    /// render cache is one of them, and it is the hand-verified one. They are served and counted,
+    /// so "this passage's inputs cannot be checked" is reported rather than assumed.
+    /// </summary>
+    public string InputHash { get; init; } = "";
+
     /// <summary>Cache identity. A new prompt or a new model produces a new entry, never an
-    /// overwrite — swapping either must not rewrite history that already exists.</summary>
-    public string Id => $"{PackKey}|{PromptVersion}|{Model}";
+    /// overwrite — swapping either must not rewrite history that already exists. Changed inputs
+    /// do the same, which is what makes a stale figure a new entry rather than a silent
+    /// substitution.</summary>
+    public string Id => InputHash.Length == 0
+        ? $"{PackKey}|{PromptVersion}|{Model}"
+        : $"{PackKey}|{InputHash}|{PromptVersion}|{Model}";
 }
 
 /// <summary>
@@ -62,8 +75,41 @@ public sealed class RenderStore
 
     public int Count => _byId.Count;
 
-    public bool TryGet(string packKey, string promptVersion, string model, out Render render) =>
-        _byId.TryGetValue($"{packKey}|{promptVersion}|{model}", out render!);
+    /// <summary>
+    /// How many lookups have been answered by an entry that predates input hashing.
+    ///
+    /// Reported rather than tolerated in silence. An unpinned hit is a passage whose inputs
+    /// cannot be shown to still be the inputs it was written from — which is a smaller claim
+    /// than the cache normally makes, and a reader who is not told assumes the larger one.
+    /// </summary>
+    public int UnpinnedHits { get; private set; }
+
+    /// <summary>
+    /// The cached passage for a pack, if the pack is the one it was written from.
+    ///
+    /// Falls back to the pre-hash identity, because refusing every entry written before the hash
+    /// existed would discard the entire v1 cache — the hand-verified one, and the one the golden
+    /// baseline re-checks from. A legacy entry is served and counted; a *mismatched* hash is not
+    /// served at all, because that is the case where the figures have moved.
+    /// </summary>
+    public bool TryGet(string packKey, string inputHash, string promptVersion, string model, out Render render)
+    {
+        if (inputHash.Length > 0
+            && _byId.TryGetValue($"{packKey}|{inputHash}|{promptVersion}|{model}", out render!))
+        {
+            return true;
+        }
+
+        if (_byId.TryGetValue($"{packKey}|{promptVersion}|{model}", out render!)
+            && render.InputHash.Length == 0)
+        {
+            UnpinnedHits++;
+            return true;
+        }
+
+        render = null!;
+        return false;
+    }
 
     /// <summary>All renders for a pack, whatever prompt or model produced them.</summary>
     public List<Render> ForPack(string packKey)
@@ -100,6 +146,7 @@ public sealed class RenderStore
                 Text = e.GetProperty("text").GetString()!,
                 Year = e.GetProperty("year").GetInt32(),
                 Status = Enum.Parse<RenderStatus>(e.GetProperty("status").GetString()!),
+                InputHash = e.TryGetProperty("inputHash", out JsonElement h) ? h.GetString() ?? "" : "",
                 Original = e.TryGetProperty("original", out JsonElement o) ? o.GetString() : null,
                 PromptTokens = Read(e, "promptTokens"),
                 OutputTokens = Read(e, "outputTokens"),
@@ -122,6 +169,11 @@ public sealed class RenderStore
         {
             sb.Append('{');
             sb.Append("\"packKey\":").Append(Json(r.PackKey));
+            // Omitted when empty rather than written as "", so a store of pre-hash entries
+            // rewrites byte-for-byte identical to how it was read. The v1 cache is an archived
+            // artefact with a recorded sha256; a re-check that silently reformats it is a re-check
+            // that invalidates the thing it was verifying.
+            if (r.InputHash.Length > 0) sb.Append(",\"inputHash\":").Append(Json(r.InputHash));
             sb.Append(",\"promptVersion\":").Append(Json(r.PromptVersion));
             sb.Append(",\"model\":").Append(Json(r.Model));
             sb.Append(",\"year\":").Append(r.Year.ToString(CultureInfo.InvariantCulture));

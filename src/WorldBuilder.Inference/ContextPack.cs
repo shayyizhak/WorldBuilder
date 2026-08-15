@@ -62,6 +62,24 @@ public sealed class ContextPack
     /// <summary>Stable identity for caching: same events, same facts, same passage.</summary>
     public required string Key { get; init; }
 
+    /// <summary>
+    /// A hash of everything the model is actually shown for this pack.
+    ///
+    /// <see cref="Key"/> answers "which events is this about" and deliberately survives an engine
+    /// that renumbers them. That is the right identity for a scope and the wrong one for a cache,
+    /// because a pack is not only its events: it also carries figures the engine computed over
+    /// them. Change how a statistic is derived and the events are untouched, the key is
+    /// unchanged, and the model would be handed different facts while the cache serves the
+    /// passage written for the old ones — a cached render restating a figure that is now wrong,
+    /// permanently, because cached renders are canon.
+    ///
+    /// So the cache keys on the inputs rather than on a version number. A ruleset bump that
+    /// touches no pack invalidates nothing, which matters: the cache is the LoRA corpus and the
+    /// cost lever, and a coarse rule throws that away on every release. A change to a computed
+    /// figure invalidates exactly the packs whose figures moved.
+    /// </summary>
+    public required string InputHash { get; init; }
+
     /// <summary>Every literal a passage is allowed to contain, for the fabrication check.</summary>
     public required IReadOnlyList<string> Vocabulary { get; init; }
 
@@ -616,6 +634,7 @@ public static class ContextPackBuilder
             Causes = causes,
             Vocabulary = vocabulary,
             Key = Key(kind, view.Log, events),
+            InputHash = InputHashOf(bodyText),
             Digest = digest,
             ActorPairs = Pairs(view, events),
             SuccessionPairs = Successions(digest),
@@ -922,6 +941,20 @@ public static class ContextPackBuilder
     /// stable identity existed for exactly this reason and was simply not being used; now a
     /// passage survives anything that does not alter the events it actually describes.
     /// </summary>
+    /// <summary>
+    /// The body, hashed. The body is what the prompt is built around, so hashing it covers the
+    /// events, the cast, the naming note, the causes and every computed figure at once — and it
+    /// cannot fall out of step with what the model saw, because it *is* what the model saw.
+    ///
+    /// The prompt template around it is not included, deliberately: that is what
+    /// <see cref="Prompts.VersionFor"/> already keys on, and one input should be recorded once.
+    /// </summary>
+    public static string InputHashOf(string body)
+    {
+        byte[] digest = System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(body));
+        return Convert.ToHexStringLower(digest.AsSpan(0, 8));
+    }
+
     private static string Key(PackKind kind, EventLog log, List<EventId> events)
     {
         const ulong offset = 14695981039346656037UL;

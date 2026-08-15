@@ -1777,7 +1777,7 @@ public class RenderTests : IDisposable
 
         // Both survive. A model swap must never silently rewrite history that already exists.
         Assert.Equal(2, store.ForPack(pack.Key).Count);
-        Assert.True(store.TryGet(pack.Key, Prompts.VersionFor(pack.Kind), "model-a", out Render a));
+        Assert.True(store.TryGet(pack.Key, pack.InputHash, Prompts.VersionFor(pack.Kind), "model-a", out Render a));
         Assert.Equal("First telling.", a.Text);
     }
 
@@ -1792,7 +1792,7 @@ public class RenderTests : IDisposable
         chronicler.Judge(pack, RenderStatus.Edited, "Polished output.");
 
         RenderStore reopened = new(Path.Combine(_dir, "renders.json"));
-        Assert.True(reopened.TryGet(pack.Key, Prompts.VersionFor(pack.Kind), "scripted", out Render stored));
+        Assert.True(reopened.TryGet(pack.Key, pack.InputHash, Prompts.VersionFor(pack.Kind), "scripted", out Render stored));
 
         Assert.Equal("Polished output.", stored.Text);
         Assert.Equal("Raw output.", stored.Original);

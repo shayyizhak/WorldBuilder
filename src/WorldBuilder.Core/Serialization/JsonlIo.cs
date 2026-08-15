@@ -22,7 +22,7 @@ public static class JsonlIo
     }
 
     public static string Header(ulong seed, int count) =>
-        $"{{\"type\":\"world\",\"seed\":\"{seed.ToString(CultureInfo.InvariantCulture)}\",\"events\":{count.ToString(CultureInfo.InvariantCulture)}}}";
+        WorldHeader.ForThisBuild(seed, count).Serialise();
 
     public static string Serialise(Event e)
     {
@@ -120,9 +120,9 @@ public static class JsonlIo
             if (first)
             {
                 first = false;
-                if (root.TryGetProperty("type", out JsonElement type) && type.GetString() == "world")
+                if (IsHeader(root))
                 {
-                    seed = ulong.Parse(root.GetProperty("seed").GetString()!, CultureInfo.InvariantCulture);
+                    seed = WorldHeader.Parse(root).Seed;
                     continue;
                 }
             }
@@ -132,6 +132,28 @@ public static class JsonlIo
 
         return (log, seed);
     }
+
+    /// <summary>
+    /// The header alone, without reading a thousand events to get at it.
+    ///
+    /// Returns null for a file with no header rather than throwing. A headerless world file is a
+    /// real thing — every v1 artefact is one — and the caller's job is to say so, not to fail.
+    /// </summary>
+    public static WorldHeader? ReadHeader(string path)
+    {
+        foreach (string line in File.ReadLines(path))
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            using JsonDocument doc = JsonDocument.Parse(line);
+            return IsHeader(doc.RootElement) ? WorldHeader.Parse(doc.RootElement) : null;
+        }
+
+        return null;
+    }
+
+    private static bool IsHeader(JsonElement root) =>
+        root.TryGetProperty("type", out JsonElement type) && type.GetString() == "world";
 
     private static Event Deserialise(JsonElement root)
     {

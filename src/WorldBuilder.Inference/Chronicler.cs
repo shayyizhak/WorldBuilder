@@ -32,7 +32,7 @@ public sealed partial class Chronicler(
     /// </summary>
     public async Task<RenderOutcome> RenderAsync(ContextPack pack, bool force = false, CancellationToken ct = default)
     {
-        if (!force && _store.TryGet(pack.Key, Prompts.VersionFor(pack.Kind), _client.ModelTag, out Render cached))
+        if (!force && _store.TryGet(pack.Key, pack.InputHash, Prompts.VersionFor(pack.Kind), _client.ModelTag, out Render cached))
         {
             FabricationReport recheck = FabricationCheck.Check(pack, cached.Text, wholeSection: true);
 
@@ -100,6 +100,7 @@ public sealed partial class Chronicler(
         Render render = new()
         {
             PackKey = pack.Key,
+            InputHash = pack.InputHash,
             PromptVersion = Prompts.VersionFor(pack.Kind),
             Model = result.Model,
             Text = text,
@@ -165,7 +166,7 @@ public sealed partial class Chronicler(
     /// <summary>Records a human verdict. Edits are stored beside the original, never over it.</summary>
     public void Judge(ContextPack pack, RenderStatus status, string? editedText = null)
     {
-        if (!_store.TryGet(pack.Key, Prompts.VersionFor(pack.Kind), _client.ModelTag, out Render existing)) return;
+        if (!_store.TryGet(pack.Key, pack.InputHash, Prompts.VersionFor(pack.Kind), _client.ModelTag, out Render existing)) return;
 
         Render updated = existing with
         {

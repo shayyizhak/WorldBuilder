@@ -1,0 +1,353 @@
+# World Builder — project reference
+
+Standing context for this project. Durable, not a status update — the *Current status* section is the only part that goes stale quickly.
+
+---
+
+## 1. What this is
+
+A persistent, AI-assisted simulated world builder. It generates deep, internally consistent history — factions rising and falling, rulers murdered and succeeded, wars, famines, plagues, secessions — and lets you read that history as prose, query it in natural language, and eventually author into it and render it onto maps.
+
+A hobby project, built in C#/.NET, run locally.
+
+### The distinguishing idea
+
+**The simulation is a cheap deterministic symbolic engine. The language model is only a rendering layer over it.**
+
+The world runs headless with zero model calls. The LLM is invoked lazily, only on the parts you actually look at — the same relationship a game engine has with its renderer. That is what makes the whole thing tractable: a century of history exists for near-nothing and is narrated on demand.
+
+Most projects in this space put the model *in* the simulation loop. This one deliberately does not, and that is the interesting part of the architecture — the thing worth leading with in any README or write-up.
+
+---
+
+## 2. Working arrangement
+
+Shay builds on a separate device using Claude Code. Claude in chat provides design guidance and reviews uploaded artefacts — event logs, chronicles, sidecar JSON, agent reports. **Claude has no visibility into the code.**
+
+The loop:
+
+1. Claude writes a brief or a loop-prompt to `/mnt/user-data/outputs`
+2. Shay copies it to Claude Code, which executes
+3. Shay uploads results (logs, chronicles, JSON, a report)
+4. Claude reviews against the record and writes the next brief
+
+Later rounds moved from per-round briefs to **loop-prompts**: a document with explicit halt conditions that Claude Code runs unattended until the conditions hold or an abort triggers. This works well for anything machine-checkable and halts for anything requiring prose judgement.
+
+**The abort is the feature, not the failure.** The baseline archive took three revisions and aborted twice. Both aborts were correct, and the second one caught a defect that had been sitting in the tree unnoticed since before version control existed. A loop that halts and reports beats one that resolves ambiguity by guessing. Revisions supersede rather than replace: each report is left standing, because the earlier one is still the record of what was searched for.
+
+**Escalated decisions come back as questions, not as choices already made.** When a loop hits something requiring prose judgement, its report ends with a numbered list of what a human has to decide. That list is the interface between the two halves of this arrangement.
+
+**Claude has no visibility into the code, but it does have the record.** Twice now a question posed as "someone has to read the passage" turned out answerable from the event log plus the round reports. Worth trying before assuming a decision needs eyes on source.
+
+**GitHub access, if it is ever wanted.** Claude's sandbox can reach `github.com` and clone a *public* repo. Private repos are unreachable — no connector, no authentication. The repo is currently private, which is right; uploading specific files on demand costs less context than cloning a C# tree each session, and the line-anchored reports Claude Code produces carry most of the value of direct access.
+
+---
+
+## 3. Architecture (settled — do not relitigate without reason)
+
+### Core principles
+
+- **Event-sourced state.** An append-only event log; world state is a fold over the log. This buys time-travel (replay to any year), real causality (why-questions are graph traversals over recorded `causes` edges, not model guesses), and determinism.
+- **Thin entities, rich interactions.** Actors, places, factions, resources are deliberately shallow. Depth comes from interaction rules, not elaborate schemas. Properties, not identities.
+- **The model renders. It never simulates and never writes state.** It emits structured proposals the engine validates.
+- **Cached renders are canon.** Anything accepted becomes world text and is stored, never silently regenerated. Same rule for externally generated artefacts (imported maps).
+- **The structured event always survives.** Prose is a view, never a replacement. Later milestones operate on structure, not text.
+
+### The three LLM roles
+
+| Role | Input | Output | Milestone |
+|---|---|---|---|
+| **Render** | facts | prose | v1.0 / v1.1 |
+| **Query** | a question + retrieved events | an answer | v1.2 |
+| **Adjudicate** | authored prose | validated state deltas | v2 |
+
+### Stack
+
+- **Engine:** C#/.NET, currently version `1.2.0`. Event sourcing and deterministic simulation fit it well.
+- **Inference:** Ollama, local, OpenAI-compatible, model-swappable. Currently `qwen3.6:latest`.
+- **Model licensing: Apache-2.0 only.** Qwen qualifies. This is deliberate — it keeps the base model swappable and makes a future house-style LoRA legally clean to release. Llama and Gemma 1–3 were excluded for custom source-available terms; **Gemma 4 shipped Apache-2.0 in April 2026 and is now eligible.**
+- **Client:** Flutter if a UI is ever built for users. Not a current concern.
+- **Techniques:** constrained decoding for structured output; the two-call pattern (reason freely, then extract to schema) for anything needing structure.
+
+### A note on model choice
+
+Qwen is coding-tuned, and the prose was better than expected. There is a temptation to swap to a prose-tuned model. Resist it without testing: five rounds of render work converged on instructions to be *less* creative and more literal — don't invent motive, don't embellish, render a missing input as omission. A model that writes gorgeous fiction is a model that fills gaps beautifully, which is the primary failure mode. Coding-tuned literalism is plausibly why the prose was controllable at all. Any swap must also hold on the constrained-decoding side.
+
+### Zero-inference paths are structural, not observational
+
+`wb book --check-only` holds a `CacheOnlyLlmClient` whose `CompleteAsync` throws. A cache miss surfaces as the missing render it is, rather than being repaired by generating a passage nobody has verified.
+
+The design rule this encodes: **"no call was observed" is not a proof that none was possible; "the call cannot be constructed" is.** The alternative considered and rejected was pointing `--endpoint` at a dead port — which does work, and is worth keeping as a *test* of render-cache completeness, but makes correctness depend on a misconfiguration.
+
+---
+
+## 4. Lessons (hard-won — these are the real value of this document)
+
+### On rendering
+
+**Particulars vs patterns.** The key conceptual move of the whole project. Inventing *particulars* — names, places, dates, numbers, motives, actions — is forbidden. Characterising *patterns* across the supplied records — frequency, escalation, how a period ended — is **required**. Clamping fabrication without this distinction kills aggregation and produces one-sentence-per-event transliteration.
+
+**Counting is the engine's job, prose is the model's.** All statistics computed in C# and passed in as structured facts the model may only restate. The model is unreliable at counting across a long list.
+
+**Wrong engine figures are worse than wrong model figures**, because nothing questions them.
+
+**Statistics carry a scope.** A faction-lifetime figure restated inside a reign passage is a live defect class — it recurred three times across rounds.
+
+**Supplied figures must be stated, not summarised.** "Hundreds died" when the record says 474 discards the only content the model can state with certainty. Vagueness is not a safe default.
+
+**A missing input renders as omission, never as plausible connective text.** The model invents to fill gaps.
+
+**Ambiguous engine labels are a fabrication vector independent of the model.** A reason code that doesn't name its party, an outcome buried in a prose clause, a duration in two conventions — each produced fabrications that no prompt fix could hold.
+
+**Skewed outcome distributions are a latent fabrication risk.** Where one outcome dominates, the model scores well by guessing the majority case — and gets the rare case confidently wrong. Worth auditing which event types have that shape.
+
+**Statistics need a population.** Suppress them below a threshold, or a one-year reign produces an absurd stat block.
+
+**Prompt fixes decay.** Fixes made in the prompt held for one or two rounds and then regressed. This is the entire argument for the checker.
+
+### On the checker and tests
+
+**The silent-path family — appeared five times.** In every case *the rule was correct and the input never reached it*:
+
+1. `"included"` missing from the partiality-marker list (only `"including"` was there)
+2. `people`, `exiles`, `returns` absent from the countables lexicon
+3. Normalisation not stripping possessives, so `"Realsis Leirpu's"` yielded a subject matching nobody
+4. An early return discarding 32 of 33 extracted assertions
+5. `unresolvable` conflating "could not look it up" with "looked and it isn't there"
+
+Assume it will appear again. It is silent by nature — a gap that presents as a pass.
+
+**The family is not confined to rules.** Two more instances turned up in the filesystem during the baseline archive: `*.jsonl` and `*.log` ignored globally would have dropped two of ten baseline artefacts while the directory still looked complete; and a hash computed over the working tree rather than over what git stores would have been CRLF-dependent. Both have the same shape — a gap that presents as a pass — and neither is in a checker rule.
+
+**`coverage-sound` — two invariants, both required:**
+
+```
+ACCOUNTING   extracted == checked + unresolvable    (per rule, per scope)
+FLOOR        extracted >= previous_extracted        (per rule, per scope)
+```
+
+ACCOUNTING says nothing is dropped *after* extraction. FLOOR says nothing is dropped *before* it. **Each is trivially satisfiable alone** — one round satisfied ACCOUNTING by collapsing extraction from 33 to 2; the next did the reverse. Re-baselining the floor must be an explicit human action, never something that happens by rerunning.
+
+**Coverage reporting.** Every run emits per-scope `extracted / checked / unresolvable / fired` per rule. A rule extracting nothing from a scope containing the relevant construction emits `rule-inert`. This converts silent inertness into a loud failure.
+
+**Test entry points.** Every rule test enters at the outermost callable production uses. Two tests once passed while the code failed — one hand-fed an event kind the planner never emits, the other called an inner method the public entry point bypassed. **A test feeding an input the production caller never produces is worse than no test**: it converts silence into false confidence.
+
+**Assert extraction, not just absence of failure.** A test asserting "no finding fired" passes when the rule is inert.
+
+**Construction-gated rules cannot be required to always extract.** `partition-sum` needs a partition; a two-sentence answer doesn't have one. Loosening extraction to satisfy a blanket coverage requirement is how false positives get manufactured — one attempt cost seven true chronicle sections. Inert is a finding only when the construction is present.
+
+**Completeness rules on fragments are a trap.** They work on whole sections and misfire on short answers.
+
+### On artefacts and provenance
+
+*Added after the baseline archive rounds. This is the newest cluster and probably the least worked-out.*
+
+**A derived artefact drifts silently unless something records what produced it.** The archived `chronicle-42.findings.json` was written by a pre-v1.2 checker and committed in the same commit as the post-v1.2 checker that supersedes it. Git could not show the inconsistency because it was *inside the first commit*. Nothing in the file said which checker wrote it.
+
+The fix is a **fingerprint over the producing code**, stored with the artefact. This generalises: it is the same question Stage 3 asks about cached renders, arriving early in a different costume.
+
+**Prose reproducing byte-identically proves nothing about its sidecar.** `chronicle-42.md`, the suspect-token count and the held-out sections all matched exactly while the coverage accounting had drifted on three scopes. Any check comparing the document would have passed cleanly. **It took the machine-readable block to see it** — which is the argument for the query-side sidecar, made from the other side.
+
+**Hash what the repository stores, not what the working tree holds.** Line endings make a working-tree hash a property of the checkout. `QuerySuite.cs` hashes two different values depending on `core.autocrlf`; the same trap nearly reappeared one field over, in the checker fingerprint itself.
+
+**A stale figure in a reference document behaves exactly like a wrong engine figure.** The checker rule count sat at 17 in a summary doc, propagated into a loop-prompt, and was only caught by someone enumerating `RuleNames.All`. Nothing questioned it, because it was written down. **This document is not exempt from its own lesson** — figures here are as fallible as any other engine output, and the manifest is authoritative over any count restated in prose.
+
+**Verified and derived are different, and only one of them is precious.** The v1 hand-verification attaches to the *prose* — figures, ruler lists, tenure spans, named years. The findings sidecar is derived: a pure function of `(renders.json, checker code)`, recomputable at zero inference cost. That distinction is what let the sidecar be replaced without weakening the baseline, and it is worth asking of every artefact before treating it as irreplaceable.
+
+**Create-only beats a human gate, where the property wanted is "this cannot move by rerun."** The archive directory refuses to be overwritten. Replacement requires deliberately moving the old one aside, which is the explicit act. A gate that depends on remembering to be a human is weaker than one that depends on the filesystem.
+
+### On measurement
+
+**Read the record, never the presentation view.** The `.log` hides ~341 bookkeeping rows (the yearly accounts) out of 1,035. Much of the economy's causal influence runs through them. This produced two confidently wrong measurements — economy coupling reported as 18 of 524 when it was 142 of 850.
+
+**A filter that drops rows must fail loudly.** Both measurement errors had the same shape: a scan silently omitting rows. If an edge's target is missing, that is a dangling-reference failure, not a row to skip.
+
+**Ranking by raw event count systematically under-represents things that ended.** A power destroyed in year 20 had eighteen years to accumulate events; a survivor had fifty. Scope selection by "weightiest" therefore drops exactly the powers whose stories conclude. This matters again at Stage 8's significance threshold, where dropping is mandatory — rate rather than total, or a floor for any power that held land or was destroyed.
+
+### On the model itself
+
+**Generation is not reproducible run to run**, despite temperature 0 and a fixed sampling seed. Evidence: the same question with a byte-identical request body was classified causal in one run and factual in another, changing retrieval from three records to one. This is Ollama's own variance.
+
+Consequences: a single-question CLI call is not a valid proxy for a suite run; "16 of 16" is a sample, not a proof; two consecutive identical runs is the honest evidence standard.
+
+**Re-checking is not generation.** Running the checker over a cached `renders.json` involves no inference and *is* reproducible — five identical runs across two builds. The distinction matters: it is what makes a findings sidecar a derived artefact rather than an unrepeatable one.
+
+**The planner mistypes verbatim fields.** Three slips in sixteen on a field it was instructed to copy exactly, and both surviving retrieval files misspell "Hadale Commune" differently. Resolve verbatim fields against the question text or the record — never fuzzy-match the planner's string, because a miss is recoverable and a confident resolution to the wrong entity is not. Years matter most: a mistyped year produces no failure signal, just a plausible answer about the wrong decade.
+
+**Absent vs withheld must be distinguishable.** The same conflation appeared as `unresolvable`-vs-fired in the checker and as one empty-result sentence covering three different situations in the query layer. This is not just phrasing — the v3 epistemic layer's entire premise is that not-known and not-true are different, so the query path has to be able to express it.
+
+---
+
+## 5. Roadmap
+
+Stages 1 and 2 are complete (v1 render and query). The board is at **https://trello.com/b/Ovwt583e/world-builder** with lists Done → In flight → Foundations → Simulation depth → Scale → Release.
+
+| # | Stage | Notes |
+|---|---|---|
+| 1 | Finish v1 render | ✅ done |
+| 2 | v1.2 query | ✅ done |
+| — | Archive the v1 golden baseline | ✅ done — see §8 |
+| 3 | **Determinism & versioning decision** | Current. A decision, not a build. Partly built already. |
+| 4 | Automated quality harness | Five layers; spec written; size as a project, not per-round drips |
+| 5 | Workbench UI | Instrumentation for the builder, not product. Looks like polish; isn't. |
+| 6 | World substrate: geography, then economy | Geography first — distance gates conflict, trade, alliance, later rumour |
+| 7 | v2 adjudication & interventions | Prospective first, retroactive last |
+| 8 | LOD contract | **Design only** — keep running 20 actors |
+| 9 | Complexity mechanisms | naming → religion → resources/trade → creatures → tech diffusion |
+| 10 | Scale-up | 20 → 200 → 2,000 → statistical millions |
+| 11 | v3 epistemic layer | Facts get knowers |
+| 12 | Campaign loop | The thing it'll actually be used for |
+| 13 | v4 export adapters | Markdown, wiki, map rendering, JSON |
+| 14 | Open source release | Licence, NOTICE, README, contributor non-negotiables |
+| 15 | Hosted tool | Inference cost is the whole problem |
+
+### Stage detail worth carrying
+
+**Stage 3 — determinism.** Two things break "seed + intervention log reproduces the world": rule changes (every later stage changes rules) and model variance (proven at v1.2). Both point at **the materialised event log as the durable artefact**; seed becomes provenance rather than a regeneration recipe. Needs a world-file header (ruleset version, engine version, seed, artefact hashes, render-cache fingerprint) and a policy for opening under a newer engine. **V2 corollary:** the intervention log stores *accepted deltas*, never the prompt that produced them.
+
+*Three pieces are already built*, delivered in passing during the archive rounds: `engine_version` as real build metadata (`1.2.0`, with the commit riding in `InformationalVersion`), `engine_commit`, and the fingerprint-over-producing-code pattern for derived artefacts.
+
+*What remains:* the header proper, behaviour on opening under a newer engine, and the cached-render invalidation rule. On that last one there is now evidence rather than argument — the findings sidecar drifted precisely because nothing recorded its inputs, and renders will drift the same way for the same reason. **Key on a hash of the derived artefact's inputs, not on engine or ruleset version.** Most rule changes touch no existing event and would nuke the whole cache for nothing; the dangerous case is narrower — a change to how a statistic is computed over unchanged events, which alters the fact pack while the events look identical. Input hashing catches exactly that and ignores the rest. This matters because the cache is both LoRA training data and the Stage 15 cost lever, and a coarse invalidation rule throws the asset away on every version bump.
+
+**Stage 6 — geography.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Azgaar gives a cell-adjacency graph free; Watabou MFCG has a de-facto JSON API. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool.
+
+**Stage 7 — the collision to resolve.** "Cached renders are canon" and "retroactive authoring back-propagates causes into the past" cannot both hold unconditionally, because back-propagation rewrites events that already have canon prose about them. Decide deliberately in design. Stage 3's invalidation rule sets the precedent this will be argued from.
+
+**Stage 8 — the sequencing trap.** Complexity is cheapest to iterate at 20 actors, but LOD changes how entities are *represented*, so every mechanism written before the contract exists gets rewritten after. Write the contract now, defer the population scale-up to Stage 10. Three tiers: statistical populations → named entities → simulated individuals. Crystallisation deterministic via `(world_seed, entity_id, query)`. Every Stage 9 mechanism must be expressible at all three tiers.
+
+**Stage 9 — naming first.** Names carry nearly all the felt sense of distinct cultures, and retrofitting a naming system after the log is full of names is miserable. Religion second — highest yield, because it gives succession disputes *reasons* rather than dice.
+
+**Stage 15 — inference cost.** Local Ollama is free; hosted is not. Bring-your-own-key, hosted inference with quotas, or hosted simulation with client-side rendering. The render cache is the cost lever: cached renders are canon, which means they are also *paid for once*. The lazy-rendering architecture chosen for tractability turns out to be the business model.
+
+### Two cross-cutting concerns
+
+**The render cache is both asset and liability.** Every accepted render is training data for a future house-style LoRA — log from day one, cheap now and impossible to reconstruct later. Every accepted render is also a thing that must stay consistent with any future edit to its underlying events.
+
+**Every stage's exit criterion should be a harness number, not a feeling.** "Is it interesting?" only became answerable once chain shapes and repeat rates were measured.
+
+---
+
+## 6. The checker
+
+Prose that fails validation is kept out of canon rather than corrected by hand. Failed chronicle passages go to `chronicle-{seed}.unverified.md` with their findings.
+
+### Tiers
+
+- **Tier 1 — internal consistency.** Needs the rendered text only. Count vs enumeration, partition sums, internal date agreement, summary vs body. Cheapest and catches the most.
+- **Tier 2 — statement validation against events.** Action, succession, outcome, departure, tenure, quantity, date.
+- **Tier 3 — coverage.** Mandatory event classes within a scope's window: collapse, conquest, secession, war/peace, every battle, deaths of seat-holders.
+
+### The 16 rules
+
+`RuleNames.All` yields sixteen distinct owners:
+
+```
+action     coined-term   count-enumeration   count-narration
+coverage   date          date-agreement      departure
+naming     outcome       partition-sum       quantity
+shape      succession    summary-body        tenure
+```
+
+**Sixteen, not seventeen.** `unsupported-link` is a finding kind that maps onto `action` rather than a rule of its own, and `name`/`number` verdicts from the vocabulary scan map onto `naming`. Both folds are why a wrong count of 17 circulated. `coverage` and `shape` are completeness rules, gated off on the answer path.
+
+### Sidecar format
+
+`{rule, scope, span, detail, blocking, fatal}` plus a per-scope `coverage` block with `extracted / checked / unresolvable / fired / accounted`. Exclusions appear as findings with `fatal: true`. `unresolved` entries carry their span.
+
+### Disposal differs between chronicle and query
+
+A chronicle has fifteen sections and can drop one with a note in its place. **A query answer has one answer and nowhere to put a warning.** A fatal finding on an answer returns the retrieved facts plainly, or an admission — never annotated prose carrying a known fabrication.
+
+### The query path has no sidecar
+
+`CmdSuite` prints findings, withheld notes and the coverage table to stdout and writes no file. The only writer of a `*.findings.json` is the chronicle path.
+
+**This is a live gap, not a formatting nicety.** `departure` extraction went 4 → 0 between two v1.2 rounds and nothing caught it, because there was no machine-readable block to diff. The chronicle path had one, and diffing it is the only reason the sidecar drift in §8 was ever visible. Stage 4 backlog.
+
+---
+
+## 7. Test suite (Stage 4 — specced, not fully built)
+
+Five layers, increasing cost:
+
+1. **Dynamics invariants** — log metrics as assertions. Dangling refs = 0; repeat rate < 10%; single-actor chains = 0%; max causal depth ≥ 8; distinct two-step shapes ≥ 60; collapses per faction ≤ 1; coup success > 15%; covert coup success > 0; ECONOMY→non-ECONOMY ≥ 10% of edges; cross-domain ≥ 25%. Run across all five seeds.
+2. **Checker rule unit tests** — synthetic passages, positive and negative per rule, plus lexicon-completeness tests (every marker in every list fires its rule on an identical sentence with only the marker swapped).
+3. **Regression corpus** — 31 hand-verified fabrications from the render rounds, each mapped to the rule that should catch it. Cases fixed and then regressed are the highest-value entries.
+4. **Chronicle verified against the log** — ruler lists, departure manner, tenure spans, raid counts (three outcomes), battle counts, killing counts split internal/external, marriage counts, every named year, every proper noun.
+5. **Golden diff** — current output against the stored baseline in §8. Any figure that moves is a failure. **Diff the coverage block too** — extraction counts are far more stable than prose, and a rule going non-zero to zero is the signature of the silent-path family.
+
+**Layer 4 deliberately duplicates the checker.** The checker decides what enters canon; the suite decides whether the checker works. A checker that silently stops firing is invisible without an independent verifier. If they ever share an implementation, that property is lost.
+
+### Stage 4 backlog
+
+Carried from v1.2 and from the archive rounds:
+
+- **A supplied figure going unused is caught by nothing** — one answer omitted "504 fled" while the pack supplied it.
+- **A bare count in an answer is verified by no rule** — the vocabulary scan skips numbers under three digits, and `count-vs-list` needs an enumerated list, not four citations.
+- **`departure` 4 → 0 went uncaught.** FLOOR was specified but not in that round's halt list.
+- **Pattern characterisation lands on the easy shape** (records sharing a year and a target) and not the harder one (records sharing a source across differing years).
+- **Query-side findings sidecar** — same `{rule, scope, span, detail, blocking, fatal}` shape plus the per-scope coverage block. The single highest-value item here; see §6.
+- **Split retrieval sets from the planner echo.** Event-ID lists are deterministic, diffable and checkable forever; the echo line is a generation artefact. One echo line is the entire reason retrieval reproduction is permanently skipped.
+- **Emit the question set as data.** It is currently a C# literal in `QuerySuite.ForSeed42`, so archiving it means archiving source.
+- **Keep the dead-endpoint trick as a render-cache completeness test.** Rejected as an archive path, genuinely useful as a test.
+
+---
+
+## 8. The v1 golden baseline
+
+Sealed at `baselines/v1/seed-42/`, create-only. **`manifest.json` is authoritative** for contents and hashes — deliberately not duplicated here, per the stale-figure lesson in §4.
+
+**Contents:** the chronicle and its unverified passages; the findings sidecar; `renders.json`; the query answers, retrieval sets and question set; the record and the `.log` view. Plus `manifest.json`, `BASELINE.md`, `.sealed`, and the archive report.
+
+**What is verified versus derived.** The prose is hand-verified — figures, ruler lists, tenure spans, counts, named years. The findings sidecar is *derived*, reproduced from `renders.json` by `wb book --check-only` rather than copied, and pinned as the anchor. The superseded pre-v1.2 sidecar sits beside it as `chronicle-42.findings.pre-v1.2.json`, role `historical-not-anchor`; it must never be used as a diff target.
+
+**Why that file is still there.** It is the evidence for the §4 provenance lesson: a tree internally inconsistent inside its own first commit, where version control cannot show it. Five coverage deltas across 3 of 15 scopes, all explained by the two v1.2 raid-extraction fixes and the `name` → `naming` fold; 163 findings unchanged, 8 real, 4 blocking.
+
+**Recorded deficiencies** (both in the manifest and in `BASELINE.md`):
+
+- `query-coverage-unstructured` — v1's query-side coverage exists only as captured stdout. A rule going non-zero to zero on the query path cannot be detected by a golden diff against this baseline.
+- `retrieval-contains-generated-echo-line` — one planner echo makes the retrieval file not fully deterministic.
+
+**Rules for use.** Create-only: a new baseline requires moving this directory aside under a new name first. `verification: hand-verified` is correct only for seed 42 — baselines for seeds 7, 99, 1234 and 2025 must carry `stability-anchor-only`, since a golden diff needs its anchor stable, not correct, but the distinction must stay legible. `baselines/**` is pinned `-text` and force-included in `.gitignore`; a fresh clone reproduces every hash.
+
+---
+
+## 9. Seed 42 reference facts
+
+Verified by hand across many rounds. Useful for any future test, question suite, or sanity check. **694 events in the `.log` view; 1,035 in the record.**
+
+**Powers:** Wurn League (f:1), Kebarrow Compact (f:2), Griwick Compact (f:3), Sworn Men of Meigate (f:4), Sworn Men of Laehiford (f:5), Hadale Commune (f:6), Vea Lode Covenant (f:7).
+
+**Secessions:** Meigate Y19, Laehiford Y20, Hadale Y27 (all from Kebarrow); Vea Lode Y29 from Griwick.
+
+**Collapses:** Wurn League Y20 (Kebarrow took Hadale, leaving it landless), Griwick Compact Y35, Sworn Men of Meigate Y50.
+
+**Griwick plague:** Y26–28. 185 + 133 + 156 = **474 dead**; 296 + 208 = **504 fled**.
+
+**Paernmel Has:** four *failed* attempts on him (Stonand Ker Y43, Keithfal Naell Y45, Throll Kell Y46, Drouldthas Stour Y49), one *successful* killing of him (Wuldweald Valdrith Y51), and two killings *he ordered* (Veillpea Dourn Y46, Thres Thrild Y47). Seven assassination records name him; role and outcome both decide the count.
+
+**Vea Lode rulers:** Stald Gearngoll 29–45, Veillpea Dourn 45–46, Thres Thrild 46–47, Gatros Hearn 47–48, Keithfal Naell 48–50, Herpeim Raern 50–.
+
+**Recurring false premises:** Stonand Ker never held a seat. Hehum Skul was a named heir whose claim was set aside; he never ruled. The Kebarrow Compact never took Griwick — Vea Lode did, in Y35.
+
+**Secrets:** 77 `[secret]` events. `e:639` (Y35, Gatros Hearn's failed attempt on Sothkel Sald) is the canonical withheld-not-absent test case.
+
+**Benchmark chronicle scopes:** Kebarrow Compact 2–21 and 22–41, Sworn Men of Meigate, the Wurn League, the Heth Fal reign.
+
+**Raid prose shape**, since two extraction bugs lived here: raids name a *place* as target — "the Kebarrow Compact raids Hadale and kills 16, but takes nothing" (`e:278`, Y19) — while the event carries both a target faction and a place. A chronicle sentence naming the raided *power* was told no such raid existed, and the phrase reader once ran four words past the end of a name (`"hadale killed 16 but"`). Both fixed, both pinned in `CheckerCorpusTests.cs`.
+
+---
+
+## 10. Current status
+
+**v1 is complete and archived.**
+
+- **Chronicle:** fifteen scopes, every power covered, figures verify, bad passages excluded automatically with precise diagnostics.
+- **Query:** 16/16 suite questions correct, zero secret leakage, zero fatal findings, retrieval byte-identical across runs, 330 tests green.
+- **Baseline:** sealed at `baselines/v1/seed-42/`, verified from a fresh clone.
+
+**Repository:** one repo (a nested-repo tangle was flattened during the archive rounds), private, on GitHub. Engine `1.2.0`.
+
+**Next: Stage 3**, the determinism and versioning decision. Three of its pieces are already built; what remains is the world-file header, the newer-engine policy, and the cached-render invalidation rule. An afternoon.
+
+**Also pending and cheap:** baselines for the other four seeds — 7, 99, 1234 and 2025. These are v0 engine test seeds with no v1 artefacts yet, so this is generate-then-archive rather than archive, and every one of them carries `verification: stability-anchor-only`.

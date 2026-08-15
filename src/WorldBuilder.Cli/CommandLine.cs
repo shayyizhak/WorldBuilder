@@ -816,9 +816,10 @@ public static class CommandLine
         using OllamaClient? live = checkOnly ? null : new OllamaClient(options);
         ILlmClient client = live is not null ? live : new CacheOnlyLlmClient(options.Model);
 
+        RenderStore store = new(Path.Combine(outDir, "renders.json"));
         Chronicler chronicler = new(
             client,
-            new RenderStore(Path.Combine(outDir, "renders.json")),
+            store,
             new RenderJournal(Path.Combine(outDir, "renders.jsonl")));
 
         // A 22 GB model is evicted between runs, and loading it counts against the first
@@ -1046,6 +1047,18 @@ public static class CommandLine
         Console.Error.WriteLine();
         Console.Error.WriteLine(
             $"{sections.Count} passages, {suspect} suspect tokens, {unverified} held out of canon");
+
+        // Said out loud rather than left to be assumed. These passages were served from entries
+        // written before the pack inputs were hashed, so the cache cannot show they are still the
+        // passages those inputs produce — a weaker claim than a pinned hit, and one a reader
+        // would otherwise have no way to distinguish from the stronger one.
+        if (store.UnpinnedHits > 0)
+        {
+            Console.Error.WriteLine(
+                $"  {store.UnpinnedHits} of them came from cache entries with no input hash, " +
+                "so their inputs are unverified. Re-render to pin them.");
+        }
+
         Console.WriteLine(path);
         if (unverified > 0) Console.WriteLine(diagnosticsPath);
         return 0;
@@ -1364,6 +1377,26 @@ public static class CommandLine
         if (!File.Exists(path))
             throw new FileNotFoundException($"no world at '{path}' — run `wb run --seed <n>` first.");
 
+        // Provenance is checked on the way in, so a world this build did not write says so before
+        // anything is derived from it. Silent on the ordinary case: a file written by this engine
+        // under this ruleset produces no notes at all.
+        WorldHeader? header = JsonlIo.ReadHeader(path);
+        WorldFileCheck check = header is null
+            ? new WorldFileCheck { Blocks = false, Notes = ["this world file has no header at all; nothing records what produced it."] }
+            : WorldCompatibility.Check(header);
+
+        foreach (string note in check.Notes) Console.Error.WriteLine($"wb: {note}");
+
+        if (check.Blocks)
+        {
+            if (!args.Flag("accept-newer"))
+                throw new FormatException($"refusing to open '{path}' — see above.");
+
+            // Said every time rather than once, because the override is the whole safeguard and
+            // a run that used it should not read like a run that did not need it.
+            Console.Error.WriteLine("wb: opening it anyway, on --accept-newer.");
+        }
+
         return WorldView.Load(path);
     }
 
@@ -1431,6 +1464,16 @@ public static class CommandLine
               wb test      all                     everything that needs no test host
 
             Query commands read out/world-<seed>.jsonl; pass --file to point elsewhere.
+
+            provenance — a world file records the engine and ruleset that wrote it
+
+              a world from an older engine, or one with no provenance at all, opens and
+              says so. A changed ruleset opens too: the log is complete, and what it has
+              lost is only the ability to be rebuilt from its seed. A world written by a
+              newer engine than this build refuses to open, because an older reader
+              cannot know what it is failing to understand.
+
+              add --accept-newer to open one anyway.
             """);
     }
 }
