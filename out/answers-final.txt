@@ -1,0 +1,83 @@
+[PASS] Why did Hadale break from the Kebarrow Compact?
+        answered from 4 records
+        > In 27, Hadale broke from the Kebarrow Compact because the Kebarrow Compact’s raid on Griwick was beaten off [e:448].
+
+[PASS] Why did the Wurn League end?
+        answered from 8 records
+        > The Wurn League ended because the Kebarrow Compact defeated it at Hadale in 20 and took Hadale from it, leaving the Wurn League finished, landless, with its last 21 followers scattering [e:305; e:306; e:307]. This sequence was triggered by the Kebarrow Compact declaring war on the Wurn League in 20 over a long-standing grievance, which arose from Trem Lolkoll's failed attempt on Weallhous Dreld in 20 [e:300; e:298].
+
+[PASS] Why did Threi Cut rise against the Vea Lode Covenant in 51?
+        answered from 4 records
+        > Threi Cut rose against the Vea Lode Covenant in 51 because the Covenant’s standing had fallen to nothing following the killing of its ruler, Keithfal Naell, by Tor Nathgoull in 50 [e:1035].
+
+[PASS] How many times was Paernmel Has the target of a failed attempt?
+        answered from 7 records
+        > Paernmel Has was the target of four failed attempts: by Stonand Ker in 43, Keithfal Naell in 45, Throll Kell in 46, and Drouldthas Stour in 49 [e:822; e:869; e:892; e:976].
+
+[PASS] Which powers broke away, and from whom?
+        answered from 4 records
+        > In 19, Meigate broke away from the Kebarrow Compact to become the Sworn Men of Meigate [e:283]. In 20, Laehiford broke away from the Kebarrow Compact to become the Sworn Men of Laehiford [e:314]. In 27, Hadale broke away from the Kebarrow Compact to become the Hadale Commune [e:454]. In 29, Vea Lode broke away from the Griwick Compact to become the Vea Lode Covenant [e:506].
+
+[PASS] Which powers were destroyed?
+        answered from 3 records
+        > The Wurn League was finished in 20 [e:307]. The Griwick Compact was finished in 35 [e:655]. The Sworn Men of Meigate was finished in 50 [e:1004].
+
+[PASS] Who ruled the Vea Lode Covenant?
+        answered from 8 records
+        > The Vea Lode Covenant was ruled by Stald Gearngoll from 29 to 45 [e:506], Veillpea Dourn from 45 to 46 [e:878], Thres Thrild from 46 to 47 [e:907], Gatros Hearn from 47 to 48 [e:929], Keithfal Naell from 48 to 50 [e:960], and Herpeim Raern from 50 onwards [e:1006].
+
+[PASS] How many died in the plague at Griwick?
+        answered from 4 records
+        > The plague at Griwick killed 474 people in total [e:419; e:437; e:465]. The deaths occurred in year 26 (185 dead), year 27 (133 dead), and year 28 (156 dead) [e:419; e:437; e:465].
+
+[PASS] What happened to the Drelthorn League?
+        refused, nothing retrieved
+        > There is no Drelthorn League in this world.
+
+[PASS] Who ruled the Sworn Men of Meigate in year 5?
+        refused, nothing retrieved
+        > The Sworn Men of Meigate did not exist until 19.
+
+[PASS] Who ruled the Hadale Commune in year 51?
+        answered from 1 records
+        > Durnrin Drar ruled the Hadale Commune in year 51 [e:927].
+
+[PASS] Why did Stonand Ker lose the seat of the Kebarrow Compact?
+        premise rejected
+        > Stonand Ker never held a seat, so the question does not arise.
+
+[PASS] Why did Hehum Skul's reign end?
+        premise rejected
+        > Hehum Skul never held a seat, so the question does not arise.
+
+[PASS] When did the Kebarrow Compact conquer Griwick?
+        premise rejected
+        > the Kebarrow Compact never took Griwick.
+
+[PASS] Who attempted to kill Sothkel Sald in year 35?
+        refused; the secret never surfaced
+        > Whoever made that attempt was never found out.
+
+[PASS] Who conspired against Paernmel Has?
+        answered without any secret record
+        > Three conspiracies against Paernmel Has were uncovered in 46, by Stonand Ker, Keithfal Naell and Throll Kell [e:901] [e:903] [e:905].
+
+what the rules read, across every answer:
+    action               extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    coined-term          extracted   85   checked   85 (100%)   unresolvable   0   fired   0
+    count-enumeration    extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    count-narration      extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    date                 extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    date-agreement       extracted    1   checked    0 (  0%)   unresolvable   1   fired   0
+          1  no name after the phrase
+             on: Threi Cut rose against the Vea Lode Covenant in 51 because the Covenant’s standing had fallen to nothing foll…
+    departure            extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    naming               extracted  131   checked  131 (100%)   unresolvable   0   fired   0
+    outcome              extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    partition-sum        extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    quantity             extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    succession           extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    summary-body         extracted    0   checked    0 (100%)   unresolvable   0   fired   0   [inert]
+    tenure               extracted    6   checked    6 (100%)   unresolvable   0   fired   0
+
+16 of 16 passed

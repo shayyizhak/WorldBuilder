@@ -1,0 +1,12 @@
+# Baseline artefacts are compared byte-for-byte, so git must not touch them.
+#
+# core.autocrlf is on, which means a fresh clone would rewrite every LF in these
+# files to CRLF and change every sha256 — including the ones the checker's
+# reproduction step diffs against. Generation is not reproducible run to run, so
+# a rewritten artefact cannot be regenerated back to its verified bytes.
+#
+# -text disables all end-of-line conversion for these paths in both directions.
+archive/** -text
+out/**     -text
+
+# Everything else normalises as usual: LF in the repository, native on checkout.
