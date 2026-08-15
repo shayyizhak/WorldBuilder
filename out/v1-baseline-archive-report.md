@@ -97,9 +97,16 @@ reading — full values are reproducible with `sha256sum`.
 | `renders.json` | `archive/2026-08-15-pre-v1.2-generation/` | 346335 | `2e198d907cfd5ca7…` |
 | query suite answers (16) | `out/answers-final.txt` | 5584 | `3d5461797110b7e5…` |
 | retrieval sets (16) | `out/retrieval-baseline.txt` | 10323 | `79d0c27035f051eb…` |
-| the question set | `src/WorldBuilder.Inference/QuerySuite.cs` (`QuerySuite.ForSeed42`) | 9312 | `cb1990f77620467c…` |
+| the question set | `src/WorldBuilder.Inference/QuerySuite.cs` (`QuerySuite.ForSeed42`) | 9312 | `cb1990f77620467c…` † |
 | the full record | `out/world-42.jsonl` | 616220 | `c5ef7936c783bc2f…` |
 | the `.log` view | `out/world-42.log` | 102208 | `7c9013ed91970ec1…` |
+
+† Measured before the tree was placed under git. `archive/` and `out/` are pinned with `-text` in
+`.gitattributes` and hash exactly as listed above; `src/` is not, so with `core.autocrlf` on, a
+checkout writes CRLF and `QuerySuite.cs` hashes `4d4a6df0a63870a3…` at 9478 bytes on disk. The
+9312-byte LF form above is what the repository stores. If the question set is ever archived as a
+baseline artefact, it needs the same `-text` pin or the hash is a property of the checkout rather
+than of the artefact.
 
 Checks run against that inventory:
 
