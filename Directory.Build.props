@@ -1,6 +1,14 @@
 <Project>
 
   <PropertyGroup>
+    <!--
+      One version for the whole engine, because a baseline records the engine that produced it
+      and an artefact whose producer cannot be named is an artefact nobody can reproduce a
+      judgement about. v1.2 is the round the seed-42 baseline was verified across.
+    -->
+    <Version>1.2.0</Version>
+    <InformationalVersion>1.2.0</InformationalVersion>
+
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
