@@ -9,4 +9,10 @@
 archive/** -text
 out/**     -text
 
+# The question set is archived as source, so it is an artefact as well as code and
+# needs the same pin. Without it the file hashes 9478 bytes on a CRLF checkout and
+# 9312 in the repository, and a baseline recording either one records a property of
+# the checkout rather than of the artefact — a hash a fresh clone cannot reproduce.
+src/WorldBuilder.Inference/QuerySuite.cs -text
+
 # Everything else normalises as usual: LF in the repository, native on checkout.
