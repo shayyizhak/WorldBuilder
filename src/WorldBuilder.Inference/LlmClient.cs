@@ -173,5 +173,25 @@ public sealed class OllamaClient(LlmOptions options, HttpClient? http = null) : 
     }
 }
 
+/// <summary>
+/// A client that answers nothing, so a command holding one can only read the cache.
+///
+/// The point is the guarantee rather than the behaviour: re-running the checker over an
+/// archived render cache has to be provably free of inference, and "we did not observe a call"
+/// is not a proof. Here a call is unreachable — the request cannot be made, so a cache miss
+/// surfaces as the missing render it is instead of being repaired by generating a passage no
+/// one has verified. It carries the model tag because cache identity includes the model: the
+/// entries to be re-checked are the ones that model wrote.
+/// </summary>
+public sealed class CacheOnlyLlmClient(string model) : ILlmClient
+{
+    public string ModelTag { get; } = model;
+
+    public Task<LlmResult> CompleteAsync(LlmRequest request, CancellationToken ct = default) =>
+        throw new LlmUnavailableException(
+            $"nothing cached for this pack under model '{ModelTag}', and --check-only does not " +
+            "generate. Re-check needs a render cache that already covers every section.");
+}
+
 public sealed class LlmUnavailableException(string message, Exception? inner = null)
     : Exception(message, inner);

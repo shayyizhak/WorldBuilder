@@ -806,7 +806,16 @@ public static class CommandLine
             Endpoint = args.Text("endpoint", LlmOptions.Default.Endpoint),
         };
 
-        using OllamaClient client = new(options);
+        // --check-only re-runs the rules over a render cache and never generates: no client is
+        // constructed, so a cache miss fails where it happens instead of being quietly filled by
+        // a call. That is what re-checking an archived baseline needs — the alternative, aiming
+        // --endpoint at a closed port, proves the same thing by misconfiguration, and a property
+        // that holds only while a setting stays wrong is not a property to depend on.
+        bool checkOnly = args.Flag("check-only");
+
+        using OllamaClient? live = checkOnly ? null : new OllamaClient(options);
+        ILlmClient client = live is not null ? live : new CacheOnlyLlmClient(options.Model);
+
         Chronicler chronicler = new(
             client,
             new RenderStore(Path.Combine(outDir, "renders.json")),
@@ -816,7 +825,7 @@ public static class CommandLine
         // section's timeout rather than against nothing. One trivial call in the same process
         // pays that cost where it is visible instead of turning the first real render into a
         // timeout that reads as an inference failure.
-        await Warm(client);
+        if (live is not null) await Warm(live);
 
         // No chain scope. Walking a chain produced one sentence per event joined by "two years
         // later" — longer than the log lines it replaced and harder to scan, which fails the
@@ -1394,6 +1403,10 @@ public static class CommandLine
               wb chronicle --chain e:415           a causal chain as continuous history
               wb book      [--wars 2] [--factions 2|all] [--reigns 2] [--power f:4,f:5]
                            render a whole world into out/chronicle-<seed>.md
+                           [--check-only]          re-check an existing render cache and write
+                                                   the chronicle and its findings sidecar from
+                                                   it; constructs no client, so a cache miss
+                                                   fails rather than generating
               wb ask       "why did the Wurn League collapse?" [--show]
                            natural language over the log, answered from retrieved records
 
