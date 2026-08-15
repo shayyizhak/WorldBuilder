@@ -1,0 +1,10 @@
+{
+  "id": "r11-two-years-after-the-collapse",
+  "seed": 42,
+  "scope": "The Vea Lode Covenant, 49-51",
+  "passage": "The Covenant and the Sworn Men made peace in year 51, two years after the collapse of the Sworn Men.",
+  "expect_rule": "date",
+  "expect_span": "two years after the collapse",
+  "corrected": "The Covenant and the Sworn Men made peace in year 51, a year after the collapse of the Sworn Men and two years after the war began.",
+  "note": "the two years is the length of the war; the collapse was year 50 and the peace year 51"
+}

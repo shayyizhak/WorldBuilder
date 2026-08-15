@@ -1,0 +1,10 @@
+{
+  "id": "r08-danpa-did-not-kill-seirn",
+  "seed": 42,
+  "scope": "The Griwick Compact, 4-23",
+  "passage": "The period ended with Turaer Danpa holding the seat after killing Befu Seirn.",
+  "expect_rule": "1.4",
+  "expect_span": "after killing Befu Seirn",
+  "corrected": "Bu Rumpirn had Befu Seirn murdered in 23, and Turaer Danpa took the seat.",
+  "note": "Danpa killed Heillvar Maer; Seirn was killed by Bu Rumpirn"
+}

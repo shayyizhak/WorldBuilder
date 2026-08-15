@@ -1,0 +1,10 @@
+{
+  "id": "r08-kourn-and-dourn-swapped",
+  "seed": 42,
+  "scope": "The Vea Lode Covenant, 29-48",
+  "passage": "Thurnean Kourn took the seat after contesting Veillpea Dourn's claim.",
+  "expect_rule": "outcome",
+  "expect_span": "contesting Veillpea Dourn",
+  "corrected": "Veillpea Dourn contested the claim, and Thurnean Kourn's claim was upheld.",
+  "note": "Dourn was the contester; the roles are reversed"
+}

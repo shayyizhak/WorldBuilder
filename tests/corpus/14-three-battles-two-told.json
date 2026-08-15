@@ -1,0 +1,10 @@
+{
+  "id": "r09-three-battles-two-told",
+  "seed": 42,
+  "scope": null,
+  "passage": "The Compact engaged in two wars against the Wurn League, fighting three battles which it won. In 7, it defeated the Wurn League at Laehiford, taking the settlement. In 8, it defeated them again at Hadale. Peace was made in 9 after two years of war.",
+  "expect_rule": "1.1",
+  "expect_span": "three battles",
+  "corrected": "The Compact engaged in two wars against the Wurn League, fighting three battles which it won. In 7, it defeated the Wurn League at Laehiford, taking the settlement. In 8, it defeated them again at Hadale. Peace was made in 9. In 20 it defeated them a third time at Hadale.",
+  "note": "the third battle is in year 20 and is never narrated"
+}

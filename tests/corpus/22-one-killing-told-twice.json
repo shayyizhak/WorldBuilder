@@ -1,0 +1,10 @@
+{
+  "id": "r10-one-killing-told-twice",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2-21",
+  "passage": "Thra Bround was murdered by Nael War in year 18 and killed by Nael War at Meigate.",
+  "expect_rule": "duplicate",
+  "expect_span": "and killed by Nael War at Meigate",
+  "corrected": "Thra Bround was murdered by Nael War at Meigate in year 18.",
+  "note": "one event given twice as two"
+}

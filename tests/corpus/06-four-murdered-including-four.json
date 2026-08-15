@@ -1,0 +1,10 @@
+{
+  "id": "r07-four-murdered-including-four",
+  "seed": 42,
+  "scope": null,
+  "passage": "Four people were murdered from within, including Wilwound Ska, Nael War, Paernrom Sir and Weallhous Dreld.",
+  "expect_rule": "1.1",
+  "expect_span": "including",
+  "corrected": "Four people were murdered from within: Wilwound Ska, Nael War, Paernrom Sir and Weallhous Dreld.",
+  "note": "a list that is exhaustive must not be introduced as partial"
+}

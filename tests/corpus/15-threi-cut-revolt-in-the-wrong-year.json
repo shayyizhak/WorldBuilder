@@ -1,0 +1,10 @@
+{
+  "id": "r09-threi-cut-revolt-in-the-wrong-year",
+  "seed": 42,
+  "scope": "The Griwick Compact, 4-23",
+  "passage": "The Compact's standing fell, leading to uprisings at Vea Lode in 15 and Threi Cut in 15.",
+  "expect_rule": "date",
+  "expect_span": "Threi Cut in 15",
+  "corrected": "The Compact's standing fell, leading to uprisings at Threi Cut in 13 and Vea Lode in 15.",
+  "note": "the Threi Cut uprising was 13; a shared year was assumed"
+}

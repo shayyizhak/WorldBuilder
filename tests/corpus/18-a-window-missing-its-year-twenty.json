@@ -1,0 +1,11 @@
+{
+  "id": "r09-a-window-missing-its-year-twenty",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2-21",
+  "passage": "Math Ham held the seat from year 7 to 17. Trem Lolkoll held the seat from year 17 to 20. Peace was made with the Wurn League in year 21.",
+  "whole_section": true,
+  "expect_rule": "coverage",
+  "expect_span": "year 21",
+  "corrected": "Math Ham held the seat from year 7 to 17. Trem Lolkoll held the seat from year 17 to 20. In year 20 the Compact defeated the Wurn League at Hadale and took it, and the League collapsed. Peace was made in year 21.",
+  "note": "a war, a battle, a conquest and a collapse all fall in year 20 and none is told"
+}

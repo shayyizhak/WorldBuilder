@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>WorldBuilder.Inference</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WorldBuilder.Core\WorldBuilder.Core.csproj" />
+  </ItemGroup>
+
+</Project>

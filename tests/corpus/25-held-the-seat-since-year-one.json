@@ -1,0 +1,10 @@
+{
+  "id": "r09-r11-held-the-seat-since-year-one",
+  "seed": 42,
+  "scope": "The Griwick Compact, 4-23",
+  "passage": "Pouldrir Ho, who held the seat since year 1, was killed in year 20.",
+  "expect_rule": "tenure",
+  "expect_span": "since year 1",
+  "corrected": "Pouldrir Ho held the seat at the start of the period and was killed in year 20.",
+  "note": "no event places Ho in the seat in year 1; the readable log begins at year 2. Fixed in round 9 and regressed by round 11."
+}

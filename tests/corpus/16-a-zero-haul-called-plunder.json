@@ -1,0 +1,10 @@
+{
+  "id": "r09-a-zero-haul-called-plunder",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2-21",
+  "passage": "The Compact raided Hadale in 19, got through, and carried off plunder.",
+  "expect_rule": "quantity",
+  "expect_span": "carried off plunder",
+  "corrected": "The Compact raided Hadale in 19, got through, and took nothing.",
+  "note": "a raid that got through with a haul of zero is not a raid that carried off plunder"
+}

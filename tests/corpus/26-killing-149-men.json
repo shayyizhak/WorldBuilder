@@ -1,0 +1,10 @@
+{
+  "id": "r09-r11-killing-149-men",
+  "seed": 42,
+  "scope": "The Vea Lode Covenant, 49-51",
+  "passage": "The Covenant defeated the Sworn Men at Meigate in year 49, killing 149 men, and again in year 50, killing 124.",
+  "expect_rule": "particular",
+  "expect_span": "killing 149 men",
+  "corrected": "The Covenant defeated the Sworn Men at Meigate in year 49, killing 149, and again in year 50, killing 124.",
+  "note": "the record counts 149 dead, not 149 men; the particular is invented. Fixed in round 9 and regressed by round 11."
+}

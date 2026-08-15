@@ -1,0 +1,10 @@
+{
+  "id": "r09-two-marriages-three-named",
+  "seed": 42,
+  "scope": null,
+  "passage": "Two marriages bound the commune to other powers: Sor Pean married Thres Thrild in 37, linking it to the Vea Lode Covenant, and Ta Poveil married Kaes Rou in 48, linking it to the Sworn Men of Meigate. A second marriage to the Sworn Men of Meigate occurred in 49.",
+  "expect_rule": "1.1",
+  "expect_span": "Two marriages",
+  "corrected": "Three marriages bound the commune to other powers: Sor Pean married Thres Thrild in 37, linking it to the Vea Lode Covenant, and Ta Poveil married Kaes Rou in 48, linking it to the Sworn Men of Meigate. A third marriage to the Sworn Men of Meigate followed in 49.",
+  "note": "a count of two above three narrated members"
+}

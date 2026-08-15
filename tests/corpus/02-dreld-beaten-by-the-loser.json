@@ -1,0 +1,10 @@
+{
+  "id": "r06-dreld-beaten-by-the-loser",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 22-41",
+  "passage": "The rule of Weallhous Dreld ended when he was beaten in an open challenge by Saern Meastouth, who was then killed by Dreld.",
+  "expect_rule": "outcome",
+  "expect_span": "beaten in an open challenge by Saern Meastouth",
+  "corrected": "Saern Meastouth challenged Weallhous Dreld openly and lost. Weallhous Dreld was killed in 25 by Gatros Hearn.",
+  "note": "the challenger lost; the reign ended by a different hand two years later"
+}

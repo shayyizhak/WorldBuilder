@@ -1,0 +1,10 @@
+{
+  "id": "r08-thrild-killed-in-the-wrong-year",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 42-51",
+  "passage": "In 46, he ordered the murder of Veillpea Dourn at Vea Lode and Thres Thrild at Griwick.",
+  "expect_rule": "date",
+  "expect_span": "Thres Thrild at Griwick",
+  "corrected": "In 46 he ordered the murder of Veillpea Dourn at Vea Lode, and in 47 the murder of Thres Thrild at Griwick.",
+  "note": "two killings a year apart folded into one date"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r05-ker-never-held-the-seat",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 22-41",
+  "passage": "Ska was killed by Stonand Ker, who was succeeded by Le Vild.",
+  "expect_rule": "succession",
+  "expect_span": "who was succeeded by Le Vild",
+  "corrected": "Wilwound Ska was murdered by Stonand Ker in 31. Le Vild took the seat, setting aside the claim of the named heir Kou Peis.",
+  "note": "Ker never held the seat, so nothing of his could be succeeded; Le Vild set aside Kou Peis's claim"
+}

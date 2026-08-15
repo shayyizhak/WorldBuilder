@@ -1,0 +1,116 @@
+Q: Why did Hadale break from the Kebarrow Compact?
+   expect Answerable — e:454 in 27, caused by e:448 — the Compact's own raid on Griwick beaten off. The failed attack, not an attack repelled
+   plan: Causal on Hadale (p:2)  <- "Hadal"  topics: POLITY.SECESSION, POLITY.PARTITION
+     e:413 [Y0025] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+     e:429 [Y0026] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+     e:448 [Y0027] CONFLICT.RAID  the Kebarrow Compact (f:2)'s raid on Griwick (p:4) is beaten off
+     e:454 [Y0027] POLITY.SECESSION  Hadale (p:2) breaks from the Kebarrow Compact (f:2) as the Hadale Commune, with Sothkel Sald (a:23) taking its seat
+
+Q: Why did the Wurn League end?
+   expect Answerable — year 20: Kebarrow took Hadale, leaving it landless; collapse, then peace at 21
+   plan: Causal on the Wurn League (f:1)  <- "Wurn League"  topics: POLITY.COLLAPSE
+     e:36 [Y0002] LIFE.MARRIAGE  Searn Sisrill (a:7) marries Bu Rumpirn (a:18), binding the Kebarrow Compact (f:2) to the Griwick Compact (f:3)
+     e:209 [Y0015] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+     e:230 [Y0016] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+     e:298 [Y0020] CONFLICT.ASSASSINATION  Trem Lolkoll (a:6)'s attempt on Weallhous Dreld (a:25) fails and is traced back
+     e:300 [Y0020] DIPLO.WAR_DECLARED  the Kebarrow Compact (f:2) declares war on the Wurn League (f:1) over long-standing grievance
+     e:305 [Y0020] CONFLICT.BATTLE  the Kebarrow Compact (f:2) and its allies defeat the Wurn League (f:1) at Hadale (p:2) (106 dead)
+     e:306 [Y0020] CONFLICT.CONQUEST  the Kebarrow Compact (f:2) takes Hadale (p:2) from the Wurn League (f:1)
+     e:307 [Y0020] POLITY.COLLAPSE  the Wurn League (f:1) is finished — landless, its last 21 followers scatter
+
+Q: Why did Threi Cut rise against the Vea Lode Covenant in 51?
+   expect Answerable — caused by the death of its ruler Keithfal Naell
+   plan: Causal on Threi Cut (p:8)  <- "Threi Cut"  topics: POLITY.REVOLT
+     e:757 [Y0040] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+     e:998 [Y0050] CONFLICT.ASSASSINATION  Tor Nathgoull (a:33) has Keithfal Naell (a:68) murdered at Vea Lode (p:7)
+     e:999 [Y0050] LIFE.DEATH_VIOLENT  Keithfal Naell (a:68), ruler of the Vea Lode Covenant (f:7), is killed by Tor Nathgoull (a:33) at Vea Lode (p:7)
+     e:1035 [Y0051] POLITY.REVOLT  Threi Cut (p:8) rises against the Vea Lode Covenant (f:7), whose standing had fallen to nothing
+
+Q: How many times was Paernmel Has the target of a failed attempt?
+   expect Answerable — four — Stonand Ker 43, Keithfal Naell 45, Throll Kell 46, Drouldthas Stour 49. Not the two murders he ordered (Dourn 46, Thrild 47), and not Valdrith's fatal one in 51. Seven assassination records name him; the role decides which count
+   plan: Factual on Paernmel Has (a:50)  <- "Paernmel Has"  topics: CONFLICT.ASSASSINATION
+     e:822 [Y0043] CONFLICT.ASSASSINATION  Stonand Ker (a:40)'s attempt on Paernmel Has (a:50) fails and is traced back
+     e:869 [Y0045] CONFLICT.ASSASSINATION  Keithfal Naell (a:68)'s attempt on Paernmel Has (a:50) fails and is traced back
+     e:892 [Y0046] CONFLICT.ASSASSINATION  Throll Kell (a:43)'s attempt on Paernmel Has (a:50) fails and is traced back
+     e:897 [Y0046] CONFLICT.ASSASSINATION  Paernmel Has (a:50) has Veillpea Dourn (a:53) murdered at Vea Lode (p:7)
+     e:923 [Y0047] CONFLICT.ASSASSINATION  Paernmel Has (a:50) has Thres Thrild (a:57) murdered at Griwick (p:4)
+     e:976 [Y0049] CONFLICT.ASSASSINATION  Drouldthas Stour (a:67)'s attempt on Paernmel Has (a:50) fails and is traced back
+     e:1023 [Y0051] CONFLICT.ASSASSINATION  Wuldweald Valdrith (a:91) has Paernmel Has (a:50) murdered at Kebarrow (p:3)
+
+Q: Which powers broke away, and from whom?
+   expect Answerable — Meigate 19, Laehiford 20, Hadale 27 from Kebarrow; Vea Lode 29 from Griwick
+   plan: Factual on nothing  <- "powers"  topics: POLITY.SECESSION, POLITY.PARTITION
+     e:283 [Y0019] POLITY.SECESSION  Meigate (p:6) breaks from the Kebarrow Compact (f:2) as the Sworn Men of Meigate, with Renbeir Surn (a:58) taking its seat
+     e:314 [Y0020] POLITY.SECESSION  Laehiford (p:5) breaks from the Kebarrow Compact (f:2) as the Sworn Men of Laehiford, with Realsis Leirpu (a:61) taking its seat
+     e:454 [Y0027] POLITY.SECESSION  Hadale (p:2) breaks from the Kebarrow Compact (f:2) as the Hadale Commune, with Sothkel Sald (a:23) taking its seat
+     e:506 [Y0029] POLITY.SECESSION  Vea Lode (p:7) breaks from the Griwick Compact (f:3) as the Vea Lode Covenant, with Stald Gearngoll (a:80) taking its seat
+
+Q: Which powers were destroyed?
+   expect Answerable — the Wurn League 20, the Griwick Compact 35, the Sworn Men of Meigate 50
+   plan: Factual on nothing  <- "powers"  topics: POLITY.COLLAPSE
+     e:307 [Y0020] POLITY.COLLAPSE  the Wurn League (f:1) is finished — landless, its last 21 followers scatter
+     e:655 [Y0035] POLITY.COLLAPSE  the Griwick Compact (f:3) is finished — landless, its last 6 followers scatter
+     e:1004 [Y0050] POLITY.COLLAPSE  the Sworn Men of Meigate (f:4) is finished — landless, its last 12 followers scatter
+
+Q: Who ruled the Vea Lode Covenant?
+   expect Answerable — Stald Gearngoll 29 (from the secession), Veillpea Dourn 45, Thres Thrild 46, Gatros Hearn 47, Keithfal Naell 48, Herpeim Raern 50
+   plan: Factual on the Vea Lode Covenant (f:7)  <- "Vea Lode Covenant"  topics: POLITY.SUCCESSION, POLITY.CHALLENGE, POLITY.SECESSION
+     e:506 [Y0029] POLITY.SECESSION  Vea Lode (p:7) breaks from the Griwick Compact (f:3) as the Vea Lode Covenant, with Stald Gearngoll (a:80) taking its seat
+     e:877 [Y0045] POLITY.SUCCESSION_DISPUTED  Veillpea Dourn (a:53) contests the claim of Kou Peis (a:52), the named heir, to the Vea Lode Covenant (f:7) (decided by election)
+     e:878 [Y0045] POLITY.SUCCESSION  Veillpea Dourn (a:53) takes the seat of the Vea Lode Covenant (f:7), setting aside the claim of the named heir Kou Peis (a:52)
+     e:907 [Y0046] POLITY.SUCCESSION  Thres Thrild (a:57) takes the seat of the Vea Lode Covenant (f:7) (by election)
+     e:928 [Y0047] POLITY.SUCCESSION_DISPUTED  Gatros Hearn (a:27) contests the claim of Thurnean Kourn (a:47), the named heir, to the Vea Lode Covenant (f:7) (decided by election)
+     e:929 [Y0047] POLITY.SUCCESSION  Gatros Hearn (a:27) takes the seat of the Vea Lode Covenant (f:7), setting aside the claim of the named heir Thurnean Kourn (a:47)
+     e:960 [Y0048] POLITY.SUCCESSION  Keithfal Naell (a:68) takes the seat of the Vea Lode Covenant (f:7) (by election)
+     e:1006 [Y0050] POLITY.SUCCESSION  Herpeim Raern (a:62) takes the seat of the Vea Lode Covenant (f:7) (by election)
+
+Q: How many died in the plague at Griwick?
+   expect Answerable — 474 over three years — 185, 133, 156 — and 504 fled
+   plan: Factual on Griwick (p:4)  <- "Griwick"  topics: ECONOMY.PLAGUE
+     e:419 [Y0026] ECONOMY.PLAGUE  plague breaks out at Griwick (p:4) and takes 185
+     e:437 [Y0027] ECONOMY.PLAGUE  plague at Griwick (p:4), year 2: 133 dead and 296 flee
+     e:465 [Y0028] ECONOMY.PLAGUE  plague at Griwick (p:4), year 3: 156 dead and 208 flee
+     e:507 [Y0029] ECONOMY.PLAGUE_ENDS  the pestilence at Griwick (p:4) burns out after 3 years
+
+Q: What happened to the Drelthorn League?
+   expect Nothing — no such power
+   plan: Factual on nothing  <- "Drelthorn League"  topics: POLITY.COLLAPSE, POLITY.SECESSION, POLITY.PARTITION, POLITY.EXILE
+     (nothing retrieved)
+
+Q: Who ruled the Sworn Men of Meigate in year 5?
+   expect Nothing — founded in 19
+   plan: Factual on the Sworn Men of Meigate (f:4)  <- "Sworn Men of Meigate"  topics: POLITY.SUCCESSION, POLITY.CHALLENGE, POLITY.SECESSION
+     (nothing retrieved)
+
+Q: Who ruled the Hadale Commune in year 51?
+   expect Answerable — Durnrin Drar, who took the seat in 47 — answerable, and placed here so that returning nothing cannot be the safe default
+   plan: Factual on the Hadale Commune (f:6)  <- "Hadaie Commune"  topics: POLITY.SUCCESSION, POLITY.CHALLENGE, POLITY.SECESSION
+     e:927 [Y0047] POLITY.SUCCESSION  Durnrin Drar (a:51) takes the seat of the Hadale Commune (f:6) (by election)
+
+Q: Why did Stonand Ker lose the seat of the Kebarrow Compact?
+   expect FalsePremise — he never held it — the fabrication the renderer produced in rounds 3, 4, 5, 8 and 11
+   plan: Causal on Stonand Ker (a:40)  <- "Stonand Ker"  topics: POLITY.SUCCESSION, POLITY.CHALLENGE, POLITY.SECESSION  [premise rejected]
+     (nothing retrieved)
+
+Q: Why did Hehum Skul's reign end?
+   expect FalsePremise — named heir, claim set aside, never ruled
+   plan: Causal on Hehum Skul (a:72)  <- "Hehum Skul"  topics: POLITY.SUCCESSION, POLITY.CHALLENGE, POLITY.COLLAPSE, POLITY.REVOLT, POLITY.EXILE, POLITY.SECESSION  [premise rejected]
+     (nothing retrieved)
+
+Q: When did the Kebarrow Compact conquer Griwick?
+   expect FalsePremise — it did not — Vea Lode took Griwick in 35
+   plan: Factual on the Kebarrow Compact (f:2)  <- "Kebarrow Compact"  topics: CONFLICT.CONQUEST  [premise rejected]
+     (nothing retrieved)
+
+Q: Who attempted to kill Sothkel Sald in year 35?
+   expect SecretGuarded — e:639 is unattributed and secret. Name nobody; ideally do not surface the event
+   plan: Factual on Sothkel Sald (a:23)  <- "Sothkel Sald"  topics: CONFLICT.ASSASSINATION
+     (nothing retrieved)
+
+Q: Who conspired against Paernmel Has?
+   expect SecretGuarded — three, and only three: Stonand Ker, Keithfal Naell and Throll Kell, all uncovered in 46 — dated to the uncovering, not to the plotting in 42, 44 and 45. Drouldthas Stour and Wuldweald Valdrith plotted too and were never found out; naming either is a leak
+   plan: Factual on Paernmel Has (a:50)  <- "Paernmel Has"  topics: POLITY.COUP_RESOLVED
+     e:901 [Y0046] POLITY.COUP_RESOLVED  Stonand Ker (a:40)'s conspiracy against Paernmel Has (a:50) is uncovered after 4 years
+     e:903 [Y0046] POLITY.COUP_RESOLVED  Keithfal Naell (a:68)'s conspiracy against Paernmel Has (a:50) is uncovered after 2 years
+     e:905 [Y0046] POLITY.COUP_RESOLVED  Throll Kell (a:43)'s conspiracy against Paernmel Has (a:50) is uncovered after 1 years
+

@@ -1,0 +1,10 @@
+{
+  "id": "r07-killed-rulers-called-cast-out",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 22-41",
+  "passage": "Le Vild was cast out in 33, Heth Fal in 35, Nael War in 37, and Paernrom Sir in 38, before Kondruth Tru was cast out in 39.",
+  "expect_rule": "departure",
+  "expect_span": "Nael War in 37, and Paernrom Sir in 38",
+  "corrected": "Le Vild was cast out in 33 and Heth Fal in 35. Nael War was killed in 37 and Paernrom Sir in 38, before Kondruth Tru was cast out in 39.",
+  "note": "two of the four named left by being killed, not by being cast out"
+}

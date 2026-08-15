@@ -1,0 +1,602 @@
+{
+  "The War for Threi Cut: the Griwick Compact against the Wurn League, 5\u20138": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 29,
+      "Checked": 29,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The War for Threi Cut of 7: the Kebarrow Compact against the Wurn League, 7\u20139": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 24,
+      "Checked": 24,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Kebarrow Compact, 2\u201321": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 64,
+      "Checked": 64,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Wurn League, 2\u201321": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 67,
+      "Checked": 67,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Sworn Men of Meigate, 19\u201351": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 6,
+      "Checked": 6,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 6,
+      "Checked": 6,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 35,
+      "Checked": 35,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Sworn Men of Laehiford, 20\u201351": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 3,
+      "Checked": 3,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 23,
+      "Checked": 23,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Kebarrow Compact, 22\u201341": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 13,
+      "Checked": 13,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 10,
+      "Checked": 10,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 48,
+      "Checked": 48,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Griwick Compact, 24\u201336": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 5,
+      "Checked": 5,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 6,
+      "Checked": 6,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 57,
+      "Checked": 57,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Hadale Commune, 27\u201351": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 39,
+      "Checked": 39,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Vea Lode Covenant, 29\u201348": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 11,
+      "Checked": 11,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 12,
+      "Checked": 12,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 110,
+      "Checked": 110,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The Kebarrow Compact, 42\u201351": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 55,
+      "Checked": 55,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  },
+  "The rule of Heth Fal over the Sworn Men of Laehiford, 39\u201351": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "date-agreement": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "summary-body": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    },
+    "coined-term": {
+      "Extracted": 37,
+      "Checked": 37,
+      "Unresolvable": 0,
+      "Fired": 0,
+      "Accounted": true,
+      "CheckedPct": 100
+    }
+  }
+}

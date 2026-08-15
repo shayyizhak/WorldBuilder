@@ -1,0 +1,10 @@
+{
+  "id": "r10-the-heir-described-as-the-contester",
+  "seed": 42,
+  "scope": "The Vea Lode Covenant, 29-48",
+  "passage": "Kou Peis contested the succession but lost the election to Veillpea Dourn in 45 and was cast out.",
+  "expect_rule": "outcome",
+  "expect_span": "Kou Peis contested",
+  "corrected": "Veillpea Dourn contested the claim of the named heir Kou Peis in 45, took the seat, and Kou Peis was cast out.",
+  "note": "the contester and the heir are reversed; the same swap as row 8, in a second section"
+}

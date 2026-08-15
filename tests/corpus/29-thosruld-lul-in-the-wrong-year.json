@@ -1,0 +1,10 @@
+{
+  "id": "r11-thosruld-lul-in-the-wrong-year",
+  "seed": 42,
+  "scope": "The Hadale Commune, 27-51",
+  "passage": "Four exiles returned to take service with the Commune: Kou Peis in 32, Sou Dra in 34, Realsis Leirpu in 35, and Thosruld Lul in 39.",
+  "expect_rule": "date",
+  "expect_span": "Thosruld Lul in 39",
+  "corrected": "Four exiles returned to take service with the Commune: Kou Peis in 32, Sou Dra in 34, Realsis Leirpu in 35, and Thosruld Lul in 38.",
+  "note": "the log says 38"
+}

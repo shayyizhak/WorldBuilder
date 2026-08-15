@@ -1,0 +1,10 @@
+{
+  "id": "r08-r11-reign-given-a-faction-lifetime-count",
+  "seed": 42,
+  "scope": "The Sworn Men of Meigate, 19-51",
+  "passage": "Under Kreathbeas, the Sworn Men sent eight raids: two against the Kebarrow Compact in 20 and 23 carried off plunder, while six raids between 28 and 43 against the Griwick Compact and the Vea Lode Covenant were beaten off.",
+  "expect_rule": "quantity",
+  "expect_span": "Under Kreathbeas, the Sworn Men sent eight raids",
+  "corrected": "The Sworn Men sent eight raids over the life of the power: two against the Kebarrow Compact in 20 and 23 carried off plunder, while six raids between 28 and 43 against the Griwick Compact and the Vea Lode Covenant were beaten off.",
+  "note": "eight is the faction lifetime total; the raids of 20 and 23 predate Kreathbeas, who took the seat in 25. Fixed in round 8 and regressed by round 11."
+}

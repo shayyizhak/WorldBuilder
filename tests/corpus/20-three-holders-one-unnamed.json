@@ -1,0 +1,11 @@
+{
+  "id": "r10-three-holders-one-unnamed",
+  "seed": 42,
+  "scope": "The Wurn League, 2-21",
+  "passage": "Math Ham held the seat from year 7 to 17. Trem Lolkoll held the seat from year 17 to 20. He ordered the murder of Searn Sisrill in year 8, Reweld Wul in year 15, and Thulgea Bu in year 16.",
+  "whole_section": true,
+  "expect_rule": "tenure",
+  "expect_span": "Reweld Wul",
+  "corrected": "Reweld Wul held the seat to year 7. Math Ham held it from year 7 to 17, and Trem Lolkoll from year 17 to 20. Ham ordered the murder of Searn Sisrill in year 8 and of Thulgea Bu in year 16.",
+  "note": "Reweld Wul held the seat and is named only as a victim, so no count of names can find him missing"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r09-nathgoull-took-the-seat-early",
+  "seed": 42,
+  "scope": "The Sworn Men of Meigate, 19-51",
+  "passage": "Tor Nathgoull, who took the seat in 48 when his house ended, held it to the last.",
+  "expect_rule": "date",
+  "expect_span": "when his house ended",
+  "corrected": "Tor Nathgoull took the seat in 48. The house ended in 50.",
+  "note": "the seat changed in 48 and the house ended in 50; two years welded into one clause"
+}

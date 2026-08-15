@@ -1,0 +1,10 @@
+{
+  "id": "r07-reign-under-the-wrong-faction",
+  "seed": 42,
+  "scope": "The rule of Heth Fal over the Sworn Men of Laehiford, 39-51",
+  "passage": "Heth Fal held the seat of the Sworn Men of Laehiford from 33, having taken it from the Kebarrow Compact.",
+  "expect_rule": "tenure",
+  "expect_span": "from 33",
+  "corrected": "Heth Fal took the seat of the Sworn Men of Laehiford in 39 after an election set aside the claim of the named heir Herpeim Raern.",
+  "note": "two reigns in two seats: Kebarrow 33-35 and Laehiford 39-51, and they are two scopes"
+}

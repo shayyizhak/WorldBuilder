@@ -1,0 +1,10 @@
+{
+  "id": "r11-leirpu-took-the-seat-and-took-service",
+  "seed": 42,
+  "scope": null,
+  "passage": "The seat changed hands in 20, with Realsis Leirpu taking the seat. He took service with the power in 20 after returning from exile.",
+  "expect_rule": "1.4",
+  "expect_span": "He took service with the power in 20",
+  "corrected": "The seat changed hands in 20, with Realsis Leirpu taking the seat.",
+  "note": "one person cannot both take the seat and take service under it in the same year"
+}

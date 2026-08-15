@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>WorldBuilder.Cli</RootNamespace>
+    <AssemblyName>wb</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WorldBuilder.Core\WorldBuilder.Core.csproj" />
+    <ProjectReference Include="..\WorldBuilder.Inference\WorldBuilder.Inference.csproj" />
+  </ItemGroup>
+
+</Project>

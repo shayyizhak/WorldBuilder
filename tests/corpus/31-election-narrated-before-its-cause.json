@@ -1,0 +1,10 @@
+{
+  "id": "r11-election-narrated-before-its-cause",
+  "seed": 42,
+  "scope": "The rule of Wuldweald Valdrith over the Kebarrow Compact, 51-51",
+  "passage": "Wuldweald Valdrith came to power in 51 through an election that set aside the claim of the named heir, Hehum Skul. Valdrith had contested Skul's claim, and the electoral decision favored him. Skul was cast out of the Kebarrow Compact as the losing claimant. Valdrith murdered Paernmel Has at Kebarrow in 51.",
+  "expect_rule": "ordering",
+  "expect_span": "Valdrith murdered Paernmel Has at Kebarrow in 51",
+  "corrected": "Wuldweald Valdrith murdered Paernmel Has at Kebarrow in 51. In the election that followed, Valdrith contested and set aside the claim of the named heir Hehum Skul, who was cast out, and took the seat.",
+  "note": "the murder caused the succession and is narrated after it"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r11-fourteen-returns-marked-partial",
+  "seed": 42,
+  "scope": null,
+  "passage": "Fourteen people returned from exile to take service with the Sworn Men. These returns included Kou Peis in 22, Sou Dra in 24, Realsis Leirpu in 20, Thosruld Lul in 26, Baedros Mam in 28, Stonand Ker in 31, Draes Wild in 33, Herpeim Raern in 35, Teillmol Lund in 37, Voudreirn Wer in 40, Thurnean Kourn in 42, Keithfal Naell in 45, Gatros Hearn in 47, and Hehum Skul in 50.",
+  "expect_rule": "1.1",
+  "expect_span": "These returns included",
+  "corrected": "Fourteen people returned from exile to take service with the Sworn Men: Kou Peis in 22, Sou Dra in 24, Realsis Leirpu in 20, Thosruld Lul in 26, Baedros Mam in 28, Stonand Ker in 31, Draes Wild in 33, Herpeim Raern in 35, Teillmol Lund in 37, Voudreirn Wer in 40, Thurnean Kourn in 42, Keithfal Naell in 45, Gatros Hearn in 47, and Hehum Skul in 50.",
+  "note": "all fourteen are named, so the list is exhaustive and must not be introduced as partial"
+}

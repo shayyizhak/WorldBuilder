@@ -1,0 +1,10 @@
+{
+  "id": "r08-the-wrong-power-collapsed",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2-21",
+  "passage": "Peace was made with the Wurn League in year 21 as the Kebarrow Compact collapsed.",
+  "expect_rule": "action",
+  "expect_span": "the Kebarrow Compact collapsed",
+  "corrected": "Peace was made with the Wurn League in year 21 as the Wurn League collapsed.",
+  "note": "the League collapsed, not the Compact whose section this is"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r11-four-courted-away-of-nine",
+  "seed": 42,
+  "scope": "The Hadale Commune, 27-51",
+  "passage": "Four people were courted away from its ruler during the period, a pattern indicating fragmentation.",
+  "expect_rule": "quantity",
+  "expect_span": "Four people were courted away",
+  "corrected": "Nine people were courted away from its ruler during the period.",
+  "note": "the log records nine"
+}

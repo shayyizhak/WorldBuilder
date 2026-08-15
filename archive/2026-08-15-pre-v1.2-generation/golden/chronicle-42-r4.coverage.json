@@ -1,0 +1,386 @@
+{
+  "The War for Threi Cut: the Griwick Compact against the Wurn League, 5\u20138": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 29,
+      "Checked": 29,
+      "Fired": 0
+    }
+  },
+  "The War for Threi Cut of 7: the Kebarrow Compact against the Wurn League, 7\u20139": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 2,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 2,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 24,
+      "Checked": 24,
+      "Fired": 0
+    }
+  },
+  "The Kebarrow Compact, 2\u201321": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 12,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 12,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 64,
+      "Checked": 64,
+      "Fired": 0
+    }
+  },
+  "The Wurn League, 2\u201321": {
+    "count-enumeration": {
+      "Extracted": 3,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 5,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 5,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 4,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 67,
+      "Checked": 67,
+      "Fired": 0
+    }
+  },
+  "The Sworn Men of Meigate, 19\u201351": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 5,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 6,
+      "Checked": 3,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 6,
+      "Checked": 6,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 35,
+      "Checked": 35,
+      "Fired": 0
+    }
+  },
+  "The Sworn Men of Laehiford, 20\u201351": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 3,
+      "Checked": 3,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 23,
+      "Checked": 23,
+      "Fired": 0
+    }
+  },
+  "The Kebarrow Compact, 22\u201341": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 13,
+      "Checked": 8,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 10,
+      "Checked": 10,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 48,
+      "Checked": 48,
+      "Fired": 0
+    }
+  },
+  "The Griwick Compact, 24\u201336": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 5,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 5,
+      "Checked": 4,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 6,
+      "Checked": 6,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 57,
+      "Checked": 57,
+      "Fired": 0
+    }
+  },
+  "The Hadale Commune, 27\u201351": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 4,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 4,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 5,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 39,
+      "Checked": 39,
+      "Fired": 0
+    }
+  },
+  "The Vea Lode Covenant, 29\u201348": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 1,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 14,
+      "Checked": 5,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 12,
+      "Checked": 12,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 110,
+      "Checked": 110,
+      "Fired": 0
+    }
+  },
+  "The Kebarrow Compact, 42\u201351": {
+    "count-enumeration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 0,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 5,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 4,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 2,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 55,
+      "Checked": 55,
+      "Fired": 0
+    }
+  },
+  "The rule of Heth Fal over the Sworn Men of Laehiford, 39\u201351": {
+    "count-enumeration": {
+      "Extracted": 2,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "count-narration": {
+      "Extracted": 1,
+      "Checked": 1,
+      "Fired": 0
+    },
+    "partition-sum": {
+      "Extracted": 3,
+      "Checked": 0,
+      "Fired": 0
+    },
+    "date-agreement": {
+      "Extracted": 4,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "summary-body": {
+      "Extracted": 2,
+      "Checked": 2,
+      "Fired": 0
+    },
+    "coined-term": {
+      "Extracted": 37,
+      "Checked": 37,
+      "Fired": 0
+    }
+  }
+}

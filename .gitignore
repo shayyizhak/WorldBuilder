@@ -1,0 +1,9 @@
+bin/
+obj/
+.vs/
+*.user
+
+# Simulation output
+out/
+*.jsonl
+*.log

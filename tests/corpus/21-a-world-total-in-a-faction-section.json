@@ -1,0 +1,10 @@
+{
+  "id": "r10-a-world-total-in-a-faction-section",
+  "seed": 42,
+  "scope": null,
+  "passage": "The period saw seven rulers, five of them killed, and three places taken from the Wurn League.\nIt defeated the Wurn League at Laehiford in year 7 and took Laehiford from them. It defeated them again at Hadale in year 20 and took Hadale from them.",
+  "expect_rule": "quantity",
+  "expect_span": "three places taken from the Wurn League",
+  "corrected": "The period saw seven rulers, five of them killed, and two places taken from the Wurn League.\nIt defeated the Wurn League at Laehiford in year 7 and took Laehiford from them. It defeated them again at Hadale in year 20 and took Hadale from them.",
+  "note": "three is the world total; the Kebarrow Compact took two of them"
+}

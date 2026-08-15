@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WorldBuilder.Cli/WorldBuilder.Cli.csproj" />
+    <Project Path="src/WorldBuilder.Core/WorldBuilder.Core.csproj" />
+    <Project Path="src/WorldBuilder.Inference/WorldBuilder.Inference.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WorldBuilder.Tests/WorldBuilder.Tests.csproj" />
+  </Folder>
+</Solution>

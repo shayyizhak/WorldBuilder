@@ -1,0 +1,10 @@
+{
+  "id": "r07-a-raid-that-does-not-exist",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 22-41",
+  "passage": "The Compact suffered three raids: one by the Sworn Men of Meigate on Hadale in 23, one by the Sworn Men of Laehiford on Kebarrow in 23, and one by the Griwick Compact on Kebarrow in 32.",
+  "expect_rule": "action",
+  "expect_span": "one by the Griwick Compact on Kebarrow in 32",
+  "corrected": "The Compact suffered three raids: one by the Sworn Men of Meigate on Hadale in 23, one by the Sworn Men of Laehiford on Kebarrow in 23, and one by the Griwick Compact on Hadale in 22.",
+  "note": "the raid was on Hadale in 22, not Kebarrow in 32; both the place and the year were invented"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "r11-ending-skuls-tenure",
+  "seed": 42,
+  "scope": "The rule of Wuldweald Valdrith over the Kebarrow Compact, 51-51",
+  "passage": "Valdrith took the seat of the Kebarrow Compact, ending Skul's tenure.",
+  "expect_rule": "succession",
+  "expect_span": "ending Skul",
+  "corrected": "Valdrith took the seat of the Kebarrow Compact. Hehum Skul, the named heir, was cast out.",
+  "note": "Skul never held the seat; a set-aside claim rendered as an ended tenure"
+}

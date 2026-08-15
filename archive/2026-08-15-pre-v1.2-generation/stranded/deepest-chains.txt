@@ -1,0 +1,251 @@
+=========== seed 7 — three deepest causal chains ===========
+--- chain of 10 ---
+  e:205 [Y0016] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:242 [Y0020] CONFLICT.ASSASSINATION  Kraedren Waeld (a:10) has Frouldtoun Dror (a:11) murdered at Goummeidale (p:2)
+  e:243 [Y0020] LIFE.DEATH_VIOLENT  Frouldtoun Dror (a:11), ruler of the Goummeidale Compact (f:1), is killed by Kraedren Waeld (a:10) at Goummeidale (p:2)
+  e:244 [Y0020] POLITY.SUCCESSION_DISPUTED  Theirnpae Gro (a:21) contests Freindmald Beindlea (a:6)'s claim to the Goummeidale Compact (f:1) (rule: primogeniture)
+  e:246 [Y0020] POLITY.EXILE  Freindmald Beindlea (a:6) is cast out of the Goummeidale Compact (f:1) — the losing claim
+  e:337 [Y0029] CONFLICT.ASSASSINATION  Rateal Fototh (a:27) has Voumfaern Ki (a:2) murdered at Goummeidale (p:2)
+  e:338 [Y0029] LIFE.DEATH_VIOLENT  Voumfaern Ki (a:2), ruler of the Goummeidale Compact (f:1), is killed by Rateal Fototh (a:27) at Goummeidale (p:2)
+  e:341 [Y0029] POLITY.SUCCESSION_DISPUTED  Maethhol Gondrur (a:26) contests Wold Risla (a:24)'s claim to the Goummeidale Compact (f:1) (rule: primogeniture)
+  e:343 [Y0029] POLITY.EXILE  Wold Risla (a:24) is cast out of the Goummeidale Compact (f:1) — the losing claim
+  e:348 [Y0030] POLITY.EXILE_RETURN  Wold Risla (a:24) returns from exile and takes service with the Kraeford Compact (f:2)
+
+--- chain of 10 ---
+  e:205 [Y0016] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:242 [Y0020] CONFLICT.ASSASSINATION  Kraedren Waeld (a:10) has Frouldtoun Dror (a:11) murdered at Goummeidale (p:2)
+  e:243 [Y0020] LIFE.DEATH_VIOLENT  Frouldtoun Dror (a:11), ruler of the Goummeidale Compact (f:1), is killed by Kraedren Waeld (a:10) at Goummeidale (p:2)
+  e:244 [Y0020] POLITY.SUCCESSION_DISPUTED  Theirnpae Gro (a:21) contests Freindmald Beindlea (a:6)'s claim to the Goummeidale Compact (f:1) (rule: primogeniture)
+  e:246 [Y0020] POLITY.EXILE  Freindmald Beindlea (a:6) is cast out of the Goummeidale Compact (f:1) — the losing claim
+  e:324 [Y0028] CONFLICT.ASSASSINATION  Vasgou Raend (a:28) has Theirnpae Gro (a:21) murdered at Goummeidale (p:2)
+  e:325 [Y0028] LIFE.DEATH_VIOLENT  Theirnpae Gro (a:21), ruler of the Goummeidale Compact (f:1), is killed by Vasgou Raend (a:28) at Goummeidale (p:2)
+  e:366 [Y0031] POLITY.COUP_RESOLVED  Skullhein Threill (a:29) challenges Waeld Dould (a:23) for the Goummeidale Compact (f:1) and wins
+  e:368 [Y0031] POLITY.EXILE  Waeld Dould (a:23) is cast out of the Goummeidale Compact (f:1) — the losing side of a coup
+  e:373 [Y0031] POLITY.REVOLT  Sti Seam (p:7) rises against the Goummeidale Compact (f:1) (legitimacy 5)
+
+--- chain of 10 ---
+  e:205 [Y0016] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:242 [Y0020] CONFLICT.ASSASSINATION  Kraedren Waeld (a:10) has Frouldtoun Dror (a:11) murdered at Goummeidale (p:2)
+  e:243 [Y0020] LIFE.DEATH_VIOLENT  Frouldtoun Dror (a:11), ruler of the Goummeidale Compact (f:1), is killed by Kraedren Waeld (a:10) at Goummeidale (p:2)
+  e:244 [Y0020] POLITY.SUCCESSION_DISPUTED  Theirnpae Gro (a:21) contests Freindmald Beindlea (a:6)'s claim to the Goummeidale Compact (f:1) (rule: primogeniture)
+  e:246 [Y0020] POLITY.EXILE  Freindmald Beindlea (a:6) is cast out of the Goummeidale Compact (f:1) — the losing claim
+  e:324 [Y0028] CONFLICT.ASSASSINATION  Vasgou Raend (a:28) has Theirnpae Gro (a:21) murdered at Goummeidale (p:2)
+  e:325 [Y0028] LIFE.DEATH_VIOLENT  Theirnpae Gro (a:21), ruler of the Goummeidale Compact (f:1), is killed by Vasgou Raend (a:28) at Goummeidale (p:2)
+  e:366 [Y0031] POLITY.COUP_RESOLVED  Skullhein Threill (a:29) challenges Waeld Dould (a:23) for the Goummeidale Compact (f:1) and wins
+  e:368 [Y0031] POLITY.EXILE  Waeld Dould (a:23) is cast out of the Goummeidale Compact (f:1) — the losing side of a coup
+  e:401 [Y0034] POLITY.EXILE_RETURN  Waeld Dould (a:23) returns from exile and takes service with the Kraeford Compact (f:2)
+
+=========== seed 42 — three deepest causal chains ===========
+--- chain of 19 ---
+  e:9 [Y0001] GENESIS.PLACE  Threi Cut (p:8) exists — site, 276 souls
+  e:383 [Y0024] DIPLO.TRIBUTE_DEMANDED  the Sworn Men of Laehiford (f:5) demands tribute of the Griwick Compact (f:3) and is refused
+  e:561 [Y0032] POLITY.COUP_PLOTTED  Sou Dra (a:22) begins conspiring against Math Ham (a:3) of the Sworn Men of Laehiford (f:5)
+  e:664 [Y0037] POLITY.COUP_RESOLVED  Sou Dra (a:22)'s conspiracy against Math Ham (a:3) is uncovered after 5 years
+  e:665 [Y0037] POLITY.EXILE  Sou Dra (a:22) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:729 [Y0040] POLITY.COUP_PLOTTED  Paernrom Sir (a:24) begins conspiring against Thurnean Kourn (a:47) of the Sworn Men of Laehiford (f:5)
+  e:773 [Y0042] POLITY.COUP_RESOLVED  Paernrom Sir (a:24)'s conspiracy against Thurnean Kourn (a:47) is uncovered after 2 years
+  e:774 [Y0042] POLITY.EXILE  Paernrom Sir (a:24) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:777 [Y0042] POLITY.REVOLT  Threi Cut (p:8) rises against the Sworn Men of Laehiford (f:5) (legitimacy 20)
+  e:790 [Y0043] POLITY.LEGITIMACY_CRISIS  the Sworn Men of Laehiford (f:5) spends 50 silver buying goodwill for the first time, and is not believed
+  e:807 [Y0044] POLITY.COUP_RESOLVED  Raneith Meispol (a:79) challenges Thurnean Kourn (a:47) for the Sworn Men of Laehiford (f:5) and wins
+  e:808 [Y0044] POLITY.SUCCESSION  Raneith Meispol (a:79) takes the seat of the Sworn Men of Laehiford (f:5) (coup)
+  e:877 [Y0047] POLITY.COURTS_SUPPORT  Voudreirn Wer (a:59) wins Leimmil Theall (a:38) away from the ruler of the Sworn Men of Laehiford (f:5)
+  e:909 [Y0049] CONFLICT.ASSASSINATION  Sou Dra (a:22) has Raneith Meispol (a:79) murdered at Laehiford (p:5)
+  e:910 [Y0049] LIFE.DEATH_VIOLENT  Raneith Meispol (a:79), ruler of the Sworn Men of Laehiford (f:5), is killed by Sou Dra (a:22) at Laehiford (p:5)
+  e:917 [Y0049] POLITY.SUCCESSION_DISPUTED  Sothkel Sald (a:23) contests Lethsel Troldmirn (a:87)'s claim to the Sworn Men of Laehiford (f:5) (rule: strongest)
+  e:919 [Y0049] POLITY.PARTITION  the Sworn Men of Laehiford (f:5) is divided: Lethsel Troldmirn (a:87) carries off 3 place(s) as the Sworn Men of Hadale
+  e:934 [Y0050] POLITY.COUP_PLOTTED  Heth Fal (a:37) begins conspiring against Sothkel Sald (a:23) of the Sworn Men of Laehiford (f:5)
+  e:938 [Y0050] POLITY.COUP_RESOLVED  Heth Fal (a:37)'s designs on Sothkel Sald (a:23) come to nothing — its target is already dead
+
+--- chain of 19 ---
+  e:9 [Y0001] GENESIS.PLACE  Threi Cut (p:8) exists — site, 276 souls
+  e:383 [Y0024] DIPLO.TRIBUTE_DEMANDED  the Sworn Men of Laehiford (f:5) demands tribute of the Griwick Compact (f:3) and is refused
+  e:561 [Y0032] POLITY.COUP_PLOTTED  Sou Dra (a:22) begins conspiring against Math Ham (a:3) of the Sworn Men of Laehiford (f:5)
+  e:664 [Y0037] POLITY.COUP_RESOLVED  Sou Dra (a:22)'s conspiracy against Math Ham (a:3) is uncovered after 5 years
+  e:665 [Y0037] POLITY.EXILE  Sou Dra (a:22) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:729 [Y0040] POLITY.COUP_PLOTTED  Paernrom Sir (a:24) begins conspiring against Thurnean Kourn (a:47) of the Sworn Men of Laehiford (f:5)
+  e:773 [Y0042] POLITY.COUP_RESOLVED  Paernrom Sir (a:24)'s conspiracy against Thurnean Kourn (a:47) is uncovered after 2 years
+  e:774 [Y0042] POLITY.EXILE  Paernrom Sir (a:24) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:777 [Y0042] POLITY.REVOLT  Threi Cut (p:8) rises against the Sworn Men of Laehiford (f:5) (legitimacy 20)
+  e:790 [Y0043] POLITY.LEGITIMACY_CRISIS  the Sworn Men of Laehiford (f:5) spends 50 silver buying goodwill for the first time, and is not believed
+  e:807 [Y0044] POLITY.COUP_RESOLVED  Raneith Meispol (a:79) challenges Thurnean Kourn (a:47) for the Sworn Men of Laehiford (f:5) and wins
+  e:808 [Y0044] POLITY.SUCCESSION  Raneith Meispol (a:79) takes the seat of the Sworn Men of Laehiford (f:5) (coup)
+  e:877 [Y0047] POLITY.COURTS_SUPPORT  Voudreirn Wer (a:59) wins Leimmil Theall (a:38) away from the ruler of the Sworn Men of Laehiford (f:5)
+  e:909 [Y0049] CONFLICT.ASSASSINATION  Sou Dra (a:22) has Raneith Meispol (a:79) murdered at Laehiford (p:5)
+  e:910 [Y0049] LIFE.DEATH_VIOLENT  Raneith Meispol (a:79), ruler of the Sworn Men of Laehiford (f:5), is killed by Sou Dra (a:22) at Laehiford (p:5)
+  e:917 [Y0049] POLITY.SUCCESSION_DISPUTED  Sothkel Sald (a:23) contests Lethsel Troldmirn (a:87)'s claim to the Sworn Men of Laehiford (f:5) (rule: strongest)
+  e:919 [Y0049] POLITY.PARTITION  the Sworn Men of Laehiford (f:5) is divided: Lethsel Troldmirn (a:87) carries off 3 place(s) as the Sworn Men of Hadale
+  e:948 [Y0051] POLITY.COUP_PLOTTED  Thosruld Lul (a:34) begins conspiring against Theaki Houl (a:74) of the Sworn Men of Laehiford (f:5)
+  e:955 [Y0051] POLITY.COUP_RESOLVED  Thosruld Lul (a:34)'s designs on Theaki Houl (a:74) come to nothing — its target no longer holds the seat
+
+--- chain of 18 ---
+  e:9 [Y0001] GENESIS.PLACE  Threi Cut (p:8) exists — site, 276 souls
+  e:383 [Y0024] DIPLO.TRIBUTE_DEMANDED  the Sworn Men of Laehiford (f:5) demands tribute of the Griwick Compact (f:3) and is refused
+  e:561 [Y0032] POLITY.COUP_PLOTTED  Sou Dra (a:22) begins conspiring against Math Ham (a:3) of the Sworn Men of Laehiford (f:5)
+  e:664 [Y0037] POLITY.COUP_RESOLVED  Sou Dra (a:22)'s conspiracy against Math Ham (a:3) is uncovered after 5 years
+  e:665 [Y0037] POLITY.EXILE  Sou Dra (a:22) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:729 [Y0040] POLITY.COUP_PLOTTED  Paernrom Sir (a:24) begins conspiring against Thurnean Kourn (a:47) of the Sworn Men of Laehiford (f:5)
+  e:773 [Y0042] POLITY.COUP_RESOLVED  Paernrom Sir (a:24)'s conspiracy against Thurnean Kourn (a:47) is uncovered after 2 years
+  e:774 [Y0042] POLITY.EXILE  Paernrom Sir (a:24) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat
+  e:777 [Y0042] POLITY.REVOLT  Threi Cut (p:8) rises against the Sworn Men of Laehiford (f:5) (legitimacy 20)
+  e:790 [Y0043] POLITY.LEGITIMACY_CRISIS  the Sworn Men of Laehiford (f:5) spends 50 silver buying goodwill for the first time, and is not believed
+  e:807 [Y0044] POLITY.COUP_RESOLVED  Raneith Meispol (a:79) challenges Thurnean Kourn (a:47) for the Sworn Men of Laehiford (f:5) and wins
+  e:808 [Y0044] POLITY.SUCCESSION  Raneith Meispol (a:79) takes the seat of the Sworn Men of Laehiford (f:5) (coup)
+  e:877 [Y0047] POLITY.COURTS_SUPPORT  Voudreirn Wer (a:59) wins Leimmil Theall (a:38) away from the ruler of the Sworn Men of Laehiford (f:5)
+  e:909 [Y0049] CONFLICT.ASSASSINATION  Sou Dra (a:22) has Raneith Meispol (a:79) murdered at Laehiford (p:5)
+  e:910 [Y0049] LIFE.DEATH_VIOLENT  Raneith Meispol (a:79), ruler of the Sworn Men of Laehiford (f:5), is killed by Sou Dra (a:22) at Laehiford (p:5)
+  e:917 [Y0049] POLITY.SUCCESSION_DISPUTED  Sothkel Sald (a:23) contests Lethsel Troldmirn (a:87)'s claim to the Sworn Men of Laehiford (f:5) (rule: strongest)
+  e:919 [Y0049] POLITY.PARTITION  the Sworn Men of Laehiford (f:5) is divided: Lethsel Troldmirn (a:87) carries off 3 place(s) as the Sworn Men of Hadale
+  e:933 [Y0050] POLITY.COURTS_SUPPORT  Thosruld Lul (a:34) wins Viskeil Von (a:63) away from the ruler of the Sworn Men of Laehiford (f:5)
+
+=========== seed 99 — three deepest causal chains ===========
+--- chain of 12 ---
+  e:8 [Y0001] GENESIS.PLACE  Sa Cut (p:7) exists — site, 181 souls
+  e:547 [Y0038] DIPLO.TRIBUTE_DEMANDED  Free Pistead (f:5) demands tribute of the Peirnhewick Crown (f:1) and is refused
+  e:597 [Y0042] CONFLICT.ASSASSINATION  Bror Ster (a:46) has Thethden Steith (a:22) murdered at Pistead (p:3)
+  e:598 [Y0042] LIFE.DEATH_VIOLENT  Thethden Steith (a:22), ruler of Free Pistead (f:5), is killed by Bror Ster (a:46) at Pistead (p:3)
+  e:605 [Y0042] POLITY.SUCCESSION_DISPUTED  Kraen Geimteas (a:53) contests Hounu Laweim (a:2)'s claim to Free Pistead (f:5) (rule: primogeniture)
+  e:607 [Y0042] POLITY.EXILE  Hounu Laweim (a:2) is cast out of Free Pistead (f:5) — the losing claim
+  e:610 [Y0042] POLITY.SECESSION  Puholt (p:5) breaks from Free Pistead (f:5) as the Rising of Puholt
+  e:623 [Y0043] POLITY.SECESSION  Staernwefell (p:4) breaks from Free Pistead (f:5) as the Staernwefell Covenant
+  e:630 [Y0044] POLITY.COURTS_SUPPORT  Trapearn Sael (a:50) wins Porn Hil (a:88) away from the ruler of Free Pistead (f:5)
+  e:647 [Y0045] POLITY.COUP_RESOLVED  Frournso Mul (a:52) challenges Kraen Geimteas (a:53) for Free Pistead (f:5) and loses
+  e:648 [Y0045] POLITY.EXILE  Frournso Mul (a:52) is cast out of Free Pistead (f:5) — the losing side of a coup
+  e:688 [Y0047] POLITY.EXILE_RETURN  Frournso Mul (a:52) returns from exile and takes service with the Staernwefell Covenant (f:7)
+
+--- chain of 11 ---
+  e:8 [Y0001] GENESIS.PLACE  Sa Cut (p:7) exists — site, 181 souls
+  e:547 [Y0038] DIPLO.TRIBUTE_DEMANDED  Free Pistead (f:5) demands tribute of the Peirnhewick Crown (f:1) and is refused
+  e:597 [Y0042] CONFLICT.ASSASSINATION  Bror Ster (a:46) has Thethden Steith (a:22) murdered at Pistead (p:3)
+  e:598 [Y0042] LIFE.DEATH_VIOLENT  Thethden Steith (a:22), ruler of Free Pistead (f:5), is killed by Bror Ster (a:46) at Pistead (p:3)
+  e:605 [Y0042] POLITY.SUCCESSION_DISPUTED  Kraen Geimteas (a:53) contests Hounu Laweim (a:2)'s claim to Free Pistead (f:5) (rule: primogeniture)
+  e:607 [Y0042] POLITY.EXILE  Hounu Laweim (a:2) is cast out of Free Pistead (f:5) — the losing claim
+  e:610 [Y0042] POLITY.SECESSION  Puholt (p:5) breaks from Free Pistead (f:5) as the Rising of Puholt
+  e:623 [Y0043] POLITY.SECESSION  Staernwefell (p:4) breaks from Free Pistead (f:5) as the Staernwefell Covenant
+  e:686 [Y0047] CONFLICT.ASSASSINATION  Trapearn Sael (a:50) has Kraen Geimteas (a:53) murdered at Pistead (p:3)
+  e:687 [Y0047] LIFE.DEATH_VIOLENT  Kraen Geimteas (a:53), ruler of Free Pistead (f:5), is killed by Trapearn Sael (a:50) at Pistead (p:3)
+  e:700 [Y0047] POLITY.SUCCESSION  Bror Ster (a:46) takes the seat of Free Pistead (f:5) (primogeniture)
+
+--- chain of 11 ---
+  e:540 [Y0037] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:555 [Y0039] DIPLO.TRIBUTE_DEMANDED  the Peirnhewick Crown (f:1) demands tribute of the Free City of Kraefell (f:4) and is refused
+  e:568 [Y0040] POLITY.COUP_PLOTTED  Thes Brendweir (a:33) begins conspiring against Maeld Brei (a:26) of the Peirnhewick Crown (f:1)
+  e:635 [Y0044] POLITY.COUP_RESOLVED  Thes Brendweir (a:33)'s conspiracy against Maeld Brei (a:26) is uncovered after 4 years
+  e:636 [Y0044] POLITY.EXILE  Thes Brendweir (a:33) is cast out of the Peirnhewick Crown (f:1) — conspiracy against the seat
+  e:645 [Y0045] POLITY.COURTS_SUPPORT  Skal Wus (a:43) wins Trasthear Tou (a:83) away from the ruler of the Peirnhewick Crown (f:1)
+  e:684 [Y0047] CONFLICT.ASSASSINATION  Sanoun Dou (a:47) has Maeld Brei (a:26) murdered at Pistead (p:3)
+  e:685 [Y0047] LIFE.DEATH_VIOLENT  Maeld Brei (a:26), ruler of the Peirnhewick Crown (f:1), is killed by Sanoun Dou (a:47) at Pistead (p:3)
+  e:697 [Y0047] POLITY.SUCCESSION_DISPUTED  Weathkall Pei (a:63) contests Duth Traellkeild (a:27)'s claim to the Peirnhewick Crown (f:1) (rule: primogeniture)
+  e:699 [Y0047] POLITY.PARTITION  the Peirnhewick Crown (f:1) is divided: Duth Traellkeild (a:27) carries off 2 place(s) as the Sworn Men of Kraefell
+  e:702 [Y0047] POLITY.REVOLT  Nae Seam (p:8) rises against the Peirnhewick Crown (f:1) (legitimacy 1)
+
+=========== seed 1234 — three deepest causal chains ===========
+--- chain of 15 ---
+  e:285 [Y0021] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:423 [Y0032] DIPLO.TRIBUTE_DEMANDED  House Buldbei (f:3) demands tribute of the Trostead Compact (f:1) and is refused
+  e:457 [Y0035] POLITY.COUP_RESOLVED  Lall Nealdgum (a:17) challenges Peansith Rae (a:36) for House Buldbei (f:3) and loses
+  e:458 [Y0035] POLITY.EXILE  Lall Nealdgum (a:17) is cast out of House Buldbei (f:3) — the losing side of a coup
+  e:488 [Y0037] POLITY.LEGITIMACY_CRISIS  House Buldbei (f:3) spends 52 silver buying goodwill for the second time, and is not believed
+  e:543 [Y0041] POLITY.COUP_RESOLVED  Nond Mea (a:28) challenges Peansith Rae (a:36) for House Buldbei (f:3) and loses
+  e:544 [Y0041] POLITY.EXILE  Nond Mea (a:28) is cast out of House Buldbei (f:3) — the losing side of a coup
+  e:560 [Y0042] POLITY.COUP_PLOTTED  Del Monbirn (a:27) begins conspiring against Peansith Rae (a:36) of House Buldbei (f:3)
+  e:605 [Y0045] POLITY.COUP_RESOLVED  Del Monbirn (a:27)'s conspiracy against Peansith Rae (a:36) is uncovered after 3 years
+  e:606 [Y0045] POLITY.EXILE  Del Monbirn (a:27) is cast out of House Buldbei (f:3) — conspiracy against the seat
+  e:646 [Y0048] CONFLICT.ASSASSINATION  Haeldkeind Nen (a:42)'s attempt on Peansith Rae (a:36) fails and is traced back
+  e:647 [Y0048] POLITY.EXILE  Haeldkeind Nen (a:42) is cast out of House Buldbei (f:3) — attempted murder
+  e:697 [Y0051] CONFLICT.ASSASSINATION  Greimfourn Goul (a:53) has Peansith Rae (a:36) murdered at Micrag (p:4)
+  e:698 [Y0051] LIFE.DEATH_VIOLENT  Peansith Rae (a:36), ruler of House Buldbei (f:3), is killed by Greimfourn Goul (a:53) at Micrag (p:4)
+  e:701 [Y0051] POLITY.SUCCESSION  Greimfourn Goul (a:53) takes the seat of House Buldbei (f:3) (strongest)
+
+--- chain of 14 ---
+  e:285 [Y0021] ECONOMY.YIELD  old grudges cool and standing quietly erodes
+  e:423 [Y0032] DIPLO.TRIBUTE_DEMANDED  House Buldbei (f:3) demands tribute of the Trostead Compact (f:1) and is refused
+  e:457 [Y0035] POLITY.COUP_RESOLVED  Lall Nealdgum (a:17) challenges Peansith Rae (a:36) for House Buldbei (f:3) and loses
+  e:458 [Y0035] POLITY.EXILE  Lall Nealdgum (a:17) is cast out of House Buldbei (f:3) — the losing side of a coup
+  e:488 [Y0037] POLITY.LEGITIMACY_CRISIS  House Buldbei (f:3) spends 52 silver buying goodwill for the second time, and is not believed
+  e:543 [Y0041] POLITY.COUP_RESOLVED  Nond Mea (a:28) challenges Peansith Rae (a:36) for House Buldbei (f:3) and loses
+  e:544 [Y0041] POLITY.EXILE  Nond Mea (a:28) is cast out of House Buldbei (f:3) — the losing side of a coup
+  e:560 [Y0042] POLITY.COUP_PLOTTED  Del Monbirn (a:27) begins conspiring against Peansith Rae (a:36) of House Buldbei (f:3)
+  e:605 [Y0045] POLITY.COUP_RESOLVED  Del Monbirn (a:27)'s conspiracy against Peansith Rae (a:36) is uncovered after 3 years
+  e:606 [Y0045] POLITY.EXILE  Del Monbirn (a:27) is cast out of House Buldbei (f:3) — conspiracy against the seat
+  e:646 [Y0048] CONFLICT.ASSASSINATION  Haeldkeind Nen (a:42)'s attempt on Peansith Rae (a:36) fails and is traced back
+  e:647 [Y0048] POLITY.EXILE  Haeldkeind Nen (a:42) is cast out of House Buldbei (f:3) — attempted murder
+  e:681 [Y0050] POLITY.COUP_PLOTTED  Greimfourn Goul (a:53) begins conspiring against Peansith Rae (a:36) of House Buldbei (f:3)
+  e:700 [Y0051] POLITY.COUP_RESOLVED  Greimfourn Goul (a:53)'s designs on Peansith Rae (a:36) come to nothing — its target is already dead
+
+--- chain of 13 ---
+  e:255 [Y0020] ECONOMY.YIELD  the year's harvest is counted
+  e:331 [Y0025] CONFLICT.RAID  the Galweall League (f:2)'s raid on Geirnpei Shafts (p:8) is beaten off
+  e:338 [Y0025] POLITY.REVOLT  Gaehollow (p:6) rises against the Galweall League (f:2) (legitimacy 12)
+  e:343 [Y0026] POLITY.COUP_PLOTTED  Del Monbirn (a:27) begins conspiring against Paernso Feand (a:8) of the Galweall League (f:2)
+  e:366 [Y0028] POLITY.COUP_RESOLVED  Del Monbirn (a:27)'s conspiracy against Paernso Feand (a:8) is uncovered after 2 years
+  e:367 [Y0028] POLITY.EXILE  Del Monbirn (a:27) is cast out of the Galweall League (f:2) — conspiracy against the seat
+  e:392 [Y0030] POLITY.COUP_RESOLVED  Bathwa Bea (a:29) challenges Paernso Feand (a:8) for the Galweall League (f:2) and wins
+  e:393 [Y0030] POLITY.SUCCESSION  Bathwa Bea (a:29) takes the seat of the Galweall League (f:2) (coup)
+  e:400 [Y0030] POLITY.SECESSION  Gaehollow (p:6) breaks from the Galweall League (f:2) as the Gaehollow Charter
+  e:459 [Y0035] POLITY.COUP_PLOTTED  Dasould Ream (a:32) begins conspiring against Bathwa Bea (a:29) of the Galweall League (f:2)
+  e:491 [Y0037] POLITY.COUP_RESOLVED  Dasould Ream (a:32)'s conspiracy against Bathwa Bea (a:29) is uncovered after 2 years
+  e:492 [Y0037] POLITY.EXILE  Dasould Ream (a:32) is cast out of the Galweall League (f:2) — conspiracy against the seat
+  e:503 [Y0038] POLITY.EXILE_RETURN  Dasould Ream (a:32) returns from exile and takes service with the Gaehollow Charter (f:4)
+
+=========== seed 2025 — three deepest causal chains ===========
+--- chain of 18 ---
+  e:206 [Y0017] LIFE.DEATH_NATURAL  Vor Saern (a:5), ruler of the Waeslefell Compact (f:1), dies at 41 in Waeslefell (p:2)
+  e:212 [Y0017] POLITY.SUCCESSION_DISPUTED  Kramboul Dend (a:14) contests Drourn Nethi (a:17)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:214 [Y0017] POLITY.PARTITION  the Waeslefell Compact (f:1) is divided: Drourn Nethi (a:17) carries off 2 place(s) as the Second Crown of Baesveireach
+  e:277 [Y0024] CONFLICT.ASSASSINATION  Ground Raeskur (a:4)'s attempt on Fur Roundpoull (a:19) fails and is traced back
+  e:278 [Y0024] POLITY.EXILE  Ground Raeskur (a:4) is cast out of the Waeslefell Compact (f:1) — attempted murder
+  e:323 [Y0027] POLITY.COURTS_SUPPORT  Staellou Keillthae (a:27) wins Sundsea Pim (a:30) away from the ruler of the Waeslefell Compact (f:1)
+  e:335 [Y0028] POLITY.COUP_PLOTTED  Bage Busba (a:9) begins conspiring against Fur Roundpoull (a:19) of the Waeslefell Compact (f:1)
+  e:361 [Y0029] POLITY.COUP_RESOLVED  Bage Busba (a:9)'s conspiracy against Fur Roundpoull (a:19) is uncovered after 1 years
+  e:362 [Y0029] POLITY.EXILE  Bage Busba (a:9) is cast out of the Waeslefell Compact (f:1) — conspiracy against the seat
+  e:409 [Y0032] CONFLICT.ASSASSINATION  Greandsam Kreir (a:36) has Rontaen Sin (a:24) murdered at Waeslefell (p:2)
+  e:410 [Y0032] LIFE.DEATH_VIOLENT  Rontaen Sin (a:24), ruler of the Waeslefell Compact (f:1), is killed by Greandsam Kreir (a:36) at Waeslefell (p:2)
+  e:413 [Y0032] POLITY.SUCCESSION_DISPUTED  Greandsam Kreir (a:36) contests Rearn Thill (a:22)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:415 [Y0032] POLITY.EXILE  Rearn Thill (a:22) is cast out of the Waeslefell Compact (f:1) — the losing claim
+  e:443 [Y0034] POLITY.COUP_RESOLVED  Gandkim Kiveald (a:41) challenges Greandsam Kreir (a:36) for the Waeslefell Compact (f:1) and wins
+  e:445 [Y0034] POLITY.EXILE  Greandsam Kreir (a:36) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:470 [Y0036] POLITY.COUP_RESOLVED  Meirnhaes Kould (a:33) challenges Gandkim Kiveald (a:41) for the Waeslefell Compact (f:1) and wins
+  e:472 [Y0036] POLITY.EXILE  Gandkim Kiveald (a:41) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:493 [Y0037] POLITY.APPOINTMENT  Thraebaern Ramdem (a:35) is raised to steward of the Waeslefell Compact (f:1)
+
+--- chain of 18 ---
+  e:206 [Y0017] LIFE.DEATH_NATURAL  Vor Saern (a:5), ruler of the Waeslefell Compact (f:1), dies at 41 in Waeslefell (p:2)
+  e:212 [Y0017] POLITY.SUCCESSION_DISPUTED  Kramboul Dend (a:14) contests Drourn Nethi (a:17)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:214 [Y0017] POLITY.PARTITION  the Waeslefell Compact (f:1) is divided: Drourn Nethi (a:17) carries off 2 place(s) as the Second Crown of Baesveireach
+  e:277 [Y0024] CONFLICT.ASSASSINATION  Ground Raeskur (a:4)'s attempt on Fur Roundpoull (a:19) fails and is traced back
+  e:278 [Y0024] POLITY.EXILE  Ground Raeskur (a:4) is cast out of the Waeslefell Compact (f:1) — attempted murder
+  e:323 [Y0027] POLITY.COURTS_SUPPORT  Staellou Keillthae (a:27) wins Sundsea Pim (a:30) away from the ruler of the Waeslefell Compact (f:1)
+  e:335 [Y0028] POLITY.COUP_PLOTTED  Bage Busba (a:9) begins conspiring against Fur Roundpoull (a:19) of the Waeslefell Compact (f:1)
+  e:361 [Y0029] POLITY.COUP_RESOLVED  Bage Busba (a:9)'s conspiracy against Fur Roundpoull (a:19) is uncovered after 1 years
+  e:362 [Y0029] POLITY.EXILE  Bage Busba (a:9) is cast out of the Waeslefell Compact (f:1) — conspiracy against the seat
+  e:409 [Y0032] CONFLICT.ASSASSINATION  Greandsam Kreir (a:36) has Rontaen Sin (a:24) murdered at Waeslefell (p:2)
+  e:410 [Y0032] LIFE.DEATH_VIOLENT  Rontaen Sin (a:24), ruler of the Waeslefell Compact (f:1), is killed by Greandsam Kreir (a:36) at Waeslefell (p:2)
+  e:413 [Y0032] POLITY.SUCCESSION_DISPUTED  Greandsam Kreir (a:36) contests Rearn Thill (a:22)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:415 [Y0032] POLITY.EXILE  Rearn Thill (a:22) is cast out of the Waeslefell Compact (f:1) — the losing claim
+  e:443 [Y0034] POLITY.COUP_RESOLVED  Gandkim Kiveald (a:41) challenges Greandsam Kreir (a:36) for the Waeslefell Compact (f:1) and wins
+  e:445 [Y0034] POLITY.EXILE  Greandsam Kreir (a:36) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:470 [Y0036] POLITY.COUP_RESOLVED  Meirnhaes Kould (a:33) challenges Gandkim Kiveald (a:41) for the Waeslefell Compact (f:1) and wins
+  e:472 [Y0036] POLITY.EXILE  Gandkim Kiveald (a:41) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:500 [Y0038] POLITY.EXILE_RETURN  Gandkim Kiveald (a:41) returns from exile and takes service with the Deafil League (f:2)
+
+--- chain of 18 ---
+  e:206 [Y0017] LIFE.DEATH_NATURAL  Vor Saern (a:5), ruler of the Waeslefell Compact (f:1), dies at 41 in Waeslefell (p:2)
+  e:212 [Y0017] POLITY.SUCCESSION_DISPUTED  Kramboul Dend (a:14) contests Drourn Nethi (a:17)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:214 [Y0017] POLITY.PARTITION  the Waeslefell Compact (f:1) is divided: Drourn Nethi (a:17) carries off 2 place(s) as the Second Crown of Baesveireach
+  e:277 [Y0024] CONFLICT.ASSASSINATION  Ground Raeskur (a:4)'s attempt on Fur Roundpoull (a:19) fails and is traced back
+  e:278 [Y0024] POLITY.EXILE  Ground Raeskur (a:4) is cast out of the Waeslefell Compact (f:1) — attempted murder
+  e:323 [Y0027] POLITY.COURTS_SUPPORT  Staellou Keillthae (a:27) wins Sundsea Pim (a:30) away from the ruler of the Waeslefell Compact (f:1)
+  e:335 [Y0028] POLITY.COUP_PLOTTED  Bage Busba (a:9) begins conspiring against Fur Roundpoull (a:19) of the Waeslefell Compact (f:1)
+  e:361 [Y0029] POLITY.COUP_RESOLVED  Bage Busba (a:9)'s conspiracy against Fur Roundpoull (a:19) is uncovered after 1 years
+  e:362 [Y0029] POLITY.EXILE  Bage Busba (a:9) is cast out of the Waeslefell Compact (f:1) — conspiracy against the seat
+  e:409 [Y0032] CONFLICT.ASSASSINATION  Greandsam Kreir (a:36) has Rontaen Sin (a:24) murdered at Waeslefell (p:2)
+  e:410 [Y0032] LIFE.DEATH_VIOLENT  Rontaen Sin (a:24), ruler of the Waeslefell Compact (f:1), is killed by Greandsam Kreir (a:36) at Waeslefell (p:2)
+  e:413 [Y0032] POLITY.SUCCESSION_DISPUTED  Greandsam Kreir (a:36) contests Rearn Thill (a:22)'s claim to the Waeslefell Compact (f:1) (rule: primogeniture)
+  e:415 [Y0032] POLITY.EXILE  Rearn Thill (a:22) is cast out of the Waeslefell Compact (f:1) — the losing claim
+  e:443 [Y0034] POLITY.COUP_RESOLVED  Gandkim Kiveald (a:41) challenges Greandsam Kreir (a:36) for the Waeslefell Compact (f:1) and wins
+  e:445 [Y0034] POLITY.EXILE  Greandsam Kreir (a:36) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:470 [Y0036] POLITY.COUP_RESOLVED  Meirnhaes Kould (a:33) challenges Gandkim Kiveald (a:41) for the Waeslefell Compact (f:1) and wins
+  e:472 [Y0036] POLITY.EXILE  Gandkim Kiveald (a:41) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup
+  e:501 [Y0038] POLITY.APPOINTMENT  Vamkei Dridrill (a:25) is raised to steward of the Waeslefell Compact (f:1)
+

@@ -1,0 +1,10 @@
+{
+  "id": "r08-mam-courted-away-in-the-wrong-year",
+  "seed": 42,
+  "scope": "The rule of Heth Fal over the Sworn Men of Laehiford, 39-51",
+  "passage": "Voudreirn Wer won Baedros Mam away from the ruler in 49.",
+  "expect_rule": "date",
+  "expect_span": "in 49",
+  "corrected": "Voudreirn Wer won Baedros Mam away from the ruler in 48.",
+  "note": "48, not 49"
+}

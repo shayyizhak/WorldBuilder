@@ -1,0 +1,47 @@
+==================================================================
+ THE RAW LOG — the 19 events the chronicle below was built from
+==================================================================
+EVENTS (oldest first)
+  e:9 [Y0001] Threi Cut (p:8) exists — site, 276 souls
+  ... 23 years pass
+  e:383 [Y0024] the Sworn Men of Laehiford (f:5) demands tribute of the Griwick Compact (f:3) and is refused  (because e:9)
+  ... 8 years pass
+  e:561 [Y0032] Sou Dra (a:22) begins conspiring against Math Ham (a:3) of the Sworn Men of Laehiford (f:5)  (because e:383)
+  ... 5 years pass
+  e:664 [Y0037] Sou Dra (a:22)'s conspiracy against Math Ham (a:3) is uncovered after 5 years  (because e:561)
+  e:665 [Y0037] Sou Dra (a:22) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat  (because e:664)
+  ... 3 years pass
+  e:729 [Y0040] Paernrom Sir (a:24) begins conspiring against Thurnean Kourn (a:47) of the Sworn Men of Laehiford (f:5)  (because e:665)
+  ... 2 years pass
+  e:773 [Y0042] Paernrom Sir (a:24)'s conspiracy against Thurnean Kourn (a:47) is uncovered after 2 years  (because e:729)
+  e:774 [Y0042] Paernrom Sir (a:24) is cast out of the Sworn Men of Laehiford (f:5) — conspiracy against the seat  (because e:773)
+  e:777 [Y0042] Threi Cut (p:8) rises against the Sworn Men of Laehiford (f:5) (legitimacy 20)  (because e:774)
+  ... 1 year passes
+  e:790 [Y0043] the Sworn Men of Laehiford (f:5) spends 50 silver buying goodwill for the first time, and is not believed  (because e:777)
+  ... 1 year passes
+  e:807 [Y0044] Raneith Meispol (a:79) challenges Thurnean Kourn (a:47) for the Sworn Men of Laehiford (f:5) and wins  (because e:790)
+  e:808 [Y0044] Raneith Meispol (a:79) takes the seat of the Sworn Men of Laehiford (f:5) (coup)  (because e:807)
+  ... 3 years pass
+  e:877 [Y0047] Voudreirn Wer (a:59) wins Leimmil Theall (a:38) away from the ruler of the Sworn Men of Laehiford (f:5)  (because e:808)
+  ... 2 years pass
+  e:909 [Y0049] Sou Dra (a:22) has Raneith Meispol (a:79) murdered at Laehiford (p:5)  (because e:877)
+  e:910 [Y0049] Raneith Meispol (a:79), ruler of the Sworn Men of Laehiford (f:5), is killed by Sou Dra (a:22) at Laehiford (p:5)  (because e:909)
+  e:917 [Y0049] Sothkel Sald (a:23) contests Lethsel Troldmirn (a:87)'s claim to the Sworn Men of Laehiford (f:5) (rule: strongest)  (because e:910)
+  e:919 [Y0049] the Sworn Men of Laehiford (f:5) is divided: Lethsel Troldmirn (a:87) carries off 3 place(s) as the Sworn Men of Hadale  (because e:917)
+  ... 1 year passes
+  e:934 [Y0050] Heth Fal (a:37) begins conspiring against Sothkel Sald (a:23) of the Sworn Men of Laehiford (f:5)  (because e:919)
+  e:938 [Y0050] Heth Fal (a:37)'s designs on Sothkel Sald (a:23) come to nothing — its target is already dead  (because e:934)
+
+[19 events, ~847 prompt tokens, key causalchain-0c4ea41bd071b1c0]
+
+==================================================================
+ THE CHRONICLE — same 19 events, rendered
+==================================================================
+
+
+The existence of Threi Cut in year 1 established a site that would later provoke conflict. In year 24, the Sworn Men of Laehiford demanded tribute from the Griwick Compact and were refused. This refusal triggered a chain of internal instability within the Sworn Men of Laehiford. In year 32, Sou Dra began conspiring against Math Ham, the leader of the Sworn Men of Laehiford. After five years, the conspiracy was uncovered in year 37, leading to Sou Dra’s expulsion from the faction for plotting against its seat.
+
+The removal of Sou Dra created a vacuum that Paernrom Sir exploited. In year 40, Paernrom Sir began conspiring against Thurnean Kourn, the new leader of the Sworn Men of Laehiford. The plot was uncovered two years later in year 42, resulting in Paernrom Sir’s expulsion. This loss of legitimacy prompted Threi Cut to rise against the Sworn Men of Laehiford in year 42. Desperate, the faction spent silver to buy goodwill in year 43, but the gesture was rejected. The weakened position allowed Raneith Meispol to challenge and defeat Thurnean Kourn in year 44, seizing the seat through a coup.
+
+Raneith Meispol’s rule was short-lived due to shifting alliances. In year 47, Voudreirn Wer won Leimmil Theall away from the ruler of the Sworn Men of Laehiford. Exploiting this isolation, Sou Dra had Raneith Meispol murdered at Laehiford in year 49. His death triggered a contest for leadership between Sothkel Sald and Lethsel Troldmirn under the rule of the strongest. In year 49, Lethsel Troldmirn took three places to form the Sworn Men of Hadale, dividing the original faction. This division spurred Heth Fal to begin conspiring against Sothkel Sald in year 50. However, Heth Fal’s designs came to nothing because Sothkel Sald was already dead.
+
