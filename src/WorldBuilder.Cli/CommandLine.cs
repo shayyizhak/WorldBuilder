@@ -177,7 +177,7 @@ public static class CommandLine
         string path = args.Positional(0) ?? Path.Combine(DefaultOutputDirectory, "chronicle-42.md");
         if (!File.Exists(path)) return Fail($"no such document: {path}");
 
-        List<Scope> results = [];
+        List<FindingScope> results = [];
         string heading = "(front matter)";
         StringBuilder body = new();
 
@@ -197,12 +197,12 @@ public static class CommandLine
         Flush();
 
         int total = 0;
-        foreach (Scope scope in results)
+        foreach (FindingScope scope in results)
         {
             if (scope.Findings.Count == 0) continue;
             total += scope.Findings.Count;
 
-            Console.WriteLine(scope.Section);
+            Console.WriteLine(scope.Scope);
             foreach (Fabrication f in scope.Findings) Console.WriteLine($"    {f.Kind,-20} {f.Context}");
             Console.WriteLine();
         }
@@ -210,7 +210,7 @@ public static class CommandLine
         // Coverage summarised to one line, and in full in the sidecar. A person wants to know
         // that the rules ran; the numbers that say how much are for the golden diff to read.
         Coverage overall = new();
-        foreach (Scope scope in results) overall.Merge(scope.Coverage);
+        foreach (FindingScope scope in results) overall.Merge(scope.Coverage);
 
         Console.WriteLine("what the rules read:");
         foreach (string rule in overall.Names)
@@ -240,7 +240,7 @@ public static class CommandLine
         // said a period had no verified account while the sidecar beside it said nothing had
         // gone wrong. Two commands, two files.
         string sidecar = Path.ChangeExtension(path, ".tier1.json");
-        File.WriteAllText(sidecar, Json(results));
+        FindingsSidecar.Write(sidecar, results);
         Console.Error.WriteLine(sidecar);
         return 0;
 
@@ -255,101 +255,10 @@ public static class CommandLine
                 return;
 
             Coverage cover = new();
-            results.Add(new Scope(heading, SelfConsistency.Check(text, cover), cover));
+            results.Add(new FindingScope(heading, SelfConsistency.Check(text, cover), cover));
         }
     }
 
-    /// <summary>One section's verdict and the record of how it was reached.</summary>
-    private sealed record Scope(string Section, IReadOnlyList<Fabrication> Findings, Coverage Coverage);
-
-    /// <summary>
-    /// Findings as JSON, one record per check that fired.
-    ///
-    /// <paramref name="excluded"/> names the scopes whose passage was kept out of canon, so a
-    /// finding that cost a section its place in the chronicle is marked <c>fatal</c>. Without
-    /// it the sidecar and the document disagreed: the chronicle said a period had no verified
-    /// account and the sidecar recorded nothing at all, which makes exclusions uncountable
-    /// across seeds — the one thing a machine-readable form exists to allow.
-    /// </summary>
-    private static string Json(List<Scope> results, HashSet<string>? excluded = null)
-    {
-        StringBuilder sb = new();
-        sb.Append("{\n  \"findings\": [\n");
-        bool first = true;
-
-        foreach (Scope scope in results)
-        {
-            bool sectionExcluded = excluded?.Contains(scope.Section) ?? false;
-
-            List<Fabrication> all = [.. scope.Findings, .. scope.Coverage.Inert()];
-
-            foreach (Fabrication f in all)
-            {
-                if (!first) sb.Append(",\n");
-                first = false;
-
-                sb.Append("    {\"rule\":").Append(Quote(f.Kind))
-                  .Append(",\"scope\":").Append(Quote(scope.Section))
-                  .Append(",\"span\":").Append(Quote(f.Token))
-                  .Append(",\"detail\":").Append(Quote(f.Context))
-                  .Append(",\"blocking\":").Append(f.BlocksCanon ? "true" : "false")
-                  .Append(",\"fatal\":").Append(sectionExcluded && f.BlocksCanon ? "true" : "false")
-                  .Append('}');
-            }
-        }
-
-        sb.Append("\n  ],\n  \"scopes\": [\n");
-
-        for (int i = 0; i < results.Count; i++)
-        {
-            Scope scope = results[i];
-            if (i > 0) sb.Append(",\n");
-
-            sb.Append("    {\"scope\":").Append(Quote(scope.Section)).Append(",\"coverage\":{");
-
-            IReadOnlyDictionary<string, RuleCounts> rules = scope.Coverage.Rules;
-            bool firstRule = true;
-
-            foreach (string name in scope.Coverage.Names)
-            {
-                RuleCounts counts = rules[name];
-                if (!firstRule) sb.Append(',');
-                firstRule = false;
-
-                sb.Append(Quote(name))
-                  .Append(":{\"extracted\":").Append(counts.Extracted)
-                  .Append(",\"checked\":").Append(counts.Checked)
-                  .Append(",\"unresolvable\":").Append(counts.Unresolvable)
-                  .Append(",\"fired\":").Append(counts.Fired)
-                  .Append(",\"accounted\":").Append(counts.Accounted ? "true" : "false");
-
-                // Why, where anything was dropped. The count says a rule discarded a third of
-                // what it read; only the reason says whether that is prose it should leave alone
-                // or a resolution it should have managed.
-                IReadOnlyList<(string Reason, int Count)> why = scope.Coverage.Reasons(name);
-
-                if (why.Count > 0)
-                {
-                    sb.Append(",\"unresolved\":{");
-                    for (int r = 0; r < why.Count; r++)
-                    {
-                        if (r > 0) sb.Append(',');
-                        sb.Append(Quote(why[r].Reason)).Append(':').Append(why[r].Count);
-                    }
-                    sb.Append('}');
-                }
-
-                sb.Append('}');
-            }
-
-            sb.Append("}}");
-        }
-
-        sb.Append("\n  ]\n}\n");
-        return sb.ToString();
-    }
-
-    private static string Quote(string value) => System.Text.Json.JsonSerializer.Serialize(value);
 
     // ---- the test suite ---------------------------------------------------
 
@@ -938,7 +847,7 @@ public static class CommandLine
 
         int suspect = 0, unverified = 0;
         string openGroup = "";
-        List<Scope> reported = [];
+        List<FindingScope> reported = [];
         HashSet<string> excludedScopes = [];
 
         foreach ((string group, string heading, ContextPack pack) in sections)
@@ -972,7 +881,7 @@ public static class CommandLine
             // Every scope, not only the ones with findings. The coverage block is the record
             // of what was examined, and a section that reported nothing is exactly the one worth
             // knowing the examination of.
-            reported.Add(new Scope(heading, outcome.Fabrication.Findings, outcome.Fabrication.Coverage));
+            reported.Add(new FindingScope(heading, outcome.Fabrication.Findings, outcome.Fabrication.Coverage));
 
             foreach (Fabrication f in outcome.Fabrication.Findings)
             {
@@ -1015,7 +924,16 @@ public static class CommandLine
 
         // Findings in a machine-readable form as well as prose, so a catch rate can be counted
         // across seeds and rounds rather than re-read out of a conversation each time.
-        File.WriteAllText(stem + ".findings.json", Json(reported, excludedScopes));
+        //
+        // The exclusions are applied here rather than as each scope is added, because whether a
+        // section kept its place is only known after its render has been judged. A finding that
+        // cost a section its place is marked fatal; without that the chronicle said a period had
+        // no verified account while the sidecar recorded nothing at all.
+        List<FindingScope> judged = [];
+        foreach (FindingScope scope in reported)
+            judged.Add(scope with { Excluded = excludedScopes.Contains(scope.Scope) });
+
+        FindingsSidecar.Write(stem + ".findings.json", judged);
 
         if (unverified > 0) File.WriteAllText(diagnosticsPath, diagnostics.ToString());
         else if (File.Exists(diagnosticsPath)) File.Delete(diagnosticsPath);
@@ -1023,7 +941,7 @@ public static class CommandLine
         // Item 1 of round 12, asserted rather than hoped for: every extracted assertion ends
         // checked or explained. A rule with a third path presents as a rule that found nothing.
         Coverage tally = new();
-        foreach (Scope s in reported) tally.Merge(s.Coverage);
+        foreach (FindingScope s in reported) tally.Merge(s.Coverage);
 
         Console.Error.WriteLine();
         Console.Error.WriteLine("what the rules read:");
@@ -1211,6 +1129,18 @@ public static class CommandLine
             foreach (string span in overall.Spans(rule))
                 Console.WriteLine($"             on: {span}");
         }
+
+        // The same sidecar the chronicle path has always written, for the path that never had
+        // one. Stdout carries this already, but prose is not diffable: `departure` extraction
+        // went 4 → 0 between two v1.2 rounds with nothing to compare, on exactly this path.
+        // Layer 5's value is diffing the coverage block rather than the answers, and until now
+        // there was no block here to diff.
+        string sidecarPath = Path.Combine(
+            args.Text("out", DefaultOutputDirectory),
+            $"answers-{args.ULong("seed", 42).ToString(CultureInfo.InvariantCulture)}.findings.json");
+
+        FindingsSidecar.Write(sidecarPath, FindingsSidecar.ForAnswers(scored));
+        Console.Error.WriteLine(sidecarPath);
 
         Console.WriteLine();
         Console.WriteLine($"{passed} of {scored.Count} passed");
