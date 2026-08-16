@@ -1,0 +1,11 @@
+{
+  "id": "v12-raid-target-over-read",
+  "kind": "must-not-fire",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2–21",
+  "passage": "The Compact's raid on Vea Lode was beaten off, and its raid on Hadale killed 16 but took little.",
+  "expect_rule": "action",
+  "expect_span": "its raid on Hadale killed 16 but took little",
+  "corrected": "",
+  "note": "Both raids happened and both are described correctly. The phrase-reader read four words past the end of the name, so the target arrived as 'hadale killed 16 but', matched no raid, and the sentence was accused of describing an event the records do not hold. A checker that flags true prose costs the chronicle real content until people stop reading it; round 10 excluded seven correct sections that way."
+}

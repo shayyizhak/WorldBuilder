@@ -18,6 +18,21 @@ public sealed record CorpusCase
     [JsonPropertyName("expect_rule")] public string ExpectRule { get; init; } = "";
     [JsonPropertyName("expect_span")] public string ExpectSpan { get; init; } = "";
 
+    /// <summary>
+    /// What this row asserts. <c>must-fire</c> by default, which is every row the corpus began
+    /// with: a false passage that the named rule must catch.
+    ///
+    /// The other two exist because a corpus of only false passages measures one half of a
+    /// checker. <c>must-not-fire</c> pins a true sentence a rule once accused — round 10 put
+    /// seven correct sections out of canon, and a corpus that cannot express "this was fine"
+    /// cannot stop that recurring. <c>extraction</c> pins a count rather than a verdict, for the
+    /// case where the right answer is that a rule reads nothing at all.
+    /// </summary>
+    [JsonPropertyName("kind")] public string Kind { get; init; } = "must-fire";
+
+    /// <summary>How many assertions the owning rule must build. Only read when <see cref="Kind"/> is <c>extraction</c>.</summary>
+    [JsonPropertyName("expect_extraction")] public int ExpectExtraction { get; init; }
+
     /// <summary>The same passage written true. Must fire nothing.</summary>
     [JsonPropertyName("corrected")] public string Corrected { get; init; } = "";
 
@@ -136,6 +151,39 @@ public static class Corpus
         if (!Families.TryGetValue(one.ExpectRule, out string[]? kinds))
             return new CorpusResult(one, false, false, $"unknown rule '{one.ExpectRule}'");
 
+        // A true sentence a rule once accused. There is nothing to correct, so the second
+        // assertion is the whole assertion: the family must stay silent.
+        if (one.Kind == "must-not-fire")
+        {
+            List<Fabrication> found = Findings(one, one.Passage, world);
+            List<Fabrication> wrong = [.. found.Where(f => kinds.Contains(f.Kind, StringComparer.Ordinal))];
+
+            return new CorpusResult(one, wrong.Count == 0, true,
+                wrong.Count == 0
+                    ? "ok"
+                    : $"{one.ExpectRule} accused a true sentence: " +
+                      string.Join("; ", wrong.Select(f => $"{f.Kind} — {f.Context}")));
+        }
+
+        // A count rather than a verdict. Zero extraction is the right answer where the phrase a
+        // rule used to read was never an assertion in the first place, and no finding-shaped
+        // assertion can express that.
+        if (one.Kind == "extraction")
+        {
+            Coverage cover = new();
+            Findings(one, one.Passage, world, cover);
+
+            string owner = RuleNames.Of(kinds.Length > 0 ? kinds[0] : one.ExpectRule);
+            if (!Families.ContainsKey(one.ExpectRule)) owner = one.ExpectRule;
+            if (cover.Names.Contains(one.ExpectRule, StringComparer.Ordinal)) owner = one.ExpectRule;
+
+            int extracted = cover.Rules.TryGetValue(owner, out RuleCounts? counts) ? counts.Extracted : 0;
+            bool matched = extracted == one.ExpectExtraction;
+
+            return new CorpusResult(one, matched, true,
+                matched ? "ok" : $"{owner} extracted {extracted}, expected {one.ExpectExtraction}");
+        }
+
         List<string> onPassage = [.. Findings(one, one.Passage, world).Select(f => f.Kind)];
         List<Fabrication> corrected = Findings(one, one.Corrected, world);
         List<string> onCorrected = [.. corrected.Select(f => f.Kind)];
@@ -174,15 +222,19 @@ public static class Corpus
         return new CorpusResult(one, fired, substantive.Count == 0, detail);
     }
 
-    private static List<Fabrication> Findings(CorpusCase one, string text, Func<ulong, WorldView> world)
+    private static List<Fabrication> Findings(
+        CorpusCase one, string text, Func<ulong, WorldView> world, Coverage? cover = null)
     {
-        if (one.Scope is null) return [.. SelfConsistency.Check(text)];
+        if (one.Scope is null) return [.. SelfConsistency.Check(text, cover ?? new Coverage())];
 
         WorldView view = world(one.Seed);
         ContextPack? pack = ChronicleAudit.PackFor(view, one.Scope);
 
         if (pack is null) throw new InvalidDataException($"{one.Id}: no scope matches \"{one.Scope}\"");
 
-        return [.. FabricationCheck.Check(pack, text, one.WholeSection).Findings];
+        FabricationReport report = FabricationCheck.Check(pack, text, one.WholeSection);
+        if (cover is not null) cover.Merge(report.Coverage);
+
+        return [.. report.Findings];
     }
 }

@@ -69,15 +69,34 @@ public class CorpusTests
     public void EveryRowIsWellFormed()
     {
         List<CorpusCase> cases = Corpus.Load(Directory);
-        Assert.Equal(31, cases.Count);
+        Assert.Equal(34, cases.Count);
 
         foreach (CorpusCase one in cases)
         {
             Assert.True(Corpus.RuleFamilies.ContainsKey(one.ExpectRule),
                 $"{one.Id}: no rule family named '{one.ExpectRule}'");
             Assert.Contains(one.ExpectSpan, one.Passage, StringComparison.Ordinal);
-            Assert.NotEqual(one.Passage, one.Corrected);
             Assert.False(string.IsNullOrWhiteSpace(one.Note), $"{one.Id} has no note");
+
+            Assert.True(one.Kind is "must-fire" or "must-not-fire" or "extraction",
+                $"{one.Id}: unknown kind '{one.Kind}'");
+
+            // Only a must-fire row has a correction to hold; the other two assert about the
+            // passage alone, and inventing a second passage for them would be a second thing
+            // to keep true for no gain.
+            if (one.Kind == "must-fire") Assert.NotEqual(one.Passage, one.Corrected);
+        }
+
+        // The three rows that were fixed and came back are the reason the corpus is a file on
+        // disk rather than a memory of a review. Asserted by id so a rename cannot lose them.
+        foreach (string repeat in new[]
+                 {
+                     "r08-r11-reign-given-a-faction-lifetime-count",
+                     "r09-r11-held-the-seat-since-year-one",
+                     "r09-r11-killing-149-men",
+                 })
+        {
+            Assert.Contains(cases, c => c.Id == repeat);
         }
 
         Assert.Equal(cases.Count, cases.Select(c => c.Id).Distinct().Count());

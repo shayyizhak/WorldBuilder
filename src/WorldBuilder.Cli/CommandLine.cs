@@ -391,11 +391,100 @@ public static class CommandLine
     }
 
     /// <summary>Layer 5 — against the most recent stored render.</summary>
+    /// <summary>
+    /// Layer 5 against a sealed baseline: two sidecars, compared.
+    ///
+    /// Distinct from the <c>out/golden</c> mode below in one way that matters — <b>it can never
+    /// write</b>. A sealed baseline is create-only, and a diff layer that could update its own
+    /// reference is a diff layer that passes by moving the thing it is measured against. Making
+    /// a new baseline stays an act of moving the directory aside by hand.
+    ///
+    /// Both sides are sidecars written by the checker that produced them, never counts recomputed
+    /// from stored prose. Recomputing runs today's rules over yesterday's text, and a rule that
+    /// has gone quiet then reports the same figure on both sides.
+    /// </summary>
+    private static int TestGoldenAgainstBaseline(Args args, string baselineDir)
+    {
+        ulong seed = args.ULong("seed", 42);
+        string stem = $"chronicle-{seed.ToString(CultureInfo.InvariantCulture)}";
+        string currentDir = args.Text("current", args.Text("out", DefaultOutputDirectory));
+
+        Console.WriteLine();
+        Console.WriteLine($"layer 5 — against the sealed baseline at {baselineDir}");
+
+        string storedProse = Path.Combine(baselineDir, stem + ".md");
+        string storedSidecar = Path.Combine(baselineDir, stem + ".findings.json");
+        string currentProse = Path.Combine(currentDir, stem + ".md");
+        string currentSidecar = Path.Combine(currentDir, stem + ".findings.json");
+
+        foreach (string required in new[] { storedProse, storedSidecar, currentProse, currentSidecar })
+        {
+            if (File.Exists(required)) continue;
+            Console.WriteLine($"  missing {required}");
+            Console.WriteLine("  produce the current side with: wb book --out <dir> --check-only --factions all");
+            return 1;
+        }
+
+        List<Drift> drift = GoldenDiff.Compare(File.ReadAllText(storedProse), File.ReadAllText(currentProse));
+
+        drift.AddRange(GoldenDiff.CoverageSound(
+            FindingsSidecar.ReadCoverage(storedSidecar),
+            GoldenDiff.AsCoverage(FindingsSidecar.ReadCoverage(currentSidecar))));
+
+        // The query half. The v1 baseline has no query sidecar — it records
+        // query-coverage-unstructured as a deficiency — so there is nothing here to diff yet.
+        // Reported as unavailable rather than skipped in silence: a layer that says nothing about
+        // a path reads exactly like a layer that checked it and was satisfied.
+        string storedAnswers = Path.Combine(baselineDir, $"answers-{seed.ToString(CultureInfo.InvariantCulture)}.findings.json");
+        string currentAnswers = Path.Combine(currentDir, $"answers-{seed.ToString(CultureInfo.InvariantCulture)}.findings.json");
+
+        if (!File.Exists(storedAnswers))
+        {
+            Console.WriteLine("      note query: no coverage baseline — this baseline records " +
+                              "query-coverage-unstructured, so the query path cannot be diffed yet");
+        }
+        else if (!File.Exists(currentAnswers))
+        {
+            Console.WriteLine($"      note query: baseline has a sidecar and {currentAnswers} does not; " +
+                              "run wb suite to produce one");
+        }
+        else
+        {
+            drift.AddRange(GoldenDiff.CoverageSound(
+                FindingsSidecar.ReadCoverage(storedAnswers),
+                GoldenDiff.AsCoverage(FindingsSidecar.ReadCoverage(currentAnswers))));
+        }
+
+        drift.Sort(static (a, b) => a.Fails != b.Fails
+            ? b.Fails.CompareTo(a.Fails)
+            : string.CompareOrdinal(a.Kind + a.Section, b.Kind + b.Section));
+
+        int failures = drift.Count(d => d.Fails);
+
+        foreach (Drift d in drift)
+            Console.WriteLine($"      {(d.Fails ? "FAIL" : "note")} {d.Section}: {d.Kind} — {d.Detail}");
+
+        Console.WriteLine($"  {failures} failed, {drift.Count - failures} noted");
+
+        if (args.Flag("accept") || args.Flag("rebaseline"))
+        {
+            Console.WriteLine();
+            Console.WriteLine("  a sealed baseline is create-only and this layer never writes to one.");
+            Console.WriteLine("  to establish a new baseline, move the directory aside first.");
+            return Math.Max(failures, 1);
+        }
+
+        return failures;
+    }
+
     private static int TestGolden(Args args)
     {
         ulong seed = args.ULong("seed", 42);
         string outDir = args.Text("out", DefaultOutputDirectory);
         string current = Path.Combine(outDir, $"chronicle-{seed.ToString(CultureInfo.InvariantCulture)}.md");
+
+        string baselineDir = args.Text("baseline", "");
+        if (baselineDir.Length > 0) return TestGoldenAgainstBaseline(args, baselineDir);
 
         Console.WriteLine();
         Console.WriteLine("layer 5 — against the stored render");
@@ -1391,7 +1480,18 @@ public static class CommandLine
                            [--rebaseline --why "…"]
                                                    lower the floor deliberately; --accept alone
                                                    refuses to and says where
+                           [--baseline <dir>] [--current <dir>]
+                                                   diff two sidecars against a sealed baseline.
+                                                   Never writes to one: a sealed baseline is
+                                                   create-only, and re-baselining means moving
+                                                   the directory aside by hand
               wb test      all                     everything that needs no test host
+
+            layer 4 lives in tests/WorldBuilder.Chronicle.Tests and runs under dotnet test. It
+            verifies a chronicle against the record from an assembly that does not reference
+            WorldBuilder.Inference, so it cannot come to share an implementation with the
+            checker it exists to check. `wb test chronicle` is the in-process audit and is not
+            that independent verifier.
 
             Query commands read out/world-<seed>.jsonl; pass --file to point elsewhere.
 

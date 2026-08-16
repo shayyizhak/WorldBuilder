@@ -16,13 +16,30 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class CheckerRuleTests
 {
+    /// <summary>
+    /// The finding fired, <b>and</b> the rule that owns it read something to reach it.
+    ///
+    /// The second half is the one that would have caught round 11. A test asserting only that a
+    /// finding appeared still passes on a rule that reaches the right answer from the wrong
+    /// input, and a test asserting only that nothing fired passes on a rule that is inert — which
+    /// is the whole failure this layer exists to detect. Every positive case asserts extraction.
+    /// </summary>
     private static void Fires(string rule, string passage)
     {
-        IReadOnlyList<Fabrication> findings = SelfConsistency.Check(passage);
+        Coverage cover = new();
+        IReadOnlyList<Fabrication> findings = SelfConsistency.Check(passage, cover);
+
         Assert.True(
             findings.Any(f => f.Kind == rule),
             $"expected '{rule}' on: {passage}\n  got: " +
             (findings.Count == 0 ? "nothing" : string.Join("; ", findings.Select(f => $"{f.Kind}: {f.Context}"))));
+
+        string owner = RuleNames.Of(rule);
+        int extracted = cover.Rules.TryGetValue(owner, out RuleCounts? counts) ? counts.Extracted : 0;
+
+        Assert.True(extracted > 0,
+            $"'{rule}' fired but its owning rule '{owner}' extracted nothing — the finding was " +
+            $"reached without reading the passage.\n  on: {passage}");
     }
 
     private static void Silent(string passage)
@@ -32,6 +49,51 @@ public class CheckerRuleTests
             findings.Count == 0,
             $"expected nothing on: {passage}\n  got: " +
             string.Join("; ", findings.Select(f => $"{f.Kind}: {f.Context}")));
+    }
+
+    /// <summary>
+    /// Every Tier 1 rule has both halves, asserted as data rather than left to be counted by
+    /// hand across a file of individually named facts.
+    ///
+    /// A rule with only a firing case can be a rule that fires on everything, and a rule with
+    /// only a clean case can be inert. Neither is visible from a passing suite unless the pair is
+    /// required somewhere a new rule cannot be added without meeting it.
+    /// </summary>
+    [Theory]
+    [InlineData(SelfConsistency.Rules.CountEnumeration,
+        "Four people were murdered from within, including Weallhous Dreld in 25, " +
+        "Wilwound Ska in 31, Nael War in 37, and Paernrom Sir in 38.",
+        "During this transition, four exiles returned to take service with the Commune: " +
+        "Kou Peis in 32, Sou Dra in 34, Realsis Leirpu in 35, and Thosruld Lul in 39.")]
+    [InlineData(SelfConsistency.Rules.CountNarration,
+        "The period saw three places taken from the Wurn League. It took Laehiford in 7 and Hadale in 20.",
+        "Six exiles returned to take service with the Covenant.\nStald Gearngoll took " +
+        "the seat in 29. Kou Peis was cast out in 45. Veillpea Dourn took the seat in 45.")]
+    [InlineData(SelfConsistency.Rules.PartitionSum,
+        "Eleven rulers held the seat: five were killed and five were cast out.",
+        "Twelve people were cast out: six for attempted murder, four for a lost claim, " +
+        "and two for a lost challenge.")]
+    [InlineData(SelfConsistency.Rules.DateAgreement,
+        "Thres Thrild was killed in 46. The murder of Thres Thrild in 47 ended the dispute.",
+        "Thres Thrild was killed in 47. The murder of Thres Thrild in 47 went unpunished.")]
+    [InlineData(SelfConsistency.Rules.SummaryBody,
+        "The period began in 20 when Laehiford broke from the Kebarrow Compact, with " +
+        "Realsis Leirpu taking the seat.\nHe took service with the power in 20.",
+        "The period began in 20 when Laehiford broke from the Kebarrow Compact, with " +
+        "Realsis Leirpu taking the seat.\nRealsis Leirpu held the seat until 32.")]
+    [InlineData(SelfConsistency.Rules.CoinedTerm,
+        "The power answered with failed Counter-raids in 43.",
+        "The power answered with failed counter-raids in 43.")]
+    public void EveryTierOneRuleHasAFiringCaseAndACleanOne(string rule, string fires, string clean)
+    {
+        Coverage cover = new();
+        IReadOnlyList<Fabrication> findings = SelfConsistency.Check(fires, cover);
+
+        Assert.True(findings.Any(f => RuleNames.Of(f.Kind) == rule),
+            $"{rule} did not fire on its positive case:\n  {fires}");
+        Assert.True(cover.Rules[rule].Extracted > 0, $"{rule} fired without extracting:\n  {fires}");
+
+        Assert.DoesNotContain(SelfConsistency.Check(clean), f => RuleNames.Of(f.Kind) == rule);
     }
 
     // ---- 1.1 count versus enumeration -------------------------------------

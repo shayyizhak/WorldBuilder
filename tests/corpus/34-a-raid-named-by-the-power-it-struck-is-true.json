@@ -1,0 +1,11 @@
+{
+  "id": "v12-raid-indexed-by-place-only",
+  "kind": "must-not-fire",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 42–51",
+  "passage": "It sent three raids against the Vea Lode Covenant, targeting Vea Lode in 43.",
+  "expect_rule": "action",
+  "expect_span": "three raids against the Vea Lode Covenant",
+  "corrected": "",
+  "note": "Three real raids, named by the power they were aimed at rather than by the town. Raids were indexed by place alone, so the lookup could not be performed and the sentence was told none of them happened. A prose passage may reasonably speak of raiding either the town or the house that holds it, and the event records both."
+}

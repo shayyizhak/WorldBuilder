@@ -323,10 +323,16 @@ public class LexiconTests
 
         List<Drift> drift = GoldenDiff.CoverageSound(stored, current);
 
-        Assert.Contains(drift, d => d.Kind == "floor" && d.Detail.Contains("count-enumeration",
+        // A rule that read six and now reads none is reported under its own name. It is still a
+        // floor breach and still fails; calling it went-silent keeps the one comparison that
+        // matters from reading like the ordinary drops beside it.
+        Assert.Contains(drift, d => d.Kind == "went-silent" && d.Detail.Contains("count-enumeration",
             StringComparison.Ordinal));
+
+        // A steep drop short of zero stays a floor breach.
         Assert.Contains(drift, d => d.Kind == "floor" && d.Detail.Contains("partition-sum",
             StringComparison.Ordinal));
+
         Assert.All(drift, d => Assert.True(d.Fails));
     }
 

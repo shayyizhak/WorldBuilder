@@ -573,39 +573,10 @@ public class CheckerCorpusTests
         }
     }
 
-    /// <summary>
-    /// Every false positive the v1.2 unresolvable split produced on its first contact with real
-    /// prose. Two, from one change, in the shape the rule predicts.
-    ///
-    /// Both had been there for rounds and neither was visible, which is the whole argument for
-    /// the split. "The lookup was performed and found nothing" was being recorded as "the lookup
-    /// could not be performed", so two broken extractions sat in the quiet branch: one reading
-    /// four words past the end of a name, the other unable to look up a raid by the power it was
-    /// aimed at. Making the branch speak is what exposed them — and would have shipped them as
-    /// accusations against true sentences.
-    /// </summary>
-    [Fact]
-    public void TheUnresolvableSplitLeavesTrueSentencesAlone()
-    {
-        WorldView view = World();
-
-        // A raid on a real target, followed by a body count. The phrase-reader takes up to four
-        // words after "on", so the target arrived as "hadale killed 16 but" and matched nothing;
-        // narrowed to a known name it matched, and then "16" was read as the year.
-        FabricationReport hadale = FabricationCheck.Check(Faction(view, 2, 2, 21),
-            "The Compact's raid on Vea Lode was beaten off, and its raid on Hadale killed 16 " +
-            "but took little.");
-
-        Assert.DoesNotContain(hadale.Findings, f => f.Kind == "no-such-event");
-
-        // A raid named by the power it was aimed at rather than by the town. Raids were indexed
-        // by place alone, so a sentence describing three real raids was told none of them
-        // happened.
-        FabricationReport covenant = FabricationCheck.Check(Faction(view, 2, 42, 51),
-            "It sent three raids against the Vea Lode Covenant, targeting Vea Lode in 43.");
-
-        Assert.DoesNotContain(covenant.Findings, f => f.Kind == "no-such-event");
-    }
+    // The two false positives the v1.2 unresolvable split produced on its first contact with
+    // real prose — the raid phrase-reader over-reading four words past a name, and raids indexed
+    // by place alone — now live in the corpus as rows 33 and 34, so they are asserted where every
+    // other hand-found defect is asserted rather than in a second place that has to be remembered.
 
     /// <summary>
     /// And the split still fires where it should: a killing the records do not hold, asserted

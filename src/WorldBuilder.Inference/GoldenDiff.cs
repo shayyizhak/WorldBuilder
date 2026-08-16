@@ -18,7 +18,7 @@ public sealed record Drift(string Section, string Kind, string Detail)
     /// an honest handoff to another rule, and gating on it as well would fail builds twice for
     /// one fault and reward extracting less.
     /// </summary>
-    public bool Fails => Kind is "figure" or "section-missing" or "floor" or "accounting";
+    public bool Fails => Kind is "figure" or "section-missing" or "floor" or "accounting" or "went-silent";
 }
 
 /// <summary>
@@ -131,8 +131,15 @@ public static class GoldenDiff
                 int extracted = now.Rules.TryGetValue(rule, out RuleCounts? c) ? c.Extracted : 0;
                 if (extracted >= was.Extracted) continue;
 
-                drift.Add(new Drift(section, "floor",
-                    $"{rule} extracted {was.Extracted} here at the baseline and {extracted} now"));
+                // Non-zero to zero is called by its own name. It is still a floor breach and
+                // still fails, but it is the exact signature of the silent-path family — the
+                // rule did not read less, it read nothing — and a report that buries it among
+                // ordinary drops makes the one comparison that matters look like the others.
+                drift.Add(extracted == 0
+                    ? new Drift(section, "went-silent",
+                        $"{rule} extracted {was.Extracted} here at the baseline and nothing now")
+                    : new Drift(section, "floor",
+                        $"{rule} extracted {was.Extracted} here at the baseline and {extracted} now"));
             }
         }
 
@@ -142,6 +149,40 @@ public static class GoldenDiff
                 drift.Add(new Drift(section, "accounting", line));
 
         return drift;
+    }
+
+    /// <summary>
+    /// Stored counts rebuilt as <see cref="Coverage"/>, so a sidecar read from disk can be
+    /// compared against another sidecar rather than against rules re-run over prose.
+    ///
+    /// Comparing two sidecars is the only sound way to diff a baseline: both sides were written
+    /// by the checker that produced them, over packs rather than over text, and both carry all
+    /// sixteen rules. Recomputing one side from its markdown yields Tier 1 alone, so every Tier 2
+    /// rule reads as having gone to zero — a diff that fails loudly for a reason that is entirely
+    /// its own doing.
+    /// </summary>
+    public static Dictionary<string, Coverage> AsCoverage(
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>> scopes)
+    {
+        Dictionary<string, Coverage> rebuilt = new(StringComparer.Ordinal);
+
+        foreach ((string scope, IReadOnlyDictionary<string, RuleCounts> rules) in scopes)
+        {
+            Coverage cover = new();
+
+            foreach ((string rule, RuleCounts counts) in rules)
+            {
+                cover.Ran(rule);
+                if (counts.Extracted > 0) cover.Extracted(rule, counts.Extracted);
+                if (counts.Checked > 0) cover.Checked(rule, counts.Checked);
+                if (counts.Unresolvable > 0) cover.Unresolvable(rule, "recorded at the baseline", null, counts.Unresolvable);
+                if (counts.Fired > 0) cover.Fired(rule, counts.Fired);
+            }
+
+            rebuilt[scope] = cover;
+        }
+
+        return rebuilt;
     }
 
     /// <summary>

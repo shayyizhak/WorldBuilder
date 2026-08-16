@@ -49,8 +49,15 @@ public static class Invariants
         // Coups are counted among those that reached a decision. Plots overtaken by the target
         // dying never reach a reader, so counting them in the denominator understates the world.
         Add("coup success rate", $"{audit.CoupDecidedPct}%", audit.CoupDecidedPct > 15, "> 15%");
-        Add("covert coup path", audit.CoupsWon + audit.CoupsExposed,
-            audit.CoupsWon + audit.CoupsExposed > 0, "> 0 resolved conspiracies");
+
+        // Wins, not resolutions.
+        //
+        // This counted won + exposed and so reported a healthy covert path while nothing on it
+        // ever succeeded — the exact regression it was written for, v0 run 3's "127 plotted, 0
+        // won", passing its own guard. An invariant that cannot detect the defect it exists for
+        // is worse than no invariant, because it occupies the place where one would be noticed
+        // to be missing.
+        Add("covert coup path", audit.CoupsWon, audit.CoupsWon > 0, "> 0 coups won");
 
         int economyPct = audit.CauseEdges == 0 ? 0 : audit.EconomyDrivenEdges * 100 / audit.CauseEdges;
         int crossPct = audit.CauseEdges == 0 ? 0 : audit.CrossDomainEdges * 100 / audit.CauseEdges;

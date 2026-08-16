@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Layer 4 lives alone, and the isolation is the point.
+
+    The checker decides what enters canon; this layer decides whether the checker works. A checker
+    that silently stops firing is invisible without an independent verifier, so the two must never
+    come to share an implementation. The specification asks for a comment saying so. A comment
+    will not hold — prompt fixes decay and so do comments — so the guarantee is structural
+    instead: there is no ProjectReference to WorldBuilder.Inference below, which makes sharing a
+    compile error rather than a code-review judgement.
+
+    Same move as CacheOnlyLlmClient. A property that holds by construction beats one that holds
+    by maintenance.
+  -->
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>WorldBuilder.Chronicle.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\WorldBuilder.Core\WorldBuilder.Core.csproj" />
+  </ItemGroup>
+
+</Project>

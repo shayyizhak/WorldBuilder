@@ -1,0 +1,12 @@
+{
+  "id": "v12-kebarrow-2-21-action-extracts-nothing",
+  "kind": "extraction",
+  "seed": 42,
+  "scope": "The Kebarrow Compact, 2–21",
+  "passage": "The Compact's raid on Vea Lode was beaten off, and its raid on Hadale killed 16 but took little.",
+  "expect_rule": "action",
+  "expect_extraction": 0,
+  "expect_span": "its raid on Hadale killed 16 but took little",
+  "corrected": "",
+  "note": "The pre-v1.2 checker built one action assertion here and could not resolve it, recording 'the records hold no raid on that target'. The phrase-reader took up to four words after 'on', so the target arrived as 'hadale killed 16 but' and matched nothing. The right answer is that no assertion exists to check: the words after the name are a body count, not a target. Pinned as a count because no finding-shaped row can say 'this was never an assertion'. The archived pre-v1.2 sidecar in the baseline shows extracted 1 here; the anchor shows 0."
+}

@@ -167,5 +167,42 @@ public static class FindingsSidecar
         return scopes;
     }
 
+    /// <summary>
+    /// The per-scope coverage counts back out of a stored sidecar.
+    ///
+    /// Read rather than recomputed, and that is the whole point. Recomputing the baseline's
+    /// counts from the baseline's prose runs today's rules over yesterday's text, so a rule that
+    /// has since gone quiet reports the same figure on both sides and the comparison agrees with
+    /// the bug it exists to find.
+    /// </summary>
+    public static Dictionary<string, IReadOnlyDictionary<string, RuleCounts>> ReadCoverage(string path)
+    {
+        Dictionary<string, IReadOnlyDictionary<string, RuleCounts>> scopes = new(StringComparer.Ordinal);
+
+        using System.Text.Json.JsonDocument doc = System.Text.Json.JsonDocument.Parse(File.ReadAllText(path));
+
+        if (!doc.RootElement.TryGetProperty("scopes", out System.Text.Json.JsonElement list)) return scopes;
+
+        foreach (System.Text.Json.JsonElement scope in list.EnumerateArray())
+        {
+            string name = scope.GetProperty("scope").GetString() ?? "";
+            Dictionary<string, RuleCounts> rules = new(StringComparer.Ordinal);
+
+            foreach (System.Text.Json.JsonProperty rule in scope.GetProperty("coverage").EnumerateObject())
+            {
+                System.Text.Json.JsonElement c = rule.Value;
+                rules[rule.Name] = new RuleCounts(
+                    c.GetProperty("extracted").GetInt32(),
+                    c.GetProperty("checked").GetInt32(),
+                    c.GetProperty("unresolvable").GetInt32(),
+                    c.GetProperty("fired").GetInt32());
+            }
+
+            scopes[name] = rules;
+        }
+
+        return scopes;
+    }
+
     private static string Quote(string value) => System.Text.Json.JsonSerializer.Serialize(value);
 }
