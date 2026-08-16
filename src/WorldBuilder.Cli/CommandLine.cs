@@ -466,6 +466,7 @@ public static class CommandLine
 
         int failures = 0;
         List<Audit> panel = [];
+        List<EventLog> panelLogs = [];
         Console.WriteLine("layer 1 — dynamics invariants");
 
         foreach (string raw in seeds)
@@ -481,6 +482,8 @@ public static class CommandLine
             int broken = results.Count(r => !r.Held);
             failures += broken;
             panel.Add(Audit.Compute(view));
+            panelLogs.Add(view.Log);
+            panelLogs.Add(view.Log);
 
             Console.WriteLine($"  seed {seed,-5} {results.Count - broken}/{results.Count} held");
 
@@ -502,7 +505,7 @@ public static class CommandLine
         Console.WriteLine();
         Console.WriteLine("  pooled across the panel");
 
-        foreach (Invariant r in Invariants.CheckPanel(panel))
+        foreach (Invariant r in Invariants.CheckPanel(panel, panelLogs))
         {
             if (!r.Held) failures++;
             Console.WriteLine($"      {(r.Held ? "ok  " : "FAIL")} {r.Name}: {r.Measured}, " +

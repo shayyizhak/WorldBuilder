@@ -98,6 +98,10 @@ public sealed record Audit
     /// </summary>
     public required int RaidsThatGotThrough { get; init; }
 
+    /// <summary>Numerators for the two mechanics this phase changed, so their rates can be shown to move.</summary>
+    public required int TributesPaid { get; init; }
+    public required int HeirClaimsUpheld { get; init; }
+
     /// <summary>How much deadlier a typical plague is than a typical famine, as a percentage.</summary>
     public int PlagueToFaminePct =>
         MedianFamineDeaths == 0 ? 0 : MedianPlagueDeaths * 100 / MedianFamineDeaths;
@@ -327,9 +331,13 @@ public sealed record Audit
             if (e.Kind == EventKind.PolityCoupPlotted && e.Year + lifespan <= lastYear)
                 matured.Add(e.Id);
 
-        int gotThrough = 0;
+        int gotThrough = 0, tributesPaid = 0, heirClaimsUpheld = 0;
         foreach (Event e in log.Events)
+        {
             if (e.Kind == EventKind.ConflictRaid && e.Outcome == Outcome.Succeeded) gotThrough++;
+            if (e.Kind == EventKind.DiploTributeDemanded && e.Outcome == Outcome.Succeeded) tributesPaid++;
+            if (e.GetString("reason") == "the named heir's claim upheld") heirClaimsUpheld++;
+        }
 
         List<(string, int)> worst = [];
         foreach ((string sig, int count) in seen)
@@ -422,6 +430,8 @@ public sealed record Audit
             PlotsMatured = matured.Count,
             PlotsMaturedTerminated = CountIntersection(matured, plotsTerminated),
             RaidsThatGotThrough = gotThrough,
+            TributesPaid = tributesPaid,
+            HeirClaimsUpheld = heirClaimsUpheld,
             Challenges = challenges,
             Plagues = plagues,
             PlagueEnds = plagueEnds,

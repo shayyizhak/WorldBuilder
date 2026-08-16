@@ -292,8 +292,28 @@ public static class ActionPhase
         WorldState state = tick.State;
         int demand = Math.Min(to.Treasury, 30 + leader.Traits.Guile / 2);
 
+        // A house with nothing to give is not asked.
+        //
+        // A demand that cannot be paid resolves as a refusal, which is the noise rather than the
+        // dynamics: it emits a line, moves two points of legitimacy and says nothing about
+        // either house. Not asking is the honest form of the same non-event.
+        if (demand <= 0) return;
+
+        // Compliance is a gradient, not a cliff.
+        //
+        // This required the demander to be more than 1.33x as powerful before compliance was
+        // even possible, and then put a 70% roll on top. Below that ratio refusal was certain
+        // however lopsided the world was in every other respect, so the mechanic existed to be
+        // refused — 28 times in 34 — and each refusal moved a few points of legitimacy and
+        // nothing else. The same shape as the raid roll: a structural gate that makes one branch
+        // nearly unreachable, with dice over it.
+        //
+        // At parity an equal house does not pay. At half again as strong it is even odds. It
+        // saturates at 80% rather than at certainty, because a proud house may always refuse and
+        // a branch that cannot fail is the thing this phase exists to remove.
         Rng rng = tick.Rng(from.Id, RngPurpose.Diplomacy);
-        bool complies = state.PowerOf(to.Id) * 100 < state.PowerOf(from.Id) * 75 && demand > 0 && rng.Chance(70);
+        int edge = state.PowerOf(from.Id) * 100 / Math.Max(1, state.PowerOf(to.Id));
+        bool complies = rng.Chance(Math.Clamp(edge - 100, 0, 80));
 
         EventDraft draft = new EventDraft(EventKind.DiploTributeDemanded)
             .By(from.Id)

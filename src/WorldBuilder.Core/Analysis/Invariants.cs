@@ -145,6 +145,33 @@ public static class Invariants
         Add("raid outcome spread", $"{raidSkew}% one way ({beatenOff} beaten, {tookAHaul} haul, " +
             $"{tookNothing} empty)", raids > 0 && raidSkew <= 90, "<= 90% one way", raids);
 
+        // The two mechanics this phase changed after raids, on the same bar rather than a new
+        // one. §6 requires a metric for any mechanic whose distribution moved; the bar is the
+        // established outcome-spread bar, not a value invented for these.
+        //
+        // Both currently sit near 80%, which passes. That is deliberate: they are watched rather
+        // than asserted into compliance, and the residual skew on each is a recorded finding with
+        // its cause named — target selection for tribute, and legitimacy being lowest exactly
+        // when a disputed succession fires.
+        // Reported per seed, asserted pooled.
+        //
+        // Per-seed n runs from 3 to 15, which cannot carry a percentage: at n=5 the achievable
+        // values are 20 points apart and a single event moves the figure across the bar. §4's
+        // pre-committed rule applies — assert on the pooled panel, where n is 36 and 42. A
+        // per-seed floor of "> 0" is not used here either: with a 20% base rate and seven
+        // demands, a world where no tribute is ever paid is one in five by chance, and a floor
+        // that fails on chance is not a floor. Reachability across the panel is asserted
+        // separately, which is the right home for "does this ever happen at all".
+        foreach ((string name, string decision) in new[]
+                 {
+                     ("tribute outcome spread", "DIPLO.TRIBUTE_DEMANDED"),
+                     ("heir claim outcome spread", "POLITY.SUCCESSION (claim)"),
+                 })
+        {
+            (int n, int skew) = OutcomeAudit.SpreadOf(view.Log, decision);
+            Add(name, $"{skew}% one way", true, "reported here; asserted pooled", n);
+        }
+
         // Every conspiracy ends in exactly one recorded way, or the log has loose ends.
         Add("plots terminated", $"{audit.PlotTerminationPct}%", audit.PlotTerminationPct >= 85, ">= 85%");
 
@@ -165,18 +192,47 @@ public static class Invariants
     /// The per-seed assertion is not dropped, it is narrowed to the thing fourteen samples *can*
     /// support: that the covert path works at all in every world.
     /// </summary>
-    public static List<Invariant> CheckPanel(IReadOnlyList<Audit> panel)
+    public static List<Invariant> CheckPanel(IReadOnlyList<Audit> panel) =>
+        CheckPanel(panel, []);
+
+    /// <summary>
+    /// The panel-level invariants. <paramref name="logs"/> may be empty, in which case only the
+    /// metrics computable from the audits are returned.
+    /// </summary>
+    public static List<Invariant> CheckPanel(IReadOnlyList<Audit> panel, IReadOnlyList<EventLog> logs)
     {
         int won = 0, plotted = 0;
         foreach (Audit a in panel) { won += a.CoupsWon; plotted += a.PlotsOpened; }
 
         int pct = plotted == 0 ? 0 : won * 100 / plotted;
 
-        return
+        List<Invariant> results =
         [
             new Invariant("coup success rate (of plotted), pooled", $"{pct}%", pct > 15,
                 "> 15% of plots opened, across the panel", plotted),
         ];
+
+        foreach ((string name, string decision) in new[]
+                 {
+                     ("tribute outcome spread, pooled", "DIPLO.TRIBUTE_DEMANDED"),
+                     ("heir claim outcome spread, pooled", "POLITY.SUCCESSION (claim)"),
+                 })
+        {
+            Dictionary<string, int> pooled = new(StringComparer.Ordinal);
+
+            foreach (EventLog log in logs)
+                if (OutcomeAudit.Distributions(log).TryGetValue(decision, out Dictionary<string, int>? counts))
+                    foreach ((string branch, int n) in counts)
+                        pooled[branch] = pooled.GetValueOrDefault(branch) + n;
+
+            if (pooled.Count == 0) continue;
+
+            OutcomeSpread spread = new(decision, pooled);
+            results.Add(new Invariant(name, $"{spread.SkewPct}% one way",
+                spread.SkewPct <= 90, "<= 90% one way, across the panel", spread.Total));
+        }
+
+        return results;
     }
 
     /// <summary>

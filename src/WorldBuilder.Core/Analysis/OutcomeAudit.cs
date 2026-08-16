@@ -198,6 +198,21 @@ public static class OutcomeAudit
         return (total, dead);
     }
 
+    /// <summary>
+    /// One named decision's sample size and skew, for a Layer 1 metric to assert on.
+    ///
+    /// Returns <c>(0, 0)</c> where the decision never fired, so a world that simply did not
+    /// reach the mechanic is not reported as perfectly skewed — absence and lopsidedness are
+    /// different things and this project has conflated them enough times.
+    /// </summary>
+    public static (int Sample, int SkewPct) SpreadOf(EventLog log, string decision)
+    {
+        if (!Distributions(log).TryGetValue(decision, out Dictionary<string, int>? counts)) return (0, 0);
+
+        OutcomeSpread spread = new(decision, counts);
+        return (spread.Total, spread.SkewPct);
+    }
+
     public static IReadOnlyList<string> Report(IReadOnlyList<OutcomeSpread> spreads)
     {
         List<string> lines = [];

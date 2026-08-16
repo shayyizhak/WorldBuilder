@@ -185,8 +185,22 @@ public static class ConsequencePhase
             .Because(cause)
             .Weight(Significance.Major));
 
-        int heirScore = Backing(state, heir) + heir.Traits.Martial / 2 + rng.Next(50);
-        int rivalScore = Backing(state, rival) + rival.Traits.Martial / 2 + rival.Traits.Ambition / 3 + rng.Next(50);
+        // Being the named heir is worth something.
+        //
+        // The rival carried an Ambition term worth up to 33 points and the heir had no
+        // counterpart to it: the one thing that made him the heir counted for nothing in the
+        // comparison deciding whether he inherited. The claim was set aside in 34 of 41, and the
+        // code already knew — the "decision" tag below was added because pooling hid it, and its
+        // comment recorded thirteen in fifteen. Observed, tagged, never adjudicated.
+        //
+        // The counterweight is the legitimacy of the house behind the claim, at the same
+        // magnitude as the rival's ambition. Not larger: an heir should not be guaranteed either.
+        // A legitimate house passes its seat to the named heir and a house in crisis is where a
+        // rival takes it, which is a story rather than a coin flip.
+        int heirScore = Backing(state, heir) + heir.Traits.Martial / 2
+                        + faction.Legitimacy / 3 + rng.Next(50);
+        int rivalScore = Backing(state, rival) + rival.Traits.Martial / 2
+                         + rival.Traits.Ambition / 3 + rng.Next(50);
 
         Actor winner = heirScore >= rivalScore ? heir : rival;
         Actor loser = heirScore >= rivalScore ? rival : heir;

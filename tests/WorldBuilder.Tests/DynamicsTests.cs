@@ -50,11 +50,14 @@ public class DynamicsTests
     /// <c>plots terminated</c> — redefined over conspiracies that had their full lifespan to
     /// conclude, the same exemption the engine's own termination assertion has always applied.
     ///
-    /// <b>distinct deep-chain shapes</b> — 44 on seed 7 against a bar of 60. <b>Category two, a
-    /// real loss.</b> The volume explanation was tested and refuted: seed 7 produces exactly 611
-    /// events under both rulesets and its deep chains fell 73 to 53, while seed 42 produced
-    /// *fewer* events and *more* shapes. Variety rose on seeds 42 and 99 and fell on 7, 1234 and
-    /// 2025, so this is not a uniform regression. Cause not yet named; seed 7 is where to look.
+    /// <b>distinct deep-chain shapes</b> — 55 on seed 7 against a bar of 60, up from 44 before
+    /// this phase's tribute and succession changes and 54 before the raid work. <b>Category two,
+    /// a real loss, and recovering.</b> The volume explanation was tested and refuted: seed 7
+    /// produces exactly 611 events under rulesets 1 and 2 — and a *different* 611, the streams
+    /// diverging at event 56 — while seed 42 produced fewer events and more shapes. Variety has
+    /// risen on every mechanic change since without any of them targeting it, which is consistent
+    /// with causal variety being a function of how many mechanics have reachable branches.
+    /// Owning round: the engine-dynamics phase. Parked, watched, not chased.
     ///
     /// <b>verbatim repeat rate</b> — 12% on seed 7 and 10% on seed 1234 against a bar of "&lt; 10%".
     /// <b>Category two, still, and the raid round did not fix it.</b> The diagnosis it produced
