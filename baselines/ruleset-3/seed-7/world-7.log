@@ -1,0 +1,431 @@
+# 377 of 642 events. The other 265 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.DEATH_NATURAL          Treallbeirn Bith (a:8), heir of the Kraeford Compact (f:2), dies at 23 in Kraeford (p:3)  e:36
+[Y0002]       LIFE.DEATH_NATURAL          Heasoth Lefor (a:17), captain of House Thream (f:3), dies at 24 in Loufell (p:4)  e:37
+[Y0002]       LIFE.MARRIAGE               Pealsold Voskoul (a:3) marries Skur Stas (a:7), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:38
+[Y0002] w:1   ECONOMY.FAMINE              famine at Ra Cut (p:8): 3 dead, grain short by 1  e:40
+[Y0002] w:2   POLITY.COUP_PLOTTED         Bran Nas (a:18) begins conspiring against Freamteas Kraeth (a:13) of House Thream (f:3)  [secret]  e:42
+[Y0002]       CONFLICT.CONQUEST           the Goummeidale Compact (f:1) occupies Ra Cut (p:8), which no one held  e:43
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Kraeford Compact (f:2) demands tribute of the Goummeidale Compact (f:1) and is refused  e:44
+[Y0002]       DIPLO.ALLIANCE_FORMED       the Kraeford Compact (f:2) and House Thream (f:3) swear an alliance  e:45
+[Y0002]       DIPLO.INSULT                House Thream (f:3) publicly slights the Goummeidale Compact (f:1)  e:46
+
+[Y0003]       LIFE.DEATH_NATURAL          Freamteas Kraeth (a:13), ruler of House Thream (f:3), dies at 50 in Loufell (p:4)  e:49
+[Y0003]       LIFE.MARRIAGE               Kaell Frouspim (a:5) marries Thral Rei (a:19) at Goummeidale (p:2)  e:50
+[Y0003]       LIFE.MARRIAGE               Kokaes Threll (a:14) marries Keath Daendro (a:20), binding House Thream (f:3) to the Kraeford Compact (f:2)  <= e:45  e:51
+[Y0003] w:3   DIPLO.WAR_DECLARED          the Goummeidale Compact (f:1) declares war on House Thream (f:3) for Sti Seam (p:7)  e:55
+[Y0003] w:3   CONFLICT.BATTLE             the Goummeidale Compact (f:1) defeats House Thream (f:3) at Sti Seam (p:7) (35 dead)  <= e:55  e:56
+[Y0003]       POLITY.SUCCESSION           Bran Nas (a:18) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:49  e:57
+[Y0003] w:1   ECONOMY.FAMINE_ENDS         the hunger at Ra Cut (p:8) passes after 1 years  <= e:40  e:59
+
+[Y0004]       LIFE.MARRIAGE               Kraedren Waeld (a:10) marries Fous Bo (a:15), binding the Kraeford Compact (f:2) to House Thream (f:3)  <= e:45  e:60
+[Y0004]       LIFE.BIRTH                  Broul Gom (a:22) is born to Pealsold Voskoul (a:3) at Goummeidale (p:2)  <= e:38  e:61
+[Y0004]       LIFE.BIRTH                  Waeld Dould (a:23) is born to Kokaes Threll (a:14) at Loufell (p:4)  <= e:51  e:62
+[Y0004] w:4   ECONOMY.FAMINE              famine at Ra Cut (p:8): 5 dead, grain short by 2  e:64
+[Y0004] w:5   POLITY.COUP_PLOTTED         Vinbeil Real (a:4) begins conspiring against Sealoll Lael (a:1) of the Goummeidale Compact (f:1)  [secret]  <= e:64  e:66
+[Y0004] w:6   POLITY.COUP_PLOTTED         Kraedren Waeld (a:10) begins conspiring against Skur Stas (a:7) of the Kraeford Compact (f:2)  [secret]  <= e:44  e:67
+[Y0004]       POLITY.COURTS_SUPPORT       Kokaes Threll (a:14) wins Ma Graltaeld (a:16) away from the ruler of House Thream (f:3)  e:68
+[Y0004]       ECONOMY.TRADE_PACT          the Goummeidale Compact (f:1) and the Kraeford Compact (f:2) agree terms of trade  <= e:64  e:69
+[Y0004]       CONFLICT.RAID               House Thream (f:3) raids Goummeidale (p:2), carrying off 49 grain and killing 54  e:70
+[Y0004] w:2   POLITY.PLOT_LAPSES          Bran Nas (a:18)'s conspiracy against Freamteas Kraeth (a:13) lapses after 2 years — its author took the seat by other means  [secret]  <= e:42  e:71
+[Y0004] w:3   CONFLICT.BATTLE             House Thream (f:3) defeats the Goummeidale Compact (f:1) at Sti Seam (p:7) (29 dead)  <= e:55  e:72
+
+[Y0005]       LIFE.MARRIAGE               Freindmald Beindlea (a:6) marries Frouldtoun Dror (a:11), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:74
+[Y0005] w:4   ECONOMY.FAMINE              famine at Ra Cut (p:8), year 2: 8 dead, 28 abandon the place  <= e:64  e:77
+[Y0005]       POLITY.COURTS_SUPPORT       Vinbeil Real (a:4) wins Thral Rei (a:19) away from the ruler of the Goummeidale Compact (f:1)  <= e:64  e:79
+[Y0005] w:6   CONFLICT.ASSASSINATION      Kraedren Waeld (a:10) has Skur Stas (a:7) murdered at Kraeford (p:3)  <= e:44  e:80
+[Y0005]       LIFE.DEATH_VIOLENT          Skur Stas (a:7), ruler of the Kraeford Compact (f:2), is killed by Kraedren Waeld (a:10) at Kraeford (p:3)  <= e:80  e:81
+[Y0005] w:7   POLITY.COUP_PLOTTED         Kokaes Threll (a:14) begins conspiring against Bran Nas (a:18) of House Thream (f:3)  [secret]  e:82
+[Y0005]       ECONOMY.TRADE_PACT          the Goummeidale Compact (f:1) and the Kraeford Compact (f:2) agree terms of trade  <= e:64  e:83
+[Y0005]       ECONOMY.TRADE_PACT          House Thream (f:3) and the Kraeford Compact (f:2) agree terms of trade  e:84
+[Y0005] w:3   CONFLICT.BATTLE             House Thream (f:3) defeats the Goummeidale Compact (f:1) at Sti Seam (p:7) (24 dead)  <= e:55  e:85
+[Y0005] w:5   POLITY.COUP_RESOLVED        Vinbeil Real (a:4)'s conspiracy against Sealoll Lael (a:1) is uncovered after 1 years  <= e:66  e:86
+[Y0005]       POLITY.EXILE                Vinbeil Real (a:4) is cast out of the Goummeidale Compact (f:1) — conspiracy against the seat  <= e:86  e:87
+[Y0005] w:8   POLITY.SUCCESSION_DISPUTED  Kraedren Waeld (a:10) contests the claim of Stearnke Gullleith (a:9), the named heir, to the Kraeford Compact (f:2) (decided by election)  <= e:81  e:88
+[Y0005] w:8   POLITY.SUCCESSION           Stearnke Gullleith (a:9), the named heir, takes the seat of the Kraeford Compact (f:2); the rival claim of Kraedren Waeld (a:10) is rejected  <= e:88  e:89
+[Y0005]       POLITY.EXILE                Kraedren Waeld (a:10) is cast out of the Kraeford Compact (f:2) — the losing claim  <= e:88  e:90
+
+[Y0006]       LIFE.DEATH_NATURAL          Bran Nas (a:18), ruler of House Thream (f:3), dies at 59 in Loufell (p:4)  e:92
+[Y0006]       LIFE.BIRTH                  Reafaeth Geall (a:25) is born to Kokaes Threll (a:14) at Loufell (p:4)  <= e:51  e:93
+[Y0006]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kraeford (p:3), carrying off 57 grain and killing 28  <= e:64  e:99
+[Y0006]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Goummeidale (p:2), carrying off 28 grain and killing 53  <= e:99  e:100
+[Y0006] w:3   CONFLICT.BATTLE             the Goummeidale Compact (f:1) defeats House Thream (f:3) at Sti Seam (p:7) (20 dead)  <= e:55  e:101
+[Y0006] w:3   CONFLICT.CONQUEST           the Goummeidale Compact (f:1) takes Sti Seam (p:7) from House Thream (f:3)  <= e:101  e:102
+[Y0006] w:6   POLITY.COUP_RESOLVED        Kraedren Waeld (a:10)'s conspiracy against Stearnke Gullleith (a:9) is uncovered after 2 years  <= e:67  e:103
+[Y0006]       POLITY.EXILE                Kraedren Waeld (a:10), who had already left, is declared outlaw by the Kraeford Compact (f:2) — conspiracy against the seat  <= e:103  e:104
+[Y0006] w:9   POLITY.SUCCESSION_DISPUTED  Kokaes Threll (a:14) contests the claim of Ma Graltaeld (a:16), the named heir, to House Thream (f:3) (decided by strongest)  <= e:92  e:105
+[Y0006] w:9   POLITY.SUCCESSION           Kokaes Threll (a:14) takes the seat of House Thream (f:3), setting aside the claim of the named heir Ma Graltaeld (a:16)  <= e:105  e:106
+[Y0006]       POLITY.EXILE                Ma Graltaeld (a:16) is cast out of House Thream (f:3) — the losing claim  <= e:105  e:107
+
+[Y0007]       LIFE.DEATH_NATURAL          Hahern Vull (a:12), captain of the Kraeford Compact (f:2), dies at 61 in Kraeford (p:3)  e:109
+[Y0007]       LIFE.DEATH_NATURAL          Keath Daendro (a:20), commoner of the Kraeford Compact (f:2), dies at 33 in Kraeford (p:3)  e:110
+[Y0007]       POLITY.EXILE_RETURN         Vinbeil Real (a:4) returns from exile and takes service with House Thream (f:3)  <= e:87  e:115
+[Y0007] w:11  POLITY.COUP_PLOTTED         Fous Bo (a:15) begins conspiring against Kokaes Threll (a:14) of House Thream (f:3)  [secret]  <= e:107  e:116
+[Y0007]       POLITY.EXILE_RETURN         Ma Graltaeld (a:16) returns from exile and takes service with the Kraeford Compact (f:2)  <= e:107  e:117
+[Y0007]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Seithfaehollow (p:6), carrying off 54 grain and killing 35  e:118
+[Y0007]       ECONOMY.TRADE_PACT          House Thream (f:3) and the Goummeidale Compact (f:1) agree terms of trade  e:119
+[Y0007] w:3   DIPLO.PEACE_SIGNED          the Goummeidale Compact (f:1) and House Thream (f:3) make peace after 4 years, both sides exhausted  <= e:55  e:120
+[Y0007] w:7   POLITY.PLOT_LAPSES          Kokaes Threll (a:14)'s conspiracy against Bran Nas (a:18) lapses after 2 years — its author took the seat by other means  [secret]  <= e:82  e:121
+[Y0007]       POLITY.REVOLT               Sti Seam (p:7) rises against the Goummeidale Compact (f:1), whose standing had fallen very low  e:123
+
+[Y0008]       LIFE.BIRTH                  Maethhol Gondrur (a:26) is born to Pealsold Voskoul (a:3) at Goummeidale (p:2)  <= e:38  e:124
+[Y0008] w:12  ECONOMY.FAMINE              famine at Seithfaehollow (p:6): 69 dead, grain short by 6  e:127
+[Y0008] w:11  CONFLICT.ASSASSINATION      Fous Bo (a:15) has Kokaes Threll (a:14) murdered at Loufell (p:4)  <= e:107  e:131
+[Y0008]       LIFE.DEATH_VIOLENT          Kokaes Threll (a:14), ruler of House Thream (f:3), is killed by Fous Bo (a:15) at Loufell (p:4)  <= e:131  e:132
+[Y0008]       POLITY.LEGITIMACY_CRISIS    the Goummeidale Compact (f:1) spends 50 silver to buy back goodwill  e:133
+[Y0008]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Kreagemoor (p:5), carrying off 27 grain and killing 28  e:134
+[Y0008]       POLITY.SUCCESSION           Vinbeil Real (a:4) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:132  e:135
+[Y0008]       POLITY.SECESSION            Kreagemoor (p:5) breaks from the Goummeidale Compact (f:1) as the Kreagemoor Covenant, with Thral Rei (a:19) taking its seat  e:137
+
+[Y0009]       LIFE.DEATH_NATURAL          Stearnke Gullleith (a:9), ruler of the Kraeford Compact (f:2), dies at 65 in Kraeford (p:3)  e:138
+[Y0009]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Goummeidale (p:2) (143% of usual)  e:140
+[Y0009]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Sti Seam (p:7) (142% of usual)  e:143
+[Y0009]       POLITY.APPOINTMENT          Voumfaern Ki (a:2) is raised to steward of the Goummeidale Compact (f:1)  e:145
+[Y0009]       CONFLICT.RAID               House Thream (f:3)'s raid on Sti Seam (p:7) is beaten off  e:146
+[Y0009]       ECONOMY.TRADE_PACT          the Kreagemoor Covenant (f:4) and the Goummeidale Compact (f:1) agree terms of trade  e:147
+[Y0009] w:13  POLITY.SUCCESSION_DISPUTED  Ma Graltaeld (a:16) contests the claim of Frouldtoun Dror (a:11), the named heir, to the Kraeford Compact (f:2) (decided by election)  <= e:138  e:148
+[Y0009] w:13  POLITY.SUCCESSION           Ma Graltaeld (a:16) takes the seat of the Kraeford Compact (f:2), setting aside the claim of the named heir Frouldtoun Dror (a:11)  <= e:148  e:149
+[Y0009]       POLITY.EXILE                Frouldtoun Dror (a:11) is cast out of the Kraeford Compact (f:2) — the losing claim  <= e:148  e:150
+[Y0009] w:4   ECONOMY.FAMINE_ENDS         the hunger at Ra Cut (p:8) passes after 5 years  <= e:64  e:152
+[Y0009] w:10  ECONOMY.FAMINE_ENDS         the hunger at Sti Seam (p:7) passes after 2 years  e:153
+[Y0009] w:12  ECONOMY.FAMINE_ENDS         the hunger at Seithfaehollow (p:6) passes after 1 years and 113 return to the fields  <= e:127  e:154
+
+[Y0010]       LIFE.DEATH_NATURAL          Pealsold Voskoul (a:3), retainer of the Goummeidale Compact (f:1), dies at 33 in Goummeidale (p:2)  e:155
+[Y0010]       LIFE.BIRTH                  Vasgou Raend (a:28) is born to Pealsold Voskoul (a:3) at Goummeidale (p:2)  <= e:38  e:156
+[Y0010]       POLITY.EXILE_RETURN         Kraedren Waeld (a:10) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:90  e:160
+[Y0010]       POLITY.EXILE_RETURN         Frouldtoun Dror (a:11) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:150  e:161
+[Y0010]       POLITY.APPOINTMENT          Freindmald Beindlea (a:6) is raised to heir of the Goummeidale Compact (f:1)  e:162
+[Y0010]       DIPLO.INSULT                the Kraeford Compact (f:2) publicly slights the Goummeidale Compact (f:1)  e:163
+[Y0010]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Sti Seam (p:7) and kills 1, but takes nothing  e:164
+[Y0010]       ECONOMY.TRADE_PACT          the Kreagemoor Covenant (f:4) buys 13 grain from the Kraeford Compact (f:2) for 27 silver  e:165
+[Y0010] w:11  POLITY.COUP_RESOLVED        Fous Bo (a:15)'s conspiracy against Vinbeil Real (a:4) is uncovered after 3 years  <= e:116  e:166
+[Y0010]       POLITY.EXILE                Fous Bo (a:15) is cast out of House Thream (f:3) — conspiracy against the seat  <= e:166  e:167
+
+[Y0011]       POLITY.APPOINTMENT          Kaell Frouspim (a:5) is raised to steward of the Goummeidale Compact (f:1)  e:173
+[Y0011]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Ra Cut (p:8) and kills 1, but takes nothing  e:174
+[Y0011]       CONFLICT.RAID               House Thream (f:3)'s raid on Ra Cut (p:8) is beaten off  e:175
+[Y0011]       CONFLICT.RAID               the Kreagemoor Covenant (f:4)'s raid on Goummeidale (p:2) is beaten off  e:176
+
+[Y0012]       LIFE.DEATH_NATURAL          Ma Graltaeld (a:16), ruler of the Kraeford Compact (f:2), dies at 60 in Kraeford (p:3)  e:178
+[Y0012] w:16  POLITY.COUP_PLOTTED         Kaell Frouspim (a:5) begins conspiring against Sealoll Lael (a:1) of the Goummeidale Compact (f:1)  [secret]  e:182
+[Y0012]       POLITY.EXILE_RETURN         Fous Bo (a:15) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:167  e:183
+[Y0012]       DIPLO.TRIBUTE_DEMANDED      House Thream (f:3) demands tribute of the Goummeidale Compact (f:1) and is refused  e:184
+[Y0012]       ECONOMY.TRADE_PACT          House Thream (f:3) and the Kraeford Compact (f:2) agree terms of trade  e:185
+[Y0012]       POLITY.SUCCESSION           Wun Thu (a:30) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:178  e:187
+[Y0012]       POLITY.REVOLT               Seithfaehollow (p:6) rises against the Kraeford Compact (f:2), whose standing had fallen very low  <= e:187  e:189
+
+[Y0013]       LIFE.BIRTH                  Thaeld Faeth (a:31) is born to Freindmald Beindlea (a:6) at Goummeidale (p:2)  <= e:74  e:190
+[Y0013]       POLITY.COURTS_SUPPORT       Kaell Frouspim (a:5) wins Maethhol Gondrur (a:26) away from the ruler of the Goummeidale Compact (f:1)  e:194
+[Y0013]       CONFLICT.RAID               House Thream (f:3)'s raid on Goummeidale (p:2) is beaten off  e:195
+
+[Y0014]       LIFE.DEATH_NATURAL          Sealoll Lael (a:1), ruler of the Goummeidale Compact (f:1), dies at 61 in Goummeidale (p:2)  e:197
+[Y0014]       LIFE.BIRTH                  Brethneld Draer (a:32) is born to Freindmald Beindlea (a:6) at Goummeidale (p:2)  <= e:74  e:198
+[Y0014] w:17  ECONOMY.PLAGUE              plague breaks out at Kreagemoor (p:5) and takes 56  e:200
+[Y0014]       ECONOMY.TRADE_PACT          the Kreagemoor Covenant (f:4) and the Goummeidale Compact (f:1) agree terms of trade  e:202
+[Y0014]       POLITY.SUCCESSION           Kaell Frouspim (a:5) takes the seat of the Goummeidale Compact (f:1) (by right of birth)  <= e:197,e:173  e:203
+
+[Y0015]       LIFE.MARRIAGE               Voumfaern Ki (a:2) marries Wun Thu (a:30), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:205
+[Y0015] w:17  ECONOMY.PLAGUE              plague at Kreagemoor (p:5), year 2: 128 dead and 134 flee  <= e:200  e:207
+[Y0015]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kraeford (p:3), carrying off 20 grain and killing 25  e:209
+[Y0015]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Goummeidale (p:2), carrying off 37 grain and killing 52  <= e:127,e:209  e:210
+[Y0015]       CONFLICT.RAID               the Kreagemoor Covenant (f:4)'s raid on Kraeford (p:3) is beaten off  e:211
+[Y0015] w:16  POLITY.PLOT_LAPSES          Kaell Frouspim (a:5)'s conspiracy against Sealoll Lael (a:1) lapses after 3 years — its author took the seat by other means  [secret]  <= e:182  e:212
+
+[Y0016] w:17  ECONOMY.PLAGUE              plague at Kreagemoor (p:5), year 3: 89 dead and 135 flee  <= e:200  e:215
+[Y0016]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Seithfaehollow (p:6), carrying off 32 grain and killing 33  e:217
+[Y0016]       POLITY.LEGITIMACY_CRISIS    the Kraeford Compact (f:2) spends 50 silver to buy back goodwill  <= e:189  e:218
+[Y0016]       DIPLO.ALLIANCE_FORMED       the Kreagemoor Covenant (f:4) and the Goummeidale Compact (f:1) swear an alliance  <= e:202  e:219
+[Y0016] w:14  ECONOMY.FAMINE_ENDS         the hunger at Sti Seam (p:7) passes after 5 years and 13 return to the fields  e:221
+[Y0016] w:15  ECONOMY.FAMINE_ENDS         the hunger at Ra Cut (p:8) passes after 5 years and 12 return to the fields  e:222
+
+[Y0017]       LIFE.DEATH_NATURAL          Vinbeil Real (a:4), ruler of House Thream (f:3), dies at 61 in Loufell (p:4)  e:223
+[Y0017]       LIFE.BIRTH                  Fol Skeambol (a:33) is born to Voumfaern Ki (a:2) at Goummeidale (p:2)  <= e:205  e:224
+[Y0017]       LIFE.BIRTH                  Fukoul Droum (a:34) is born to Freindmald Beindlea (a:6) at Goummeidale (p:2)  <= e:74  e:225
+[Y0017] w:17  ECONOMY.PLAGUE              plague at Kreagemoor (p:5), year 4: 47 dead and 73 flee  <= e:200  e:227
+[Y0017]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kreagemoor (p:5), carrying off 28 grain and killing 11  e:230
+[Y0017]       CONFLICT.RAID               the Kreagemoor Covenant (f:4)'s raid on Sti Seam (p:7) is beaten off  <= e:230  e:231
+[Y0017]       DIPLO.ALLIANCE_FORMED       the Kreagemoor Covenant (f:4) seeks an alliance with House Thream (f:3) and is turned away  e:232
+[Y0017]       POLITY.SUCCESSION           Laenroull Re (a:35) takes the seat of House Thream (f:3) (raised from loufell, no claimant remaining)  <= e:223  e:234
+
+[Y0018]       LIFE.BIRTH                  Grourn Kannous (a:36) is born to Voumfaern Ki (a:2) at Goummeidale (p:2)  <= e:205  e:236
+[Y0018] w:19  POLITY.COUP_PLOTTED         Kraedren Waeld (a:10) begins conspiring against Thral Rei (a:19) of the Kreagemoor Covenant (f:4)  [secret]  <= e:231  e:240
+[Y0018]       CONFLICT.RAID               the Kreagemoor Covenant (f:4)'s raid on Ra Cut (p:8) is beaten off  e:241
+[Y0018] w:17  ECONOMY.PLAGUE_ENDS         the pestilence at Kreagemoor (p:5) burns out after 4 years  <= e:200  e:243
+
+[Y0019] w:19  CONFLICT.ASSASSINATION      Kraedren Waeld (a:10) has Thral Rei (a:19) murdered at Kreagemoor (p:5)  <= e:231  e:249
+[Y0019]       LIFE.DEATH_VIOLENT          Thral Rei (a:19), ruler of the Kreagemoor Covenant (f:4), is killed by Kraedren Waeld (a:10) at Kreagemoor (p:5)  <= e:249  e:250
+[Y0019]       POLITY.LEGITIMACY_CRISIS    the Goummeidale Compact (f:1) spends 95 silver to buy back goodwill  e:251
+[Y0019]       CONFLICT.RAID               the Kraeford Compact (f:2)'s raid on Sti Seam (p:7) is beaten off  <= e:127  e:252
+[Y0019] w:21  POLITY.SUCCESSION_DISPUTED  Fous Bo (a:15) contests the claim of Kraedren Waeld (a:10), the named heir, to the Kreagemoor Covenant (f:4) (decided by election)  <= e:250  e:253
+[Y0019] w:21  POLITY.SUCCESSION           Fous Bo (a:15) takes the seat of the Kreagemoor Covenant (f:4), setting aside the claim of the named heir Kraedren Waeld (a:10)  <= e:253  e:254
+[Y0019]       POLITY.EXILE                Kraedren Waeld (a:10) is cast out of the Kreagemoor Covenant (f:4) — the losing claim  <= e:253  e:255
+
+[Y0020]       LIFE.DEATH_NATURAL          Fous Bo (a:15), ruler of the Kreagemoor Covenant (f:4), dies at 58 in Kreagemoor (p:5)  e:257
+[Y0020]       POLITY.EXILE_RETURN         Kraedren Waeld (a:10) returns from exile and takes service with House Thream (f:3)  <= e:255  e:263
+[Y0020]       POLITY.COURTS_SUPPORT       Theirnpae Gro (a:21) wins Grourn Kannous (a:36) away from the ruler of the Goummeidale Compact (f:1)  e:264
+[Y0020]       POLITY.APPOINTMENT          Broul Gom (a:22) is raised to steward of the Goummeidale Compact (f:1)  e:265
+[Y0020]       ECONOMY.TRADE_PACT          the Kraeford Compact (f:2) buys 30 grain from the Kreagemoor Covenant (f:4) for 60 silver  <= e:127,e:165  e:266
+[Y0020]       ECONOMY.TRADE_PACT          House Thream (f:3) buys 30 grain from the Kraeford Compact (f:2) for 60 silver  <= e:185  e:267
+[Y0020]       POLITY.LEGITIMACY_CRISIS    House Thream (f:3) spends 50 silver to buy back goodwill  <= e:195  e:268
+[Y0020]       POLITY.SUCCESSION           Frouldtoun Dror (a:11) takes the seat of the Kreagemoor Covenant (f:4) (by election)  <= e:257  e:269
+
+[Y0021]       POLITY.COURTS_SUPPORT       Theirnpae Gro (a:21) wins Fukoul Droum (a:34) away from the ruler of the Goummeidale Compact (f:1)  e:274
+[Y0021]       POLITY.APPOINTMENT          Wold Risla (a:24) is raised to steward of the Goummeidale Compact (f:1)  <= e:264  e:275
+[Y0021]       POLITY.APPOINTMENT          Kraedren Waeld (a:10) is raised to heir of House Thream (f:3)  <= e:195  e:276
+[Y0021]       DIPLO.INSULT                the Kreagemoor Covenant (f:4) publicly slights the Goummeidale Compact (f:1)  e:277
+[Y0021] w:18  ECONOMY.FAMINE_ENDS         the hunger at Sti Seam (p:7) passes after 4 years and 10 return to the fields  e:279
+[Y0021] w:20  ECONOMY.FAMINE_ENDS         the hunger at Ra Cut (p:8) passes after 2 years and 8 return to the fields  e:280
+
+[Y0022]       LIFE.MARRIAGE               Theirnpae Gro (a:21) marries Waeld Dould (a:23), binding the Goummeidale Compact (f:1) to House Thream (f:3)  e:282
+[Y0022]       LIFE.MARRIAGE               Wold Risla (a:24) marries Laenroull Re (a:35), binding the Goummeidale Compact (f:1) to House Thream (f:3)  e:283
+[Y0022]       POLITY.COURTS_SUPPORT       Theirnpae Gro (a:21) wins Fol Skeambol (a:33) away from the ruler of the Goummeidale Compact (f:1)  e:286
+[Y0022]       POLITY.APPOINTMENT          Voumfaern Ki (a:2) is raised to steward of the Goummeidale Compact (f:1)  <= e:264  e:287
+[Y0022]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Kreagemoor (p:5), carrying off 28 grain and killing 11  <= e:127  e:288
+[Y0022]       POLITY.APPOINTMENT          Reafaeth Geall (a:25) is raised to steward of House Thream (f:3)  <= e:195  e:289
+[Y0022]       DIPLO.TRIBUTE_DEMANDED      the Kreagemoor Covenant (f:4) demands tribute of the Goummeidale Compact (f:1) and is refused  e:290
+[Y0022] w:19  POLITY.COUP_RESOLVED        Kraedren Waeld (a:10)'s conspiracy against Frouldtoun Dror (a:11) is uncovered after 4 years  <= e:240  e:291
+[Y0022]       POLITY.EXILE                Kraedren Waeld (a:10), who had already left, is declared outlaw by the Kreagemoor Covenant (f:4) — conspiracy against the seat  <= e:291  e:292
+
+[Y0023]       LIFE.BIRTH                  Gu Veam (a:37) is born to Wold Risla (a:24) at Goummeidale (p:2)  <= e:283  e:294
+[Y0023]       POLITY.CHALLENGE            Theirnpae Gro (a:21) challenges Kaell Frouspim (a:5) openly for the Goummeidale Compact (f:1), loses, and Kaell Frouspim (a:5) keeps the seat  e:297
+[Y0023]       POLITY.EXILE                Theirnpae Gro (a:21) is cast out of the Goummeidale Compact (f:1) — the losing side of an open challenge  <= e:297  e:298
+[Y0023]       POLITY.APPOINTMENT          Freindmald Beindlea (a:6) is raised to steward of the Goummeidale Compact (f:1)  <= e:264  e:299
+[Y0023]       ECONOMY.TRADE_PACT          House Thream (f:3) buys 30 grain from the Kreagemoor Covenant (f:4) for 60 silver  e:300
+
+[Y0024]       POLITY.APPOINTMENT          Rateal Fototh (a:27) is raised to heir of the Goummeidale Compact (f:1)  <= e:298  e:307
+[Y0024]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Ra Cut (p:8), carrying off 1 grain and killing 0  <= e:127  e:308
+[Y0024]       DIPLO.ALLIANCE_FORMED       the Kreagemoor Covenant (f:4) seeks an alliance with House Thream (f:3) and is turned away  <= e:300  e:309
+[Y0024]       CONFLICT.ASSASSINATION      Frouldtoun Dror (a:11) has Kaell Frouspim (a:5) murdered at Goummeidale (p:2)  e:310
+[Y0024]       LIFE.DEATH_VIOLENT          Kaell Frouspim (a:5), ruler of the Goummeidale Compact (f:1), is killed by Frouldtoun Dror (a:11) at Goummeidale (p:2)  <= e:310  e:311
+[Y0024] w:22  POLITY.SUCCESSION_DISPUTED  Wold Risla (a:24) contests the claim of Freindmald Beindlea (a:6), the named heir, to the Goummeidale Compact (f:1) (decided by primogeniture)  <= e:311  e:312
+[Y0024] w:22  POLITY.SUCCESSION           Wold Risla (a:24) takes the seat of the Goummeidale Compact (f:1), setting aside the claim of the named heir Freindmald Beindlea (a:6)  <= e:312  e:313
+[Y0024]       POLITY.EXILE                Freindmald Beindlea (a:6) is cast out of the Goummeidale Compact (f:1) — the losing claim  <= e:312  e:314
+
+[Y0025]       LIFE.BIRTH                  Thra Meil (a:38) is born to Wold Risla (a:24) at Goummeidale (p:2)  <= e:283  e:316
+[Y0025]       POLITY.EXILE_RETURN         Freindmald Beindlea (a:6) returns from exile and takes service with House Thream (f:3)  <= e:314  e:320
+[Y0025] w:23  POLITY.COUP_PLOTTED         Reafaeth Geall (a:25) begins conspiring against Laenroull Re (a:35) of House Thream (f:3)  [secret]  <= e:234  e:321
+[Y0025]       POLITY.APPOINTMENT          Maethhol Gondrur (a:26) is raised to steward of the Goummeidale Compact (f:1)  <= e:298  e:322
+[Y0025]       POLITY.LEGITIMACY_CRISIS    the Kraeford Compact (f:2) spends 95 silver to buy back goodwill  <= e:189  e:323
+[Y0025]       CONFLICT.RAID               House Thream (f:3)'s raid on Sti Seam (p:7) is beaten off  e:324
+[Y0025]       POLITY.LEGITIMACY_CRISIS    the Kreagemoor Covenant (f:4) spends 50 silver to buy back goodwill  <= e:292  e:325
+
+[Y0026]       LIFE.DEATH_NATURAL          Kraedren Waeld (a:10), heir of House Thream (f:3), dies at 61 in Loufell (p:4)  e:327
+[Y0026]       LIFE.DEATH_NATURAL          Broul Gom (a:22), steward of the Goummeidale Compact (f:1), dies at 22 in Goummeidale (p:2)  e:328
+[Y0026]       LIFE.MARRIAGE               Maethhol Gondrur (a:26) marries Rateal Fototh (a:27) at Goummeidale (p:2)  e:331
+[Y0026]       LIFE.BIRTH                  Theldsild Tripould (a:39) is born to Wold Risla (a:24) at Goummeidale (p:2)  <= e:283  e:332
+[Y0026] w:23  CONFLICT.ASSASSINATION      Reafaeth Geall (a:25) has Laenroull Re (a:35) murdered at Loufell (p:4)  <= e:234  e:335
+[Y0026]       LIFE.DEATH_VIOLENT          Laenroull Re (a:35), ruler of House Thream (f:3), is killed by Reafaeth Geall (a:25) at Loufell (p:4)  <= e:335  e:336
+[Y0026] w:24  POLITY.COUP_PLOTTED         Rateal Fototh (a:27) begins conspiring against Wold Risla (a:24) of the Goummeidale Compact (f:1)  [secret]  <= e:314  e:337
+[Y0026]       POLITY.APPOINTMENT          Skullhein Threill (a:29) is raised to steward of the Goummeidale Compact (f:1)  <= e:298  e:338
+[Y0026]       CONFLICT.ASSASSINATION      Frouldtoun Dror (a:11) has Wold Risla (a:24) murdered at Goummeidale (p:2)  e:339
+[Y0026]       LIFE.DEATH_VIOLENT          Wold Risla (a:24), ruler of the Goummeidale Compact (f:1), is killed by Frouldtoun Dror (a:11) at Goummeidale (p:2)  <= e:339  e:340
+[Y0026]       POLITY.SUCCESSION           Reafaeth Geall (a:25) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:336,e:289  e:341
+[Y0026]       POLITY.SUCCESSION           Voumfaern Ki (a:2) takes the seat of the Goummeidale Compact (f:1) (by right of birth)  <= e:340,e:287  e:342
+
+[Y0027]       LIFE.MARRIAGE               Reafaeth Geall (a:25) marries Vasgou Raend (a:28), binding House Thream (f:3) to the Goummeidale Compact (f:1)  e:344
+[Y0027]       LIFE.BIRTH                  Meind Veild (a:40) is born to Maethhol Gondrur (a:26) at Goummeidale (p:2)  <= e:331  e:345
+[Y0027]       POLITY.COURTS_SUPPORT       Rateal Fototh (a:27) wins Fukoul Droum (a:34) away from the ruler of the Goummeidale Compact (f:1)  <= e:314  e:352
+[Y0027] w:25  POLITY.COUP_PLOTTED         Vasgou Raend (a:28) begins conspiring against Voumfaern Ki (a:2) of the Goummeidale Compact (f:1)  [secret]  <= e:340  e:353
+[Y0027]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kreagemoor (p:5), carrying off 44 grain and killing 11  e:354
+[Y0027]       POLITY.APPOINTMENT          Vasgou Raend (a:28) is raised to steward of the Goummeidale Compact (f:1)  <= e:340  e:355
+[Y0027]       CONFLICT.RAID               the Kraeford Compact (f:2)'s raid on Goummeidale (p:2) is beaten off  e:356
+[Y0027]       DIPLO.INSULT                House Thream (f:3) publicly slights the Goummeidale Compact (f:1)  e:357
+[Y0027]       CONFLICT.RAID               House Thream (f:3)'s raid on Ra Cut (p:8) is beaten off  e:358
+[Y0027]       CONFLICT.ASSASSINATION      Frouldtoun Dror (a:11) has Voumfaern Ki (a:2) murdered at Goummeidale (p:2)  e:359
+[Y0027]       LIFE.DEATH_VIOLENT          Voumfaern Ki (a:2), ruler of the Goummeidale Compact (f:1), is killed by Frouldtoun Dror (a:11) at Goummeidale (p:2)  <= e:359  e:360
+[Y0027] w:23  POLITY.PLOT_LAPSES          Reafaeth Geall (a:25)'s conspiracy against Laenroull Re (a:35) lapses after 2 years — its author took the seat by other means  [secret]  <= e:321  e:361
+[Y0027]       POLITY.SUCCESSION           Maethhol Gondrur (a:26) takes the seat of the Goummeidale Compact (f:1) (by right of birth)  <= e:360,e:124,e:322  e:362
+
+[Y0028]       LIFE.DEATH_NATURAL          Freindmald Beindlea (a:6), captain of House Thream (f:3), dies at 57 in Loufell (p:4)  e:364
+[Y0028] w:24  CONFLICT.ASSASSINATION      Rateal Fototh (a:27) has Maethhol Gondrur (a:26) murdered at Goummeidale (p:2)  <= e:314  e:367
+[Y0028]       LIFE.DEATH_VIOLENT          Maethhol Gondrur (a:26), ruler of the Goummeidale Compact (f:1), is killed by Rateal Fototh (a:27) at Goummeidale (p:2)  <= e:367  e:368
+[Y0028]       ECONOMY.TRADE_PACT          the Kraeford Compact (f:2) buys 30 grain from the Goummeidale Compact (f:1) for 60 silver  <= e:127,e:83  e:369
+[Y0028] w:26  POLITY.SUCCESSION_DISPUTED  Vasgou Raend (a:28) contests the claim of Rateal Fototh (a:27), the named heir, to the Goummeidale Compact (f:1) (decided by primogeniture)  <= e:368  e:370
+[Y0028] w:26  POLITY.SUCCESSION           Vasgou Raend (a:28) takes the seat of the Goummeidale Compact (f:1), setting aside the claim of the named heir Rateal Fototh (a:27)  <= e:370  e:371
+[Y0028]       POLITY.EXILE                Rateal Fototh (a:27) is cast out of the Goummeidale Compact (f:1) — the losing claim  <= e:370  e:372
+[Y0028]       POLITY.REVOLT               Sti Seam (p:7) rises against the Goummeidale Compact (f:1), whose standing had fallen to nothing  <= e:372  e:374
+
+[Y0029]       LIFE.BIRTH                  Neti Gulmol (a:41) is born to Reafaeth Geall (a:25) at Loufell (p:4)  <= e:344  e:376
+[Y0029]       POLITY.EXILE_RETURN         Theirnpae Gro (a:21) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:298  e:379
+[Y0029]       POLITY.CHALLENGE            Skullhein Threill (a:29) challenges Vasgou Raend (a:28) openly for the Goummeidale Compact (f:1), wins, and takes the seat from Vasgou Raend (a:28)  <= e:374  e:380
+[Y0029]       POLITY.EXILE                Vasgou Raend (a:28) is cast out of the Goummeidale Compact (f:1) — the losing side of an open challenge  <= e:380  e:382
+[Y0029]       POLITY.LEGITIMACY_CRISIS    the Goummeidale Compact (f:1) spends 140 silver to buy back goodwill  <= e:340  e:383
+[Y0029]       ECONOMY.TRADE_PACT          the Kraeford Compact (f:2) buys 30 grain from the Kreagemoor Covenant (f:4) for 60 silver  <= e:127,e:266  e:384
+[Y0029]       DIPLO.TRIBUTE_DEMANDED      the Kraeford Compact (f:2) demands tribute of the Goummeidale Compact (f:1) and is refused  e:385
+[Y0029]       CONFLICT.ASSASSINATION      Reafaeth Geall (a:25)'s attempt on Skullhein Threill (a:29) fails and is traced back  e:386
+[Y0029]       POLITY.EXILE                Reafaeth Geall (a:25) is cast out of House Thream (f:3) — attempted murder  <= e:386  e:387
+[Y0029]       POLITY.APPOINTMENT          Theirnpae Gro (a:21) is raised to heir of the Kreagemoor Covenant (f:4)  <= e:292  e:388
+[Y0029] w:24  POLITY.COUP_RESOLVED        Rateal Fototh (a:27)'s conspiracy against Skullhein Threill (a:29) is uncovered after 3 years  <= e:337  e:389
+[Y0029]       POLITY.EXILE                Rateal Fototh (a:27), who had already left, is declared outlaw by the Goummeidale Compact (f:1) — conspiracy against the seat  <= e:389  e:390
+[Y0029]       POLITY.SUCCESSION           Waeld Dould (a:23) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:387  e:391
+
+[Y0030]       LIFE.BIRTH                  Raenwu Draernrull (a:42) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:394
+[Y0030]       POLITY.EXILE_RETURN         Reafaeth Geall (a:25) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:387  e:397
+[Y0030]       POLITY.EXILE_RETURN         Rateal Fototh (a:27) returns from exile and takes service with the Kreagemoor Covenant (f:4)  <= e:372  e:398
+[Y0030]       POLITY.EXILE_RETURN         Vasgou Raend (a:28) returns from exile and takes service with House Thream (f:3)  <= e:382  e:399
+[Y0030]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kraeford (p:3), carrying off 50 grain and killing 25  e:400
+[Y0030]       POLITY.APPOINTMENT          Brethneld Draer (a:32) is raised to heir of the Goummeidale Compact (f:1)  <= e:340  e:401
+[Y0030]       CONFLICT.ASSASSINATION      Frouldtoun Dror (a:11)'s attempt on Skullhein Threill (a:29) fails and is traced back  e:402
+[Y0030]       POLITY.EXILE                Frouldtoun Dror (a:11) is cast out of the Kreagemoor Covenant (f:4) — attempted murder  <= e:402  e:403
+[Y0030]       POLITY.SUCCESSION           Reafaeth Geall (a:25) takes the seat of the Kreagemoor Covenant (f:4) (by election)  <= e:403,e:289  e:404
+
+[Y0031]       LIFE.DEATH_NATURAL          Wun Thu (a:30), ruler of the Kraeford Compact (f:2), dies at 59 in Kraeford (p:3)  e:406
+[Y0031]       LIFE.MARRIAGE               Skullhein Threill (a:29) marries Brethneld Draer (a:32) at Goummeidale (p:2)  e:407
+[Y0031]       LIFE.BIRTH                  Hidol Krund (a:43) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:408
+[Y0031] w:27  ECONOMY.FAMINE              famine at Loufell (p:4): 31 dead, grain short by 4  e:410
+[Y0031]       POLITY.EXILE_RETURN         Frouldtoun Dror (a:11) returns from exile and takes service with House Thream (f:3)  <= e:403  e:412
+[Y0031]       CONFLICT.ASSASSINATION      Rateal Fototh (a:27) has Vasgou Raend (a:28) murdered at Loufell (p:4)  e:413
+[Y0031]       LIFE.DEATH_VIOLENT          Vasgou Raend (a:28), captain of House Thream (f:3), is killed by Rateal Fototh (a:27) at Loufell (p:4)  <= e:413  e:414
+[Y0031]       POLITY.APPOINTMENT          Thaeld Faeth (a:31) is raised to steward of the Goummeidale Compact (f:1)  <= e:390  e:415
+[Y0031]       CONFLICT.ASSASSINATION      an attempt on Skullhein Threill (a:29) fails at Goummeidale (p:2), unattributed  [secret]  e:416
+[Y0031]       ECONOMY.TRADE_PACT          House Thream (f:3) buys 30 grain from the Kreagemoor Covenant (f:4) for 60 silver  <= e:300  e:417
+[Y0031] w:25  POLITY.PLOT_DIES_WITH_PLOTTER  Vasgou Raend (a:28)'s conspiracy against Voumfaern Ki (a:2) dies with them, 4 years in  [secret]  <= e:353,e:414  e:418
+[Y0031]       POLITY.SUCCESSION           Haern Taethnum (a:44) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:406  e:420
+
+[Y0032]       DIPLO.INSULT                the Kraeford Compact (f:2) publicly slights the Goummeidale Compact (f:1)  e:424
+[Y0032]       CONFLICT.RAID               House Thream (f:3)'s raid on Goummeidale (p:2) is beaten off  e:425
+[Y0032]       ECONOMY.TRADE_PACT          House Thream (f:3) and the Kreagemoor Covenant (f:4) agree terms of trade  <= e:410  e:426
+[Y0032] w:27  ECONOMY.FAMINE_ENDS         the hunger at Loufell (p:4) passes after 1 years  <= e:410  e:428
+
+[Y0033]       LIFE.DEATH_NATURAL          Frouldtoun Dror (a:11), captain of House Thream (f:3), dies at 64 in Loufell (p:4)  e:429
+[Y0033]       LIFE.BIRTH                  Vouldgear Frofreild (a:45) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:432
+[Y0033]       LIFE.BIRTH                  Faethhund Fam (a:46) is born to Skullhein Threill (a:29) at Goummeidale (p:2)  <= e:407  e:433
+[Y0033]       POLITY.APPOINTMENT          Fol Skeambol (a:33) is raised to steward of the Goummeidale Compact (f:1)  <= e:390  e:437
+[Y0033]       DIPLO.TRIBUTE_DEMANDED      House Thream (f:3) demands tribute of the Goummeidale Compact (f:1) and is refused  e:438
+[Y0033]       CONFLICT.RAID               House Thream (f:3) raids Kreagemoor (p:5), carrying off 26 grain and killing 11  <= e:410  e:439
+[Y0033]       CONFLICT.RAID               the Kreagemoor Covenant (f:4)'s raid on Sti Seam (p:7) is beaten off  e:440
+
+[Y0034]       LIFE.MARRIAGE               Fol Skeambol (a:33) marries Fukoul Droum (a:34) at Goummeidale (p:2)  e:443
+[Y0034]       LIFE.BIRTH                  Pan Dros (a:47) is born to Skullhein Threill (a:29) at Goummeidale (p:2)  <= e:407  e:444
+[Y0034]       POLITY.APPOINTMENT          Grourn Kannous (a:36) is raised to steward of the Goummeidale Compact (f:1)  <= e:390  e:447
+
+[Y0035]       LIFE.MARRIAGE               Grourn Kannous (a:36) marries Haern Taethnum (a:44), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:449
+[Y0035]       LIFE.BIRTH                  Gradrourn Bra (a:48) is born to Skullhein Threill (a:29) at Goummeidale (p:2)  <= e:407  e:450
+[Y0035]       ECONOMY.TRADE_PACT          the Kraeford Compact (f:2) and the Kreagemoor Covenant (f:4) agree terms of trade  <= e:127  e:454
+[Y0035]       DIPLO.ALLIANCE_FORMED       the Kreagemoor Covenant (f:4) and House Thream (f:3) swear an alliance  <= e:426  e:455
+
+[Y0036]       LIFE.BIRTH                  Fraethrul Fri (a:49) is born to Reafaeth Geall (a:25) at Kreagemoor (p:5)  <= e:344  e:457
+[Y0036]       LIFE.BIRTH                  Tea Meir (a:50) is born to Grourn Kannous (a:36) at Goummeidale (p:2)  <= e:449  e:458
+[Y0036] w:28  DIPLO.WAR_DECLARED          the Goummeidale Compact (f:1) declares war on the Kreagemoor Covenant (f:4) over long-standing grievance  e:461
+[Y0036]       CONFLICT.RAID               the Kraeford Compact (f:2)'s raid on Ra Cut (p:8) is beaten off  e:462
+[Y0036]       CONFLICT.RAID               the Kraeford Compact (f:2) raids Kreagemoor (p:5), carrying off 35 grain and killing 10  <= e:127  e:463
+[Y0036] w:28  CONFLICT.BATTLE             the Goummeidale Compact (f:1) and its allies defeat the Kreagemoor Covenant (f:4) at Kreagemoor (p:5) (70 dead)  <= e:461,e:38  e:464
+
+[Y0037] w:28  CONFLICT.ASSASSINATION      Skullhein Threill (a:29) has Reafaeth Geall (a:25) murdered at Kreagemoor (p:5)  e:468
+[Y0037]       LIFE.DEATH_VIOLENT          Reafaeth Geall (a:25), ruler of the Kreagemoor Covenant (f:4), is killed by Skullhein Threill (a:29) at Kreagemoor (p:5)  <= e:468  e:469
+[Y0037]       CONFLICT.ASSASSINATION      Haern Taethnum (a:44)'s attempt on Skullhein Threill (a:29) fails and is traced back  e:470
+[Y0037]       POLITY.EXILE                Haern Taethnum (a:44) is cast out of the Kraeford Compact (f:2) — attempted murder  <= e:470  e:471
+[Y0037] w:28  CONFLICT.BATTLE             the Goummeidale Compact (f:1) and its allies defeat the Kreagemoor Covenant (f:4) at Kreagemoor (p:5) (58 dead)  <= e:461,e:38  e:472
+[Y0037] w:28  CONFLICT.CONQUEST           the Goummeidale Compact (f:1) takes Kreagemoor (p:5) from the Kreagemoor Covenant (f:4)  <= e:472  e:473
+[Y0037]       POLITY.COLLAPSE             the Kreagemoor Covenant (f:4) is finished — landless, its last 6 followers scatter  <= e:473  e:474
+[Y0037]       POLITY.SUCCESSION           Duthturn Tend (a:51) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:471  e:477
+
+[Y0038]       POLITY.EXILE_RETURN         Haern Taethnum (a:44) returns from exile and takes service with the Goummeidale Compact (f:1)  <= e:471  e:485
+[Y0038]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Seithfaehollow (p:6), carrying off 34 grain and killing 33  e:486
+[Y0038]       POLITY.LEGITIMACY_CRISIS    House Thream (f:3) spends 91 silver buying goodwill for the second time, and is not believed  <= e:438  e:487
+[Y0038] w:28  DIPLO.PEACE_SIGNED          the Goummeidale Compact (f:1) and the Kreagemoor Covenant (f:4) make peace after 2 years, after the collapse of the Kreagemoor Covenant  <= e:461  e:488
+
+[Y0039]       LIFE.MARRIAGE               Thaeld Faeth (a:31) marries Duthturn Tend (a:51), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:491
+[Y0039]       CONFLICT.ASSASSINATION      Skullhein Threill (a:29) has Duthturn Tend (a:51) murdered at Kraeford (p:3)  e:494
+[Y0039]       LIFE.DEATH_VIOLENT          Duthturn Tend (a:51), ruler of the Kraeford Compact (f:2), is killed by Skullhein Threill (a:29) at Kraeford (p:3)  <= e:494  e:495
+[Y0039]       POLITY.SUCCESSION           Soth Soulol (a:53) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:495  e:497
+
+[Y0040]       LIFE.BIRTH                  Naerlor Grarwouth (a:54) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:499
+[Y0040]       LIFE.BIRTH                  Sur Meand (a:55) is born to Skullhein Threill (a:29) at Goummeidale (p:2)  <= e:407  e:500
+[Y0040]       LIFE.BIRTH                  Feifaend Pos (a:56) is born to Thaeld Faeth (a:31) at Goummeidale (p:2)  <= e:491  e:501
+[Y0040] w:29  ECONOMY.PLAGUE              plague breaks out at Seithfaehollow (p:6) and takes 118  e:503
+[Y0040] w:30  DIPLO.WAR_DECLARED          the Goummeidale Compact (f:1) declares war on the Kraeford Compact (f:2) over long-standing grievance  e:505
+[Y0040]       ECONOMY.TRADE_PACT          the Kraeford Compact (f:2) buys 30 grain from the Goummeidale Compact (f:1) for 60 silver  <= e:127,e:369  e:506
+[Y0040] w:30  CONFLICT.BATTLE             the Goummeidale Compact (f:1) defeats the Kraeford Compact (f:2) at Seithfaehollow (p:6) (199 dead)  <= e:505  e:507
+[Y0040] w:30  CONFLICT.CONQUEST           the Goummeidale Compact (f:1) takes Seithfaehollow (p:6) from the Kraeford Compact (f:2)  <= e:507  e:508
+
+[Y0041]       LIFE.BIRTH                  Skaeldteas Brein (a:57) is born to Skullhein Threill (a:29) at Goummeidale (p:2)  <= e:407  e:511
+[Y0041] w:31  POLITY.COUP_PLOTTED         Rateal Fototh (a:27) begins conspiring against Skullhein Threill (a:29) of the Goummeidale Compact (f:1)  [secret]  <= e:390  e:515
+[Y0041] w:30  CONFLICT.ASSASSINATION      Skullhein Threill (a:29) has Soth Soulol (a:53) murdered at Kraeford (p:3)  e:516
+[Y0041]       LIFE.DEATH_VIOLENT          Soth Soulol (a:53), ruler of the Kraeford Compact (f:2), is killed by Skullhein Threill (a:29) at Kraeford (p:3)  <= e:516  e:517
+[Y0041]       CONFLICT.RAID               House Thream (f:3)'s raid on Seithfaehollow (p:6) is beaten off  <= e:410  e:518
+[Y0041] w:30  CONFLICT.BATTLE             the Goummeidale Compact (f:1) defeats the Kraeford Compact (f:2) at Kraeford (p:3) (162 dead)  <= e:505  e:519
+[Y0041]       POLITY.SUCCESSION           Tas Pald (a:59) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:517  e:521
+[Y0041] w:29  ECONOMY.PLAGUE_ENDS         the pestilence at Seithfaehollow (p:6) burns out after 1 years  <= e:503  e:523
+
+[Y0042]       LIFE.BIRTH                  Seillthae Drollki (a:60) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:525
+[Y0042] w:32  ECONOMY.PLAGUE              plague breaks out at Seithfaehollow (p:6) and takes 83  e:527
+[Y0042] w:31  CONFLICT.ASSASSINATION      Rateal Fototh (a:27) has Skullhein Threill (a:29) murdered at Goummeidale (p:2)  <= e:390  e:529
+[Y0042]       LIFE.DEATH_VIOLENT          Skullhein Threill (a:29), ruler of the Goummeidale Compact (f:1), is killed by Rateal Fototh (a:27) at Goummeidale (p:2)  <= e:529  e:530
+[Y0042]       CONFLICT.RAID               the Kraeford Compact (f:2)'s raid on Sti Seam (p:7) is beaten off  <= e:127  e:531
+[Y0042]       POLITY.LEGITIMACY_CRISIS    the Kraeford Compact (f:2) spends 140 silver buying goodwill for the third time, and is not believed  <= e:503  e:532
+[Y0042]       CONFLICT.RAID               House Thream (f:3)'s raid on Kreagemoor (p:5) is beaten off  <= e:410  e:533
+[Y0042] w:30  DIPLO.PEACE_SIGNED          the Goummeidale Compact (f:1) and the Kraeford Compact (f:2) make peace after 2 years, both sides exhausted  <= e:505  e:534
+[Y0042]       POLITY.SUCCESSION           Haern Taethnum (a:44) takes the seat of the Goummeidale Compact (f:1) (by right of birth)  <= e:530  e:535
+
+[Y0043]       LIFE.MARRIAGE               Theldsild Tripould (a:39) marries Tas Pald (a:59), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:538
+[Y0043]       LIFE.BIRTH                  Pallthill Threilpin (a:61) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:539
+[Y0043]       LIFE.BIRTH                  Breamgoul Feal (a:62) is born to Grourn Kannous (a:36) at Goummeidale (p:2)  <= e:449  e:540
+[Y0043] w:32  ECONOMY.PLAGUE              plague at Seithfaehollow (p:6), year 2: 122 dead and 139 flee  <= e:527  e:542
+
+[Y0044]       LIFE.BIRTH                  Graeth Kaeld (a:63) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:545
+[Y0044]       LIFE.BIRTH                  Nould Heam (a:64) is born to Grourn Kannous (a:36) at Goummeidale (p:2)  <= e:449  e:546
+[Y0044]       LIFE.BIRTH                  Harkei Frearn (a:65) is born to Theldsild Tripould (a:39) at Goummeidale (p:2)  <= e:538  e:547
+[Y0044] w:32  ECONOMY.PLAGUE_ENDS         the pestilence at Seithfaehollow (p:6) burns out after 2 years  <= e:527  e:552
+
+[Y0045]       LIFE.BIRTH                  Dreslun Kreigrea (a:66) is born to Grourn Kannous (a:36) at Goummeidale (p:2)  <= e:449  e:554
+[Y0045]       CONFLICT.RAID               the Kraeford Compact (f:2)'s raid on Seithfaehollow (p:6) is beaten off  <= e:127  e:557
+[Y0045]       POLITY.APPOINTMENT          Neti Gulmol (a:41) is raised to heir of House Thream (f:3)  <= e:438  e:558
+[Y0045]       ECONOMY.TRADE_PACT          House Thream (f:3) buys 24 grain from the Goummeidale Compact (f:1) for 49 silver  <= e:410,e:119  e:559
+
+[Y0046]       LIFE.BIRTH                  Goum Thagal (a:67) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:561
+[Y0046]       LIFE.BIRTH                  Dornleirn Dou (a:68) is born to Thaeld Faeth (a:31) at Goummeidale (p:2)  <= e:491  e:562
+[Y0046]       POLITY.CHALLENGE            Gu Veam (a:37) challenges Haern Taethnum (a:44) openly for the Goummeidale Compact (f:1), loses, and Haern Taethnum (a:44) keeps the seat  <= e:542  e:565
+[Y0046]       POLITY.EXILE                Gu Veam (a:37) is cast out of the Goummeidale Compact (f:1) — the losing side of an open challenge  <= e:565  e:566
+[Y0046] w:31  POLITY.COUP_RESOLVED        Rateal Fototh (a:27) challenges Haern Taethnum (a:44) for the Goummeidale Compact (f:1) and wins  <= e:515  e:567
+[Y0046] w:31  POLITY.SUCCESSION           Rateal Fototh (a:27) takes the seat of the Goummeidale Compact (f:1) (coup)  <= e:567  e:568
+[Y0046]       POLITY.EXILE                Haern Taethnum (a:44) is cast out of the Goummeidale Compact (f:1) — the losing side of a coup  <= e:567  e:569
+
+[Y0047]       LIFE.BIRTH                  Fald Pi (a:69) is born to Theirnpae Gro (a:21) at Kreagemoor (p:5)  <= e:282  e:572
+[Y0047]       POLITY.COURTS_SUPPORT       Fukoul Droum (a:34) wins Theirnpae Gro (a:21) away from the ruler of the Goummeidale Compact (f:1)  <= e:569  e:576
+[Y0047]       CONFLICT.ASSASSINATION      Rateal Fototh (a:27) has Tas Pald (a:59) murdered at Kraeford (p:3)  e:577
+[Y0047]       LIFE.DEATH_VIOLENT          Tas Pald (a:59), ruler of the Kraeford Compact (f:2), is killed by Rateal Fototh (a:27) at Kraeford (p:3)  <= e:577  e:578
+[Y0047]       POLITY.LEGITIMACY_CRISIS    the Goummeidale Compact (f:1) spends 185 silver buying goodwill for the fourth time, and is not believed  <= e:569  e:579
+[Y0047]       POLITY.SUCCESSION           Saebull Kei (a:71) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:578  e:582
+
+[Y0048]       LIFE.MARRIAGE               Thra Meil (a:38) marries Saebull Kei (a:71), binding the Goummeidale Compact (f:1) to the Kraeford Compact (f:2)  e:584
+[Y0048]       LIFE.MARRIAGE               Meind Veild (a:40) marries Neti Gulmol (a:41), binding the Goummeidale Compact (f:1) to House Thream (f:3)  e:585
+[Y0048]       POLITY.COURTS_SUPPORT       Fukoul Droum (a:34) wins Dornleirn Dou (a:68) away from the ruler of the Goummeidale Compact (f:1)  <= e:569  e:589
+[Y0048]       POLITY.EXILE_RETURN         Haern Taethnum (a:44) returns from exile and takes service with House Thream (f:3)  <= e:569  e:590
+[Y0048]       POLITY.APPOINTMENT          Thra Meil (a:38) is raised to steward of the Goummeidale Compact (f:1)  <= e:569  e:591
+[Y0048]       CONFLICT.RAID               the Goummeidale Compact (f:1) raids Kraeford (p:3) and kills 21, but takes nothing  e:592
+
+[Y0049]       POLITY.COURTS_SUPPORT       Fukoul Droum (a:34) wins Nould Heam (a:64) away from the ruler of the Goummeidale Compact (f:1)  <= e:569  e:597
+[Y0049]       POLITY.EXILE_RETURN         Gu Veam (a:37) returns from exile and takes service with House Thream (f:3)  <= e:566  e:598
+[Y0049]       POLITY.APPOINTMENT          Meind Veild (a:40) is raised to steward of the Goummeidale Compact (f:1)  <= e:569  e:599
+[Y0049]       CONFLICT.ASSASSINATION      Waeld Dould (a:23)'s attempt on Rateal Fototh (a:27) fails and is traced back  e:600
+[Y0049]       POLITY.EXILE                Waeld Dould (a:23) is cast out of House Thream (f:3) — attempted murder  <= e:600  e:601
+[Y0049]       POLITY.SUCCESSION           Gu Veam (a:37) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:601  e:603
+
+[Y0050]       LIFE.BIRTH                  Groum Pomlein (a:73) is born to Theldsild Tripould (a:39) at Goummeidale (p:2)  <= e:538  e:607
+[Y0050]       LIFE.BIRTH                  Stornfos Peill (a:74) is born to Meind Veild (a:40) at Goummeidale (p:2)  <= e:585  e:608
+[Y0050]       POLITY.COURTS_SUPPORT       Theirnpae Gro (a:21) wins Nould Heam (a:64) away from the ruler of the Goummeidale Compact (f:1)  <= e:597  e:611
+[Y0050]       POLITY.COURTS_SUPPORT       Fukoul Droum (a:34) wins Naerlor Grarwouth (a:54) away from the ruler of the Goummeidale Compact (f:1)  <= e:569  e:612
+[Y0050]       POLITY.COURTS_SUPPORT       Pan Dros (a:47) wins Nould Heam (a:64) away from the ruler of the Goummeidale Compact (f:1)  <= e:597  e:613
+[Y0050]       POLITY.APPOINTMENT          Brethneld Draer (a:32) is raised to steward of the Goummeidale Compact (f:1)  <= e:569  e:614
+[Y0050]       DIPLO.INSULT                the Goummeidale Compact (f:1) publicly slights the Kraeford Compact (f:2)  e:615
+[Y0050]       CONFLICT.ASSASSINATION      Saebull Kei (a:71)'s attempt on Rateal Fototh (a:27) fails and is traced back  e:616
+[Y0050]       POLITY.EXILE                Saebull Kei (a:71) is cast out of the Kraeford Compact (f:2) — attempted murder  <= e:616  e:617
+[Y0050]       CONFLICT.ASSASSINATION      Gu Veam (a:37)'s attempt on Rateal Fototh (a:27) fails and is traced back  e:618
+[Y0050]       POLITY.EXILE                Gu Veam (a:37) is cast out of House Thream (f:3) — attempted murder  <= e:618  e:619
+[Y0050]       POLITY.SUCCESSION           Grigun Thrundeith (a:75) takes the seat of the Kraeford Compact (f:2) (raised from kraeford, no claimant remaining)  <= e:617  e:621
+[Y0050]       POLITY.SUCCESSION           Neti Gulmol (a:41) takes the seat of House Thream (f:3) (by the strongest claim)  <= e:619,e:558  e:622
+
+[Y0051]       LIFE.MARRIAGE               Vouldgear Frofreild (a:45) marries Pan Dros (a:47) at Kreagemoor (p:5)  e:625
+[Y0051]       POLITY.CHALLENGE            Theirnpae Gro (a:21) challenges Rateal Fototh (a:27) openly for the Goummeidale Compact (f:1), wins, and takes the seat from Rateal Fototh (a:27)  <= e:597  e:632
+[Y0051]       LIFE.DEATH_VIOLENT          Rateal Fototh (a:27), ruler of the Goummeidale Compact (f:1), is killed by Theirnpae Gro (a:21) at Goummeidale (p:2)  <= e:632  e:634
+[Y0051]       POLITY.EXILE_RETURN         Waeld Dould (a:23) returns from exile and takes service with the Kraeford Compact (f:2)  <= e:601  e:635
+[Y0051] w:33  DIPLO.WAR_DECLARED          the Goummeidale Compact (f:1) declares war on the Kraeford Compact (f:2) over long-standing grievance  e:636
+[Y0051]       POLITY.APPOINTMENT          Thaeld Faeth (a:31) is raised to heir of the Goummeidale Compact (f:1)  <= e:613  e:637
+[Y0051]       CONFLICT.ASSASSINATION      an attempt on Theirnpae Gro (a:21) fails at Kreagemoor (p:5), unattributed  [secret]  e:638
+[Y0051]       POLITY.LEGITIMACY_CRISIS    the Kraeford Compact (f:2) spends 185 silver buying goodwill for the fourth time, and is not believed  <= e:582  e:639
+[Y0051]       CONFLICT.RAID               House Thream (f:3)'s raid on Sti Seam (p:7) is beaten off  e:640
+[Y0051] w:33  CONFLICT.BATTLE             the Goummeidale Compact (f:1) defeats the Kraeford Compact (f:2) at Kraeford (p:3) (136 dead)  <= e:636  e:641

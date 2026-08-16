@@ -1,0 +1,439 @@
+# 385 of 647 events. The other 262 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.DEATH_NATURAL          Thrild Dror (a:9), steward of the Galweall League (f:2), dies at 32 in Themoor (p:3)  e:36
+[Y0002]       LIFE.MARRIAGE               Neallseis Staend (a:3) marries Paernso Feand (a:8), binding the Trostead Compact (f:1) to the Galweall League (f:2)  e:37
+[Y0002]       LIFE.MARRIAGE               Neinos Del (a:4) marries Sourmea Fruth (a:10), binding the Trostead Compact (f:1) to the Galweall League (f:2)  e:38
+[Y0002]       LIFE.MARRIAGE               Lald Neirntean (a:7) marries Threth Kruth (a:14), binding the Galweall League (f:2) to House Buldbei (f:3)  e:39
+[Y0002]       LIFE.MARRIAGE               Weasnas Lawal (a:11) marries Li Naend (a:16), binding the Galweall League (f:2) to House Buldbei (f:3)  e:40
+[Y0002] w:1   POLITY.COUP_PLOTTED         Neallseis Staend (a:3) begins conspiring against Faellwil Na (a:1) of the Trostead Compact (f:1)  [secret]  e:43
+[Y0002] w:2   POLITY.COUP_PLOTTED         Gall Brolllea (a:6) begins conspiring against Faellwil Na (a:1) of the Trostead Compact (f:1)  [secret]  e:44
+[Y0002]       CONFLICT.CONQUEST           the Trostead Compact (f:1) occupies Geirnpei Shafts (p:8), which no one held  e:45
+[Y0002]       DIPLO.INSULT                the Galweall League (f:2) publicly slights the Trostead Compact (f:1)  e:46
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      House Buldbei (f:3) demands tribute of the Trostead Compact (f:1) and is refused  e:47
+
+[Y0003]       LIFE.MARRIAGE               Kesfound Thrael (a:15) marries Dorn Thound (a:19), binding House Buldbei (f:3) to the Trostead Compact (f:1)  e:50
+[Y0003]       LIFE.MARRIAGE               Trurnur Draeltheas (a:18) marries Brum Theind (a:20) at Micrag (p:4)  e:51
+[Y0003]       LIFE.BIRTH                  Vun Doultheam (a:21) is born to Neallseis Staend (a:3) at Trostead (p:2)  <= e:37  e:52
+[Y0003] w:3   ECONOMY.FAMINE              famine at Pei Delve (p:7): 14 dead, grain short by 9  e:56
+[Y0003]       POLITY.COURTS_SUPPORT       Neallseis Staend (a:3) wins Dorn Thound (a:19) away from the ruler of the Trostead Compact (f:1)  e:58
+[Y0003]       POLITY.COURTS_SUPPORT       Gall Brolllea (a:6) wins Dorn Thound (a:19) away from the ruler of the Trostead Compact (f:1)  e:59
+[Y0003]       CONFLICT.RAID               the Trostead Compact (f:1) raids Gaehollow (p:6), carrying off 43 grain and killing 51  e:60
+[Y0003]       DIPLO.TRIBUTE_DEMANDED      the Galweall League (f:2) demands tribute of the Trostead Compact (f:1) and is refused  <= e:60  e:61
+[Y0003]       ECONOMY.TRADE_PACT          House Buldbei (f:3) buys 30 grain from the Trostead Compact (f:1) for 60 silver  <= e:56  e:62
+[Y0003] w:2   POLITY.COUP_RESOLVED        Gall Brolllea (a:6)'s conspiracy against Faellwil Na (a:1) is uncovered after 1 years  <= e:44  e:63
+[Y0003]       POLITY.EXILE                Gall Brolllea (a:6) is cast out of the Trostead Compact (f:1) — conspiracy against the seat  <= e:63  e:64
+
+[Y0004]       LIFE.DEATH_NATURAL          Dorn Thound (a:19), commoner of the Trostead Compact (f:1), dies at 39 in Pellweagate (p:5)  e:66
+[Y0004]       POLITY.COURTS_SUPPORT       Neallseis Staend (a:3) wins Beasre Feanwoul (a:24) away from the ruler of the Trostead Compact (f:1)  e:72
+[Y0004]       POLITY.COURTS_SUPPORT       Threth Kruth (a:14) wins Besveir Maleal (a:23) away from the ruler of House Buldbei (f:3)  <= e:56  e:73
+[Y0004]       CONFLICT.RAID               the Trostead Compact (f:1) raids Themoor (p:3), carrying off 51 grain and killing 19  e:74
+[Y0004] w:4   DIPLO.WAR_DECLARED          the Trostead Compact (f:1) declares war on House Buldbei (f:3) for Pei Delve (p:7)  e:75
+[Y0004]       CONFLICT.ASSASSINATION      Lald Neirntean (a:7) has Faellwil Na (a:1) murdered at Trostead (p:2)  e:76
+[Y0004]       LIFE.DEATH_VIOLENT          Faellwil Na (a:1), ruler of the Trostead Compact (f:1), is killed by Lald Neirntean (a:7) at Trostead (p:2)  <= e:76  e:77
+[Y0004]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Trostead (p:2) is beaten off  <= e:56,e:75  e:78
+[Y0004] w:4   CONFLICT.BATTLE             the Trostead Compact (f:1) defeats House Buldbei (f:3) at Pei Delve (p:7) (38 dead)  <= e:75  e:79
+[Y0004] w:5   POLITY.SUCCESSION_DISPUTED  Frernli Peimeath (a:5) contests the claim of Neinos Del (a:4), the named heir, to the Trostead Compact (f:1) (decided by primogeniture)  <= e:77  e:80
+[Y0004] w:5   POLITY.SUCCESSION           Neinos Del (a:4), the named heir, takes the seat of the Trostead Compact (f:1); the rival claim of Frernli Peimeath (a:5) is rejected  <= e:80  e:81
+[Y0004]       POLITY.EXILE                Frernli Peimeath (a:5) is cast out of the Trostead Compact (f:1) — the losing claim  <= e:80  e:82
+[Y0004] w:3   ECONOMY.FAMINE_ENDS         the hunger at Pei Delve (p:7) passes after 1 years  <= e:56  e:84
+
+[Y0005]       LIFE.DEATH_NATURAL          Neinos Del (a:4), ruler of the Trostead Compact (f:1), dies at 32 in Trostead (p:2)  e:85
+[Y0005]       LIFE.BIRTH                  Find Bound (a:26) is born to Neallseis Staend (a:3) at Trostead (p:2)  <= e:37  e:86
+[Y0005]       POLITY.EXILE_RETURN         Gall Brolllea (a:6) returns from exile and takes service with the Galweall League (f:2)  <= e:64  e:91
+[Y0005]       POLITY.COURTS_SUPPORT       Threth Kruth (a:14) wins Brum Theind (a:20) away from the ruler of House Buldbei (f:3)  <= e:56  e:92
+[Y0005]       POLITY.COURTS_SUPPORT       Lall Nealdgum (a:17) wins Besveir Maleal (a:23) away from the ruler of House Buldbei (f:3)  <= e:79  e:93
+[Y0005] w:6   POLITY.COUP_PLOTTED         Trurnur Draeltheas (a:18) begins conspiring against Skengaer Tharsoull (a:13) of House Buldbei (f:3)  [secret]  <= e:79  e:94
+[Y0005]       CONFLICT.RAID               the Galweall League (f:2) raids Trostead (p:2), carrying off 28 grain and killing 33  e:95
+[Y0005]       ECONOMY.TRADE_PACT          House Buldbei (f:3) buys 30 grain from the Galweall League (f:2) for 60 silver  <= e:56  e:96
+[Y0005] w:4   CONFLICT.BATTLE             the Trostead Compact (f:1) defeats House Buldbei (f:3) at Pei Delve (p:7) (31 dead)  <= e:75  e:97
+[Y0005] w:4   CONFLICT.CONQUEST           the Trostead Compact (f:1) takes Pei Delve (p:7) from House Buldbei (f:3)  <= e:97  e:98
+[Y0005]       POLITY.SUCCESSION           Neallseis Staend (a:3) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:85  e:99
+
+[Y0006]       LIFE.DEATH_NATURAL          Li Naend (a:16), steward of House Buldbei (f:3), dies at 25 in Micrag (p:4)  e:101
+[Y0006]       LIFE.MARRIAGE               Paepu Noth (a:2) marries Pethkoll Fould (a:12), binding the Trostead Compact (f:1) to the Galweall League (f:2)  e:102
+[Y0006]       LIFE.BIRTH                  Bathwa Bea (a:29) is born to Lald Neirntean (a:7) at Themoor (p:3)  <= e:39  e:103
+[Y0006]       POLITY.COURTS_SUPPORT       Paepu Noth (a:2) wins Beasre Feanwoul (a:24) away from the ruler of the Trostead Compact (f:1)  <= e:82  e:106
+[Y0006] w:7   POLITY.COUP_PLOTTED         Threth Kruth (a:14) begins conspiring against Skengaer Tharsoull (a:13) of House Buldbei (f:3)  [secret]  <= e:56  e:107
+[Y0006]       POLITY.COURTS_SUPPORT       Lall Nealdgum (a:17) wins Brum Theind (a:20) away from the ruler of House Buldbei (f:3)  <= e:79  e:108
+[Y0006]       POLITY.COURTS_SUPPORT       Trurnur Draeltheas (a:18) wins Besveir Maleal (a:23) away from the ruler of House Buldbei (f:3)  <= e:79  e:109
+[Y0006]       ECONOMY.TRADE_PACT          the Trostead Compact (f:1) buys 28 grain from the Galweall League (f:2) for 60 silver  e:110
+[Y0006]       CONFLICT.RAID               the Galweall League (f:2) raids Pellweagate (p:5), carrying off 39 grain and killing 35  e:111
+[Y0006]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Geirnpei Shafts (p:8) is beaten off  <= e:56  e:112
+[Y0006] w:1   POLITY.PLOT_LAPSES          Neallseis Staend (a:3)'s conspiracy against Faellwil Na (a:1) lapses after 4 years — its author took the seat by other means  [secret]  <= e:43  e:113
+[Y0006] w:4   DIPLO.PEACE_SIGNED          the Trostead Compact (f:1) and House Buldbei (f:3) make peace after 2 years, both sides exhausted  <= e:75  e:114
+[Y0006] w:6   POLITY.COUP_RESOLVED        Trurnur Draeltheas (a:18)'s conspiracy against Skengaer Tharsoull (a:13) is uncovered after 1 years  <= e:94  e:115
+[Y0006]       POLITY.EXILE                Trurnur Draeltheas (a:18) is cast out of House Buldbei (f:3) — conspiracy against the seat  <= e:115  e:116
+
+[Y0007]       LIFE.BIRTH                  Dreamwein Vous (a:30) is born to Paepu Noth (a:2) at Trostead (p:2)  <= e:102  e:118
+[Y0007]       LIFE.BIRTH                  Keandtei Taegro (a:31) is born to Lald Neirntean (a:7) at Themoor (p:3)  <= e:39  e:119
+[Y0007]       POLITY.COURTS_SUPPORT       Paepu Noth (a:2) wins Dreamwein Vous (a:30) away from the ruler of the Trostead Compact (f:1)  <= e:82  e:123
+[Y0007]       POLITY.EXILE_RETURN         Frernli Peimeath (a:5) returns from exile and takes service with the Galweall League (f:2)  <= e:82  e:124
+[Y0007]       POLITY.COURTS_SUPPORT       Lall Nealdgum (a:17) wins Sealfeis Vearn (a:22) away from the ruler of House Buldbei (f:3)  <= e:79  e:125
+[Y0007] w:8   DIPLO.WAR_DECLARED          the Trostead Compact (f:1) declares war on the Galweall League (f:2) over long-standing grievance  e:126
+[Y0007]       CONFLICT.RAID               the Galweall League (f:2) raids Geirnpei Shafts (p:8), carrying off 11 grain and killing 10  <= e:126  e:127
+[Y0007]       DIPLO.INSULT                House Buldbei (f:3) publicly slights the Trostead Compact (f:1)  e:128
+[Y0007]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Themoor (p:3) is beaten off  <= e:56  e:129
+[Y0007] w:7   POLITY.COUP_RESOLVED        Threth Kruth (a:14)'s conspiracy against Skengaer Tharsoull (a:13) is uncovered after 1 years  <= e:107  e:130
+[Y0007]       POLITY.EXILE                Threth Kruth (a:14) is cast out of House Buldbei (f:3) — conspiracy against the seat  <= e:130  e:131
+[Y0007] w:8   CONFLICT.BATTLE             the Galweall League (f:2) and its allies defeat the Trostead Compact (f:1) at Gaehollow (p:6) (90 dead)  <= e:126,e:39  e:132
+
+[Y0008]       LIFE.BIRTH                  Pin Meilthath (a:33) is born to Neallseis Staend (a:3) at Trostead (p:2)  <= e:37  e:134
+[Y0008] w:9   ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8): 31 dead, grain short by 13  e:136
+[Y0008] w:10  POLITY.COUP_PLOTTED         Paepu Noth (a:2) begins conspiring against Neallseis Staend (a:3) of the Trostead Compact (f:1)  [secret]  <= e:82  e:138
+[Y0008] w:11  POLITY.COUP_PLOTTED         Lall Nealdgum (a:17) begins conspiring against Skengaer Tharsoull (a:13) of House Buldbei (f:3)  [secret]  <= e:79  e:139
+[Y0008]       POLITY.EXILE_RETURN         Trurnur Draeltheas (a:18) returns from exile and takes service with the Galweall League (f:2)  <= e:116  e:140
+[Y0008] w:8   CONFLICT.ASSASSINATION      Neallseis Staend (a:3)'s attempt on Lald Neirntean (a:7) fails and is traced back  e:141
+[Y0008]       POLITY.EXILE                Neallseis Staend (a:3) is cast out of the Trostead Compact (f:1) — attempted murder  <= e:141  e:142
+[Y0008]       ECONOMY.TRADE_PACT          the Galweall League (f:2) and the Trostead Compact (f:1) agree terms of trade  e:143
+[Y0008] w:8   CONFLICT.BATTLE             the Galweall League (f:2) and its allies defeat the Trostead Compact (f:1) at Themoor (p:3) (128 dead)  <= e:126,e:39  e:144
+[Y0008]       POLITY.SUCCESSION           Paepu Noth (a:2) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:142  e:145
+
+[Y0009]       LIFE.BIRTH                  Draemo Grirn (a:34) is born to Lald Neirntean (a:7) at Themoor (p:3)  <= e:39  e:147
+[Y0009] w:12  ECONOMY.FAMINE              famine at Pei Delve (p:7): 4 dead, grain short by 3  e:149
+[Y0009] w:9   ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8), year 2: 32 dead, 73 abandon the place  <= e:136  e:150
+[Y0009] w:11  CONFLICT.ASSASSINATION      Lall Nealdgum (a:17) has Skengaer Tharsoull (a:13) murdered at Micrag (p:4)  <= e:79  e:152
+[Y0009]       LIFE.DEATH_VIOLENT          Skengaer Tharsoull (a:13), ruler of House Buldbei (f:3), is killed by Lall Nealdgum (a:17) at Micrag (p:4)  <= e:152  e:153
+[Y0009] w:8   CONFLICT.ASSASSINATION      Paepu Noth (a:2) has Lald Neirntean (a:7) murdered at Themoor (p:3)  e:154
+[Y0009]       LIFE.DEATH_VIOLENT          Lald Neirntean (a:7), ruler of the Galweall League (f:2), is killed by Paepu Noth (a:2) at Themoor (p:3)  <= e:154  e:155
+[Y0009] w:8   CONFLICT.BATTLE             the Galweall League (f:2) and its allies defeat the Trostead Compact (f:1) at Gaehollow (p:6) (88 dead)  <= e:126,e:39  e:156
+[Y0009] w:10  POLITY.PLOT_LAPSES          Paepu Noth (a:2)'s conspiracy against Neallseis Staend (a:3) lapses after 1 years — its author took the seat by other means  [secret]  <= e:138  e:157
+[Y0009]       POLITY.SUCCESSION           Kesfound Thrael (a:15) takes the seat of House Buldbei (f:3) (by the strongest claim)  <= e:153  e:158
+[Y0009]       POLITY.SUCCESSION           Gall Brolllea (a:6) takes the seat of the Galweall League (f:2) (by election)  <= e:155  e:159
+
+[Y0010]       LIFE.DEATH_NATURAL          Gall Brolllea (a:6), ruler of the Galweall League (f:2), dies at 59 in Themoor (p:3)  e:161
+[Y0010] w:12  ECONOMY.FAMINE              famine at Pei Delve (p:7), year 2: 6 dead, 25 abandon the place  <= e:149  e:163
+[Y0010] w:9   ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8), year 3: 13 dead, 43 abandon the place  <= e:136  e:164
+[Y0010]       POLITY.LEGITIMACY_CRISIS    the Trostead Compact (f:1) spends 50 silver to buy back goodwill  <= e:164  e:166
+[Y0010]       ECONOMY.TRADE_PACT          House Buldbei (f:3) and the Galweall League (f:2) agree terms of trade  <= e:56  e:167
+[Y0010] w:8   DIPLO.PEACE_SIGNED          the Trostead Compact (f:1) and the Galweall League (f:2) make peace after 3 years, both sides exhausted  <= e:126  e:168
+[Y0010]       POLITY.SUCCESSION           Frernli Peimeath (a:5) takes the seat of the Galweall League (f:2) (by election)  <= e:161  e:169
+[Y0010]       POLITY.REVOLT               Pei Delve (p:7) rises against the Trostead Compact (f:1), whose standing had fallen to nothing  <= e:164  e:171
+
+[Y0011] w:13  ECONOMY.FAMINE              famine at Pellweagate (p:5): 82 dead, grain short by 9  e:173
+[Y0011] w:9   ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8), year 4: 10 dead, 25 abandon the place  <= e:136  e:175
+[Y0011]       POLITY.EXILE_RETURN         Threth Kruth (a:14) returns from exile and takes service with the Galweall League (f:2)  <= e:131  e:177
+[Y0011]       ECONOMY.TRADE_PACT          the Galweall League (f:2) and the Trostead Compact (f:1) agree terms of trade  e:178
+[Y0011] w:11  POLITY.COUP_RESOLVED        Lall Nealdgum (a:17) challenges Kesfound Thrael (a:15) for House Buldbei (f:3) and wins  <= e:139  e:179
+[Y0011] w:11  POLITY.SUCCESSION           Lall Nealdgum (a:17) takes the seat of House Buldbei (f:3) (coup)  <= e:179  e:180
+[Y0011] w:11  LIFE.DEATH_VIOLENT          Kesfound Thrael (a:15), ruler of House Buldbei (f:3), is killed by Lall Nealdgum (a:17) at Micrag (p:4)  <= e:179  e:181
+
+[Y0012] w:9   ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8), year 5: 5 dead, 34 abandon the place  <= e:136  e:184
+[Y0012]       POLITY.EXILE_RETURN         Neallseis Staend (a:3) returns from exile and takes service with the Galweall League (f:2)  <= e:142  e:186
+[Y0012]       CONFLICT.RAID               the Galweall League (f:2)'s raid on Pei Delve (p:7) is beaten off  e:187
+[Y0012] w:13  ECONOMY.FAMINE_ENDS         the hunger at Pellweagate (p:5) passes after 1 years and 157 return to the fields  <= e:173  e:189
+
+[Y0013]       LIFE.BIRTH                  Thimseild Soldrind (a:35) is born to Paepu Noth (a:2) at Trostead (p:2)  <= e:102  e:190
+[Y0013] w:9   ECONOMY.FAMINE_ENDS         the hunger at Geirnpei Shafts (p:8) passes after 5 years and 45 return to the fields  <= e:136  e:195
+
+[Y0014] w:14  ECONOMY.FAMINE              famine at Pellweagate (p:5): 130 dead, grain short by 15  e:197
+[Y0014] w:15  ECONOMY.FAMINE              famine at Geirnpei Shafts (p:8): 4 dead, grain short by 2  e:198
+[Y0014]       CONFLICT.RAID               the Trostead Compact (f:1) raids Themoor (p:3), carrying off 26 grain and killing 16  e:200
+[Y0014]       CONFLICT.RAID               the Galweall League (f:2)'s raid on Trostead (p:2) is beaten off  <= e:200  e:201
+[Y0014]       CONFLICT.RAID               House Buldbei (f:3) raids Pellweagate (p:5) and kills 33, but takes nothing  <= e:56  e:202
+
+[Y0015]       CONFLICT.RAID               the Trostead Compact (f:1) raids Gaehollow (p:6), carrying off 30 grain and killing 46  <= e:198  e:206
+[Y0015]       CONFLICT.RAID               the Galweall League (f:2)'s raid on Pellweagate (p:5) is beaten off  <= e:206  e:207
+[Y0015]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Pei Delve (p:7) is beaten off  <= e:56  e:208
+[Y0015] w:12  ECONOMY.FAMINE_ENDS         the hunger at Pei Delve (p:7) passes after 6 years and 30 return to the fields  <= e:149  e:210
+[Y0015] w:14  ECONOMY.FAMINE_ENDS         the hunger at Pellweagate (p:5) passes after 1 years and 138 return to the fields  <= e:197  e:211
+[Y0015] w:15  ECONOMY.FAMINE_ENDS         the hunger at Geirnpei Shafts (p:8) passes after 1 years  <= e:198  e:212
+
+[Y0016]       CONFLICT.RAID               the Galweall League (f:2) raids Geirnpei Shafts (p:8), carrying off 1 grain and killing 3  e:215
+[Y0016]       ECONOMY.TRADE_PACT          House Buldbei (f:3) and the Trostead Compact (f:1) agree terms of trade  <= e:56  e:216
+[Y0016]       POLITY.LEGITIMACY_CRISIS    House Buldbei (f:3) spends 50 silver to buy back goodwill  <= e:208  e:217
+
+[Y0017]       LIFE.DEATH_NATURAL          Weasnas Lawal (a:11), steward of the Galweall League (f:2), dies at 56 in Themoor (p:3)  e:219
+[Y0017]       LIFE.BIRTH                  Peansith Rae (a:36) is born to Neallseis Staend (a:3) at Themoor (p:3)  <= e:37  e:220
+[Y0017]       CONFLICT.ASSASSINATION      Frernli Peimeath (a:5) has Paepu Noth (a:2) murdered at Trostead (p:2)  e:223
+[Y0017]       LIFE.DEATH_VIOLENT          Paepu Noth (a:2), ruler of the Trostead Compact (f:1), is killed by Frernli Peimeath (a:5) at Trostead (p:2)  <= e:223  e:224
+[Y0017]       POLITY.SUCCESSION           Drould Wous (a:37) takes the seat of the Trostead Compact (f:1) (raised from trostead, no claimant remaining)  <= e:224  e:226
+
+[Y0018]       LIFE.BIRTH                  Trapald Goulre (a:38) is born to Neallseis Staend (a:3) at Themoor (p:3)  <= e:37  e:228
+[Y0018]       POLITY.CHALLENGE            Threth Kruth (a:14) challenges Frernli Peimeath (a:5) openly for the Galweall League (f:2), loses, and Frernli Peimeath (a:5) keeps the seat  <= e:207  e:231
+[Y0018]       POLITY.EXILE                Threth Kruth (a:14) is cast out of the Galweall League (f:2) — the losing side of an open challenge  <= e:231  e:232
+
+[Y0019]       LIFE.BIRTH                  Laelldou Nerum (a:39) is born to Neallseis Staend (a:3) at Themoor (p:3)  <= e:37  e:237
+[Y0019]       POLITY.EXILE_RETURN         Threth Kruth (a:14) returns from exile and takes service with the Trostead Compact (f:1)  <= e:232  e:240
+[Y0019]       POLITY.LEGITIMACY_CRISIS    the Trostead Compact (f:1) spends 95 silver buying goodwill for the second time, and is not believed  <= e:164  e:241
+[Y0019]       DIPLO.INSULT                the Galweall League (f:2) publicly slights the Trostead Compact (f:1)  e:242
+[Y0019]       CONFLICT.RAID               House Buldbei (f:3) raids Gaehollow (p:6), carrying off 53 grain and killing 45  <= e:56  e:243
+[Y0019]       POLITY.APPOINTMENT          Sealfeis Vearn (a:22) is raised to heir of House Buldbei (f:3)  <= e:208  e:244
+
+[Y0020] w:16  POLITY.COUP_PLOTTED         Paernso Feand (a:8) begins conspiring against Frernli Peimeath (a:5) of the Galweall League (f:2)  [secret]  <= e:232  e:253
+[Y0020]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Draemo Grirn (a:34) away from the ruler of the Galweall League (f:2)  <= e:232  e:254
+[Y0020]       POLITY.APPOINTMENT          Threth Kruth (a:14) is raised to heir of the Trostead Compact (f:1)  <= e:241  e:255
+[Y0020]       POLITY.APPOINTMENT          Besveir Maleal (a:23) is raised to steward of House Buldbei (f:3)  <= e:208  e:256
+[Y0020]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Trostead (p:2) is beaten off  <= e:56  e:257
+
+[Y0021]       LIFE.DEATH_NATURAL          Trurnur Draeltheas (a:18), captain of the Galweall League (f:2), dies at 58 in Themoor (p:3)  e:259
+[Y0021]       LIFE.MARRIAGE               Vun Doultheam (a:21) marries Tha Vu (a:25), binding the Trostead Compact (f:1) to the Galweall League (f:2)  e:263
+[Y0021]       LIFE.MARRIAGE               Sealfeis Vearn (a:22) marries Besveir Maleal (a:23) at Micrag (p:4)  e:264
+[Y0021] w:16  CONFLICT.ASSASSINATION      Paernso Feand (a:8) has Frernli Peimeath (a:5) murdered at Themoor (p:3)  <= e:232  e:267
+[Y0021]       LIFE.DEATH_VIOLENT          Frernli Peimeath (a:5), ruler of the Galweall League (f:2), is killed by Paernso Feand (a:8) at Themoor (p:3)  <= e:267  e:268
+[Y0021] w:17  POLITY.COUP_PLOTTED         Threth Kruth (a:14) begins conspiring against Drould Wous (a:37) of the Trostead Compact (f:1)  [secret]  <= e:240  e:269
+[Y0021]       POLITY.APPOINTMENT          Vun Doultheam (a:21) is raised to steward of the Trostead Compact (f:1)  <= e:241  e:270
+[Y0021]       POLITY.APPOINTMENT          Nond Mea (a:28) is raised to steward of House Buldbei (f:3)  <= e:257  e:271
+[Y0021]       POLITY.SUCCESSION           Sourmea Fruth (a:10) takes the seat of the Galweall League (f:2) (by election)  <= e:268  e:272
+
+[Y0022]       POLITY.COURTS_SUPPORT       Threth Kruth (a:14) wins Beasre Feanwoul (a:24) away from the ruler of the Trostead Compact (f:1)  <= e:240  e:277
+[Y0022] w:18  POLITY.COUP_PLOTTED         Beasre Feanwoul (a:24) begins conspiring against Drould Wous (a:37) of the Trostead Compact (f:1)  [secret]  <= e:241  e:278
+[Y0022]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Neallseis Staend (a:3) away from the ruler of the Galweall League (f:2)  <= e:232  e:279
+[Y0022]       POLITY.APPOINTMENT          Find Bound (a:26) is raised to steward of the Trostead Compact (f:1)  <= e:241  e:280
+[Y0022]       DIPLO.TRIBUTE_DEMANDED      the Galweall League (f:2) demands tribute of the Trostead Compact (f:1) and is refused  e:281
+[Y0022]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Geirnpei Shafts (p:8) is beaten off  <= e:56  e:282
+[Y0022] w:16  POLITY.COUP_RESOLVED        Paernso Feand (a:8)'s conspiracy against Sourmea Fruth (a:10) is uncovered after 2 years  <= e:253  e:283
+[Y0022]       POLITY.EXILE                Paernso Feand (a:8) is cast out of the Galweall League (f:2) — conspiracy against the seat  <= e:283  e:284
+
+[Y0023]       LIFE.BIRTH                  Varnnael Wansen (a:41) is born to Sealfeis Vearn (a:22) at Micrag (p:4)  <= e:264  e:290
+[Y0023]       POLITY.CHALLENGE            Threth Kruth (a:14) challenges Drould Wous (a:37) openly for the Trostead Compact (f:1), wins, and takes the seat from Drould Wous (a:37)  <= e:240  e:293
+[Y0023]       POLITY.EXILE                Drould Wous (a:37) is cast out of the Trostead Compact (f:1) — the losing side of an open challenge  <= e:293  e:295
+[Y0023]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Del Monbirn (a:27) away from the ruler of the Galweall League (f:2)  <= e:232  e:296
+[Y0023]       POLITY.APPOINTMENT          Dreamwein Vous (a:30) is raised to heir of the Trostead Compact (f:1)  <= e:277  e:297
+[Y0023]       CONFLICT.ASSASSINATION      Sourmea Fruth (a:10) has Threth Kruth (a:14) murdered at Trostead (p:2)  e:298
+[Y0023]       LIFE.DEATH_VIOLENT          Threth Kruth (a:14), ruler of the Trostead Compact (f:1), is killed by Sourmea Fruth (a:10) at Trostead (p:2)  <= e:298  e:299
+[Y0023]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Pellweagate (p:5) is beaten off  <= e:56  e:300
+[Y0023] w:17  POLITY.PLOT_DIES_WITH_PLOTTER  Threth Kruth (a:14)'s conspiracy against Drould Wous (a:37) dies with them, 2 years in  [secret]  <= e:269,e:299  e:301
+[Y0023]       POLITY.SUCCESSION           Vun Doultheam (a:21) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:299,e:52,e:270  e:302
+
+[Y0024]       LIFE.DEATH_NATURAL          Dreamwein Vous (a:30), heir of the Trostead Compact (f:1), dies at 17 in Trostead (p:2)  e:304
+[Y0024]       LIFE.MARRIAGE               Bathwa Bea (a:29) marries Keandtei Taegro (a:31) at Themoor (p:3)  e:306
+[Y0024]       POLITY.COURTS_SUPPORT       Beasre Feanwoul (a:24) wins Pin Meilthath (a:33) away from the ruler of the Trostead Compact (f:1)  <= e:241  e:310
+[Y0024]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Peansith Rae (a:36) away from the ruler of the Galweall League (f:2)  <= e:232  e:311
+[Y0024] w:19  POLITY.COUP_PLOTTED         Find Bound (a:26) begins conspiring against Vun Doultheam (a:21) of the Trostead Compact (f:1)  [secret]  <= e:277  e:312
+[Y0024]       POLITY.APPOINTMENT          Pin Meilthath (a:33) is raised to heir of the Trostead Compact (f:1)  <= e:277  e:313
+[Y0024] w:18  POLITY.COUP_RESOLVED        Beasre Feanwoul (a:24) challenges Vun Doultheam (a:21) for the Trostead Compact (f:1) and wins  <= e:278  e:314
+[Y0024] w:18  POLITY.SUCCESSION           Beasre Feanwoul (a:24) takes the seat of the Trostead Compact (f:1) (coup)  <= e:314  e:315
+[Y0024] w:18  LIFE.DEATH_VIOLENT          Vun Doultheam (a:21), ruler of the Trostead Compact (f:1), is killed by Beasre Feanwoul (a:24) at Trostead (p:2)  <= e:314  e:316
+[Y0024]       POLITY.REVOLT               Geirnpei Shafts (p:8) rises against the Trostead Compact (f:1), whose standing had fallen to nothing  <= e:315  e:318
+
+[Y0025]       POLITY.EXILE_RETURN         Paernso Feand (a:8) returns from exile and takes service with House Buldbei (f:3)  <= e:284  e:322
+[Y0025]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Trapald Goulre (a:38) away from the ruler of the Galweall League (f:2)  <= e:232  e:323
+[Y0025] w:19  CONFLICT.ASSASSINATION      Find Bound (a:26) has Beasre Feanwoul (a:24) murdered at Trostead (p:2)  <= e:277  e:324
+[Y0025]       LIFE.DEATH_VIOLENT          Beasre Feanwoul (a:24), ruler of the Trostead Compact (f:1), is killed by Find Bound (a:26) at Trostead (p:2)  <= e:324  e:325
+[Y0025]       ECONOMY.TRADE_PACT          House Buldbei (f:3) buys 30 grain from the Trostead Compact (f:1) for 60 silver  <= e:56,e:216  e:326
+[Y0025]       POLITY.LEGITIMACY_CRISIS    House Buldbei (f:3) spends 41 silver buying goodwill for the second time, and is not believed  <= e:257  e:327
+[Y0025] w:20  POLITY.SUCCESSION_DISPUTED  Pin Meilthath (a:33) contests the claim of Find Bound (a:26), the named heir, to the Trostead Compact (f:1) (decided by primogeniture)  <= e:325  e:328
+[Y0025] w:20  POLITY.SUCCESSION           Pin Meilthath (a:33) takes the seat of the Trostead Compact (f:1), setting aside the claim of the named heir Find Bound (a:26)  <= e:328  e:329
+[Y0025]       POLITY.EXILE                Find Bound (a:26) is cast out of the Trostead Compact (f:1) — the losing claim  <= e:328  e:330
+
+[Y0026]       LIFE.MARRIAGE               Del Monbirn (a:27) marries Pin Meilthath (a:33), binding the Galweall League (f:2) to the Trostead Compact (f:1)  e:332
+[Y0026] w:21  ECONOMY.FAMINE              famine at Pellweagate (p:5): 57 dead, grain short by 4  e:335
+[Y0026]       POLITY.EXILE_RETURN         Find Bound (a:26) returns from exile and takes service with the Galweall League (f:2)  <= e:330  e:339
+[Y0026] w:24  POLITY.COUP_PLOTTED         Del Monbirn (a:27) begins conspiring against Sourmea Fruth (a:10) of the Galweall League (f:2)  [secret]  <= e:323  e:340
+[Y0026]       POLITY.EXILE_RETURN         Drould Wous (a:37) returns from exile and takes service with the Galweall League (f:2)  <= e:295  e:341
+[Y0026]       ECONOMY.TRADE_PACT          the Trostead Compact (f:1) buys 14 grain from the Galweall League (f:2) for 60 silver  <= e:198,e:178  e:342
+[Y0026]       POLITY.APPOINTMENT          Paernso Feand (a:8) is raised to steward of House Buldbei (f:3)  <= e:257  e:343
+
+[Y0027]       LIFE.DEATH_NATURAL          Pin Meilthath (a:33), ruler of the Trostead Compact (f:1), dies at 19 in Trostead (p:2)  e:345
+[Y0027]       LIFE.MARRIAGE               Find Bound (a:26) marries Nond Mea (a:28), binding the Galweall League (f:2) to House Buldbei (f:3)  e:346
+[Y0027] w:25  ECONOMY.FAMINE              famine at Micrag (p:4): 154 dead, grain short by 13  e:348
+[Y0027] w:21  ECONOMY.FAMINE              famine at Pellweagate (p:5), year 2: 82 dead, 275 abandon the place  <= e:335  e:349
+[Y0027] w:24  CONFLICT.ASSASSINATION      Del Monbirn (a:27)'s attempt on Sourmea Fruth (a:10) fails and is traced back  <= e:323  e:353
+[Y0027]       POLITY.EXILE                Del Monbirn (a:27) is cast out of the Galweall League (f:2) — attempted murder  <= e:353  e:354
+[Y0027]       POLITY.COURTS_SUPPORT       Drould Wous (a:37) wins Neallseis Staend (a:3) away from the ruler of the Galweall League (f:2)  <= e:341  e:355
+[Y0027]       POLITY.SUCCESSION           Teamfeill Baeldful (a:44) takes the seat of the Trostead Compact (f:1) (raised from trostead, no claimant remaining)  <= e:345  e:357
+
+[Y0028]       LIFE.DEATH_NATURAL          Pethkoll Fould (a:12), captain of the Galweall League (f:2), dies at 57 in Themoor (p:3)  e:359
+[Y0028]       LIFE.MARRIAGE               Draemo Grirn (a:34) marries Teamfeill Baeldful (a:44), binding the Galweall League (f:2) to the Trostead Compact (f:1)  e:360
+[Y0028]       LIFE.BIRTH                  Kindhoth Mouthsi (a:45) is born to Sealfeis Vearn (a:22) at Micrag (p:4)  <= e:264  e:361
+[Y0028]       POLITY.EXILE_RETURN         Del Monbirn (a:27) returns from exile and takes service with the Trostead Compact (f:1)  <= e:354  e:364
+[Y0028]       POLITY.COURTS_SUPPORT       Drould Wous (a:37) wins Trapald Goulre (a:38) away from the ruler of the Galweall League (f:2)  <= e:341  e:365
+[Y0028]       POLITY.APPOINTMENT          Del Monbirn (a:27) is raised to heir of the Trostead Compact (f:1)  <= e:277  e:366
+[Y0028] w:19  POLITY.COUP_RESOLVED        Find Bound (a:26) challenges Teamfeill Baeldful (a:44) for the Trostead Compact (f:1) and wins  <= e:312  e:367
+[Y0028] w:19  POLITY.SUCCESSION           Find Bound (a:26) takes the seat of the Trostead Compact (f:1) (coup)  <= e:367  e:368
+[Y0028]       POLITY.EXILE                Teamfeill Baeldful (a:44) is cast out of the Trostead Compact (f:1) — the losing side of a coup  <= e:367  e:369
+[Y0028] w:21  ECONOMY.FAMINE_ENDS         the hunger at Pellweagate (p:5) passes after 2 years and 120 return to the fields  <= e:335  e:371
+[Y0028] w:23  ECONOMY.FAMINE_ENDS         the hunger at Geirnpei Shafts (p:8) passes after 2 years and 38 return to the fields  e:372
+[Y0028] w:25  ECONOMY.FAMINE_ENDS         the hunger at Micrag (p:4) passes after 1 years  <= e:348  e:373
+
+[Y0029]       LIFE.DEATH_NATURAL          Brum Theind (a:20), commoner of House Buldbei (f:3), dies at 58 in Micrag (p:4)  e:374
+[Y0029]       LIFE.BIRTH                  Skind Pesvi (a:46) is born to Del Monbirn (a:27) at Trostead (p:2)  <= e:332  e:376
+[Y0029] w:26  POLITY.COUP_PLOTTED         Neallseis Staend (a:3) begins conspiring against Sourmea Fruth (a:10) of the Galweall League (f:2)  [secret]  <= e:365  e:380
+[Y0029]       POLITY.COURTS_SUPPORT       Thimseild Soldrind (a:35) wins Del Monbirn (a:27) away from the ruler of the Trostead Compact (f:1)  <= e:369  e:381
+[Y0029]       POLITY.COURTS_SUPPORT       Drould Wous (a:37) wins Po Nosream (a:43) away from the ruler of the Galweall League (f:2)  <= e:341  e:382
+[Y0029]       POLITY.EXILE_RETURN         Teamfeill Baeldful (a:44) returns from exile and takes service with the Galweall League (f:2)  <= e:369  e:383
+[Y0029]       CONFLICT.RAID               the Trostead Compact (f:1) raids Gaehollow (p:6), carrying off 20 grain and killing 43  <= e:198  e:384
+[Y0029]       POLITY.LEGITIMACY_CRISIS    the Trostead Compact (f:1) spends 140 silver buying goodwill for the third time, and is not believed  <= e:369  e:385
+[Y0029]       CONFLICT.ASSASSINATION      Sourmea Fruth (a:10) has Find Bound (a:26) murdered at Themoor (p:3)  e:386
+[Y0029]       LIFE.DEATH_VIOLENT          Find Bound (a:26), ruler of the Trostead Compact (f:1), is killed by Sourmea Fruth (a:10) at Themoor (p:3)  <= e:386  e:387
+[Y0029] w:24  POLITY.COUP_RESOLVED        Del Monbirn (a:27)'s conspiracy against Sourmea Fruth (a:10) is uncovered after 3 years  <= e:340  e:388
+[Y0029]       POLITY.EXILE                Del Monbirn (a:27), who had already left, is declared outlaw by the Galweall League (f:2) — conspiracy against the seat  <= e:388  e:389
+[Y0029]       POLITY.SUCCESSION           Del Monbirn (a:27) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:387,e:366  e:390
+[Y0029] w:22  ECONOMY.FAMINE_ENDS         the hunger at Pei Delve (p:7) passes after 3 years and 27 return to the fields  e:392
+
+[Y0030] w:27  ECONOMY.FAMINE              famine at Micrag (p:4): 35 dead, grain short by 1  e:395
+[Y0030] w:28  ECONOMY.FAMINE              famine at Gaehollow (p:6): 51 dead, grain short by 2  e:396
+[Y0030] w:26  CONFLICT.ASSASSINATION      Neallseis Staend (a:3)'s attempt on Sourmea Fruth (a:10) fails and is traced back  <= e:365  e:398
+[Y0030]       POLITY.EXILE                Neallseis Staend (a:3) is cast out of the Galweall League (f:2) — attempted murder  <= e:398  e:399
+[Y0030]       POLITY.CHALLENGE            Bathwa Bea (a:29) challenges Sourmea Fruth (a:10) openly for the Galweall League (f:2), wins, and takes the seat from Sourmea Fruth (a:10)  <= e:396  e:400
+[Y0030]       POLITY.EXILE                Sourmea Fruth (a:10) is cast out of the Galweall League (f:2) — the losing side of an open challenge  <= e:400  e:402
+[Y0030]       POLITY.COURTS_SUPPORT       Thimseild Soldrind (a:35) wins Skind Pesvi (a:46) away from the ruler of the Trostead Compact (f:1)  <= e:369  e:403
+[Y0030]       POLITY.APPOINTMENT          Thimseild Soldrind (a:35) is raised to heir of the Trostead Compact (f:1)  <= e:369  e:404
+[Y0030]       CONFLICT.RAID               the Galweall League (f:2) raids Geirnpei Shafts (p:8), carrying off 2 grain and killing 3  e:405
+[Y0030]       POLITY.LEGITIMACY_CRISIS    the Galweall League (f:2) spends 50 silver to buy back goodwill  <= e:396  e:406
+[Y0030]       POLITY.SECESSION            Gaehollow (p:6) breaks from the Galweall League (f:2) as the Gaehollow Charter, with Ran Skou (a:49) taking its seat  <= e:402  e:409
+
+[Y0031]       LIFE.BIRTH                  Rusund Gilteil (a:50) is born to Sealfeis Vearn (a:22) at Micrag (p:4)  <= e:264  e:410
+[Y0031]       POLITY.EXILE_RETURN         Neallseis Staend (a:3) returns from exile and takes service with the Gaehollow Charter (f:4)  <= e:399  e:413
+[Y0031]       POLITY.COURTS_SUPPORT       Sealfeis Vearn (a:22) wins Rusund Gilteil (a:50) away from the ruler of House Buldbei (f:3)  <= e:395  e:414
+[Y0031] w:29  POLITY.COUP_PLOTTED         Thimseild Soldrind (a:35) begins conspiring against Del Monbirn (a:27) of the Trostead Compact (f:1)  [secret]  <= e:369  e:415
+[Y0031]       POLITY.COURTS_SUPPORT       Drould Wous (a:37) wins Draemo Grirn (a:34) away from the ruler of the Galweall League (f:2)  <= e:341  e:416
+[Y0031]       DIPLO.INSULT                the Trostead Compact (f:1) publicly slights the Galweall League (f:2)  e:417
+[Y0031]       CONFLICT.RAID               the Galweall League (f:2)'s raid on Pei Delve (p:7) is beaten off  <= e:417  e:418
+[Y0031]       POLITY.APPOINTMENT          Dasould Ream (a:32) is raised to heir of the Galweall League (f:2)  <= e:396  e:419
+[Y0031]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Pei Delve (p:7) is beaten off  <= e:348  e:420
+[Y0031]       CONFLICT.RAID               the Gaehollow Charter (f:4) raids Trostead (p:2), carrying off 32 grain and killing 21  e:421
+[Y0031] w:26  POLITY.COUP_RESOLVED        Neallseis Staend (a:3) challenges Bathwa Bea (a:29) for the Galweall League (f:2) and wins  <= e:380  e:422
+[Y0031] w:26  POLITY.SUCCESSION           Neallseis Staend (a:3) takes the seat of the Galweall League (f:2) (coup)  <= e:422  e:423
+[Y0031] w:26  LIFE.DEATH_VIOLENT          Bathwa Bea (a:29), ruler of the Galweall League (f:2), is killed by Neallseis Staend (a:3) at Themoor (p:3)  <= e:422  e:424
+[Y0031] w:27  ECONOMY.FAMINE_ENDS         the hunger at Micrag (p:4) passes after 1 years  <= e:395  e:426
+[Y0031] w:28  ECONOMY.FAMINE_ENDS         the hunger at Gaehollow (p:6) passes after 1 years  <= e:396  e:427
+
+[Y0032]       LIFE.BIRTH                  Saerngein Wae (a:51) is born to Del Monbirn (a:27) at Trostead (p:2)  <= e:332  e:428
+[Y0032] w:30  ECONOMY.FAMINE              famine at Micrag (p:4): 52 dead, grain short by 2  e:431
+[Y0032]       POLITY.EXILE_RETURN         Sourmea Fruth (a:10) returns from exile and takes service with the Gaehollow Charter (f:4)  <= e:402  e:433
+[Y0032]       POLITY.COURTS_SUPPORT       Sealfeis Vearn (a:22) wins Kindhoth Mouthsi (a:45) away from the ruler of House Buldbei (f:3)  <= e:395  e:434
+[Y0032]       POLITY.COURTS_SUPPORT       Thimseild Soldrind (a:35) wins Saerngein Wae (a:51) away from the ruler of the Trostead Compact (f:1)  <= e:369  e:435
+[Y0032]       POLITY.COURTS_SUPPORT       Drould Wous (a:37) wins Peansith Rae (a:36) away from the ruler of the Galweall League (f:2)  <= e:341  e:436
+[Y0032] w:31  DIPLO.WAR_DECLARED          the Trostead Compact (f:1) declares war on the Galweall League (f:2) over long-standing grievance  e:437
+[Y0032]       POLITY.APPOINTMENT          Keandtei Taegro (a:31) is raised to steward of the Galweall League (f:2)  <= e:396  e:438
+[Y0032]       POLITY.APPOINTMENT          Sealfeis Vearn (a:22) is raised to steward of House Buldbei (f:3)  <= e:395  e:439
+[Y0032]       ECONOMY.TRADE_PACT          the Gaehollow Charter (f:4) buys 15 grain from the Trostead Compact (f:1) for 30 silver  e:440
+[Y0032] w:29  POLITY.COUP_RESOLVED        Thimseild Soldrind (a:35) challenges Del Monbirn (a:27) for the Trostead Compact (f:1) and wins  <= e:415  e:441
+[Y0032] w:29  POLITY.SUCCESSION           Thimseild Soldrind (a:35) takes the seat of the Trostead Compact (f:1) (coup)  <= e:441  e:442
+[Y0032] w:29  LIFE.DEATH_VIOLENT          Del Monbirn (a:27), ruler of the Trostead Compact (f:1), is killed by Thimseild Soldrind (a:35) at Trostead (p:2)  <= e:441  e:443
+[Y0032] w:31  CONFLICT.BATTLE             the Trostead Compact (f:1) defeats the Galweall League (f:2) at Themoor (p:3) (104 dead)  <= e:437  e:444
+
+[Y0033] w:32  POLITY.COUP_PLOTTED         Sealfeis Vearn (a:22) begins conspiring against Lall Nealdgum (a:17) of House Buldbei (f:3)  [secret]  <= e:395  e:449
+[Y0033] w:31  CONFLICT.ASSASSINATION      Thimseild Soldrind (a:35) has Neallseis Staend (a:3) murdered at Gaehollow (p:6)  e:450
+[Y0033]       LIFE.DEATH_VIOLENT          Neallseis Staend (a:3), ruler of the Galweall League (f:2), is killed by Thimseild Soldrind (a:35) at Gaehollow (p:6)  <= e:450  e:451
+[Y0033]       POLITY.APPOINTMENT          Besveir Maleal (a:23) is raised to heir of House Buldbei (f:3)  <= e:395  e:452
+[Y0033]       ECONOMY.TRADE_PACT          the Gaehollow Charter (f:4) and the Trostead Compact (f:1) agree terms of trade  e:453
+[Y0033] w:31  CONFLICT.BATTLE             the Trostead Compact (f:1) defeats the Galweall League (f:2) at Themoor (p:3) (86 dead)  <= e:437  e:454
+[Y0033] w:31  CONFLICT.CONQUEST           the Trostead Compact (f:1) takes Themoor (p:3) from the Galweall League (f:2)  <= e:454  e:455
+[Y0033]       POLITY.COLLAPSE             the Galweall League (f:2) is finished — landless, its last 14 followers scatter  <= e:455  e:456
+[Y0033] w:30  ECONOMY.FAMINE_ENDS         the hunger at Micrag (p:4) passes after 1 years  <= e:431  e:459
+
+[Y0034]       LIFE.DEATH_NATURAL          Draemo Grirn (a:34), commoner of the Trostead Compact (f:1), dies at 25 in Themoor (p:3)  e:460
+[Y0034] w:33  POLITY.COUP_PLOTTED         Teamfeill Baeldful (a:44) begins conspiring against Thimseild Soldrind (a:35) of the Trostead Compact (f:1)  [secret]  <= e:383  e:463
+[Y0034]       DIPLO.TRIBUTE_DEMANDED      the Trostead Compact (f:1) extracts 54 silver in tribute from House Buldbei (f:3)  e:464
+[Y0034]       CONFLICT.RAID               House Buldbei (f:3)'s raid on Themoor (p:3) is beaten off  <= e:348,e:464  e:465
+[Y0034]       POLITY.APPOINTMENT          Nond Mea (a:28) is raised to steward of House Buldbei (f:3)  <= e:395  e:466
+[Y0034]       DIPLO.ALLIANCE_FORMED       the Gaehollow Charter (f:4) and House Buldbei (f:3) swear an alliance  <= e:455  e:467
+[Y0034] w:31  DIPLO.PEACE_SIGNED          the Trostead Compact (f:1) and the Galweall League (f:2) make peace after 2 years, after the collapse of the Galweall League  <= e:437  e:468
+[Y0034] w:32  POLITY.COUP_RESOLVED        Sealfeis Vearn (a:22)'s conspiracy against Lall Nealdgum (a:17) is uncovered after 1 years  <= e:449  e:469
+[Y0034] w:32  LIFE.DEATH_VIOLENT          Sealfeis Vearn (a:22) is put to death — executed for conspiracy  <= e:469  e:470
+
+[Y0035] w:34  POLITY.COUP_PLOTTED         Dasould Ream (a:32) begins conspiring against Thimseild Soldrind (a:35) of the Trostead Compact (f:1)  [secret]  <= e:442  e:475
+[Y0035]       POLITY.COURTS_SUPPORT       Teamfeill Baeldful (a:44) wins Trapald Goulre (a:38) away from the ruler of the Trostead Compact (f:1)  <= e:383  e:476
+[Y0035] w:35  DIPLO.WAR_DECLARED          the Trostead Compact (f:1) declares war on House Buldbei (f:3) over long-standing grievance  e:477
+[Y0035] w:35  CONFLICT.BATTLE             the Trostead Compact (f:1) defeats House Buldbei (f:3) at Micrag (p:4) (121 dead)  <= e:477  e:478
+[Y0035] w:35  CONFLICT.CONQUEST           the Trostead Compact (f:1) takes Micrag (p:4) from House Buldbei (f:3)  <= e:478  e:479
+[Y0035]       POLITY.COLLAPSE             House Buldbei (f:3) is finished — landless, its last 7 followers scatter  <= e:479  e:480
+
+[Y0036]       LIFE.MARRIAGE               Laelldou Nerum (a:39) marries Ran Skou (a:49), binding the Trostead Compact (f:1) to the Gaehollow Charter (f:4)  e:483
+[Y0036]       LIFE.BIRTH                  Greimfourn Goul (a:53) is born to Laelldou Nerum (a:39) at Themoor (p:3)  <= e:483  e:484
+[Y0036]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Besveir Maleal (a:23) away from the ruler of the Trostead Compact (f:1)  <= e:476  e:487
+[Y0036] w:34  CONFLICT.ASSASSINATION      Dasould Ream (a:32)'s attempt on Thimseild Soldrind (a:35) fails and is traced back  <= e:442  e:488
+[Y0036]       POLITY.EXILE                Dasould Ream (a:32) is cast out of the Trostead Compact (f:1) — attempted murder  <= e:488  e:489
+[Y0036]       POLITY.COURTS_SUPPORT       Trapald Goulre (a:38) wins Tha Vu (a:25) away from the ruler of the Trostead Compact (f:1)  <= e:476  e:490
+[Y0036] w:33  CONFLICT.ASSASSINATION      Teamfeill Baeldful (a:44) has Thimseild Soldrind (a:35) murdered at Trostead (p:2)  <= e:383  e:491
+[Y0036]       LIFE.DEATH_VIOLENT          Thimseild Soldrind (a:35), ruler of the Trostead Compact (f:1), is killed by Teamfeill Baeldful (a:44) at Trostead (p:2)  <= e:491  e:492
+[Y0036] w:35  DIPLO.PEACE_SIGNED          the Trostead Compact (f:1) and House Buldbei (f:3) make peace after 1 years, after the collapse of House Buldbei  <= e:477  e:493
+[Y0036]       POLITY.SUCCESSION           Teamfeill Baeldful (a:44) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:492,e:366  e:494
+
+[Y0037]       LIFE.MARRIAGE               Peansith Rae (a:36) marries Trapald Goulre (a:38) at Themoor (p:3)  e:496
+[Y0037] w:36  POLITY.COUP_PLOTTED         Tha Vu (a:25) begins conspiring against Teamfeill Baeldful (a:44) of the Trostead Compact (f:1)  [secret]  <= e:476  e:499
+[Y0037] w:37  POLITY.COUP_PLOTTED         Trapald Goulre (a:38) begins conspiring against Teamfeill Baeldful (a:44) of the Trostead Compact (f:1)  [secret]  <= e:476  e:500
+[Y0037]       POLITY.COURTS_SUPPORT       Laelldou Nerum (a:39) wins Peansith Rae (a:36) away from the ruler of the Trostead Compact (f:1)  <= e:492  e:501
+[Y0037]       CONFLICT.RAID               the Gaehollow Charter (f:4)'s raid on Geirnpei Shafts (p:8) is beaten off  e:502
+[Y0037] w:33  POLITY.PLOT_LAPSES          Teamfeill Baeldful (a:44)'s conspiracy against Thimseild Soldrind (a:35) lapses after 3 years — its author took the seat by other means  [secret]  <= e:463  e:503
+[Y0037] w:34  POLITY.COUP_RESOLVED        Dasould Ream (a:32)'s conspiracy against Teamfeill Baeldful (a:44) is uncovered after 2 years  <= e:475  e:504
+[Y0037]       POLITY.EXILE                Dasould Ream (a:32), who had already left, is declared outlaw by the Trostead Compact (f:1) — conspiracy against the seat  <= e:504  e:505
+[Y0037]       POLITY.REVOLT               Pei Delve (p:7) rises against the Trostead Compact (f:1), whose standing had fallen to nothing  <= e:505  e:507
+
+[Y0038]       LIFE.DEATH_NATURAL          Sourmea Fruth (a:10), captain of the Gaehollow Charter (f:4), dies at 62 in Gaehollow (p:6)  e:508
+[Y0038]       LIFE.DEATH_NATURAL          Drould Wous (a:37), commoner of the Trostead Compact (f:1), dies at 65 in Themoor (p:3)  e:509
+[Y0038]       POLITY.COURTS_SUPPORT       Tha Vu (a:25) wins Peansith Rae (a:36) away from the ruler of the Trostead Compact (f:1)  <= e:476  e:514
+[Y0038]       POLITY.COURTS_SUPPORT       Trapald Goulre (a:38) wins Peansith Rae (a:36) away from the ruler of the Trostead Compact (f:1)  <= e:476  e:515
+[Y0038] w:38  POLITY.COUP_PLOTTED         Laelldou Nerum (a:39) begins conspiring against Teamfeill Baeldful (a:44) of the Trostead Compact (f:1)  [secret]  <= e:492  e:516
+[Y0038]       DIPLO.TRIBUTE_DEMANDED      the Trostead Compact (f:1) extracts 30 silver in tribute from the Gaehollow Charter (f:4)  e:517
+[Y0038]       CONFLICT.RAID               the Gaehollow Charter (f:4)'s raid on Pei Delve (p:7) is beaten off  <= e:517  e:518
+[Y0038] w:36  POLITY.COUP_RESOLVED        Tha Vu (a:25)'s conspiracy against Teamfeill Baeldful (a:44) is uncovered after 1 years  <= e:499  e:519
+[Y0038]       POLITY.EXILE                Tha Vu (a:25) is cast out of the Trostead Compact (f:1) — conspiracy against the seat  <= e:519  e:520
+
+[Y0039] w:37  CONFLICT.ASSASSINATION      Trapald Goulre (a:38)'s attempt on Teamfeill Baeldful (a:44) fails and is traced back  <= e:476  e:525
+[Y0039]       POLITY.EXILE                Trapald Goulre (a:38) is cast out of the Trostead Compact (f:1) — attempted murder  <= e:525  e:526
+[Y0039] w:38  CONFLICT.ASSASSINATION      Laelldou Nerum (a:39)'s attempt on Teamfeill Baeldful (a:44) fails and is traced back  <= e:492  e:527
+[Y0039]       POLITY.EXILE                Laelldou Nerum (a:39) is cast out of the Trostead Compact (f:1) — attempted murder  <= e:527  e:528
+[Y0039]       CONFLICT.ASSASSINATION      Teamfeill Baeldful (a:44) has Ran Skou (a:49) murdered at Gaehollow (p:6)  e:529
+[Y0039]       LIFE.DEATH_VIOLENT          Ran Skou (a:49), ruler of the Gaehollow Charter (f:4), is killed by Teamfeill Baeldful (a:44) at Gaehollow (p:6)  <= e:529  e:530
+[Y0039]       POLITY.LEGITIMACY_CRISIS    the Trostead Compact (f:1) spends 185 silver buying goodwill for the fourth time, and is not believed  <= e:520  e:531
+[Y0039] w:37  POLITY.COUP_RESOLVED        Trapald Goulre (a:38)'s conspiracy against Teamfeill Baeldful (a:44) is uncovered after 2 years  <= e:500  e:532
+[Y0039]       POLITY.EXILE                Trapald Goulre (a:38), who had already left, is declared outlaw by the Trostead Compact (f:1) — conspiracy against the seat  <= e:532  e:533
+[Y0039]       POLITY.SUCCESSION           Dealse Loundkuld (a:54) takes the seat of the Gaehollow Charter (f:4) (raised from gaehollow, no claimant remaining)  <= e:530  e:536
+
+[Y0040]       LIFE.DEATH_NATURAL          Lall Nealdgum (a:17), commoner of the Trostead Compact (f:1), dies at 64 in Micrag (p:4)  e:538
+[Y0040]       POLITY.EXILE_RETURN         Trapald Goulre (a:38) returns from exile and takes service with the Gaehollow Charter (f:4)  <= e:533  e:542
+[Y0040]       POLITY.EXILE_RETURN         Laelldou Nerum (a:39) returns from exile and takes service with the Gaehollow Charter (f:4)  <= e:528  e:543
+[Y0040]       POLITY.APPOINTMENT          Vaswei Grand (a:40) is raised to heir of the Trostead Compact (f:1)  <= e:520  e:544
+[Y0040] w:39  DIPLO.WAR_DECLARED          the Trostead Compact (f:1) declares war on the Gaehollow Charter (f:4) over long-standing grievance  e:545
+[Y0040]       CONFLICT.ASSASSINATION      Dealse Loundkuld (a:54) has Teamfeill Baeldful (a:44) murdered at Themoor (p:3)  e:546
+[Y0040]       LIFE.DEATH_VIOLENT          Teamfeill Baeldful (a:44), ruler of the Trostead Compact (f:1), is killed by Dealse Loundkuld (a:54) at Themoor (p:3)  <= e:546  e:547
+[Y0040]       ECONOMY.TRADE_PACT          the Gaehollow Charter (f:4) and the Trostead Compact (f:1) agree terms of trade  e:548
+[Y0040] w:39  CONFLICT.BATTLE             the Trostead Compact (f:1) defeats the Gaehollow Charter (f:4) at Gaehollow (p:6) (126 dead)  <= e:545  e:549
+[Y0040] w:39  CONFLICT.CONQUEST           the Trostead Compact (f:1) takes Gaehollow (p:6) from the Gaehollow Charter (f:4)  <= e:549  e:550
+[Y0040]       POLITY.COLLAPSE             the Gaehollow Charter (f:4) is finished — landless, its last 3 followers scatter  <= e:550  e:551
+[Y0040]       POLITY.SUCCESSION           Paernso Feand (a:8) takes the seat of the Trostead Compact (f:1) (by right of birth)  <= e:547,e:343  e:553
+
+[Y0041] w:39  DIPLO.PEACE_SIGNED          the Trostead Compact (f:1) and the Gaehollow Charter (f:4) make peace after 1 years, after the collapse of the Gaehollow Charter  <= e:545  e:560
+
+[Y0042]       LIFE.MARRIAGE               Vaswei Grand (a:40) marries Haeldkeind Nen (a:42) at Trostead (p:2)  e:562
+[Y0042]       LIFE.BIRTH                  Tondreind Mouthmirn (a:56) is born to Laelldou Nerum (a:39) at Gaehollow (p:6)  <= e:483  e:563
+[Y0042]       POLITY.COURTS_SUPPORT       Laelldou Nerum (a:39) wins Tondreind Mouthmirn (a:56) away from the ruler of the Trostead Compact (f:1)  <= e:543  e:567
+[Y0042] w:38  POLITY.COUP_RESOLVED        Laelldou Nerum (a:39)'s conspiracy against Paernso Feand (a:8) is uncovered after 4 years  <= e:516  e:568
+[Y0042] w:38  LIFE.DEATH_VIOLENT          Laelldou Nerum (a:39) is put to death — executed for conspiracy  <= e:568  e:569
+
+[Y0043]       POLITY.REVOLT               Geirnpei Shafts (p:8) rises against the Trostead Compact (f:1), whose standing had fallen to nothing  <= e:568  e:575
+
+[Y0044]       POLITY.CHALLENGE            Nond Mea (a:28) challenges Paernso Feand (a:8) openly for the Trostead Compact (f:1), loses, and Paernso Feand (a:8) keeps the seat  <= e:575  e:578
+[Y0044]       LIFE.DEATH_VIOLENT          Nond Mea (a:28), commoner of the Trostead Compact (f:1), is killed by Paernso Feand (a:8) at Trostead (p:2)  <= e:578  e:579
+[Y0044]       POLITY.COURTS_SUPPORT       Peansith Rae (a:36) wins Tondreind Mouthmirn (a:56) away from the ruler of the Trostead Compact (f:1)  <= e:575  e:580
+
+[Y0045]       LIFE.MARRIAGE               Po Nosream (a:43) marries Kindhoth Mouthsi (a:45) at Themoor (p:3)  e:584
+[Y0045]       LIFE.BIRTH                  Thren Hi (a:57) is born to Vaswei Grand (a:40) at Trostead (p:2)  <= e:562  e:585
+[Y0045] w:40  POLITY.COUP_PLOTTED         Peansith Rae (a:36) begins conspiring against Paernso Feand (a:8) of the Trostead Compact (f:1)  [secret]  <= e:575  e:591
+[Y0045]       POLITY.APPOINTMENT          Skind Pesvi (a:46) is raised to steward of the Trostead Compact (f:1)  <= e:520  e:592
+
+[Y0046]       LIFE.MARRIAGE               Skind Pesvi (a:46) marries Hea Brar (a:47) at Trostead (p:2)  e:595
+[Y0046] w:40  CONFLICT.ASSASSINATION      Peansith Rae (a:36) has Paernso Feand (a:8) murdered at Micrag (p:4)  <= e:575  e:598
+[Y0046]       LIFE.DEATH_VIOLENT          Paernso Feand (a:8), ruler of the Trostead Compact (f:1), is killed by Peansith Rae (a:36) at Micrag (p:4)  <= e:598  e:599
+[Y0046] w:41  POLITY.SUCCESSION_DISPUTED  Skind Pesvi (a:46) contests the claim of Besveir Maleal (a:23), the named heir, to the Trostead Compact (f:1) (decided by primogeniture)  <= e:599  e:601
+[Y0046] w:41  POLITY.SUCCESSION           Besveir Maleal (a:23), the named heir, takes the seat of the Trostead Compact (f:1); the rival claim of Skind Pesvi (a:46) is rejected  <= e:601  e:602
+[Y0046] w:41  POLITY.PARTITION            the Trostead Compact (f:1) is divided: Skind Pesvi (a:46) carries off 3 place(s) as Greater Themoor  <= e:601  e:603
+
+[Y0047]       POLITY.EXILE_RETURN         Tha Vu (a:25) returns from exile and takes service with Greater Themoor (f:5)  <= e:520  e:607
+[Y0047]       POLITY.EXILE_RETURN         Dasould Ream (a:32) returns from exile and takes service with Greater Themoor (f:5)  <= e:489  e:608
+[Y0047]       POLITY.CHALLENGE            Haeldkeind Nen (a:42) challenges Besveir Maleal (a:23) openly for the Trostead Compact (f:1), wins, and takes the seat from Besveir Maleal (a:23)  <= e:603  e:609
+[Y0047]       LIFE.DEATH_VIOLENT          Besveir Maleal (a:23), ruler of the Trostead Compact (f:1), is killed by Haeldkeind Nen (a:42) at Trostead (p:2)  <= e:609  e:611
+
+[Y0048]       LIFE.MARRIAGE               Dasould Ream (a:32) marries Mound Sith (a:48), binding Greater Themoor (f:5) to the Trostead Compact (f:1)  e:615
+[Y0048]       POLITY.LEGITIMACY_CRISIS    the Trostead Compact (f:1) spends 229 silver buying goodwill for the fifth time, and is not believed  <= e:520  e:618
+[Y0048] w:40  POLITY.COUP_RESOLVED        Peansith Rae (a:36) challenges Haeldkeind Nen (a:42) for the Trostead Compact (f:1) and wins  <= e:591  e:619
+[Y0048] w:40  POLITY.SUCCESSION           Peansith Rae (a:36) takes the seat of the Trostead Compact (f:1) (coup)  <= e:619  e:620
+[Y0048]       POLITY.EXILE                Haeldkeind Nen (a:42) is cast out of the Trostead Compact (f:1) — the losing side of a coup  <= e:619  e:621
+
+[Y0049]       LIFE.DEATH_NATURAL          Tha Vu (a:25), captain of Greater Themoor (f:5), dies at 45 in Themoor (p:3)  e:624
+[Y0049]       POLITY.APPOINTMENT          Saerngein Wae (a:51) is raised to steward of the Trostead Compact (f:1)  <= e:621  e:628
+
+[Y0050]       LIFE.BIRTH                  Rend Greall (a:59) is born to Vaswei Grand (a:40) at Trostead (p:2)  <= e:562  e:631
+[Y0050]       POLITY.EXILE_RETURN         Haeldkeind Nen (a:42) returns from exile and takes service with Greater Themoor (f:5)  <= e:621  e:637
+[Y0050]       POLITY.COURTS_SUPPORT       Saerngein Wae (a:51) wins Voundfou Dealdwould (a:55) away from the ruler of the Trostead Compact (f:1)  <= e:621  e:638
+[Y0050]       DIPLO.TRIBUTE_DEMANDED      Greater Themoor (f:5) demands tribute of the Trostead Compact (f:1) and is refused  e:639
+
+[Y0051]       LIFE.BIRTH                  Feikein Geham (a:61) is born to Skind Pesvi (a:46) at Themoor (p:3)  <= e:595  e:642
+[Y0051] w:42  POLITY.COUP_PLOTTED         Saerngein Wae (a:51) begins conspiring against Peansith Rae (a:36) of the Trostead Compact (f:1)  [secret]  <= e:621  e:645
+[Y0051]       DIPLO.INSULT                Greater Themoor (f:5) publicly slights the Trostead Compact (f:1)  e:646
