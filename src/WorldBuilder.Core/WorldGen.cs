@@ -1,3 +1,5 @@
+using WorldBuilder.Core.Geography;
+
 namespace WorldBuilder.Core;
 
 /// <summary>
@@ -5,10 +7,15 @@ namespace WorldBuilder.Core;
 /// emitted as a genesis event, so the log alone is sufficient to reconstruct the world. That
 /// is not ceremony: the <c>why</c>/<c>who</c>/<c>stats</c> commands re-fold from the log file,
 /// which means every run silently re-verifies that the log is complete.
+///
+/// The board is the one thing not in the log, and cannot be: it is hundreds of cells of imported
+/// data with a licence of its own. What the log records is which cell each place stands on and
+/// the fingerprint of the board those indices mean something in — so the record still says
+/// everything about the world, and can still refuse a map that is not the one it was run on.
 /// </summary>
 public static class WorldGen
 {
-    public static void Generate(Chronicle chronicle, NameForge forge, SimConfig config, int startYear)
+    public static void Generate(Chronicle chronicle, NameForge forge, SimConfig config, int startYear, Board board)
     {
         WorldState state = chronicle.State;
         chronicle.BeginYear(startYear);
@@ -16,11 +23,21 @@ public static class WorldGen
         chronicle.Emit(new EventDraft(EventKind.GenesisWorld)
             .Set("seed", state.Seed.ToString())
             .Set("startYear", startYear)
+            // Which map this history happened on. The bundle header hashes the file beside the
+            // world; this names the board inside the record, so a log carried away from its
+            // bundle still knows what its cell indices refer to.
+            .Set("board", board.Fingerprint)
+            .Set("boardCells", board.Count)
             .Weight(Significance.Bookkeeping));
 
+        // Sited in one pass so every place is spread against every other, whatever kind it is.
+        // Doing settlements and mines separately let a mine land on top of a town, because
+        // neither pass could see the other's choices.
+        List<int> taken = [];
+
         EntityId region = GenerateRegion(chronicle, forge);
-        List<EntityId> settlements = GenerateSettlements(chronicle, forge, config, region, startYear);
-        List<EntityId> oreSites = GenerateOreSites(chronicle, forge, config, region, startYear);
+        List<EntityId> settlements = GenerateSettlements(chronicle, forge, config, region, startYear, board, taken);
+        List<EntityId> oreSites = GenerateOreSites(chronicle, forge, config, region, startYear, board, taken);
         GenerateFactions(chronicle, forge, config, settlements, oreSites, startYear);
         GenerateActors(chronicle, forge, config, settlements, startYear);
     }
@@ -37,7 +54,8 @@ public static class WorldGen
     }
 
     private static List<EntityId> GenerateSettlements(
-        Chronicle chronicle, NameForge forge, SimConfig config, EntityId region, int startYear)
+        Chronicle chronicle, NameForge forge, SimConfig config, EntityId region, int startYear,
+        Board board, List<int> taken)
     {
         List<EntityId> ids = [];
         WorldState state = chronicle.State;
@@ -46,6 +64,12 @@ public static class WorldGen
         {
             EntityId id = chronicle.ReservePlace();
             Rng rng = Rng.For(state.Seed, startYear, id, RngPurpose.Genesis);
+
+            // A stream of its own, so siting the world consumes nothing the population and yield
+            // draws below were consuming. Their values are unchanged by geography arriving.
+            Rng placing = Rng.For(state.Seed, startYear, id, RngPurpose.Placement);
+            int cell = Siting.Choose(board, taken, PlaceKind.Settlement, ref placing);
+            taken.Add(cell);
 
             int population = rng.Range(700, 2400);
             int grain = population / 17;
@@ -60,6 +84,7 @@ public static class WorldGen
                 .Set("name", forge.PlaceName(i, PlaceKind.Settlement))
                 .Set("placeKind", PlaceKind.Settlement)
                 .Set("parent", region)
+                .Set("cell", cell)
                 .Set("population", population)
                 .Set("yieldGrain", grain)
                 .Set("yieldOre", 0)
@@ -75,7 +100,8 @@ public static class WorldGen
     }
 
     private static List<EntityId> GenerateOreSites(
-        Chronicle chronicle, NameForge forge, SimConfig config, EntityId region, int startYear)
+        Chronicle chronicle, NameForge forge, SimConfig config, EntityId region, int startYear,
+        Board board, List<int> taken)
     {
         List<EntityId> ids = [];
         WorldState state = chronicle.State;
@@ -84,6 +110,10 @@ public static class WorldGen
         {
             EntityId id = chronicle.ReservePlace();
             Rng rng = Rng.For(state.Seed, startYear, id, RngPurpose.Genesis);
+
+            Rng placing = Rng.For(state.Seed, startYear, id, RngPurpose.Placement);
+            int cell = Siting.Choose(board, taken, PlaceKind.Site, ref placing);
+            taken.Add(cell);
 
             int population = rng.Range(150, 420);
 
@@ -94,6 +124,7 @@ public static class WorldGen
                 .Set("name", forge.PlaceName(100 + i, PlaceKind.Site))
                 .Set("placeKind", PlaceKind.Site)
                 .Set("parent", region)
+                .Set("cell", cell)
                 .Set("population", population)
                 .Set("yieldGrain", population / 60)
                 .Set("yieldOre", rng.Range(28, 62))

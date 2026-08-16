@@ -154,6 +154,30 @@ The fix is a **fingerprint over the producing code**, stored with the artefact. 
 
 **Verified and derived are different, and only one of them is precious.** The v1 hand-verification attaches to the *prose* — figures, ruler lists, tenure spans, named years. The findings sidecar is derived: a pure function of `(renders.json, checker code)`, recomputable at zero inference cost. That distinction is what let the sidecar be replaced without weakening the baseline, and it is worth asking of every artefact before treating it as irreplaceable.
 
+**Fingerprint the artefact that was actually used, not the inputs that notionally produced it.** The render cache hashes the pack body — what the model is literally shown — rather than the facts the pack was built from. A body hash cannot drift from what was rendered; an input hash can, wherever something transforms inputs into the pack. Same principle as the zero-inference entry point: prefer a guarantee that holds by construction over one that holds if maintained.
+
+**Backward compatibility for unverifiable artefacts is a permanent commitment, not a migration step.** Cache entries predating the input hash are served and counted, never refused, because the v1 cache is entirely of that kind and it is the hand-verified one. A policy that eventually refuses them eventually strands the baseline. State the weaker claim — *these entries' inputs are unverified* — and keep reading them.
+
+### On mechanics and reachability
+
+*The engine dynamics phase, ruleset 1 → 3. Five mechanic changes and a great deal found on the way.*
+
+**Skewed outcome distributions are a simulation lesson, not only a rendering one.** It was written down as a fabrication risk — a model scores well guessing the majority case and gets the rare case confidently wrong. It is also how a mechanic becomes decorative: coups 100% exposed, raids 80% beaten off, tribute 82% refused, heirs 82% set aside. A branch that almost never fires is a thing that happens constantly and changes nothing. Audit every outcome-bearing kind on every ruleset change.
+
+**An invariant that cannot vary is not an invariant.** `CoupDecidedPct` had a numerator no code path could reach and reported a plausible zero for months while a threshold was tuned against it. Every ratio metric must assert that at least one path can move it, and must fail at definition time if none can.
+
+**A metric can report zero without meaning none.** `LifecycleChainPct` was integer division: one lifecycle chain in 156 rounded to 0% and the invariant passed on a world containing exactly the construction it forbids. Metrics asserting absence assert a **count**, and carry a constructed positive control — a survey cannot distinguish "does not happen" from "cannot happen".
+
+**A label with no emitter is worse than a dead branch.** `Title.Heir` was set once in worldgen and never again, while four rules read it and three attached weight to it. The designation stopped happening; the weight stayed. Two successive counterweights did nothing because both were attached to an act nobody performed. A dead branch is at least visibly dead; a live rule reading a fiction looks like it works.
+
+**Two subsystems can hold incompatible theories of the same thing and stay invisible while one is disconnected.** A house names its most loyal member; the contest rewards ambition. Nothing noticed for as long as the designation was never consulted. Expect this wherever one component produces an input another consumes — a disconnection hides disagreement.
+
+**A counterweight anti-correlated with its own situation is no counterweight.** The heir carried legitimacy, and a disputed succession is exactly when legitimacy is lowest — the event itself applies −8. Whatever decides a contest must be able to move under the conditions that open it. Prefer a quantity derived from a recorded past act, monotone in elapsed time, over a live state the crisis depresses.
+
+**Hypothesis, three data points: causal variety tracks how many mechanics have genuinely reachable branches.** `distinct deep-chain shapes` on seed 7 fell 54 → 44 during the raid work and rose 44 → 55 across two later changes that did not target it. More reachable branches is the only intervention that has moved it, and it moved it without being aimed at it. If that holds, "is it interesting?" and "does every branch fire?" are closer to the same question than anyone assumed. **Not a conclusion** — worth testing deliberately when Stage 6 adds mechanics.
+
+**Parking is a decision, not neglect.** Not every defect clears the bar. The bar is whether it makes the world less interesting to read or less able to support a campaign — not simulation correctness. Below it, a finding is diagnosed, categorised and parked in `KnownFailing` with its reasoning, watched by the harness. Without an explicit bar, each fix's discoveries set the agenda forever and the roadmap never resumes.
+
 **Create-only beats a human gate, where the property wanted is "this cannot move by rerun."** The archive directory refuses to be overwritten. Replacement requires deliberately moving the old one aside, which is the explicit act. A gate that depends on remembering to be a human is weaker than one that depends on the filesystem.
 
 ### On measurement
@@ -187,10 +211,11 @@ Stages 1 and 2 are complete (v1 render and query). The board is at **https://tre
 | 1 | Finish v1 render | ✅ done |
 | 2 | v1.2 query | ✅ done |
 | — | Archive the v1 golden baseline | ✅ done — see §8 |
-| 3 | **Determinism & versioning decision** | Current. A decision, not a build. Partly built already. |
-| 4 | Automated quality harness | Five layers; spec written; size as a project, not per-round drips |
-| 5 | Workbench UI | Instrumentation for the builder, not product. Looks like polish; isn't. |
-| 6 | World substrate: geography, then economy | Geography first — distance gates conflict, trade, alliance, later rumour |
+| 3 | Determinism & versioning | ✅ done — decided *and* built |
+| 4 | Automated quality harness | ✅ done — five layers, 456 tests |
+| — | Engine dynamics phase | ✅ done — ruleset 3; see §5a |
+| 5 | Workbench UI | Instrumentation for the builder, not product |
+| 6 | **World substrate: geography, then economy** | Current |
 | 7 | v2 adjudication & interventions | Prospective first, retroactive last |
 | 8 | LOD contract | **Design only** — keep running 20 actors |
 | 9 | Complexity mechanisms | naming → religion → resources/trade → creatures → tech diffusion |
@@ -203,11 +228,26 @@ Stages 1 and 2 are complete (v1 render and query). The board is at **https://tre
 
 ### Stage detail worth carrying
 
-**Stage 3 — determinism.** Two things break "seed + intervention log reproduces the world": rule changes (every later stage changes rules) and model variance (proven at v1.2). Both point at **the materialised event log as the durable artefact**; seed becomes provenance rather than a regeneration recipe. Needs a world-file header (ruleset version, engine version, seed, artefact hashes, render-cache fingerprint) and a policy for opening under a newer engine. **V2 corollary:** the intervention log stores *accepted deltas*, never the prompt that produced them.
+**Stage 3 — determinism. Settled and built.**
 
-*Three pieces are already built*, delivered in passing during the archive rounds: `engine_version` as real build metadata (`1.2.0`, with the commit riding in `InformationalVersion`), `engine_commit`, and the fingerprint-over-producing-code pattern for derived artefacts.
+Two things break "seed + intervention log reproduces the world": rule changes (every later stage changes rules) and model variance (proven at v1.2). Both point at **the materialised event log as the durable artefact**; seed is provenance, not a regeneration recipe. Replay stays available within a ruleset version as a debugging tool. **V2 corollary:** the intervention log stores *accepted deltas*, never the prompt that produced them.
 
-*What remains:* the header proper, behaviour on opening under a newer engine, and the cached-render invalidation rule. On that last one there is now evidence rather than argument — the findings sidecar drifted precisely because nothing recorded its inputs, and renders will drift the same way for the same reason. **Key on a hash of the derived artefact's inputs, not on engine or ruleset version.** Most rule changes touch no existing event and would nuke the whole cache for nothing; the dangerous case is narrower — a change to how a statistic is computed over unchanged events, which alters the fact pack while the events look identical. Input hashing catches exactly that and ignores the rest. This matters because the cache is both LoRA training data and the Stage 15 cost lever, and a coarse invalidation rule throws the asset away on every version bump.
+**The header.** `JsonlIo.Header` carries `engine_version`, `engine_commit` and `ruleset_version` alongside type, seed and event count. Version and commit are read from assembly metadata rather than a source constant — the stale-figure lesson applied to the thing that records provenance. Nothing time- or machine-dependent, so two runs of a seed stay byte-identical. Empty fields are omitted rather than written blank, so a headerless file can't be confused with one carrying empty provenance.
+
+**Opening policy: a newer engine refuses; everything else opens and says so.** Same build, silent. Older engine, changed ruleset, or no provenance at all (every v1 artefact) — opens with a note. Newer refuses with exit 1, overridable by `--accept-newer`, which says that it did.
+
+The asymmetry is deliberate. An unknown event kind already throws loudly; a *new field on an existing kind* would be dropped in silence. Newer-engine is the one direction where the failure is invisible, so it is the one direction that refuses.
+
+**Render invalidation keys on the pack body, not on versions.** `ContextPack.InputHash` is a sha256 over literally what the model is shown, so it cannot fall out of step with what was rendered. This was a live defect rather than a hypothesis: `ContextPack.Key` hashed event content keys only, so a change to how a statistic is computed left the events untouched, the key unchanged, and served a passage restating a now-wrong figure — permanently, since cached renders are canon.
+
+Keying on the body rather than on notional inputs is the stronger form of the same idea, and the same move as `CacheOnlyLlmClient`: make the guarantee structural rather than maintained. A ruleset bump touching no pack invalidates nothing, which is what keeps the cache worth having as LoRA corpus and Stage 15 cost lever. A mismatched hash is never served; the stale entry stands while a new one is written beside it.
+
+**Legacy cache entries are served and counted, never refused — and this should stay true.** The entire v1 cache predates the hash, and it is the hand-verified one. A policy that eventually refuses legacy entries is a policy that eventually strands the baseline everything else is measured against. `wb book` reports how many entries came from unhashed cache — the weaker claim stated rather than assumed, which is sufficient. If strictness is ever wanted, a `--strict-cache` flag off by default gives it for new work without being retroactive.
+
+**Two items carried forward:**
+
+- **`ruleset_version` — resolved, and now doing real work.** Settled as two counters that coincide: the ruleset carries its own sequence, deliberately not matching any engine version. It is at `3` while `engine_version` stays `1.2.0`. Layer 5 reads it and skips a baseline cut under a different ruleset.
+- **The header's artefact hashes and render-cache fingerprint are not built.** Correctly deferred — `wb run` knows nothing about renders, so these belong to whatever writes a world *bundle*, which doesn't exist yet. This is the piece that makes the header self-verifying, and it will be wanted at Stage 6, when an imported map artefact becomes something that must be hashed into the world file.
 
 **Stage 6 — geography.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Azgaar gives a cell-adjacency graph free; Watabou MFCG has a de-facto JSON API. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool.
 
@@ -218,6 +258,18 @@ Stages 1 and 2 are complete (v1 render and query). The board is at **https://tre
 **Stage 9 — naming first.** Names carry nearly all the felt sense of distinct cultures, and retrofitting a naming system after the log is full of names is miserable. Religion second — highest yield, because it gives succession disputes *reasons* rather than dice.
 
 **Stage 15 — inference cost.** Local Ollama is free; hosted is not. Bring-your-own-key, hosted inference with quotas, or hosted simulation with client-side rendering. The render cache is the cost lever: cached renders are canon, which means they are also *paid for once*. The lazy-rendering architecture chosen for tractability turns out to be the business model.
+
+### 5a. The engine dynamics phase (ruleset 1 → 3)
+
+Unscheduled, and it came from the harness rather than the roadmap: Layer 1's first run found `coup success` at 0% on every seed, and the invariant meant to catch it had been counting exposures as successes.
+
+**Five mechanic changes**, in order: raid outcome odds and raid target memory; coup plots attach to a **seat** rather than to a person; the covert leak roll becomes three-way (expose / strike / defer) with readiness rising alongside exposure; tribute compliance becomes a gradient rather than a cliff; and `Title.Heir` gains a runtime emitter, with the designation carrying the age of the act that made it.
+
+**What it was worth.** Covert seizure exists where it was structurally impossible — 29 seizures across the panel, success varying 7–35% by seed. The rate is asserted pooled, because fourteen plots cannot support a percentage.
+
+**What it cost, and the discipline that made it stoppable.** Each fix revealed the next; without a bar, a phase like this runs forever. The bar is §4's — does the defect make the world less interesting to read or less able to support a campaign — plus a hard budget of mechanic changes, with a fifth requiring escalation rather than a decision.
+
+**The working-method lesson.** The first four rounds were one brief each, which cost a round-trip per finding, and most of what came back between them was derivable from the record. A phase loop carries the method and the pre-committed decision rules, extends its own queue, and halts only for questions of **semantic intent** — what a mechanic is *for* — which is the one thing that cannot be derived. Write phases, not rounds.
 
 ### Two cross-cutting concerns
 
@@ -346,8 +398,18 @@ Verified by hand across many rounds. Useful for any future test, question suite,
 - **Query:** 16/16 suite questions correct, zero secret leakage, zero fatal findings, retrieval byte-identical across runs, 330 tests green.
 - **Baseline:** sealed at `baselines/v1/seed-42/`, verified from a fresh clone.
 
-**Repository:** one repo (a nested-repo tangle was flattened during the archive rounds), private, on GitHub. Engine `1.2.0`.
+**Stage 3, Stage 4 and the engine dynamics phase are complete.** Ruleset `3`, engine `1.2.0`, 456 tests green.
 
-**Next: Stage 3**, the determinism and versioning decision. Three of its pieces are already built; what remains is the world-file header, the newer-engine policy, and the cached-render invalidation rule. An afternoon.
+- **Harness:** five layers built. Its first act was to find a live simulation defect that months of hand review had missed.
+- **Engine:** no mechanic is decorative. Every distribution varies; the worst is 88% against a bar of 90, where the phase began with three mechanics at 100%, 93% and 83% and a covert-coup path with no win branch at all.
+- **Instrumentation is trustworthy:** every rate reports its `n`, percentages are asserted only where `n` supports them, every absence-asserting metric has a constructed counter-example, every ratio's numerator is asserted reachable.
 
-**Also pending and cheap:** baselines for the other four seeds — 7, 99, 1234 and 2025. These are v0 engine test seeds with no v1 artefacts yet, so this is generate-then-archive rather than archive, and every one of them carries `verification: stability-anchor-only`.
+**Judgement on file: the engine is good enough to build Stages 5 and 6 on**, with one qualification. Causal variety is the one thing still moving the wrong way and it is unattributed — `distinct deep-chain shapes` fails on two seeds and `verbatim repeat rate` on one. Neither blocks a workbench or a geography substrate, but both bear on whether the history reads well, which is the actual product.
+
+**Two parked findings**, each in `KnownFailing` with category, rationale and owning round: tribute target selection (houses demand of whoever they resent, not whoever is weak, so most demands are between near-equals) and heir selection criteria (loyalty names the candidate, ambition wins the contest).
+
+**Regression protection is currently dark.** Layer 5 has skipped since ruleset 2 — correctly, since a diff against a ruleset-1 baseline compares different worlds — but that means two rulesets of change have landed with no golden anchor. Cutting a ruleset-3 baseline is the first item of the next phase.
+
+**Next: Stage 6**, the world substrate. Geography first.
+
+**Baselines for the other four seeds** — 7, 99, 1234, 2025 — are still uncut, and now belong with the ruleset-3 baseline as one generate-then-archive round. All five carry `verification: stability-anchor-only`; only the sealed v1 seed-42 baseline is hand-verified.

@@ -1,3 +1,5 @@
+using WorldBuilder.Core.Geography;
+
 namespace WorldBuilder.Core;
 
 /// <summary>
@@ -23,6 +25,40 @@ public sealed class WorldState
 
     public RelationGraph Relations { get; } = new();
     public GoalBook Goals { get; } = new();
+
+    /// <summary>
+    /// The imported physical layer, where one has been attached.
+    ///
+    /// Not folded from the log, and it is the only thing here that is not. The board is a stored
+    /// artefact — a map generator is not reproducible across its own versions, so it is imported
+    /// once and thereafter carried rather than made — and the log records only which cell each
+    /// place stands on plus the hash of the board those indices refer to. A world is therefore a
+    /// log <i>and</i> its board, which is precisely why a bundle had to exist before a map could
+    /// be stored at all.
+    /// </summary>
+    public Board? Board { get; private set; }
+
+    /// <summary>
+    /// The one distance function. Null where no board is attached, which is every world folded
+    /// from a log written before geography existed.
+    /// </summary>
+    public Geography.Geography? Geo { get; private set; }
+
+    public bool HasBoard => Board is not null;
+
+    /// <summary>
+    /// Attaches the board this world's cell indices refer to.
+    ///
+    /// Set on the state rather than folded from an event because the board is not in the log and
+    /// cannot be: it is hundreds of cells of somebody else's data. What the log holds is the
+    /// hash, on the genesis event, so a board that is not the board this world was run against
+    /// can be refused instead of quietly producing different distances over the same history.
+    /// </summary>
+    public void Attach(Board board)
+    {
+        Board = board;
+        Geo = new Geography.Geography(board, this);
+    }
 
     // ---- lookup -----------------------------------------------------------
 

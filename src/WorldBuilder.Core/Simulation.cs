@@ -1,3 +1,4 @@
+using WorldBuilder.Core.Geography;
 using WorldBuilder.Core.Rules;
 
 namespace WorldBuilder.Core;
@@ -50,7 +51,16 @@ public sealed class Simulation
     private readonly SimConfig _config;
     private readonly NameForge _forge;
 
-    public Simulation(ulong seed, SimConfig? config = null, int startYear = 1)
+    /// <summary>
+    /// A new world on a board.
+    ///
+    /// <paramref name="board"/> defaults to the repository's stored artefact rather than to
+    /// nothing, and there is no path here that makes one: §2 settles that a map is imported once
+    /// and thereafter carried, and prohibition 5 restates it. A world with no board would be a
+    /// world in which every distance came out exactly typical, which is the sort of quiet,
+    /// plausible uniformity this project has learned to distrust.
+    /// </summary>
+    public Simulation(ulong seed, SimConfig? config = null, int startYear = 1, Board? board = null)
     {
         _config = config ?? SimConfig.Default;
         _forge = new NameForge(seed);
@@ -60,7 +70,10 @@ public sealed class Simulation
         Chronicle = new Chronicle(State, Log);
         StartYear = startYear;
 
-        WorldGen.Generate(Chronicle, _forge, _config, startYear);
+        Board playing = board ?? Boards.Stored();
+        State.Attach(playing);
+
+        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing);
     }
 
     public WorldState State { get; }

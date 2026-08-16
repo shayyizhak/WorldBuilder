@@ -175,6 +175,44 @@ public static class Invariants
         // Every conspiracy ends in exactly one recorded way, or the log has loose ends.
         Add("plots terminated", $"{audit.PlotTerminationPct}%", audit.PlotTerminationPct >= 85, ">= 85%");
 
+        // ---- geography ----------------------------------------------------
+        //
+        // Added at Stage 6, ruleset 4. Three things, in the order they can fail: the world is on
+        // the board, the board can tell places apart, and the mechanics that consult it act both
+        // near and far.
+
+        List<string> misplaced = GeographyAudit.Positions(view.State);
+        Add("places on the board", misplaced.Count == 0 ? "every sited place has one cell on the board"
+            : string.Join("; ", misplaced.Take(3)), misplaced.Count == 0, "no complaints");
+
+        // The reachability guard for every rule that multiplies by a proximity.
+        //
+        // A board that returned one proximity for every pair would have four mechanics
+        // multiplying by a constant and reporting that geography had been consulted — the same
+        // defect class as a ratio whose numerator no path can reach, arriving through a different
+        // door. Asserted on the range, so it fails at definition time rather than after a phase
+        // of tuning against it.
+        (int pairs, int lowest, int highest) = GeographyAudit.ProximitySpread(view.State);
+
+        if (view.State.HasBoard)
+        {
+            Add("distance can vary", $"{lowest}–{highest} across {pairs} pairs of places",
+                pairs > 0 && highest > lowest, "a range, not a single value", pairs);
+        }
+
+        // Each distance-consuming mechanic's near/far split, on the established outcome-spread
+        // bar rather than a new one. A mechanic that only ever acts nearby has had distance
+        // turned into a gate, and a gate is as decorative as no distance at all.
+        //
+        // Reported per seed and asserted pooled, for the reason every rate here is: n runs from
+        // two to thirty on a single world, and a percentage over four observations is a
+        // granularity wearing a percent sign.
+        foreach (ReachSplit split in GeographyAudit.Reach(view.State, view.Log))
+        {
+            Add($"{split.Mechanic} reach", $"{split.SkewPct}% one way ({split.Near} near, {split.Far} far)",
+                true, "reported here; asserted pooled", split.Total);
+        }
+
         return results;
 
         void Add(string name, object measured, bool held, string expected, int sample = 0) =>
@@ -199,7 +237,19 @@ public static class Invariants
     /// The panel-level invariants. <paramref name="logs"/> may be empty, in which case only the
     /// metrics computable from the audits are returned.
     /// </summary>
-    public static List<Invariant> CheckPanel(IReadOnlyList<Audit> panel, IReadOnlyList<EventLog> logs)
+    public static List<Invariant> CheckPanel(IReadOnlyList<Audit> panel, IReadOnlyList<EventLog> logs) =>
+        CheckPanel(panel, logs, []);
+
+    /// <summary>
+    /// The panel-level invariants, including the ones that need the world rather than the log.
+    ///
+    /// <paramref name="views"/> carries the geography metrics: a near/far split needs to know
+    /// where things are, and that is state rather than record. Empty where a caller has only logs,
+    /// in which case the geography rows are simply absent — reported by their absence rather than
+    /// by a zero, since a zero here would read as "no mechanic ever acted far away".
+    /// </summary>
+    public static List<Invariant> CheckPanel(
+        IReadOnlyList<Audit> panel, IReadOnlyList<EventLog> logs, IReadOnlyList<WorldView> views)
     {
         int won = 0, plotted = 0;
         foreach (Audit a in panel) { won += a.CoupsWon; plotted += a.PlotsOpened; }
@@ -230,6 +280,36 @@ public static class Invariants
             OutcomeSpread spread = new(decision, pooled);
             results.Add(new Invariant(name, $"{spread.SkewPct}% one way",
                 spread.SkewPct <= 90, "<= 90% one way, across the panel", spread.Total));
+        }
+
+        // Geography, pooled. Each distance-consuming mechanic must act both near and far across
+        // the panel, on the established outcome-spread bar.
+        //
+        // Both branches being observed somewhere is the reachability half of this, and it is
+        // asserted by the bar itself: a mechanic that only ever acted nearby reads 100% one way
+        // and fails. That is the same guard the ratio metrics carry, stated as a distribution
+        // rather than as a separate check — the near case and the far case are the two branches.
+        Dictionary<string, (int Near, int Far)> reach = new(StringComparer.Ordinal);
+
+        foreach (WorldView view in views)
+            foreach (ReachSplit split in GeographyAudit.Reach(view.State, view.Log))
+            {
+                (int near, int far) = reach.GetValueOrDefault(split.Mechanic);
+                reach[split.Mechanic] = (near + split.Near, far + split.Far);
+            }
+
+        List<string> mechanics = [.. reach.Keys];
+        mechanics.Sort(StringComparer.Ordinal);
+
+        foreach (string mechanic in mechanics)
+        {
+            (int near, int far) = reach[mechanic];
+            ReachSplit pooledSplit = new(mechanic, near, far);
+
+            results.Add(new Invariant($"{mechanic} reach, pooled",
+                $"{pooledSplit.SkewPct}% one way ({near} near, {far} far)",
+                pooledSplit.Total > 0 && pooledSplit.SkewPct <= 90,
+                "<= 90% one way, across the panel", pooledSplit.Total));
         }
 
         return results;

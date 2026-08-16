@@ -10,6 +10,11 @@ archive/**   -text
 out/**       -text
 baselines/** -text
 
+# The board is hashed into the header of every world simulated on it, and named again inside the
+# genesis event. Both hashes are over the file's bytes, so a checkout that rewrote its line
+# endings would leave every existing world refusing to open beside the map it was run on.
+maps/**      -text
+
 # The question set is archived as source, so it is an artefact as well as code and
 # needs the same pin. Without it the file hashes 9478 bytes on a CRLF checkout and
 # 9312 in the repository, and a baseline recording either one records a property of

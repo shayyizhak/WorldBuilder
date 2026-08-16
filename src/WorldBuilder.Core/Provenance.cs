@@ -77,5 +77,18 @@ public static class Ruleset
     /// Martial trait against a whole faction plus an undocumented 25, and its target selection
     /// counts what happened at a place rather than merely that something did.
     /// </summary>
-    public const string Version = "3";
+    /// <summary>
+    /// <b>4</b> — geography. The world is placed on an imported board, and four mechanics consult
+    /// how far apart things are: raid targeting, war declaration, conquest and the pairing rules.
+    ///
+    /// Bumped once for the whole of Stage 6 rather than per mechanic, because the counter answers
+    /// one question — would this build, given the same seed, produce the same world — and the
+    /// answer became "no" the first time a place acquired a position. Bumping it four more times
+    /// would record four answers to a question that had already been answered.
+    ///
+    /// The board is not in the log and cannot be, so a ruleset-4 world is a log <i>and</i> its
+    /// board. That is what the bundle is for, and it is why the header carries a hash for the
+    /// map: a world read beside the wrong one is internally consistent and about somewhere else.
+    /// </summary>
+    public const string Version = "4";
 }

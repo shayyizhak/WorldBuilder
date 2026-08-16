@@ -127,6 +127,10 @@ public static class EventReducer
             Kind = Enum.Parse<PlaceKind>(e.GetString("placeKind") ?? nameof(PlaceKind.Settlement)),
             Parent = e.GetEntity("parent"),
             Population = e.GetInt("population"),
+            // −1 rather than 0 where the key is absent: cell 0 is a real cell, and a world folded
+            // from a ruleset-3 log would otherwise put every place it has on the top-left corner
+            // of the board and report a perfectly confident set of distances between them.
+            Cell = e.GetInt("cell", -1),
             Yield =
             [
                 e.GetInt("yieldGrain"),

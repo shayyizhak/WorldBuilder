@@ -35,6 +35,30 @@ public sealed record WorldHeader
     public string RulesetVersion { get; init; } = "";
 
     /// <summary>
+    /// The artefacts stored beside this world, each with the sha256 of its bytes.
+    ///
+    /// Deferred at Stage 3 and correctly so: <c>wb run</c> knew nothing about renders and no
+    /// world bundle existed, so there was nothing for a hash to be a hash of. An imported map is
+    /// the artefact that forces the issue. It is not derivable from the seed, it decides every
+    /// distance the simulation measures, and a world carrying the wrong one produces a history
+    /// that is internally consistent and about a different map.
+    ///
+    /// Empty is the ordinary case for a bare event log, and the field is omitted entirely when
+    /// empty, so a world with no artefacts is not confusable with one whose artefact list was
+    /// lost.
+    /// </summary>
+    public IReadOnlyList<StoredArtefact> Artefacts { get; init; } = [];
+
+    /// <summary>
+    /// Which passages this world's prose consists of — see <see cref="WorldBundle"/>.
+    ///
+    /// A fingerprint over the cache's contents rather than a hash of the file, because the cache
+    /// is appended to constantly and the question worth answering is "is this the same prose",
+    /// not "is this the same file". Empty where no render cache travels with the world.
+    /// </summary>
+    public string RenderCacheFingerprint { get; init; } = "";
+
+    /// <summary>
     /// True where the file predates provenance in the header. Not an error — the v1 artefacts are
     /// all like this, and they are the hand-verified ones — but it is a thing a reader must be
     /// told rather than left to assume.
@@ -67,19 +91,42 @@ public sealed record WorldHeader
         if (EngineVersion.Length > 0) Append(sb, "engine_version", EngineVersion);
         if (EngineCommit.Length > 0) Append(sb, "engine_commit", EngineCommit);
         if (RulesetVersion.Length > 0) Append(sb, "ruleset_version", RulesetVersion);
+        if (RenderCacheFingerprint.Length > 0) Append(sb, "render_cache", RenderCacheFingerprint);
+
+        if (Artefacts.Count > 0)
+        {
+            sb.Append(",\"artefacts\":[");
+            for (int i = 0; i < Artefacts.Count; i++)
+            {
+                if (i > 0) sb.Append(',');
+                sb.Append("{\"name\":").Append(JsonSerializer.Serialize(Artefacts[i].Name))
+                  .Append(",\"sha256\":\"").Append(Artefacts[i].Sha256).Append("\"}");
+            }
+            sb.Append(']');
+        }
 
         sb.Append('}');
         return sb.ToString();
     }
 
-    public static WorldHeader Parse(JsonElement root) => new()
+    public static WorldHeader Parse(JsonElement root)
     {
-        Seed = ulong.Parse(root.GetProperty("seed").GetString()!, CultureInfo.InvariantCulture),
-        Events = root.TryGetProperty("events", out JsonElement n) && n.TryGetInt32(out int count) ? count : 0,
-        EngineVersion = Text(root, "engine_version"),
-        EngineCommit = Text(root, "engine_commit"),
-        RulesetVersion = Text(root, "ruleset_version"),
-    };
+        List<StoredArtefact> artefacts = [];
+        if (root.TryGetProperty("artefacts", out JsonElement list) && list.ValueKind == JsonValueKind.Array)
+            foreach (JsonElement a in list.EnumerateArray())
+                artefacts.Add(new StoredArtefact(Text(a, "name"), Text(a, "sha256")));
+
+        return new WorldHeader
+        {
+            Seed = ulong.Parse(root.GetProperty("seed").GetString()!, CultureInfo.InvariantCulture),
+            Events = root.TryGetProperty("events", out JsonElement n) && n.TryGetInt32(out int count) ? count : 0,
+            EngineVersion = Text(root, "engine_version"),
+            EngineCommit = Text(root, "engine_commit"),
+            RulesetVersion = Text(root, "ruleset_version"),
+            RenderCacheFingerprint = Text(root, "render_cache"),
+            Artefacts = artefacts,
+        };
+    }
 
     private static void Append(StringBuilder sb, string name, string value) =>
         sb.Append(",\"").Append(name).Append("\":").Append(JsonSerializer.Serialize(value));
@@ -87,6 +134,14 @@ public sealed record WorldHeader
     private static string Text(JsonElement root, string name) =>
         root.TryGetProperty(name, out JsonElement e) ? e.GetString() ?? "" : "";
 }
+
+/// <summary>
+/// A file that travels with the world, and the sha256 of its bytes at the moment it was stored.
+///
+/// The name is relative to the bundle directory, never an absolute path: a bundle that records
+/// where its files were on the machine that wrote it is a bundle that cannot be moved.
+/// </summary>
+public sealed record StoredArtefact(string Name, string Sha256);
 
 /// <summary>What opening this world file under this build means.</summary>
 public sealed record WorldFileCheck

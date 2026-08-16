@@ -73,6 +73,23 @@ public sealed class Place
 
     public int Population { get; set; }
 
+    /// <summary>
+    /// Where on the imported board this place stands, or −1 for a place that is not sited.
+    ///
+    /// One cell, never a list: a place is somewhere. The <see cref="PlaceKind.Region"/> is the
+    /// exception and carries −1 deliberately — a region is the ground the board is made of rather
+    /// than a point on it, it is never marched on, raided, held or fought over, and giving it a
+    /// cell would put a spurious position into every distance the engine measures.
+    ///
+    /// The value comes off the place's genesis event, so a position is part of the record rather
+    /// than something recomputed at load time. The board it indexes into travels with the world
+    /// as a hashed artefact; the log alone carries the positions, and the two are checked against
+    /// each other when a bundle is opened.
+    /// </summary>
+    public int Cell { get; init; } = -1;
+
+    public bool IsSited => Cell >= 0;
+
     /// <summary>Base annual production per resource. What makes one place worth taking and another not.</summary>
     public required int[] Yield { get; init; }
 

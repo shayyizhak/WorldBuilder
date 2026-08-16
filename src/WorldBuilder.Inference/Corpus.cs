@@ -146,6 +146,34 @@ public static class Corpus
         throw new DirectoryNotFoundException($"no tests/corpus above {from}");
     }
 
+    /// <summary>
+    /// The sealed v1 seed-42 record every corpus case is about, or null where no baseline is
+    /// beside us.
+    ///
+    /// <b>One resolver, because there were two and only one of them was right.</b> A corpus row
+    /// is a fabrication found by hand in prose about one particular world; re-simulating to get
+    /// that world turns the row into an assertion about whatever the current rules produce, and
+    /// the first genuine ruleset change moves the world out from under all of them. The test
+    /// suite learned that at ruleset 2 and pinned its fixture. <c>wb test corpus</c> kept
+    /// simulating, and was throwing on a missing scope from ruleset 2 until Stage 6 — one idea,
+    /// implemented twice, fixed once, failing quietly in the copy nobody ran.
+    ///
+    /// Living here rather than in either caller so there is no second copy to forget again.
+    /// </summary>
+    public static string? SealedSeed42(params string[] searchFrom)
+    {
+        foreach (string from in searchFrom)
+        {
+            for (DirectoryInfo? at = new(from); at is not null; at = at.Parent)
+            {
+                string candidate = Path.Combine(at.FullName, "baselines", "v1", "seed-42", "world-42.jsonl");
+                if (File.Exists(candidate)) return candidate;
+            }
+        }
+
+        return null;
+    }
+
     public static CorpusResult Run(CorpusCase one, Func<ulong, WorldView> world)
     {
         if (!Families.TryGetValue(one.ExpectRule, out string[]? kinds))

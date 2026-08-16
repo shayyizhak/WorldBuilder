@@ -10,6 +10,19 @@ public enum RngPurpose : ulong
     Genesis = 1,
     Naming = 2,
     Traits = 3,
+
+    /// <summary>
+    /// Choosing which cell of the board a place stands on.
+    ///
+    /// A purpose of its own rather than another draw on <see cref="Genesis"/>, and the reason is
+    /// worth keeping: a stream is keyed on its purpose, so siting the world consumes nothing that
+    /// the population, yield and treasury draws were consuming. Every ruleset-3 world therefore
+    /// keeps the history it had, and the only thing that changed about it is that its places now
+    /// have somewhere to be. That is a checkable claim rather than a hopeful one — and it made
+    /// the difference between "geography was added" and "geography was added and everything
+    /// moved, for reasons nobody can now separate".
+    /// </summary>
+    Placement = 4,
     Mortality = 10,
     Birth = 11,
     ComingOfAge = 12,

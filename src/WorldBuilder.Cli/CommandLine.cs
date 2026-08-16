@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using WorldBuilder.Core;
 using WorldBuilder.Core.Analysis;
+using WorldBuilder.Core.Geography;
 using WorldBuilder.Core.Rendering;
 using WorldBuilder.Core.Serialization;
 using WorldBuilder.Inference;
@@ -49,10 +50,17 @@ public static class CommandLine
                 "log" => CmdLog(parsed),
                 "verify" => CmdVerify(parsed),
                 "test" => CmdTest(parsed),
+                "map" => CmdMap(parsed),
+                "bundle" => CmdBundle(parsed),
+                "baseline" => CmdBaseline(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
         catch (Exception ex) when (ex is FileNotFoundException or FormatException or ArgumentException)
+        {
+            return Fail(ex.Message);
+        }
+        catch (BundleIntegrityException ex)
         {
             return Fail(ex.Message);
         }
@@ -97,6 +105,257 @@ public static class CommandLine
         }
 
         return 0;
+    }
+
+    // ---- the board --------------------------------------------------------
+
+    /// <summary>
+    /// The map artefact: import one, make one where there is nothing to import, or describe the
+    /// one that is stored.
+    ///
+    /// All three are one-time acts, and none of them is reachable from the simulation. That is
+    /// the whole shape of the decision §2 settled: a generator supplies a board once, the board
+    /// becomes an artefact, and thereafter the artefact is read. A map generator is not
+    /// reproducible across its own versions — the same finding as the model's run-to-run variance
+    /// and answered the same way — so <c>world_seed</c> does not reproduce this file and nothing
+    /// in <c>wb run</c> can rebuild it.
+    /// </summary>
+    private static int CmdMap(Args args)
+    {
+        string what = args.Positional(0) ?? "show";
+        string to = args.Text("to", Boards.StoredPath);
+
+        switch (what)
+        {
+            case "import":
+            {
+                string from = args.Positional(1)
+                    ?? throw new ArgumentException("usage: wb map import <azgaar-export.json> [--to maps/board-1.wbmap.json]");
+
+                if (!File.Exists(from)) return Fail($"no such export: {from}");
+
+                Board imported = AzgaarImport.Parse(File.ReadAllText(from), $"azgaar export {Path.GetFileName(from)}");
+                return Store(imported, to);
+            }
+
+            case "make":
+            {
+                // The fallback path, and it announces itself as one. A board made here is a real
+                // board — cells, adjacency, costs, the same format — but it is not somebody
+                // else's map, and a world should always be able to say which kind it ran against.
+                Board made = BoardMaker.Make(
+                    args.Int("width", BoardMaker.DefaultWidth),
+                    args.Int("height", BoardMaker.DefaultHeight),
+                    args.ULong("seed", 1));
+
+                return Store(made, to);
+            }
+
+            case "show":
+            {
+                string path = args.Positional(1) ?? Boards.Locate();
+                Board board = BoardIo.Read(path);
+
+                Console.WriteLine($"{path}");
+                Console.WriteLine($"  format     {board.Format}");
+                Console.WriteLine($"  source     {board.Source}");
+                Console.WriteLine($"  generator  {board.Generator}");
+                Console.WriteLine($"  cells      {board.Count}");
+                Console.WriteLine($"  sha256     {WorldBundle.HashOf(path)}");
+
+                Dictionary<Terrain, int> terrain = [];
+                foreach (BoardCell cell in board.Cells)
+                    terrain[cell.Terrain] = terrain.GetValueOrDefault(cell.Terrain) + 1;
+
+                foreach ((Terrain kind, int n) in terrain.OrderByDescending(static t => t.Value))
+                    Console.WriteLine($"    {kind,-10} {n,4}  ({n * 100 / board.Count}%)");
+
+                // The scale every rule is calibrated against, said out loud. A proximity of 100
+                // means "this far apart", and a reader who cannot see the number cannot judge
+                // whether a mechanic's distance term is doing anything.
+                Console.WriteLine($"  median separation between land cells: {board.ReferenceCost} " +
+                                  "(the cost at which proximity reads 100)");
+                return 0;
+            }
+
+            default:
+                return Fail($"unknown map command '{what}' — try import, make or show");
+        }
+
+        int Store(Board board, string path)
+        {
+            // Create-only, for the reason the baseline archive is: the property wanted is "this
+            // cannot move by rerun", and a gate that depends on somebody remembering to be
+            // careful is weaker than one that depends on the filesystem. A world's distances are
+            // all downstream of this file.
+            if (File.Exists(path))
+            {
+                Console.Error.WriteLine($"wb: {path} already exists.");
+                Console.Error.WriteLine(
+                    "    A stored board is create-only: every world simulated against it records " +
+                    "its hash, and replacing it in place would leave those worlds naming a map " +
+                    "that no longer exists. Move it aside under a new name first.");
+                return 1;
+            }
+
+            BoardIo.Write(path, board);
+
+            Console.WriteLine($"{path}");
+            Console.WriteLine($"  {board.Count} cells, source: {board.Source}");
+            Console.WriteLine($"  sha256 {WorldBundle.HashOf(path)}");
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// A world and the artefacts it cannot be read without, written and verified as one thing.
+    ///
+    /// This is the Stage 3 carry-forward landing: the header's artefact hashes and render-cache
+    /// fingerprint were deferred because nothing yet produced a bundle for them to describe. A
+    /// map is that artefact — not derivable from the seed, decisive for every distance the
+    /// simulation measures, and undetectably wrong if it is the wrong one.
+    /// </summary>
+    private static int CmdBundle(Args args)
+    {
+        string what = args.Positional(0) ?? "verify";
+        ulong seed = args.ULong("seed", 42);
+        string directory = args.Text("out", DefaultOutputDirectory);
+        string worldPath = WorldBundle.WorldPath(directory, seed);
+
+        if (!File.Exists(worldPath)) return Fail($"no world at '{worldPath}' — run `wb run --seed {seed}` first.");
+
+        switch (what)
+        {
+            case "write":
+            {
+                (EventLog log, ulong storedSeed) = JsonlIo.Read(worldPath);
+
+                List<string> artefacts = [];
+                foreach (string name in new[] { WorldBundle.BoardName })
+                    if (File.Exists(Path.Combine(directory, name))) artefacts.Add(name);
+
+                string fingerprint = "";
+                string renders = Path.Combine(directory, WorldBundle.RenderCacheName);
+                if (File.Exists(renders)) fingerprint = new RenderStore(renders).Fingerprint();
+
+                WorldBundle.Write(directory, log, storedSeed, artefacts, fingerprint);
+
+                Console.WriteLine($"{worldPath}");
+                foreach (string name in artefacts)
+                    Console.WriteLine($"  {name}  {WorldBundle.HashOf(Path.Combine(directory, name))}");
+                if (fingerprint.Length > 0) Console.WriteLine($"  renders  {fingerprint}  (cache fingerprint)");
+                if (artefacts.Count == 0 && fingerprint.Length == 0)
+                    Console.WriteLine("  no artefacts beside it; the header records none");
+                return 0;
+            }
+
+            case "verify":
+            {
+                WorldHeader? header = JsonlIo.ReadHeader(worldPath);
+                if (header is null) return Fail($"'{worldPath}' has no header, so it names no artefacts.");
+
+                if (header.Artefacts.Count == 0 && header.RenderCacheFingerprint.Length == 0)
+                {
+                    Console.WriteLine($"{worldPath}: the header names no artefacts. Nothing to verify.");
+                    return 0;
+                }
+
+                List<string> failures = WorldBundle.Verify(worldPath, header);
+
+                foreach (StoredArtefact artefact in header.Artefacts)
+                    Console.WriteLine($"  {artefact.Name}  {artefact.Sha256}");
+                if (header.RenderCacheFingerprint.Length > 0)
+                    Console.WriteLine($"  renders  {header.RenderCacheFingerprint}  (cache fingerprint)");
+
+                foreach (string failure in failures) Console.WriteLine($"  FAIL {failure}");
+
+                Console.WriteLine(failures.Count == 0
+                    ? $"  {header.Artefacts.Count} artefact(s) match the header"
+                    : $"  {failures.Count} mismatch(es)");
+
+                return failures.Count == 0 ? 0 : 1;
+            }
+
+            default:
+                return Fail($"unknown bundle command '{what}' — try write or verify");
+        }
+    }
+
+    // ---- baselines --------------------------------------------------------
+
+    /// <summary>
+    /// Cutting and checking a sealed golden baseline.
+    ///
+    /// Create-only, and it never touches an existing one. The v1 baseline was assembled by hand
+    /// across three rounds, two of which aborted correctly; what those aborts found is why this
+    /// exists as a command rather than as a procedure somebody follows.
+    /// </summary>
+    private static int CmdBaseline(Args args)
+    {
+        string what = args.Positional(0) ?? "check";
+
+        switch (what)
+        {
+            case "cut":
+            {
+                ulong seed = args.ULong("seed", 42);
+                string from = args.Text("from", DefaultOutputDirectory);
+                string to = args.Text("to", "")
+                    is { Length: > 0 } given ? given : throw new ArgumentException(
+                        "usage: wb baseline cut --seed 42 --from <dir> --to baselines/<set>/seed-42");
+
+                BaselineCut cut = BaselineArchive.Cut(new BaselineRequest
+                {
+                    Seed = seed,
+                    From = from,
+                    To = to,
+                    Id = args.Text("id", $"{Path.GetFileName(Path.GetDirectoryName(to.TrimEnd('/', '\\')) ?? "baseline")}-seed-{seed}"),
+                    RepositoryRoot = RepositoryRoot(),
+                    Verification = args.Text("verification", "stability-anchor-only"),
+                    Model = args.Text("model", LlmOptions.Default.Model),
+                    ModelDigest = args.Text("model-digest", ""),
+                    Notes = args.Text("note", "") is { Length: > 0 } note ? [note] : [],
+                });
+
+                Console.WriteLine(cut.Directory);
+                Console.WriteLine($"  engine {cut.Header.EngineVersion} @ {cut.Header.EngineCommit}");
+                Console.WriteLine($"  ruleset {cut.Header.RulesetVersion}");
+                Console.WriteLine($"  checker fingerprint {cut.CheckerFingerprint}");
+                foreach (BaselineArtefact a in cut.Artefacts)
+                    Console.WriteLine($"    {a.Filename,-34} {a.Sha256[..16]}  {a.Bytes,9} bytes  {a.Role}");
+                Console.WriteLine($"  sealed {cut.Seal}");
+                return 0;
+            }
+
+            case "check":
+            {
+                string directory = args.Positional(1) ?? args.Text("dir", "");
+                if (directory.Length == 0) return Fail("usage: wb baseline check <dir>");
+
+                List<string> failures = BaselineArchive.Check(directory);
+                foreach (string failure in failures) Console.WriteLine($"  FAIL {failure}");
+
+                Console.WriteLine(failures.Count == 0
+                    ? $"{directory}: the seal verifies and every artefact matches its manifest hash"
+                    : $"{directory}: {failures.Count} failure(s)");
+
+                return failures.Count == 0 ? 0 : 1;
+            }
+
+            default:
+                return Fail($"unknown baseline command '{what}' — try cut or check");
+        }
+    }
+
+    /// <summary>The repository root, found by the directory git keeps its own records in.</summary>
+    private static string RepositoryRoot()
+    {
+        for (DirectoryInfo? at = new(Directory.GetCurrentDirectory()); at is not null; at = at.Parent)
+            if (Directory.Exists(Path.Combine(at.FullName, ".git"))) return at.FullName;
+
+        throw new DirectoryNotFoundException(
+            "no git repository above the working directory. The checker fingerprint hashes what " +
+            "git stores, so a baseline cannot be cut outside one.");
     }
 
     // ---- queries ----------------------------------------------------------
@@ -419,6 +678,19 @@ public static class CommandLine
     /// Reported as two numbers rather than one, because the two halves fail for opposite reasons.
     /// A passage that does not fire is a hole in the checker; a correction that does fire is a
     /// false positive, and false positives are what cost round 10 seven true sections of canon.
+    ///
+    /// <b>Every case reads the sealed v1 world, and this command was the last place that did not.</b>
+    /// A corpus row is a fabrication found by hand in prose written about one particular world:
+    /// four failed attempts on Paernmel Has, sixteen dead in the raid on Hadale in 19. Re-running
+    /// the simulation to obtain that world silently converted each row into an assertion about
+    /// whatever the current rules happen to produce, so the first real ruleset change moved the
+    /// world out from under all of them.
+    ///
+    /// The test suite learned this at ruleset 2 and pinned its fixtures to the archived record.
+    /// This command kept simulating and has been throwing on a missing scope ever since — it was
+    /// broken at ruleset 3 before geography touched anything, which is the whole shape of the
+    /// silent-path family: one idea implemented twice, fixed once, and the unfixed copy failing
+    /// in a place nobody was looking.
     /// </summary>
     private static int TestCorpus(Args args)
     {
@@ -431,7 +703,22 @@ public static class CommandLine
 
         foreach (CorpusCase one in cases)
         {
-            CorpusResult result = Corpus.Run(one, World);
+            CorpusResult result;
+            try
+            {
+                result = Corpus.Run(one, World);
+            }
+            catch (InvalidDataException ex)
+            {
+                // A case whose scope no longer exists is a failing case, not a crashed command.
+                // It threw all the way out of the process before, which reported a defect in the
+                // corpus as a defect in the tooling and took the other thirty rows with it.
+                Console.WriteLine($"      MISSED {one.Id}");
+                Console.WriteLine($"             {ex.Message}");
+                missed++;
+                continue;
+            }
+
             if (result.Passed) continue;
 
             Console.WriteLine($"      {(result.Fired ? "NOISY " : "MISSED")} {one.Id}");
@@ -452,11 +739,22 @@ public static class CommandLine
         {
             if (worlds.TryGetValue(seed, out WorldView? cached)) return cached;
 
+            // Seed 42 is the archived world every corpus row is about. Other seeds have no
+            // archived record, so they are simulated — and a case that uses one is asserting
+            // about the current ruleset rather than about a pinned world, which is a thing to
+            // know when it starts failing. No row uses one today.
+            if (seed == 42 && SealedWorld() is string path)
+                return worlds[seed] = WorldView.Build(JsonlIo.Read(path).Log, seed);
+
             Simulation sim = new(seed);
             sim.Run(50);
             return worlds[seed] = WorldView.Build(sim.Log, seed);
         }
     }
+
+    /// <summary>The sealed v1 seed-42 record. One resolver, shared with the test fixture.</summary>
+    private static string? SealedWorld() =>
+        Corpus.SealedSeed42(AppContext.BaseDirectory, Directory.GetCurrentDirectory());
 
     /// <summary>Layer 1, across the seed panel. A metric that holds on one seed is an anecdote.</summary>
     private static int TestDynamics(Args args)
@@ -467,6 +765,7 @@ public static class CommandLine
         int failures = 0;
         List<Audit> panel = [];
         List<EventLog> panelLogs = [];
+        List<WorldView> panelViews = [];
         Console.WriteLine("layer 1 — dynamics invariants");
 
         foreach (string raw in seeds)
@@ -482,8 +781,17 @@ public static class CommandLine
             int broken = results.Count(r => !r.Held);
             failures += broken;
             panel.Add(Audit.Compute(view));
+
+            // Once, not twice.
+            //
+            // Every log was added to the panel twice, which doubled n on every pooled
+            // distribution metric while leaving the percentages untouched — so the figures read
+            // correctly and the sample size they were justified by was a fiction. That matters
+            // precisely here, because "assert the rate only where n supports it" is the rule
+            // these metrics exist under, and a doubled n is that rule being satisfied with an
+            // invented denominator. Found while adding the geography metrics beside them.
             panelLogs.Add(view.Log);
-            panelLogs.Add(view.Log);
+            panelViews.Add(view);
 
             Console.WriteLine($"  seed {seed,-5} {results.Count - broken}/{results.Count} held");
 
@@ -505,7 +813,7 @@ public static class CommandLine
         Console.WriteLine();
         Console.WriteLine("  pooled across the panel");
 
-        foreach (Invariant r in Invariants.CheckPanel(panel, panelLogs))
+        foreach (Invariant r in Invariants.CheckPanel(panel, panelLogs, panelViews))
         {
             if (!r.Held) failures++;
             Console.WriteLine($"      {(r.Held ? "ok  " : "FAIL")} {r.Name}: {r.Measured}, " +
@@ -1585,30 +1893,21 @@ public static class CommandLine
                 $"world-{seed.ToString(CultureInfo.InvariantCulture)}.jsonl");
         }
 
-        if (!File.Exists(path))
-            throw new FileNotFoundException($"no world at '{path}' — run `wb run --seed <n>` first.");
+        // Provenance and integrity are checked on the way in by the one entry point every reader
+        // goes through, so a world this build did not write says so before anything is derived
+        // from it. Silent on the ordinary case: a file written by this engine under this ruleset
+        // produces no notes at all.
+        bool acceptNewer = args.Flag("accept-newer");
+        BundleOpen opened = WorldBundle.Open(path, acceptNewer);
 
-        // Provenance is checked on the way in, so a world this build did not write says so before
-        // anything is derived from it. Silent on the ordinary case: a file written by this engine
-        // under this ruleset produces no notes at all.
-        WorldHeader? header = JsonlIo.ReadHeader(path);
-        WorldFileCheck check = header is null
-            ? new WorldFileCheck { Blocks = false, Notes = ["this world file has no header at all; nothing records what produced it."] }
-            : WorldCompatibility.Check(header);
+        foreach (string note in opened.Notes) Console.Error.WriteLine($"wb: {note}");
 
-        foreach (string note in check.Notes) Console.Error.WriteLine($"wb: {note}");
-
-        if (check.Blocks)
-        {
-            if (!args.Flag("accept-newer"))
-                throw new FormatException($"refusing to open '{path}' — see above.");
-
-            // Said every time rather than once, because the override is the whole safeguard and
-            // a run that used it should not read like a run that did not need it.
+        // Said every time rather than once, because the override is the whole safeguard and a run
+        // that used it should not read like a run that did not need it.
+        if (acceptNewer && opened.Header is not null && WorldCompatibility.Check(opened.Header).Blocks)
             Console.Error.WriteLine("wb: opening it anyway, on --accept-newer.");
-        }
 
-        return WorldView.Load(path);
+        return WorldView.Build(opened.Log, opened.Seed);
     }
 
     private static int Fail(string message)
@@ -1627,6 +1926,35 @@ public static class CommandLine
 
               wb log       [--seed 42] [--from Y] [--to Y] [--verbose]
                            replay the readable log
+
+            geography — the board is imported once and stored, never generated from a seed
+
+              wb map show  [<file>]                what a board is made of, and the separation
+                                                   at which proximity reads 100
+              wb map import <azgaar-export.json> [--to maps/board-1.wbmap.json]
+                                                   convert an Azgaar cell export. Its output is
+                                                   consumed, never embedded — no generator code
+                                                   is linked or vendored
+              wb map make  [--width 20] [--height 14] [--seed 1] [--to <file>]
+                           a board of last resort, for a machine with no export to hand. Says so
+                           in its own provenance. Create-only, like the baselines
+
+              wb bundle write  [--seed 42] [--out out]
+                           record a hash for every artefact beside the world, and a fingerprint
+                           for its render cache, in the world's header
+              wb bundle verify [--seed 42] [--out out]
+                           check them. Opening a world does this anyway and refuses on a
+                           mismatch: a map that is not the one a history happened on gives every
+                           distance a different answer and nothing downstream looks wrong
+
+            baselines — create-only, and never written to by a test layer
+
+              wb baseline cut   --seed 42 --from <dir> --to baselines/<set>/seed-42
+                                [--verification stability-anchor-only|hand-verified]
+                           archive a run, hash every artefact, fingerprint the checker from what
+                           git stores at the commit the artefacts name, and seal it
+              wb baseline check <dir>
+                           the seal against the manifest, and the manifest against the files
 
               wb why       e:1188 [--depth 8]      what caused this
               wb what      e:1188 [--depth 4]      what this went on to cause

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -126,6 +127,35 @@ public sealed class RenderStore
     {
         _byId[render.Id] = render;
         Save();
+    }
+
+    /// <summary>
+    /// Which passages this world's prose consists of, as one hash.
+    ///
+    /// Over the cache's contents, not over the file. The two differ in the way that matters: the
+    /// file grows every time anything is rendered, so a byte hash of it answers "has anything
+    /// been added" when the question worth asking is "is this the same prose". Two directories
+    /// holding the same passages fingerprint identically whatever order they were written in.
+    ///
+    /// Each entry contributes its identity — pack, inputs, prompt version, model — and a hash of
+    /// its text, so a passage that was silently re-rendered over shows up even though its key did
+    /// not move. That is the same reasoning as keying invalidation on the pack body rather than
+    /// on notional inputs: prefer the thing that cannot drift from what was actually used.
+    /// </summary>
+    public string Fingerprint()
+    {
+        List<Render> ordered = [.. _byId.Values];
+        ordered.Sort(static (a, b) => string.CompareOrdinal(a.Id, b.Id));
+
+        StringBuilder sb = new();
+        foreach (Render r in ordered)
+        {
+            sb.Append(r.Id).Append('\t').Append(r.Status).Append('\t')
+              .Append(Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(r.Text))).ToLowerInvariant())
+              .Append('\n');
+        }
+
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()))).ToLowerInvariant();
     }
 
     private void Load()

@@ -57,14 +57,15 @@ public static class BaselineWorld
         return WorldView.Build(sim.Log, seed);
     }
 
-    public static string Directory()
-    {
-        for (DirectoryInfo? at = new(AppContext.BaseDirectory); at is not null; at = at.Parent)
-        {
-            string candidate = Path.Combine(at.FullName, "baselines", "v1", "seed-42");
-            if (System.IO.Directory.Exists(candidate)) return candidate;
-        }
-
-        throw new DirectoryNotFoundException($"no baselines/v1/seed-42 above {AppContext.BaseDirectory}");
-    }
+    /// <summary>
+    /// The sealed baseline directory, resolved by the same function <c>wb test corpus</c> uses.
+    ///
+    /// Shared deliberately. There were two resolvers, this one was fixed at ruleset 2 and the
+    /// command's was not, and the command spent two rulesets throwing on a scope that no longer
+    /// existed. One idea implemented twice is one idea that gets fixed once.
+    /// </summary>
+    public static string Directory() =>
+        Path.GetDirectoryName(
+            WorldBuilder.Inference.Corpus.SealedSeed42(AppContext.BaseDirectory, System.IO.Directory.GetCurrentDirectory()))
+        ?? throw new DirectoryNotFoundException($"no baselines/v1/seed-42 above {AppContext.BaseDirectory}");
 }
