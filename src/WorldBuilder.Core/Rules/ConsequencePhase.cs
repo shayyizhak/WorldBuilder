@@ -198,7 +198,7 @@ public static class ConsequencePhase
         // A legitimate house passes its seat to the named heir and a house in crisis is where a
         // rival takes it, which is a story rather than a coin flip.
         int heirScore = Backing(state, heir) + heir.Traits.Martial / 2
-                        + faction.Legitimacy / 3 + rng.Next(50);
+                        + DesignationWeight(tick, heir) + rng.Next(50);
         int rivalScore = Backing(state, rival) + rival.Traits.Martial / 2
                          + rival.Traits.Ambition / 3 + rng.Next(50);
 
@@ -414,6 +414,38 @@ public static class ConsequencePhase
         return candidates;
     }
 
+    /// <summary>
+    /// What a standing designation is worth to the candidate holding it.
+    ///
+    /// The counterweight to the rival's ambition, and the third quantity tried for the job. The
+    /// first two failed for the same reason in different ways: nothing at all, and then the
+    /// house's legitimacy — which collapses under exactly the conditions that produce a dispute,
+    /// so the contest was decided before it opened.
+    ///
+    /// The age of the designation cannot collapse. It is monotone in elapsed time and derived
+    /// from a recorded act, so the crisis that triggers the contest leaves it untouched. In a
+    /// polity that elects, what a designated candidate brings to the vote is standing consent:
+    /// the house named him and has not unmade him since.
+    ///
+    /// Capped at fifteen years — about half a tenure, after which further age says nothing new —
+    /// and scaled to the same 0–30 the rival's ambition spans, because symmetry was the original
+    /// diagnosis and overshooting would replace one asymmetry with another.
+    ///
+    /// <b>An heir derived by rule rather than named by an act carries nothing</b>, which is what
+    /// keeps set-aside heirs common: they are load-bearing as false-premise test cases and as a
+    /// grievance source, and the shape of this rule preserves them rather than a tuned constant.
+    /// </summary>
+    private static int DesignationWeight(Tick tick, Actor heir)
+    {
+        if (heir.Title != Title.Heir) return 0;
+
+        EventId named = Recent.LastOfKind(tick, heir.Id, EventKind.PolityAppointment);
+        if (named.IsNone) return 0;
+
+        int years = tick.Year - tick.Log.Get(named).Year;
+        return Math.Clamp(years, 0, 15) * 2;
+    }
+
     private static Actor ChooseHeir(Tick tick, Faction faction, List<Actor> candidates)
     {
         WorldState state = tick.State;
@@ -445,11 +477,22 @@ public static class ConsequencePhase
 
             default:
             {
+                // The house's standing candidate is the natural nominee where it elects.
+                //
+                // Without this the designation was real and ignored: an appointment named a
+                // candidate, and the selector then picked whoever had the most backing, so "the
+                // named heir" in the resulting event was routinely somebody nobody had named.
+                // Any weight attached to a designation is worth nothing while the person holding
+                // it is not the person the label refers to.
+                //
+                // Only here and under primogeniture, which already prefers the title. A house
+                // whose rule is that the strongest takes the seat means it, and a designation
+                // does not override it.
                 Actor best = candidates[0];
                 int bestScore = -1;
                 foreach (Actor a in candidates)
                 {
-                    int score = Backing(state, a) + a.Traits.Loyalty / 2;
+                    int score = Backing(state, a) + a.Traits.Loyalty / 2 + DesignationWeight(tick, a);
                     if (score > bestScore) { bestScore = score; best = a; }
                 }
                 return best;

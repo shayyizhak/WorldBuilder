@@ -50,7 +50,7 @@ public class DynamicsTests
     /// <c>plots terminated</c> — redefined over conspiracies that had their full lifespan to
     /// conclude, the same exemption the engine's own termination assertion has always applied.
     ///
-    /// <b>distinct deep-chain shapes</b> — 55 on seed 7 against a bar of 60, up from 44 before
+    /// <b>distinct deep-chain shapes</b> — 42 and 56 on two seeds against a bar of 60, up from 44 before
     /// this phase's tribute and succession changes and 54 before the raid work. <b>Category two,
     /// a real loss, and recovering.</b> The volume explanation was tested and refuted: seed 7
     /// produces exactly 611 events under rulesets 1 and 2 — and a *different* 611, the streams

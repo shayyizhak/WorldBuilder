@@ -181,12 +181,30 @@ public static class ActionPhase
         }
         if (favourite is null) return;
 
+        // A house with no standing candidate names one.
+        //
+        // Title.Heir had no runtime emitter at all: it was set once in WorldGen and never again,
+        // while four rules read it — ChooseHeir prefers it, claim strength adds fifteen for it,
+        // marriage treats it as royal, perception raises the spark for it. Once the founding
+        // heirs died or took seats the title decayed out of the world and "the named heir"
+        // became a fiction: nobody was named, the heir was derived by kinship or age, and every
+        // quantity attached to the designation was attached to something that never happened.
+        //
+        // These are leagues and compacts that elect, so a designation is not an inheritance —
+        // it is the standing candidate the house has consented to, and it is the only kind of
+        // claim this setting has.
+        bool hasHeir = false;
+        foreach (Actor a in members)
+            if (a.IsAlive && a.Title == Title.Heir) hasHeir = true;
+
+        Title office = hasHeir ? Title.Steward : Title.Heir;
+
         EventDraft appointment = new EventDraft(EventKind.PolityAppointment)
             .Subject(favourite.Id)
             .Object(leader.Id)
             .By(faction.Id)
             .At(faction.Seat)
-            .Set("title", Title.Steward)
+            .Set("title", office)
             .Leg(faction.Id, 4)
             .Rel(favourite.Id, leader.Id, RelationKind.Fealty, 20)
             .Because(goal.Cause)
