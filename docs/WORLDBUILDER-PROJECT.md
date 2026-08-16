@@ -158,6 +158,12 @@ The fix is a **fingerprint over the producing code**, stored with the artefact. 
 
 **Backward compatibility for unverifiable artefacts is a permanent commitment, not a migration step.** Cache entries predating the input hash are served and counted, never refused, because the v1 cache is entirely of that kind and it is the hand-verified one. A policy that eventually refuses them eventually strands the baseline. State the weaker claim — *these entries' inputs are unverified* — and keep reading them.
 
+**A world is a log plus whatever it cannot be read without.** "The materialised event log is the durable artefact" held for as long as everything in the world was in the log. An imported map broke that half: the log records which cell each place stands on, and a cell index means nothing without the board it indexes into. So a world is a directory, the header carries a hash per stored artefact, and opening verifies them.
+
+**A mismatched artefact hash is the one provenance failure that refuses.** Every other mismatch this engine reports leaves a readable world behind it — an older ruleset, absent provenance, a superseded engine. A board whose hash has moved leaves a world that reads perfectly and is about somewhere else, because every distance in it silently changed. Refuse where the failure has no symptom; note where it has one.
+
+**Hash the file, and name the artefact inside the record too.** The bundle header hashes the map beside the world; the genesis event carries the board's fingerprint. They catch different things — a file that changed under a world, and a world opened beside the wrong map entirely — and only having both makes a log safe to carry away from its bundle.
+
 ### On mechanics and reachability
 
 *The engine dynamics phase, ruleset 1 → 3. Five mechanic changes and a great deal found on the way.*
@@ -179,6 +185,22 @@ The fix is a **fingerprint over the producing code**, stored with the artefact. 
 **Parking is a decision, not neglect.** Not every defect clears the bar. The bar is whether it makes the world less interesting to read or less able to support a campaign — not simulation correctness. Below it, a finding is diagnosed, categorised and parked in `KnownFailing` with its reasoning, watched by the harness. Without an explicit bar, each fix's discoveries set the agenda forever and the roadmap never resumes.
 
 **Create-only beats a human gate, where the property wanted is "this cannot move by rerun."** The archive directory refuses to be overwritten. Replacement requires deliberately moving the old one aside, which is the explicit act. A gate that depends on remembering to be a human is weaker than one that depends on the filesystem.
+
+### On geography and calibration
+
+*Added after Stage 6, ruleset 3 → 4. Four mechanics gained a distance input and no threshold moved.*
+
+**Express a new input as a percentage of what the world already is, and no existing threshold has to move.** Proximity is 100 at a typical separation, and every consumer multiplies by it and divides by a hundred. A pair at an ordinary distance therefore scores exactly what it scored before geography existed, so four mechanics inherited their calibration rather than being re-fitted. The alternative — pick a distance constant and tune it — is how the raid roll acquired its undocumented flat 25, which cost a phase to find and had no defence when found.
+
+**A scale is only self-calibrating if it is calibrated against the population that actually occurs.** Proximity was first defined against the board's median separation over all land cells: arithmetically correct, and useless, because places are sited deliberately far apart and no world ever contained two at that distance. Every proximity came out below 100 and four mechanics documented as "centred" were discounted everywhere. **The defect was invisible in the code and unmissable in the metric** — war declaration reported 0 near and 29 far across the whole panel, a branch that cannot fire wearing a percentage. Same class as `CoupDecidedPct`. Ask what the distribution of the thing being measured actually looks like, not what the container's is.
+
+**Adding an input can raise causal variety as much as adding a branch.** The standing hypothesis was that variety tracks how many mechanics have genuinely reachable branches. Stage 6 predicted, in writing and before measuring, that variety would fall — three of its four changes re-weight existing outcomes rather than adding new ones. Variety rose on four seeds of five, by up to +33. The hypothesis is **incomplete rather than refuted**: the revised form is that variety tracks *how many distinct, stable configurations the world can be in*, of which reachable branches are one source and a differentiated map is another.
+
+**Repetition can be a missing input rather than a missing brake.** `verbatim repeat rate` survived two rounds that diagnosed it correctly and fixed the wrong thing, and was parked as unattributed. Geography closed it without aiming at it. A house with no map picks its rival by grievance alone, and grievance is sticky, so the same two names transact forever. Distance did not stop them repeating — it gave the world more than one plausible pairing to repeat with. Before adding a cooldown, ask whether the choice has enough inputs to vary.
+
+**One idea implemented twice is one idea fixed once.** "A fixture pinned to a seed is a ruleset-scoped artefact" was learned at ruleset 2 and applied to the test suite's corpus fixture. `wb test corpus` held the same idea in its own copy and was never touched, so it threw on a missing scope for two rulesets in a place nobody ran. This is the silent-path family outside a checker rule for the third recorded time. When a lesson is applied, grep for the second implementation.
+
+**A metric written this round found this round's own defect.** Both the proximity mis-calibration and the doubled panel denominator were found by instrumentation added in the same phase as the code it caught. That is the argument for adding the metric before believing the mechanic, not after.
 
 ### On measurement
 
@@ -215,7 +237,7 @@ Stages 1 and 2 are complete (v1 render and query). The board is at **https://tre
 | 4 | Automated quality harness | ✅ done — five layers, 456 tests |
 | — | Engine dynamics phase | ✅ done — ruleset 3; see §5a |
 | 5 | Workbench UI | Instrumentation for the builder, not product |
-| 6 | **World substrate: geography, then economy** | Current |
+| 6 | **World substrate: geography, then economy** | Geography ✅ — ruleset 4; see §5b. Economy is the next phase |
 | 7 | v2 adjudication & interventions | Prospective first, retroactive last |
 | 8 | LOD contract | **Design only** — keep running 20 actors |
 | 9 | Complexity mechanisms | naming → religion → resources/trade → creatures → tech diffusion |
@@ -246,10 +268,12 @@ Keying on the body rather than on notional inputs is the stronger form of the sa
 
 **Two items carried forward:**
 
-- **`ruleset_version` — resolved, and now doing real work.** Settled as two counters that coincide: the ruleset carries its own sequence, deliberately not matching any engine version. It is at `3` while `engine_version` stays `1.2.0`. Layer 5 reads it and skips a baseline cut under a different ruleset.
-- **The header's artefact hashes and render-cache fingerprint are not built.** Correctly deferred — `wb run` knows nothing about renders, so these belong to whatever writes a world *bundle*, which doesn't exist yet. This is the piece that makes the header self-verifying, and it will be wanted at Stage 6, when an imported map artefact becomes something that must be hashed into the world file.
+- **`ruleset_version` — resolved, and now doing real work.** Settled as two counters that coincide: the ruleset carries its own sequence, deliberately not matching any engine version. It is at `4` while `engine_version` stays `1.2.0`. Layer 5 reads it and skips a baseline cut under a different ruleset.
+- **The header's artefact hashes and render-cache fingerprint — built at Stage 6.** Correctly deferred until something produced a bundle for them to describe. An imported map was that artefact, and `WorldBundle` now writes and verifies both. Opening is the one entry point every reader goes through, and a hash mismatch throws.
 
-**Stage 6 — geography.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Azgaar gives a cell-adjacency graph free; Watabou MFCG has a de-facto JSON API. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool.
+**Stage 6 — geography. Built; see §5b.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Azgaar gives a cell-adjacency graph free; Watabou MFCG has a de-facto JSON API. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool. Nothing is embedded: the Azgaar importer consumes an export and no generator code is linked or vendored.
+
+**The stored board is currently made rather than imported.** No Azgaar export was available on the build machine and the generator is a browser application that cannot be driven headlessly, so `maps/board-1.wbmap.json` came from `wb map make` and says so in its own provenance. The importer for the real path is built and tested and the artefact format is identical, so dropping in a real export is a swap — but every world simulated against a board records its hash, so replacing the board means new worlds rather than changed ones.
 
 **Stage 7 — the collision to resolve.** "Cached renders are canon" and "retroactive authoring back-propagates causes into the past" cannot both hold unconditionally, because back-propagation rewrites events that already have canon prose about them. Decide deliberately in design. Stage 3's invalidation rule sets the precedent this will be argued from.
 
@@ -270,6 +294,22 @@ Unscheduled, and it came from the harness rather than the roadmap: Layer 1's fir
 **What it cost, and the discipline that made it stoppable.** Each fix revealed the next; without a bar, a phase like this runs forever. The bar is §4's — does the defect make the world less interesting to read or less able to support a campaign — plus a hard budget of mechanic changes, with a fifth requiring escalation rather than a decision.
 
 **The working-method lesson.** The first four rounds were one brief each, which cost a round-trip per finding, and most of what came back between them was derivable from the record. A phase loop carries the method and the pre-committed decision rules, extends its own queue, and halts only for questions of **semantic intent** — what a mechanic is *for* — which is the one thing that cannot be derived. Write phases, not rounds.
+
+### 5b. Stage 6 — the geography substrate (ruleset 3 → 4)
+
+Run as a phase loop rather than as rounds, and it worked the way the previous phase said it would: no escalation was needed, and the two things worth escalating over — a fifth mechanic and a threshold change — never arose.
+
+**Step 0 first: a ruleset-3 anchor for all five seeds.** Layer 5 had skipped since ruleset 2, so two rulesets of change had landed with no golden anchor, and this phase was about to change the world more than either. Five baselines at `baselines/ruleset-3/seed-*`, all `stability-anchor-only`, Layer 5 passing 0/0 on every one. `wb baseline cut` reads the producing engine out of the world file's own header rather than from the build running it, and its checker fingerprint reproduced the v1 baseline's hand-computed `60f5b325` exactly.
+
+**A world became a bundle.** The map is a stored artefact, hashed into the header; opening verifies and refuses on a mismatch. The genesis event names the board separately, so a log carried away from its bundle still knows which map its cell indices mean.
+
+**Four mechanics gained a distance input and no threshold moved** — raid targeting, war declaration, conquest holdability, and the pairing rules. The budget held: nothing else gained one, and the two parked findings that look adjacent (tribute target selection, heir selection) were noted and left.
+
+**What it was worth.** Conflict acquired a place. A war is now declared over somewhere and fought there — Threi Cut three years running — rather than wandering the map; a conquest is next to what you already hold; a house's enemies are its neighbours. Causal variety rose on four seeds of five, Layer 1 went from three failures to one, and `verbatim repeat rate` cleared everywhere.
+
+**Positions changed nothing else, and that was checkable.** Siting draws on an RNG purpose of its own, so all five seeds produced a byte-identical history to ruleset 3 with only the `cell` fields and the board fingerprint added. Geography present and inert is a real state, and being able to stand in it is what made the four attributions afterwards mean anything.
+
+**The prediction was falsified and that was the most useful part** — see §4's geography cluster. The phase also cost one full re-measurement of its own headline result, because the metric written to check the calibration found the calibration wrong.
 
 ### Two cross-cutting concerns
 
@@ -398,18 +438,20 @@ Verified by hand across many rounds. Useful for any future test, question suite,
 - **Query:** 16/16 suite questions correct, zero secret leakage, zero fatal findings, retrieval byte-identical across runs, 330 tests green.
 - **Baseline:** sealed at `baselines/v1/seed-42/`, verified from a fresh clone.
 
-**Stage 3, Stage 4 and the engine dynamics phase are complete.** Ruleset `3`, engine `1.2.0`, 456 tests green.
+**Stage 3, Stage 4, the engine dynamics phase and Stage 6's geography half are complete.** Ruleset `4`, engine `1.2.0`, 483 tests green.
 
-- **Harness:** five layers built. Its first act was to find a live simulation defect that months of hand review had missed.
-- **Engine:** no mechanic is decorative. Every distribution varies; the worst is 88% against a bar of 90, where the phase began with three mechanics at 100%, 93% and 83% and a covert-coup path with no win branch at all.
+- **Harness:** five layers built. Its first act was to find a live simulation defect that months of hand review had missed, and it has since found two of its own instrumentation's.
+- **Engine:** no mechanic is decorative. Every distribution varies; every distance-consuming mechanic acts both near and far. The tightest is war declaration at 86% one way against a bar of 90, on n=23.
 - **Instrumentation is trustworthy:** every rate reports its `n`, percentages are asserted only where `n` supports them, every absence-asserting metric has a constructed counter-example, every ratio's numerator is asserted reachable.
 
-**Judgement on file: the engine is good enough to build Stages 5 and 6 on**, with one qualification. Causal variety is the one thing still moving the wrong way and it is unattributed — `distinct deep-chain shapes` fails on two seeds and `verbatim repeat rate` on one. Neither blocks a workbench or a geography substrate, but both bear on whether the history reads well, which is the actual product.
+**Regression protection is live again.** Five sealed ruleset-3 baselines at `baselines/ruleset-3/seed-*`, Layer 5 passing 0/0 on all of them and correctly skipping under ruleset 4. The v1 baseline is untouched and still verifies. All five ruleset-3 baselines carry `verification: stability-anchor-only`; only the sealed v1 seed-42 baseline is hand-verified.
 
-**Two parked findings**, each in `KnownFailing` with category, rationale and owning round: tribute target selection (houses demand of whoever they resent, not whoever is weak, so most demands are between near-equals) and heir selection criteria (loyalty names the candidate, ambition wins the contest).
+**Judgement on file: geography made the history read better, structurally.** Conflict now has a place — a war is declared over somewhere and fought there rather than wandering — and the map ends as a connected block rather than a scatter. Layer 1 went from three failures to one. `verbatim repeat rate`, parked as unattributed across two rounds, cleared everywhere without being targeted.
 
-**Regression protection is currently dark.** Layer 5 has skipped since ruleset 2 — correctly, since a diff against a ruleset-1 baseline compares different worlds — but that means two rulesets of change have landed with no golden anchor. Cutting a ruleset-3 baseline is the first item of the next phase.
+**One metric still fails, and it is the same one.** `distinct deep-chain shapes` sits at 45 on seed 7 against a bar of 60, improved from 42, with seed 2025 now clearing it. Category two, a real loss, recovering; parked, watched, not chased. Seed 99 went the other way this phase, 74 → 69, which is recorded and not diagnosed.
 
-**Next: Stage 6**, the world substrate. Geography first.
+**Two parked findings** remain, each in `KnownFailing` with category, rationale and owning round: tribute target selection (houses demand of whoever they resent, not whoever is weak, so most demands are between near-equals) and heir selection criteria (loyalty names the candidate, ambition wins the contest). Both look adjacent to distance now and neither was touched.
 
-**Baselines for the other four seeds** — 7, 99, 1234, 2025 — are still uncut, and now belong with the ruleset-3 baseline as one generate-then-archive round. All five carry `verification: stability-anchor-only`; only the sealed v1 seed-42 baseline is hand-verified.
+**One new exposure, reported and unbuilt.** Places have terrain and positions and the render pack carries neither, so no prose contains geography — measured at one figurative use of "borders" in 12,180 words. **No checker rule reads a cell or a terrain**, so the moment a pack carries either, the model gains a vocabulary it can be wrong in with nothing watching. A fabricated distance is a new fabrication class with zero coverage.
+
+**Next: Stage 6's economy half**, then Stage 5's workbench. Geography deliberately landed before economy, because distance gates trade the way it gates conflict.
