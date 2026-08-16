@@ -644,6 +644,8 @@ public static class ActionPhase
 
         goal.Arc = arc;
         goal.Progress += 30;
+
+        tick.Ledger?.Opened(arc, tick.Year);
     }
 
     private static void ChallengeOpenly(Tick tick, Goal goal, Actor actor, Faction faction, Actor ruler)

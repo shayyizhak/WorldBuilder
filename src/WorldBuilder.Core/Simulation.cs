@@ -22,6 +22,13 @@ public sealed class Tick(Chronicle chronicle, SimConfig config, NameForge forge,
     /// </summary>
     public EventId YieldEvent { get; set; }
 
+    /// <summary>
+    /// Optional diagnostic sink. Null on an ordinary run, and nothing in the rules reads it, so
+    /// attaching one cannot change what the simulation does — which is the only thing that makes
+    /// instrumentation trustworthy. Instrumentation that changes the world is not instrumentation.
+    /// </summary>
+    public Analysis.PlotLedger? Ledger { get; set; }
+
     public Rng Rng(EntityId entity, RngPurpose purpose) =>
         Core.Rng.For(State.Seed, Year, entity, purpose);
 
@@ -60,6 +67,9 @@ public sealed class Simulation
     public EventLog Log { get; }
     public Chronicle Chronicle { get; }
     public int StartYear { get; }
+
+    /// <summary>Attach before running to account for every conspiracy. Off by default.</summary>
+    public Analysis.PlotLedger? Ledger { get; set; }
 
     public void Run(int years)
     {
@@ -119,7 +129,7 @@ public sealed class Simulation
         State.Year = year;
         Chronicle.BeginYear(year);
 
-        Tick tick = new(Chronicle, _config, _forge, year);
+        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger };
 
         LifePhase.Run(tick);
         EconomyPhase.Run(tick);

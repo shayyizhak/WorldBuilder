@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace WorldBuilder.Core.Rules;
 
 /// <summary>
@@ -12,6 +14,11 @@ public static class ResolutionPhase
 {
     public static void Run(Tick tick)
     {
+        // The plots this tick will actually consider. Taken before the loop so that the ones it
+        // will not consider can be named — a plot the resolver never looked at and a plot it
+        // looked at and declined to advance are otherwise indistinguishable from outside.
+        AccountForUnexamined(tick);
+
         foreach (Arc arc in Snapshot(tick))
         {
             switch (arc.Kind)
@@ -20,6 +27,33 @@ public static class ResolutionPhase
                 case ArcKind.Plot: RipenPlot(tick, arc); break;
                 default: break;
             }
+        }
+    }
+
+    /// <summary>
+    /// Every plot arc the tick will skip, with the reason it is out of reach.
+    ///
+    /// Diagnostic only, and it runs whether or not a ledger is attached to nothing — with no
+    /// ledger it returns immediately, so an ordinary run pays a null check per year and the
+    /// simulation is bit-for-bit what it was.
+    /// </summary>
+    private static void AccountForUnexamined(Tick tick)
+    {
+        if (tick.Ledger is null) return;
+
+        foreach (Arc arc in tick.State.Arcs)
+        {
+            if (arc.Kind != ArcKind.Plot) continue;
+
+            if (arc.IsOpen)
+            {
+                // It is open, so the loop below will reach it. Nothing to record here.
+                continue;
+            }
+
+            tick.Ledger.NotExamined(arc.Id, tick.Year,
+                $"the arc was closed in {arc.EndYear?.ToString(CultureInfo.InvariantCulture) ?? "?"} " +
+                "and open arcs are the only ones the resolver iterates");
         }
     }
 
@@ -311,26 +345,43 @@ public static class ResolutionPhase
 
         EntityId plotterId = origin.Subject;
         EntityId targetId = origin.Object;
-        if (plotterId.IsNone || targetId.IsNone) { PlotLapses(tick, arc, "the thread is lost"); return; }
+        if (plotterId.IsNone || targetId.IsNone)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "the thread is lost", terminal: true);
+            PlotLapses(tick, arc, "the thread is lost");
+            return;
+        }
 
         Actor plotter = state.ActorOf(plotterId);
         Actor target = state.ActorOf(targetId);
 
         if (!plotter.IsAlive)
         {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "the plotter is dead", terminal: true);
             PlotDiesWithPlotter(tick, arc, DeathOf(tick, plotterId));
             return;
         }
 
-        if (!target.IsAlive) { PlotLapses(tick, arc, "its target is already dead"); return; }
+        if (!target.IsAlive)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "its target is already dead", terminal: true);
+            PlotLapses(tick, arc, "its target is already dead");
+            return;
+        }
 
         Faction faction = state.FactionOf(origin.Faction);
-        if (faction.Leader != target.Id) { PlotLapses(tick, arc, "its target no longer holds the seat"); return; }
+        if (faction.Leader != target.Id)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "its target no longer holds the seat", terminal: true);
+            PlotLapses(tick, arc, "its target no longer holds the seat");
+            return;
+        }
 
         // A conspiracy cannot simply sit open forever. Without a lifetime, plots whose
         // circumstances never changed stayed pending to the last year of the world.
         if (tick.Year - arc.StartYear >= tick.Config.PlotLifespan)
         {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "nothing came of it (lifespan reached)", terminal: true);
             PlotLapses(tick, arc, "nothing came of it");
             return;
         }
@@ -339,14 +390,24 @@ public static class ResolutionPhase
         // action does, so without this the log kept reporting conspiracies "uncovered after
         // 0 years" — born and buried in the same sentence.
         int age = tick.Year - arc.StartYear;
-        if (age < 1) return;
+        if (age < 1)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "too young to ripen this year");
+            return;
+        }
 
         // Secrets leak. The longer a plot sits, and the more people it has touched, the
         // likelier it is that somebody talks — and exposure is the better story anyway.
         Rng rng = tick.Rng(arc.Id, RngPurpose.Coup);
         int leak = 8 + age * 6 + (100 - plotter.Traits.Guile) / 4;
 
-        if (!rng.Chance(Math.Min(70, leak))) return;
+        if (!rng.Chance(Math.Min(70, leak)))
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "the leak roll did not come up");
+            return;
+        }
+
+        tick.Ledger?.Examined(arc.Id, tick.Year, "exposed", terminal: true);
 
         Event exposed = tick.Emit(new EventDraft(EventKind.PolityCoupResolved)
             .Subject(plotter.Id)

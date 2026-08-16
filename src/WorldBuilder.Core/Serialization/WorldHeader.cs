@@ -12,6 +12,13 @@ namespace WorldBuilder.Core.Serialization;
 /// model's own run-to-run variance — so a world that cannot say which engine and which ruleset
 /// wrote it is a world nobody can reason about later.
 ///
+/// <c>engine_version</c> and <c>ruleset_version</c> are two counters, not one written twice.
+/// The engine version says which build wrote the file and therefore what can read it; the
+/// ruleset version says whether this build, given the same seed, would produce the same world.
+/// They coincided at 1.2.0 for as long as rules only changed alongside releases, and the ruleset
+/// now carries its own sequence starting at "1" precisely so that the coincidence cannot be read
+/// as a constraint — see <see cref="Ruleset"/>.
+///
 /// Nothing here varies between two runs of the same seed on the same build, which is deliberate:
 /// the determinism guarantee is checked by comparing files, and a timestamp or a machine name in
 /// the header would break that for no gain. Provenance that changes when nothing happened is

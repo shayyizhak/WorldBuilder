@@ -38,6 +38,7 @@ public static class CommandLine
                 "atlas" => CmdAtlas(parsed),
                 "stats" => CmdStats(parsed),
                 "audit" => CmdAudit(parsed),
+                "plots" => CmdPlots(parsed),
                 "chains" => CmdChains(parsed),
                 "render" => CmdRender(parsed).GetAwaiter().GetResult(),
                 "chronicle" => CmdChronicle(parsed).GetAwaiter().GetResult(),
@@ -152,6 +153,59 @@ public static class CommandLine
         WorldView view = Load(args);
         foreach (string line in WorldStats.Compute(view).Report(view)) Console.WriteLine(line);
         return 0;
+    }
+
+    /// <summary>
+    /// Every conspiracy accounted for: examined, or skipped with a named reason.
+    ///
+    /// Diagnostic and written beside the run rather than into it. The event log records what
+    /// happened in the world; this records what happened in the engine, and a log carrying its
+    /// own instrumentation would make the world's record depend on how it was being watched.
+    /// </summary>
+    private static int CmdPlots(Args args)
+    {
+        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+        int years = args.Int("years", 50);
+        int unbalanced = 0;
+
+        foreach (string raw in seeds)
+        {
+            if (!ulong.TryParse(raw.Trim(), out ulong seed)) continue;
+
+            PlotLedger ledger = new();
+            Simulation sim = new(seed) { Ledger = ledger };
+            sim.Run(years);
+
+            PlotAccounting account = ledger.Account(sim.Log);
+            if (!account.Balances) unbalanced++;
+
+            Console.WriteLine($"seed {seed}");
+            foreach (string line in account.Report()) Console.WriteLine(line);
+
+            // When the resolver first reached anything, and what it reached. The pre-Y35 question
+            // is answered by these two numbers rather than by reading the log.
+            List<PlotStanding> examined = [.. ledger.Plots.Where(p => p.Examined > 0)];
+            Console.WriteLine(examined.Count == 0
+                ? "      no plot was ever examined"
+                : $"      first examined in year {examined.Min(p => p.LastYear)}; " +
+                  $"plots opened {ledger.Plots.Min(p => p.Opened)}–{ledger.Plots.Max(p => p.Opened)}");
+
+            if (args.Flag("verbose"))
+            {
+                foreach (PlotStanding p in ledger.Plots)
+                {
+                    Console.WriteLine(
+                        $"      {p.Arc} opened {p.Opened,3}  examined {p.Examined,3}x  " +
+                        $"last {p.LastYear,3}  {p.Reason}");
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        return unbalanced;
     }
 
     private static int CmdAudit(Args args)

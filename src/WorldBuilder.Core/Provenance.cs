@@ -48,8 +48,19 @@ public static class Engine
 /// reader has to be able to tell them apart.
 ///
 /// Bump this whenever a change alters what the simulation would produce for an unchanged seed.
+///
+/// <b>The decision, recorded because it is about to matter.</b> The ruleset and the engine are
+/// two things that currently coincide, not one thing with two names. They were both "1.2.0",
+/// which reads as a constraint and is not one: the coup work ahead is a rule change that will
+/// ship without an engine release, and the first time that happens a shared number becomes a
+/// lie in a header that exists to be trusted.
+///
+/// So the ruleset gets its own sequence, starting at "1" and deliberately not matching any
+/// engine version, so nobody can mistake the two for the same counter again. It is an integer
+/// that increments when the rules change what the simulation produces; it says nothing about
+/// what the engine can read, which is what <see cref="Engine.Version"/> is for.
 /// </summary>
 public static class Ruleset
 {
-    public const string Version = "1.2.0";
+    public const string Version = "1";
 }
