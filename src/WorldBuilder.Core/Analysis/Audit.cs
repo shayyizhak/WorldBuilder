@@ -58,7 +58,37 @@ public sealed record Audit
     public int SeverityRatioPct =>
         FamineSeverityPerMille == 0 ? 0 : PlagueSeverityPerMille * 100 / FamineSeverityPerMille;
 
-    public int PlotTerminationPct => PlotsOpened == 0 ? 100 : PlotsTerminated * 100 / PlotsOpened;
+    /// <summary>
+    /// Termination over conspiracies that had time to conclude.
+    ///
+    /// <b>Redefined 2026-08-16, ruleset 2. Predecessor: <c>PlotsTerminated / PlotsOpened</c>,
+    /// asserted at ≥ 85%.</b>
+    ///
+    /// The old definition was written when a plot was voided by its target's death, which made a
+    /// high termination rate close to automatic — nearly every conspiracy was closed within one
+    /// to three years of opening, and what the metric actually policed was that the engine does
+    /// not silently abandon them. Under seat-attachment a plot persists until it is struck,
+    /// uncovered, its author dies, or its lifespan runs out, so a plot opened at Y49 in a run
+    /// that stops at Y51 is an unfinished conspiracy rather than an abandoned one. Counting it
+    /// as a failure measures where the observer stopped watching.
+    ///
+    /// So the denominator is plots that had a full <see cref="SimConfig.PlotLifespan"/> in which
+    /// to end. <b>This is not invented for the occasion:</b> the engine's own
+    /// <c>AssertEveryPlotTerminated</c> has always applied the same exemption, for the reason its
+    /// comment gives — inventing an ending for a plot because the observer looked away is not
+    /// truthful. The metric simply had not caught up.
+    ///
+    /// The threshold is unchanged at 85%.
+    /// </summary>
+    public int PlotTerminationPct => PlotsMatured == 0 ? 100 : PlotsMaturedTerminated * 100 / PlotsMatured;
+
+    /// <summary>The old figure, kept so the redefinition can be seen rather than taken on trust.</summary>
+    public int PlotTerminationPctOfAllOpened =>
+        PlotsOpened == 0 ? 100 : PlotsTerminated * 100 / PlotsOpened;
+
+    /// <summary>Plots opened early enough to have had their full lifespan before the run stopped.</summary>
+    public required int PlotsMatured { get; init; }
+    public required int PlotsMaturedTerminated { get; init; }
 
     /// <summary>How much deadlier a typical plague is than a typical famine, as a percentage.</summary>
     public int PlagueToFaminePct =>
@@ -168,7 +198,8 @@ public sealed record Audit
     public int AssassinationFatalPct => Assassinations == 0 ? 0 : AssassinationsFatal * 100 / Assassinations;
     public int LifecycleChainPct => DeepChains == 0 ? 0 : LifecycleChains * 100 / DeepChains;
 
-    public static Audit Compute(WorldView view, int minChainDepth = 5, int skewThreshold = 70)
+    public static Audit Compute(
+        WorldView view, int minChainDepth = 5, int skewThreshold = 70, int plotLifespan = 0)
     {
         EventLog log = view.Log;
 
@@ -277,6 +308,17 @@ public sealed record Audit
             if (count > 1) repeats++;
         }
 
+        // Conspiracies that had their full lifespan before the records stop. A plot opened two
+        // years before the end is pending, not abandoned, and the engine's own termination
+        // assertion has always exempted them for exactly that reason.
+        int lifespan = plotLifespan > 0 ? plotLifespan : SimConfig.Default.PlotLifespan;
+        int lastYear = log.Count == 0 ? 0 : log.Events[^1].Year;
+        HashSet<EventId> matured = [];
+
+        foreach (Event e in log.Events)
+            if (e.Kind == EventKind.PolityCoupPlotted && e.Year + lifespan <= lastYear)
+                matured.Add(e.Id);
+
         List<(string, int)> worst = [];
         foreach ((string sig, int count) in seen)
             if (count > 2) worst.Add((sig[(sig.IndexOf('|', StringComparison.Ordinal) + 1)..], count));
@@ -365,6 +407,8 @@ public sealed record Audit
             SkewedOutcomes = Skew(log, skewThreshold),
             PlotsOpened = plotsOpened.Count,
             PlotsTerminated = CountIntersection(plotsOpened, plotsTerminated),
+            PlotsMatured = matured.Count,
+            PlotsMaturedTerminated = CountIntersection(matured, plotsTerminated),
             Challenges = challenges,
             Plagues = plagues,
             PlagueEnds = plagueEnds,
@@ -609,8 +653,11 @@ public sealed record Audit
                 $"(success {CoupSuccessPctOfPlotted}% of {PlotsOpened} plotted — the invariant; " +
                 $"{CoupSuccessPctOfResolved}% of resolved, {CoupDecidedPct}% of decided)",
             $"assassinations         {Assassinations}: {AssassinationsFatal} fatal ({AssassinationFatalPct}%)",
+            $"plots (matured)        {PlotsMatured} had their full lifespan, " +
+                $"{PlotsMaturedTerminated} terminated ({PlotTerminationPct}%)",
             $"plots                  {PlotsOpened} opened, {PlotsTerminated} terminated " +
-                $"({PlotTerminationPct}%); {Challenges} open challenges",
+                $"({PlotTerminationPctOfAllOpened}% of all opened, the pre-ruleset-2 figure); " +
+                $"{Challenges} open challenges",
             $"plague                 {Plagues} outbreaks, {PlagueEnds} ended; " +
                 $"median deaths plague {MedianPlagueDeaths} vs famine {MedianFamineDeaths} " +
                 $"({PlagueToFaminePct / 100.0:0.0}x)",

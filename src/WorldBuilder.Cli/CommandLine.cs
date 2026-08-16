@@ -396,6 +396,7 @@ public static class CommandLine
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         int failures = 0;
+        List<Audit> panel = [];
         Console.WriteLine("layer 1 — dynamics invariants");
 
         foreach (string raw in seeds)
@@ -410,13 +411,39 @@ public static class CommandLine
             List<Invariant> results = Invariants.Check(view);
             int broken = results.Count(r => !r.Held);
             failures += broken;
+            panel.Add(Audit.Compute(view));
 
             Console.WriteLine($"  seed {seed,-5} {results.Count - broken}/{results.Count} held");
+
             foreach (Invariant r in results)
-                if (!r.Held) Console.WriteLine($"      FAIL {r.Name}: {r.Measured}, expected {r.Expected}");
+            {
+                if (!r.Held)
+                {
+                    Console.WriteLine($"      FAIL {r.Name}: {r.Measured}, expected {r.Expected}" + Sample(r));
+                    continue;
+                }
+
+                // A rate whose sample is small enough to be coarse says so even when it holds:
+                // the granularity is a property of the measurement, not of this run's luck.
+                if (r.Coarse)
+                    Console.WriteLine($"      note {r.Name}: {r.Measured}" + Sample(r));
+            }
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  pooled across the panel");
+
+        foreach (Invariant r in Invariants.CheckPanel(panel))
+        {
+            if (!r.Held) failures++;
+            Console.WriteLine($"      {(r.Held ? "ok  " : "FAIL")} {r.Name}: {r.Measured}, " +
+                              $"expected {r.Expected}" + Sample(r));
         }
 
         return failures;
+
+        static string Sample(Invariant r) =>
+            r.Sample <= 0 ? "" : $"   [n={r.Sample}" + (r.Coarse ? $", {r.PointsPerObservation}]" : "]");
     }
 
     /// <summary>Layer 4 — the chronicle against the log that produced it.</summary>
