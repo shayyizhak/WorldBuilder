@@ -18,12 +18,9 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class SidecarTests
 {
-    private static WorldView World(ulong seed = 42, int years = 50)
-    {
-        Simulation sim = new(seed);
-        sim.Run(years);
-        return WorldView.Build(sim.Log, seed);
-    }
+    /// <summary>The archived v1 world: these fixtures assert facts about that world, not about
+    /// whatever the current ruleset produces. See <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World(ulong seed = 42) => BaselineWorld.ForSeed(seed);
 
     /// <summary>Plans as instructed, then answers with fixed prose. Planning calls carry a schema.</summary>
     private static ScriptedLlmClient Scripted(string plan, string answer) =>

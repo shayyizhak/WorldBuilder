@@ -479,6 +479,23 @@ public static class CommandLine
             return 1;
         }
 
+        // The anchor is ruleset-scoped, and comparing across rulesets compares two different
+        // worlds. Skipped with the reason stated rather than failed or passed: a failure would
+        // read as a regression that is not one, and a pass would be a comparison of incomparable
+        // things reported as agreement. Neither the baseline nor the anchor is touched either way.
+        string baselineRuleset = BaselineRuleset(baselineDir);
+
+        if (!string.Equals(baselineRuleset, Ruleset.Version, StringComparison.Ordinal))
+        {
+            Console.WriteLine($"  SKIPPED — baseline is ruleset {baselineRuleset} and this build " +
+                              $"runs ruleset {Ruleset.Version}.");
+            Console.WriteLine("  The rules changed what the simulation produces, so the stored world and " +
+                              "the current one are different worlds and a diff between them means nothing.");
+            Console.WriteLine("  A new baseline under the current ruleset needs a render round, which is " +
+                              "generation. The sealed baseline stays sealed.");
+            return 0;
+        }
+
         List<Drift> drift = GoldenDiff.Compare(File.ReadAllText(storedProse), File.ReadAllText(currentProse));
 
         drift.AddRange(GoldenDiff.CoverageSound(
@@ -529,6 +546,28 @@ public static class CommandLine
         }
 
         return failures;
+    }
+
+    /// <summary>
+    /// The ruleset a sealed baseline was cut under.
+    ///
+    /// Read from its manifest. A null or absent value means the baseline predates the counter,
+    /// which is ruleset 1 by definition — that is the ruleset that was in force when it was cut,
+    /// and treating "not recorded" as "matches whatever is running" is exactly the absent-versus-
+    /// unknown conflation that would make this check pass by not running.
+    /// </summary>
+    private static string BaselineRuleset(string baselineDir)
+    {
+        string manifest = Path.Combine(baselineDir, "manifest.json");
+        if (!File.Exists(manifest)) return "1";
+
+        using System.Text.Json.JsonDocument doc =
+            System.Text.Json.JsonDocument.Parse(File.ReadAllText(manifest));
+
+        return doc.RootElement.TryGetProperty("ruleset_version", out System.Text.Json.JsonElement v)
+            && v.ValueKind == System.Text.Json.JsonValueKind.String
+                ? v.GetString() ?? "1"
+                : "1";
     }
 
     private static int TestGolden(Args args)

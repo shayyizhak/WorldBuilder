@@ -338,14 +338,49 @@ public static class ResolutionPhase
         return EventId.None;
     }
 
+    /// <summary>
+    /// The conspiracy lands: the plotter takes the seat.
+    ///
+    /// The branch that did not exist. The sole emitter of <c>POLITY.COUP_RESOLVED</c> hard-coded
+    /// <c>mode: exposed</c> and <c>Outcome.Failed</c>, so <c>won</c> and <c>lost</c> were
+    /// unreachable and the success rate was a constant rather than a rate — while the renderer
+    /// already carried a sentence for a covert win and the audit already carried a counter for
+    /// one. Both were built expecting this.
+    ///
+    /// <b>It moves the seat.</b> A win that did not would be a cosmetic event: a log line saying
+    /// power changed hands beside a world in which it did not. <see cref="ActionPhase.SettleCoup"/>
+    /// is the same path an open challenge takes, so the succession, the loser's death or exile
+    /// and the legitimacy cost all follow exactly as they do for a challenge won in daylight.
+    /// </summary>
+    private static void Seize(Tick tick, Arc arc, Actor plotter, Actor target, Faction faction, int age)
+    {
+        Event seized = tick.Emit(new EventDraft(EventKind.PolityCoupResolved)
+            .Subject(plotter.Id)
+            .Object(target.Id)
+            .By(faction.Id)
+            .At(faction.Seat)
+            .Set("mode", "seized")
+            .Set("plotYears", age)
+            .Resolved(Outcome.Succeeded)
+            .Leg(faction.Id, -10)
+            .InArc(arc.Id)
+            .Because(arc.Origin)
+            .Weight(Significance.Major));
+
+        // The goal is spent either way: the man either has the seat or has been caught trying.
+        Goal? goal = tick.State.Goals.Find(plotter.Id, GoalKind.SeizeLeadership);
+        if (goal is not null) tick.State.Goals.Remove(goal);
+
+        ActionPhase.SettleCoup(tick, faction, winner: plotter, loser: target, seized);
+    }
+
     private static void RipenPlot(Tick tick, Arc arc)
     {
         WorldState state = tick.State;
         Event origin = tick.Log.Get(arc.Origin);
 
         EntityId plotterId = origin.Subject;
-        EntityId targetId = origin.Object;
-        if (plotterId.IsNone || targetId.IsNone)
+        if (plotterId.IsNone || origin.Faction.IsNone)
         {
             tick.Ledger?.Examined(arc.Id, tick.Year, "the thread is lost", terminal: true);
             PlotLapses(tick, arc, "the thread is lost");
@@ -353,7 +388,6 @@ public static class ResolutionPhase
         }
 
         Actor plotter = state.ActorOf(plotterId);
-        Actor target = state.ActorOf(targetId);
 
         if (!plotter.IsAlive)
         {
@@ -362,29 +396,50 @@ public static class ResolutionPhase
             return;
         }
 
-        if (!target.IsAlive)
-        {
-            tick.Ledger?.Examined(arc.Id, tick.Year, "its target is already dead", terminal: true);
-            PlotLapses(tick, arc, "its target is already dead");
-            return;
-        }
-
-        Faction faction = state.FactionOf(origin.Faction);
-        if (faction.Leader != target.Id)
-        {
-            tick.Ledger?.Examined(arc.Id, tick.Year, "its target no longer holds the seat", terminal: true);
-            PlotLapses(tick, arc, "its target no longer holds the seat");
-            return;
-        }
-
-        // A conspiracy cannot simply sit open forever. Without a lifetime, plots whose
-        // circumstances never changed stayed pending to the last year of the world.
+        // Lifespan is checked before anything that can defer, and that ordering is load-bearing.
+        //
+        // A conspiracy is not immortal, and every gate below this one can return without ending
+        // the plot — so a plot whose seat never refills, because the house it aimed at was
+        // destroyed, would be examined every year forever and terminate never. The engine's own
+        // "every matured plot terminates exactly once" caught that within a minute of the seat
+        // rework landing. A deferral that can repeat indefinitely must sit behind a terminator.
         if (tick.Year - arc.StartYear >= tick.Config.PlotLifespan)
         {
             tick.Ledger?.Examined(arc.Id, tick.Year, "nothing came of it (lifespan reached)", terminal: true);
             PlotLapses(tick, arc, "nothing came of it");
             return;
         }
+
+        // A conspiracy is a bid for a seat, not a vendetta against the man in it.
+        //
+        // Keyed on the incumbent, an unrelated murder voided the plot — and that gate alone
+        // consumed 82 of 109 lapses across the panel, with "the target no longer holds the seat"
+        // second for the same reason. Both were the same mistake: a plot modelled as a personal
+        // grudge rather than as a play for power. Attached to the seat, the incumbent's death
+        // stops being fatal to the conspiracy and becomes its opening, which is better history
+        // and fits the architecture — properties, not identities. The plot targets the seat of
+        // f:2, not a:50.
+        Faction faction = state.FactionOf(origin.Faction);
+        EntityId seatHolder = faction.Leader;
+
+        if (seatHolder.IsNone)
+        {
+            // Nothing to seize this year. Not an ending: a house without a ruler will have one
+            // again, and the conspiracy is still waiting for it.
+            tick.Ledger?.Examined(arc.Id, tick.Year, "the seat stands empty this year");
+            return;
+        }
+
+        // Succeeded by other means. It ends the plot and is emphatically not a covert win —
+        // recorded under its own reason so the two can never be added together.
+        if (seatHolder == plotterId)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "the plotter took the seat by other means", terminal: true);
+            PlotLapses(tick, arc, "its author took the seat by other means");
+            return;
+        }
+
+        Actor target = state.ActorOf(seatHolder);
 
         // A plot gets at least one year to be a plot. Resolution runs in the same tick that
         // action does, so without this the log kept reporting conspiracies "uncovered after
@@ -396,14 +451,46 @@ public static class ResolutionPhase
             return;
         }
 
-        // Secrets leak. The longer a plot sits, and the more people it has touched, the
-        // likelier it is that somebody talks — and exposure is the better story anyway.
+        // Expose, strike, or wait another year.
+        //
+        // Age fed exposure and nothing else, so for a plotter time was pure downside: every year
+        // raised the chance of being caught and never raised the chance of striking. The plot's
+        // only reachable fates were exposure and lapse. That is not a race the conspiracy usually
+        // loses — it is a race with a finish line on one side only.
+        //
+        // Readiness now rises alongside exposure. The constants are reasoned rather than fitted,
+        // and are deliberately left where the reasoning puts them:
+        //
+        //   exposure   unchanged from the ruleset-1 formula, so this step's effect can be
+        //              attributed. 8 base, +6 a year, worse for a clumsy plotter, capped at 70.
+        //   readiness  4 base — a conspiracy in its second year is not yet a coup — and +5 a
+        //              year, slightly under exposure's +6 so that patience stays dangerous
+        //              rather than free. Guile adds up to 20: the craft that hides a plot is the
+        //              craft that lands it.
+        //   counterweight  the incumbent's own following, and the legitimacy of the house behind
+        //              him. A well-supported ruler in a stable house is hard to remove quietly,
+        //              which is the same quantity the open challenge already weighs.
         Rng rng = tick.Rng(arc.Id, RngPurpose.Coup);
-        int leak = 8 + age * 6 + (100 - plotter.Traits.Guile) / 4;
 
-        if (!rng.Chance(Math.Min(70, leak)))
+        int leak = Math.Min(70, 8 + age * 6 + (100 - plotter.Traits.Guile) / 4);
+
+        int guard = (ActionPhase.Support(state, target.Id) + faction.Legitimacy / 2) / 4;
+        int strike = Math.Clamp(4 + age * 5 + plotter.Traits.Guile / 5 - guard, 0, 60);
+
+        // One draw, so the two outcomes are mutually exclusive by construction rather than by a
+        // second roll that could contradict the first.
+        int roll = rng.Next(100);
+
+        if (roll < strike)
         {
-            tick.Ledger?.Examined(arc.Id, tick.Year, "the leak roll did not come up");
+            tick.Ledger?.Examined(arc.Id, tick.Year, "seized the seat", terminal: true);
+            Seize(tick, arc, plotter, target, faction, age);
+            return;
+        }
+
+        if (roll >= strike + leak)
+        {
+            tick.Ledger?.Examined(arc.Id, tick.Year, "neither ripe nor uncovered this year");
             return;
         }
 

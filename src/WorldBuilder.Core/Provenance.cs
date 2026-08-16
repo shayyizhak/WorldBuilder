@@ -62,5 +62,15 @@ public static class Engine
 /// </summary>
 public static class Ruleset
 {
-    public const string Version = "1";
+    /// <summary>
+    /// <b>2</b> — the coup resolution round. The first time this counter did any work, and the
+    /// reason it was separated from the engine version before it was needed.
+    ///
+    /// Ruleset 1 modelled a conspiracy as a vendetta against a person, so an unrelated murder
+    /// voided it, and had no branch in which a plotter could win. Ruleset 2 attaches the plot to
+    /// the seat and gives the leak roll a third outcome. Seed 42 renders a different world under
+    /// it, which is correct and expected: the engine version did not move, because nothing about
+    /// what this build can read changed.
+    /// </summary>
+    public const string Version = "2";
 }

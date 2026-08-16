@@ -17,22 +17,8 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class ExitCriterionTests
 {
-    private static readonly Dictionary<ulong, WorldView> Worlds = [];
-    private static readonly Lock Gate = new();
-
-    private static WorldView World(ulong seed)
-    {
-        lock (Gate)
-        {
-            if (Worlds.TryGetValue(seed, out WorldView? cached)) return cached;
-
-            Simulation sim = new(seed);
-            sim.Run(50);
-            WorldView view = WorldView.Build(sim.Log, seed);
-            Worlds[seed] = view;
-            return view;
-        }
-    }
+    /// <summary>The archived v1 world; see <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World(ulong seed) => BaselineWorld.ForSeed(seed);
 
     private static string CorpusDirectory => Corpus.FindDirectory(AppContext.BaseDirectory);
 

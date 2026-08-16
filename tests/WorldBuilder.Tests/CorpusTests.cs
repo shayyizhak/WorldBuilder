@@ -18,26 +18,15 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class CorpusTests
 {
-    private static readonly Dictionary<ulong, WorldView> Worlds = [];
-    private static readonly Lock Gate = new();
-
     /// <summary>
-    /// One simulation per seed for the whole class. Thirty-one rows each re-running fifty years
-    /// took longer than every other test put together.
+    /// The archived v1 world, not a fresh simulation.
+    ///
+    /// Every row here is a fabrication that reached canon in one particular world, with the true
+    /// answer beside it. Re-simulating to obtain that world made each row an assertion about
+    /// whatever the current rules happen to produce, and ruleset 2 moved the world under all
+    /// thirty-four at once. They are about the v1 world, so they read it.
     /// </summary>
-    private static WorldView World(ulong seed)
-    {
-        lock (Gate)
-        {
-            if (Worlds.TryGetValue(seed, out WorldView? cached)) return cached;
-
-            Simulation sim = new(seed);
-            sim.Run(50);
-            WorldView view = WorldView.Build(sim.Log, seed);
-            Worlds[seed] = view;
-            return view;
-        }
-    }
+    private static WorldView World(ulong seed) => BaselineWorld.ForSeed(seed);
 
     public static TheoryData<string> Cases()
     {

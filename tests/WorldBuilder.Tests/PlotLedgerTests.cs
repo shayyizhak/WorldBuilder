@@ -91,48 +91,124 @@ public class PlotLedgerTests
     }
 
     /// <summary>
-    /// Defect 2, characterised and left alone: no code path can produce a coup win.
+    /// Both outcomes of the three-way roll are reached, on every seed.
     ///
-    /// The single emitter of <c>POLITY.COUP_RESOLVED</c> hard-codes <c>mode=exposed</c> and
-    /// <c>Outcome.Failed</c>, and the audit only increments its win counter for a mode that is
-    /// neither exposed nor abandoned. So the 0% is not a rate that never comes up — it is a
-    /// branch that does not exist. "No path exists" and "a path exists and never wins" are
-    /// different findings, and this test records which one this is.
-    ///
-    /// It will fail the moment a win becomes reachable, which is exactly when it should be read
-    /// again and deleted.
+    /// Under ruleset 1 the win branch did not exist: the sole emitter hard-coded
+    /// <c>mode=exposed</c> and <c>Outcome.Failed</c>, so the renderer's covert-win template and
+    /// the audit's win counter were both dead. Asserted here rather than assumed, because a
+    /// branch that exists and is never taken is worth exactly as much as one that does not exist.
     /// </summary>
     [Theory]
     [MemberData(nameof(Panel))]
-    public void NoCoupIsEverWonBecauseNoPathCanWinOne(ulong seed)
+    public void BothOutcomesOfTheRollAreReached(ulong seed)
     {
         (_, Simulation sim) = Run(seed);
 
         List<Event> resolutions = [.. sim.Log.Events.Where(e => e.Kind == EventKind.PolityCoupResolved)];
 
-        Assert.NotEmpty(resolutions);
-        Assert.All(resolutions, e =>
-        {
-            Assert.Equal("exposed", e.GetString("mode"));
-            Assert.Equal(Outcome.Failed, e.Outcome);
-        });
+        Assert.Contains(resolutions, e => e.GetString("mode") == "exposed" && e.Outcome == Outcome.Failed);
+        Assert.Contains(resolutions, e => e.GetString("mode") == "seized" && e.Outcome == Outcome.Succeeded);
+
+        // And nothing emits the third mode the audit used to carry a counter for.
+        Assert.DoesNotContain(resolutions, e => e.GetString("mode") == "abandoned");
     }
 
     /// <summary>
-    /// And the gate that actually consumes the plots, on every seed: the target dies first.
+    /// The deferral branch is reached too, so the roll is genuinely three-way.
     ///
-    /// This is the reason distribution's head everywhere, by a wide margin, and it is the thing
-    /// the next round has to decide about. Recorded as an assertion so a change that moves it
-    /// cannot pass unnoticed.
+    /// A plot that is neither struck nor uncovered this year has to be able to wait, or the
+    /// "third outcome" is a rename of the second.
+    /// </summary>
+    [Fact]
+    public void APlotCanWaitAnotherYear()
+    {
+        bool deferred = false;
+
+        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        {
+            (PlotLedger ledger, _) = Run(seed);
+            foreach (PlotStanding p in ledger.Plots)
+                if (p.Examined > 1) deferred = true;
+        }
+
+        Assert.True(deferred, "no plot was ever examined twice, so nothing ever deferred");
+    }
+
+    /// <summary>
+    /// A covert win moves the seat.
+    ///
+    /// The constraint that separates a win from a cosmetic event: a log line saying power changed
+    /// hands, beside a world in which it did not. Every seizure must be followed by a succession
+    /// naming the plotter, through the same path an open challenge takes.
     /// </summary>
     [Theory]
     [MemberData(nameof(Panel))]
-    public void TheCommonestEndingIsThatTheTargetDiedFirst(ulong seed)
+    public void ACovertWinMovesTheSeat(ulong seed)
+    {
+        (_, Simulation sim) = Run(seed);
+
+        List<Event> seizures =
+            [.. sim.Log.Events.Where(e => e.Kind == EventKind.PolityCoupResolved
+                                          && e.GetString("mode") == "seized")];
+
+        Assert.NotEmpty(seizures);
+
+        foreach (Event seizure in seizures)
+        {
+            bool tookTheSeat = sim.Log.Events.Any(e =>
+                e.Kind == EventKind.PolitySuccession
+                && e.Subject == seizure.Subject
+                && e.Faction == seizure.Faction
+                && e.Year == seizure.Year);
+
+            Assert.True(tookTheSeat,
+                $"seed {seed}: {seizure.Id} seized the seat of {seizure.Faction} in " +
+                $"{seizure.Year} and no succession followed");
+        }
+    }
+
+    /// <summary>
+    /// The gate that consumed the population under ruleset 1 is gone.
+    ///
+    /// "Its target is already dead" was the head of the reason distribution on every seed and 82
+    /// of 109 lapses across the panel. A plot now bids for a seat rather than against a person,
+    /// so an unrelated murder is the plotter's opening instead of the end of his conspiracy.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(Panel))]
+    public void ATargetsDeathNoLongerVoidsTheConspiracy(ulong seed)
     {
         (PlotLedger ledger, Simulation sim) = Run(seed);
         PlotAccounting account = ledger.Account(sim.Log);
 
-        Assert.NotEmpty(account.Ranked);
-        Assert.Equal("its target is already dead", account.Ranked[0].Reason);
+        Assert.DoesNotContain("its target is already dead", account.Reasons.Keys);
+        Assert.DoesNotContain("its target no longer holds the seat", account.Reasons.Keys);
+    }
+
+    /// <summary>
+    /// Succeeding by other means ends the plot, and is counted apart from a covert win.
+    ///
+    /// A plotter who inherits or wins the seat openly has no conspiracy left to run, but he did
+    /// not seize it covertly either. The two must never be added together, so the reason is its
+    /// own and the event is a lapse rather than a resolution.
+    /// </summary>
+    [Fact]
+    public void TakingTheSeatByOtherMeansIsNotACovertWin()
+    {
+        bool seen = false;
+
+        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        {
+            (PlotLedger ledger, Simulation sim) = Run(seed);
+            PlotAccounting account = ledger.Account(sim.Log);
+
+            if (!account.Reasons.ContainsKey("the plotter took the seat by other means")) continue;
+            seen = true;
+
+            // It is a lapse, so it is not in the resolved count and cannot inflate the win rate.
+            Assert.True(account.Resolved <= account.Plotted - account.UnresolvedWithReason + account.Resolved);
+        }
+
+        Assert.True(seen, "no plotter on the panel ever took the seat by other means");
     }
 }

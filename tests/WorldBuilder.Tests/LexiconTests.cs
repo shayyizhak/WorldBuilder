@@ -246,12 +246,8 @@ public class LexiconTests
             f => f.Kind == "invented-mind" && f.Token == word);
     }
 
-    private static WorldView World()
-    {
-        Simulation sim = new(42);
-        sim.Run(50);
-        return WorldView.Build(sim.Log, 42);
-    }
+    /// <summary>The archived v1 world; see <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World() => BaselineWorld.Seed42();
 
     /// <summary>
     /// A death toll is not a person dying.

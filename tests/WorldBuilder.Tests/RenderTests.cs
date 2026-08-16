@@ -13,12 +13,9 @@ public class RenderTests : IDisposable
 {
     private readonly string _dir = Path.Combine(Path.GetTempPath(), $"wb-render-{Guid.CreateVersion7()}");
 
-    private static WorldView World(ulong seed = 42, int years = 50)
-    {
-        Simulation sim = new(seed);
-        sim.Run(years);
-        return WorldView.Build(sim.Log, seed);
-    }
+    /// <summary>The archived v1 world: these fixtures assert facts about that world, not about
+    /// whatever the current ruleset produces. See <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World(ulong seed = 42) => BaselineWorld.ForSeed(seed);
 
     private (Chronicler Chronicler, ScriptedLlmClient Client) Build(Func<LlmRequest, string> reply)
     {

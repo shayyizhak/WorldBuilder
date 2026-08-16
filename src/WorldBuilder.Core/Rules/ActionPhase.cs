@@ -937,7 +937,12 @@ public static class ActionPhase
         tick.State.Relations.Find(from, to, RelationKind.Grievance)?.LastCause ?? EventId.None;
 
     /// <summary>Sworn support, in the same units the challenge is scored in.</summary>
-    private static int Support(WorldState state, EntityId actor) =>
+    /// <summary>
+    /// A person's following, as the fealty sworn to them. Shared with the covert path so an
+    /// incumbent's standing counts the same against a conspiracy as it does against an open
+    /// challenge — two ways of taking a seat should not weigh the same man differently.
+    /// </summary>
+    internal static int Support(WorldState state, EntityId actor) =>
         state.Relations.IncomingTotal(actor, RelationKind.Fealty) / 3;
 
     private static Faction? RichestInGrain(WorldState state, EntityId excluding)

@@ -20,12 +20,8 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class GenerationTests
 {
-    private static WorldView World()
-    {
-        Simulation sim = new(42);
-        sim.Run(50);
-        return WorldView.Build(sim.Log, 42);
-    }
+    /// <summary>The archived v1 world; see <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World() => BaselineWorld.Seed42();
 
     /// <summary>
     /// A client that plans as instructed and then answers with fixed text. The planner call is

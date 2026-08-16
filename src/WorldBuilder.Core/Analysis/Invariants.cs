@@ -48,7 +48,11 @@ public static class Invariants
 
         // Coups are counted among those that reached a decision. Plots overtaken by the target
         // dying never reach a reader, so counting them in the denominator understates the world.
-        Add("coup success rate", $"{audit.CoupDecidedPct}%", audit.CoupDecidedPct > 15, "> 15%");
+        // The denominator is named in the metric, because it was ambiguous for months and the
+        // ambiguity was load-bearing: 15% of decided plots and 15% of plotted are different
+        // worlds, and only one of them is one where covert seizure matters.
+        Add("coup success rate (of plotted)", $"{audit.CoupSuccessPctOfPlotted}%",
+            audit.CoupSuccessPctOfPlotted > 15, "> 15% of plots opened");
 
         // Wins, not resolutions.
         //
@@ -79,4 +83,35 @@ public static class Invariants
         void Add(string name, object measured, bool held, string expected) =>
             results.Add(new Invariant(name, measured.ToString() ?? "", held, expected));
     }
+
+    /// <summary>
+    /// The ratio metrics, each with the numerator it depends on being able to move.
+    ///
+    /// <b>An invariant that cannot vary is not an invariant.</b> <c>CoupDecidedPct</c> reported a
+    /// plausible number for months while being structurally incapable of any other value: its
+    /// numerator counted a branch that no code path could emit. The threshold was tuned against
+    /// it and the invariant reported green against it, which is a defect class rather than an
+    /// incident — zero and impossible are different, the same absent-versus-withheld distinction
+    /// this project has now met in the checker, the query layer, the plot ledger and here.
+    ///
+    /// So every rate that has to clear a bar names the thing that must happen for it to be
+    /// non-zero, and the suite asserts that it happens somewhere on the panel. A metric whose
+    /// numerator has no reachable emitter fails loudly instead of reporting zero for a year.
+    ///
+    /// <b>Only metrics that must be non-zero to pass are listed, and the exclusion is a real
+    /// limit rather than an oversight.</b> <c>single-actor causal chains</c> passes at exactly
+    /// zero: a zero numerator there is the desired state, so a quiet panel cannot distinguish
+    /// "the engine no longer produces these" from "the engine could not produce one if it tried".
+    /// That class needs a constructed counter-example rather than a survey, and it does not have
+    /// one yet.
+    /// </summary>
+    public static IReadOnlyList<(string Metric, string Numerator, Func<Audit, int> Count)> RatioMetrics =>
+    [
+        ("verbatim repeat rate", "a verbatim repeat", a => a.RepeatedEvents),
+        ("coup success rate (of plotted)", "a coup won", a => a.CoupsWon),
+        ("covert coup path", "a coup won", a => a.CoupsWon),
+        ("economy-driven edges", "an ECONOMY edge into another domain", a => a.EconomyDrivenEdges),
+        ("cross-domain edges", "a cross-domain edge", a => a.CrossDomainEdges),
+        ("plots terminated", "a terminated plot", a => a.PlotsTerminated),
+    ];
 }

@@ -12,12 +12,8 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class QueryTests
 {
-    private static WorldView World(ulong seed = 42, int years = 50)
-    {
-        Simulation sim = new(seed);
-        sim.Run(years);
-        return WorldView.Build(sim.Log, seed);
-    }
+    /// <summary>The archived v1 world; see <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World(ulong seed = 42) => BaselineWorld.ForSeed(seed);
 
     /// <summary>A client that plans as instructed and then answers with fixed text.</summary>
     private static ScriptedLlmClient Scripted(string plan, string answer) =>
@@ -165,7 +161,12 @@ public class QueryTests
     {
         // Handing over the whole log works at fifty years and fabricates the moment the world
         // outgrows the context window. The cap is the point of the design.
-        WorldView view = World(42, 150);
+        //
+        // Simulated rather than loaded from the baseline, and deliberately: this asserts a
+        // property of the engine at a scale no archived world has, not a fact about the v1 world.
+        Simulation big = new(42);
+        big.Run(150);
+        WorldView view = WorldView.Build(big.Log, 42);
         EntityId faction = EntityId.Faction(2);
 
         ScriptedLlmClient client = Scripted(

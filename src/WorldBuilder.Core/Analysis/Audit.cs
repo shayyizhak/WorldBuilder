@@ -33,7 +33,6 @@ public sealed record Audit
     public required int CoupsWon { get; init; }
     public required int CoupsLost { get; init; }
     public required int CoupsExposed { get; init; }
-    public required int CoupsAbandoned { get; init; }
 
     public required int Assassinations { get; init; }
     public required int AssassinationsFatal { get; init; }
@@ -130,12 +129,33 @@ public sealed record Audit
     public int InertPct => TotalEvents == 0 ? 0 : InertKindEvents * 100 / TotalEvents;
 
     public int RepeatRatePct => ReadableEvents == 0 ? 0 : RepeatedEvents * 100 / ReadableEvents;
-    public int CoupSuccessPct => CoupsResolved == 0 ? 0 : CoupsWon * 100 / CoupsResolved;
+    /// <summary>
+    /// <b>The invariant's measure: wins over every conspiracy that was ever opened.</b>
+    ///
+    /// The denominator is the load-bearing choice, and it was ambiguous for months. Over decided
+    /// plots the panel has 21; over plotted it has 130, and a fix could reach 15% of decided
+    /// while covert seizure remained irrelevant to the world. The v0 intent was a world in which
+    /// power can be taken covertly; a plot that lapses is a plot that did not take power, and
+    /// excluding it measures the resolver's own bookkeeping rather than the world's dynamics.
+    /// </summary>
+    public int CoupSuccessPctOfPlotted => PlotsOpened == 0 ? 0 : CoupsWon * 100 / PlotsOpened;
 
     /// <summary>
-    /// Success among coups that actually reached a decision. Abandoned plots — overtaken by
-    /// the target dying or losing the seat some other way — are bookkeeping and never reach
-    /// the readable log, so counting them in the denominator understates what a reader sees.
+    /// Diagnostic sub-population: wins over conspiracies that reached any recorded resolution.
+    /// Not the invariant. Reported beside the real figure so the two can be compared, never
+    /// instead of it.
+    /// </summary>
+    public int CoupSuccessPctOfResolved => CoupsResolved == 0 ? 0 : CoupsWon * 100 / CoupsResolved;
+
+    /// <summary>
+    /// Diagnostic sub-population: wins among coups that reached a decision rather than lapsing.
+    ///
+    /// <b>Not the invariant, and the reason the invariant needed one stated.</b> This is the
+    /// figure that reported a plausible number for months while being structurally incapable of
+    /// any other value, because <c>CoupsWon</c> had no reachable emitter. Kept because the
+    /// comparison against the plotted figure says how much of the population never gets a
+    /// verdict at all — which is a real thing to know, as long as nobody mistakes it for the
+    /// success rate.
     /// </summary>
     public int CoupDecidedPct
     {
@@ -156,7 +176,7 @@ public sealed record Audit
         Dictionary<EntityId, int> collapses = [];
         int repeats = 0, readable = 0;
         int famines = 0, famineEnds = 0;
-        int coups = 0, won = 0, lost = 0, exposed = 0, abandoned = 0;
+        int coups = 0, won = 0, lost = 0, exposed = 0;
         int assassinations = 0, fatal = 0;
         int withCauses = 0, edges = 0;
         int crossDomain = 0, economyEdges = 0, economyDriven = 0;
@@ -236,14 +256,14 @@ public sealed record Audit
                 case EventKind.PolityCoupResolved:
                     coups++;
                     foreach (EventId cause in e.Causes) plotsTerminated.Add(cause);
-                    switch (e.GetString("mode"))
-                    {
-                        case "exposed": exposed++; break;
-                        case "abandoned": abandoned++; break;
-                        default:
-                            if (e.Outcome == Outcome.Succeeded) won++; else lost++;
-                            break;
-                    }
+                    // "abandoned" was a third case with no emitter — an unreachable branch in a
+                    // switch is a claim about the world that nothing can make true, and this one
+                    // sat beside the win counter that was unreachable for the same reason.
+                    // Removed rather than given an emitter: a plot nobody pursued lapses, and a
+                    // lapse is POLITY_PLOT_LAPSES, which is a different event and already counted.
+                    if (e.GetString("mode") == "exposed") exposed++;
+                    else if (e.Outcome == Outcome.Succeeded) won++;
+                    else lost++;
                     break;
                 default: break;
             }
@@ -333,7 +353,6 @@ public sealed record Audit
             CoupsWon = won,
             CoupsLost = lost,
             CoupsExposed = exposed,
-            CoupsAbandoned = abandoned,
             Assassinations = assassinations,
             AssassinationsFatal = fatal,
             EventsWithCauses = withCauses,
@@ -586,8 +605,9 @@ public sealed record Audit
             $"deep chains (>=5)      {DeepChains}, {DistinctChainShapes} distinct shapes, " +
                 $"{LifecycleChains} lifecycle-only ({LifecycleChainPct}%)",
             $"coups resolved         {CoupsResolved}: {CoupsWon} won, {CoupsLost} lost, " +
-                $"{CoupsExposed} exposed, {CoupsAbandoned} abandoned (hidden)  " +
-                $"(success {CoupSuccessPct}% of all, {CoupDecidedPct}% of decided)",
+                $"{CoupsExposed} exposed (hidden)  " +
+                $"(success {CoupSuccessPctOfPlotted}% of {PlotsOpened} plotted — the invariant; " +
+                $"{CoupSuccessPctOfResolved}% of resolved, {CoupDecidedPct}% of decided)",
             $"assassinations         {Assassinations}: {AssassinationsFatal} fatal ({AssassinationFatalPct}%)",
             $"plots                  {PlotsOpened} opened, {PlotsTerminated} terminated " +
                 $"({PlotTerminationPct}%); {Challenges} open challenges",

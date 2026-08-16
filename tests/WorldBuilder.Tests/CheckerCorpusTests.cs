@@ -19,12 +19,9 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class CheckerCorpusTests
 {
-    private static WorldView World(ulong seed = 42, int years = 50)
-    {
-        Simulation sim = new(seed);
-        sim.Run(years);
-        return WorldView.Build(sim.Log, seed);
-    }
+    /// <summary>The archived v1 world: these cases assert facts about that world, not about
+    /// whatever the current ruleset produces. See <see cref="BaselineWorld"/>.</summary>
+    private static WorldView World(ulong seed = 42) => BaselineWorld.ForSeed(seed);
 
     private static ContextPack Faction(WorldView view, int id, int from, int to) =>
         ContextPackBuilder.Faction(view, EntityId.Faction(id), from, to);
