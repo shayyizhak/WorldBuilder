@@ -125,6 +125,26 @@ public static class Invariants
             depth = Math.Max(depth, chain.Count);
         Add("maximum causal depth", depth, depth >= 8, ">= 8");
 
+        // Raids resolve more than one way.
+        //
+        // Added 2026-08-16, ruleset 3. It earned its place by being invisible: raids failed four
+        // times in five and nothing in Layer 1 could see it — the verbatim-repeat metric pointed
+        // here sideways, by noticing that the same house raided the same four places three times
+        // each. A mechanic whose outcome is effectively constant is a mechanic that happens
+        // constantly and changes nothing, and that is a simulation defect as much as a rendering
+        // risk.
+        //
+        // Asserted on the share of the commonest branch rather than on the failure rate, so the
+        // metric says what it means: a raid should be able to go either way. The bar is 90%,
+        // which is loose on purpose — it forbids a decorative branch without prescribing odds,
+        // and the round that set it had raids at 58%.
+        (int beatenOff, int tookAHaul, int tookNothing) = OutcomeAudit.Raids(view.Log);
+        int raids = beatenOff + tookAHaul + tookNothing;
+        int raidSkew = raids == 0 ? 100 : Math.Max(beatenOff, tookAHaul + tookNothing) * 100 / raids;
+
+        Add("raid outcome spread", $"{raidSkew}% one way ({beatenOff} beaten, {tookAHaul} haul, " +
+            $"{tookNothing} empty)", raids > 0 && raidSkew <= 90, "<= 90% one way", raids);
+
         // Every conspiracy ends in exactly one recorded way, or the log has loose ends.
         Add("plots terminated", $"{audit.PlotTerminationPct}%", audit.PlotTerminationPct >= 85, ">= 85%");
 
@@ -188,5 +208,6 @@ public static class Invariants
         ("economy-driven edges", "an ECONOMY edge into another domain", a => a.EconomyDrivenEdges),
         ("cross-domain edges", "a cross-domain edge", a => a.CrossDomainEdges),
         ("plots terminated", "a terminated plot", a => a.PlotsTerminated),
+        ("raid outcome spread", "a raid that got through", a => a.RaidsThatGotThrough),
     ];
 }

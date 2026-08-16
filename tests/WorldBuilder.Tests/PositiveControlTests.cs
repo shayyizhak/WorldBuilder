@@ -191,6 +191,49 @@ public class PositiveControlTests
         Assert.False(collapses.Held);
     }
 
+    // ---- raid outcome spread <= 90% one way -------------------------------
+
+    /// <summary>
+    /// The detector catches a raid mechanic that only ever goes one way.
+    ///
+    /// This is the metric added because the last one like it was invisible: raids failed four
+    /// times in five and no Layer 1 metric could see it. A ceiling nothing can reach proves
+    /// nothing, so the ceiling is shown to be reachable by building a world that breaches it.
+    /// </summary>
+    [Fact]
+    public void ARaidMechanicThatOnlyEverFailsIsDetected()
+    {
+        (EventLog log, WorldState state) = Simulated();
+
+        Invariant before = Invariants.Check(WorldView.Build(log, 42))
+            .Single(r => r.Name == "raid outcome spread");
+        Assert.True(before.Held, "the panel world already breaches the spread bar");
+
+        // Enough beaten-off raids to drown the real distribution.
+        EntityId faction = state.Factions[0].Id;
+        EntityId place = state.Places[0].Id;
+
+        for (int i = 0; i < 400; i++)
+        {
+            EventId id = log.NextId;
+            log.Append(new Event
+            {
+                Id = id,
+                Key = $"control-raid-{id.Value}",
+                Year = 60,
+                Kind = EventKind.ConflictRaid,
+                Outcome = Outcome.Failed,
+                Significance = Significance.Major,
+                Participants = [new Participant(Role.Faction, faction), new Participant(Role.Place, place)],
+            });
+        }
+
+        Invariant after = Invariants.Check(WorldView.Build(log, 42))
+            .Single(r => r.Name == "raid outcome spread");
+
+        Assert.False(after.Held, $"a world of nothing but repelled raids passed: {after.Measured}");
+    }
+
     // ---- the controls are controls ----------------------------------------
 
     /// <summary>
@@ -208,14 +251,19 @@ public class PositiveControlTests
             "single-actor causal chains",
             "dangling causal references",
             "collapses per faction",
+            "raid outcome spread",
         ];
 
         List<Invariant> results = Invariants.Check(BaselineWorld.Seed42());
 
         // The metrics whose pass condition is "nothing happened" — zero, or a ceiling of one.
+        // A pass condition of "nothing happened" or "not too much of one thing happened": zero,
+        // a ceiling of one, or a cap on how lopsided a distribution may be.
         List<string> absenceAsserting =
         [
-            .. results.Where(r => r.Expected is "0" or "0%" or "<= 1").Select(r => r.Name),
+            .. results
+                .Where(r => r.Expected is "0" or "0%" or "<= 1" || r.Expected.StartsWith("<=", StringComparison.Ordinal))
+                .Select(r => r.Name),
         ];
 
         Assert.NotEmpty(absenceAsserting);

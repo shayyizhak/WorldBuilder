@@ -39,6 +39,7 @@ public static class CommandLine
                 "stats" => CmdStats(parsed),
                 "audit" => CmdAudit(parsed),
                 "plots" => CmdPlots(parsed),
+                "outcomes" => CmdOutcomes(parsed),
                 "chains" => CmdChains(parsed),
                 "render" => CmdRender(parsed).GetAwaiter().GetResult(),
                 "chronicle" => CmdChronicle(parsed).GetAwaiter().GetResult(),
@@ -206,6 +207,74 @@ public static class CommandLine
         }
 
         return unbalanced;
+    }
+
+    /// <summary>
+    /// Every outcome-bearing decision in the world, with its distribution, pooled across a panel.
+    ///
+    /// No bar is applied. There is no principled threshold for "too skewed" yet, and inventing
+    /// one to sort the output would be a constant chosen by fitting the thing it is meant to
+    /// judge. This ranks and reports; adjudication is a human act, performed once per finding
+    /// and written down with its reasoning.
+    /// </summary>
+    private static int CmdOutcomes(Args args)
+    {
+        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+        int years = args.Int("years", 50);
+        List<EventLog> logs = [];
+
+        foreach (string raw in seeds)
+        {
+            if (!ulong.TryParse(raw.Trim(), out ulong seed)) continue;
+            Simulation sim = new(seed);
+            sim.Run(years);
+            logs.Add(sim.Log);
+        }
+
+        List<OutcomeSpread> pooled = OutcomeAudit.Pool(logs);
+
+        Console.WriteLine($"outcome distributions, pooled over {logs.Count} seeds, most skewed first");
+        Console.WriteLine();
+        foreach (string line in OutcomeAudit.Report(pooled)) Console.WriteLine(line);
+
+        Console.WriteLine();
+        Console.WriteLine("reachability");
+        foreach (OutcomeSpread s in pooled)
+        {
+            if (!s.SingleBranch) continue;
+            Console.WriteLine($"  {s.Decision}: only \"{s.Commonest}\" was ever emitted across the panel — " +
+                              "unreachable, or too rare for five worlds to tell apart");
+        }
+
+        // Free-string branches cannot be enumerated from a type, so absence of a branch is only
+        // ever "not observed" rather than "cannot happen". Said rather than left implicit.
+        Console.WriteLine("  (branches are observed values; a reason or mode the engine never emitted");
+        Console.WriteLine("   cannot be distinguished from one it cannot emit, except by reading the code)");
+
+        Console.WriteLine();
+        Console.WriteLine("raids, three ways — beaten off / through with a haul / through empty");
+
+        int i = 0;
+        foreach (string raw in seeds)
+        {
+            if (!ulong.TryParse(raw.Trim(), out ulong seed)) continue;
+            EventLog log = logs[i++];
+
+            (int beaten, int haul, int empty) = OutcomeAudit.Raids(log);
+            (int repeats, int afterFailure) = OutcomeAudit.RaidRepeats(log);
+            (int total, int dead) = OutcomeAudit.RaidConsequences(log);
+
+            Console.WriteLine(
+                $"  seed {seed,-5} n={total,-4} beaten {beaten,3} ({OutcomeAudit.Pct(beaten, total)})  " +
+                $"haul {haul,3} ({OutcomeAudit.Pct(haul, total)})  " +
+                $"empty {empty,3} ({OutcomeAudit.Pct(empty, total)})   " +
+                $"repeat targets {repeats,3} of which after a failure {afterFailure,3}   " +
+                $"cited by nothing {dead,3} ({OutcomeAudit.Pct(dead, total)})");
+        }
+
+        return 0;
     }
 
     private static int CmdAudit(Args args)

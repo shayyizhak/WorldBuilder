@@ -72,5 +72,10 @@ public static class Ruleset
     /// it, which is correct and expected: the engine version did not move, because nothing about
     /// what this build can read changed.
     /// </summary>
-    public const string Version = "2";
+    /// <summary>
+    /// <b>3</b> — the raid mechanic. A raid now weighs house against house rather than one man's
+    /// Martial trait against a whole faction plus an undocumented 25, and its target selection
+    /// counts what happened at a place rather than merely that something did.
+    /// </summary>
+    public const string Version = "3";
 }

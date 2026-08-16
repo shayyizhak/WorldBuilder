@@ -56,12 +56,13 @@ public class DynamicsTests
     /// *fewer* events and *more* shapes. Variety rose on seeds 42 and 99 and fell on 7, 1234 and
     /// 2025, so this is not a uniform regression. Cause not yet named; seed 7 is where to look.
     ///
-    /// <b>verbatim repeat rate</b> — 12% on seed 1234 against 10%. <b>Category two, a real
-    /// regression, and the metric is working.</b> The predicted cause — coup durations colliding
-    /// under digit normalisation — was wrong. The excess is raids: "House Buldbei's raid on
-    /// Pellweagate is beaten off" three times over, for four different places, beside a raid
-    /// mechanic that fails 80% of the time. That is the fizzle signature this metric exists to
-    /// catch. The engine is what needs fixing, not the bar.
+    /// <b>verbatim repeat rate</b> — 12% on seed 7 and 10% on seed 1234 against a bar of "&lt; 10%".
+    /// <b>Category two, still, and the raid round did not fix it.</b> The diagnosis it produced
+    /// was right — the excess was raids beaten off against the same targets, and the raid
+    /// mechanic has since been rebuilt so raids go either way and stop returning to places that
+    /// repelled them — but repetition survived the fix and moved to seed 7. So repelled raids
+    /// were a contributor and not the whole cause. What remains is unattributed, and finding it
+    /// is the next round's, not this one's: no threshold moved for it.
     /// </summary>
     private static readonly string[] KnownFailing =
     [
@@ -132,6 +133,7 @@ public class DynamicsTests
                      "covert coup path",
                      "economy-driven edges",
                      "cross-domain edges",
+                     "raid outcome spread",
                  })
         {
             Assert.Contains(metric, names);

@@ -90,6 +90,14 @@ public sealed record Audit
     public required int PlotsMatured { get; init; }
     public required int PlotsMaturedTerminated { get; init; }
 
+    /// <summary>
+    /// Raids that were not beaten off, whatever they carried away.
+    ///
+    /// The numerator behind the raid-spread invariant, named so the reachability guard can assert
+    /// that a raid getting through is a thing this engine can do at all.
+    /// </summary>
+    public required int RaidsThatGotThrough { get; init; }
+
     /// <summary>How much deadlier a typical plague is than a typical famine, as a percentage.</summary>
     public int PlagueToFaminePct =>
         MedianFamineDeaths == 0 ? 0 : MedianPlagueDeaths * 100 / MedianFamineDeaths;
@@ -319,6 +327,10 @@ public sealed record Audit
             if (e.Kind == EventKind.PolityCoupPlotted && e.Year + lifespan <= lastYear)
                 matured.Add(e.Id);
 
+        int gotThrough = 0;
+        foreach (Event e in log.Events)
+            if (e.Kind == EventKind.ConflictRaid && e.Outcome == Outcome.Succeeded) gotThrough++;
+
         List<(string, int)> worst = [];
         foreach ((string sig, int count) in seen)
             if (count > 2) worst.Add((sig[(sig.IndexOf('|', StringComparison.Ordinal) + 1)..], count));
@@ -409,6 +421,7 @@ public sealed record Audit
             PlotsTerminated = CountIntersection(plotsOpened, plotsTerminated),
             PlotsMatured = matured.Count,
             PlotsMaturedTerminated = CountIntersection(matured, plotsTerminated),
+            RaidsThatGotThrough = gotThrough,
             Challenges = challenges,
             Plagues = plagues,
             PlagueEnds = plagueEnds,

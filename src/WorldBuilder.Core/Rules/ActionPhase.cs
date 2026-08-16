@@ -316,6 +316,28 @@ public static class ActionPhase
         goal.Progress += complies ? 35 : 12;
     }
 
+    /// <summary>
+    /// What this raider has already tried at this place, split by how it went.
+    ///
+    /// Read from the log rather than carried on state, so it survives replay and costs nothing
+    /// when no raid is being considered.
+    /// </summary>
+    private static (int Failures, int Successes) RaidHistory(Tick tick, EntityId raider, EntityId place)
+    {
+        int failures = 0, successes = 0;
+
+        foreach (EventId id in tick.Log.ForEntity(raider))
+        {
+            Event e = tick.Log.Get(id);
+            if (e.Kind != EventKind.ConflictRaid || e.Faction != raider || e.Where != place) continue;
+
+            if (e.Outcome == Outcome.Succeeded) successes++;
+            else failures++;
+        }
+
+        return (failures, successes);
+    }
+
     private static void Raid(Tick tick, Goal goal, Faction raider, Faction victim, Actor leader, Resource after)
     {
         WorldState state = tick.State;
@@ -326,11 +348,23 @@ public static class ActionPhase
         // same mine every other year. The cooldown also lengthens with each previous attempt:
         // a place that has beaten you off twice is a place you stop riding out to, which is
         // both sensible and what stops "the raid is beaten off" becoming the log's refrain.
+        // The cooldown counts what happened, not merely that something did.
+        //
+        // It counted attempts, so a place that had repelled you three times and a place you had
+        // looted three times were the same place to it — while the comment above says the
+        // opposite, and says it as the reason the mechanic exists. Fifty of the panel's
+        // fifty-eight repeat targets were returns to a house that had already beaten the raider
+        // off. The intent was outcome-sensitive and the implementation was outcome-blind.
+        //
+        // Failures weigh roughly three times a success: being beaten off is a bloody nose and a
+        // reason to ride somewhere else, while a raid that carried something off only means the
+        // stockpile needs time to refill.
         List<Place> fresh = [];
         foreach (Place p in targets)
         {
-            int tried = Recent.CountEver(tick, raider.Id, EventKind.ConflictRaid, "target", p.Id.ToString());
-            if (!Recent.Did(tick, raider.Id, EventKind.ConflictRaid, p.Id, 5 + tried * 7)) fresh.Add(p);
+            (int failures, int successes) = RaidHistory(tick, raider.Id, p.Id);
+            int cooldown = 5 + failures * 10 + successes * 3;
+            if (!Recent.Did(tick, raider.Id, EventKind.ConflictRaid, p.Id, cooldown)) fresh.Add(p);
         }
 
         if (fresh.Count == 0) return;
@@ -338,8 +372,20 @@ public static class ActionPhase
         Place place = Neediest(fresh, after, most: true);
         Rng rng = tick.Rng(raider.Id, RngPurpose.Raid);
 
-        int strength = leader.Traits.Martial + rng.Next(50);
-        int defence = 25 + state.PowerOf(victim.Id) + rng.Next(40);
+        // A raid is one house taking from another, so both sides bring a house.
+        //
+        // This set one man's Martial trait against an entire faction's power, added a flat 25 to
+        // the defender that nothing anywhere documents, and gave the attacker a wider die than
+        // the defender. An institution was being defended against an individual, and the result
+        // was a mechanic that failed four times in five and whose events were cited by nothing
+        // two thirds of the time — a thing that happened constantly and changed nothing.
+        //
+        // The leader is now a modifier rather than the attacking force: half his Martial, so a
+        // good commander helps and does not substitute for a house. The dice are symmetric
+        // because neither side should get a wider spread for reasons nobody chose. The 25 is
+        // gone; a constant nobody can justify is not a defensible constant.
+        int strength = state.PowerOf(raider.Id) + leader.Traits.Martial / 2 + rng.Next(40);
+        int defence = state.PowerOf(victim.Id) + rng.Next(40);
         bool success = strength > defence;
 
         int loot = success ? Math.Min(place.Stockpile[(int)after], 20 + rng.Next(40)) : 0;
