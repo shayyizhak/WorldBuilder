@@ -185,8 +185,21 @@ public static class ResolutionPhase
 
         // A decisive win takes ground. Anything less just kills people, which is realistic
         // and — more to the point — keeps wars from resolving the map in a single year.
+        //
+        // Whether the ground can be *held* is a separate question from whether it can be taken,
+        // and until now nothing asked it: a decisive win converted at the same rate whether the
+        // field was the next valley or the far side of the map. Distance from the winner's own
+        // holdings is the whole of the difference between a conquest and a raid that stayed.
+        //
+        // This is the one change of the four that adds a branch rather than re-weighting one. A
+        // decisive victory over a distant field now sometimes ends as a battle and nothing more,
+        // where before it nearly always ended as a conquest — so the far case has an outcome it
+        // did not have. Same calibration rule as the others: at a typical separation the
+        // conversion chance is exactly what it was.
+        int holdable = state.Geo?.FromFactionToPlace(aggressor.Id, field.Id) ?? Geography.Geography.Neutral;
+
         if (attackerWon && margin > 25 - foughtHere * 6
-            && rng.Chance(Math.Min(90, 45 + foughtHere * 18))
+            && rng.Chance(Math.Min(90, (45 + foughtHere * 18) * holdable / 100))
             && field.Controller == defender.Id)
         {
             tick.Emit(new EventDraft(EventKind.ConflictConquest)

@@ -138,6 +138,20 @@ public static class LifePhase
             if (state.Relations.ValueOf(actor.Faction, other.Faction, RelationKind.Grievance) > 20) weight -= 8;
             if (state.Relations.Has(actor.Faction, other.Faction, RelationKind.Alliance)) weight += 10;
 
+            // People marry people they have met.
+            //
+            // The market was the whole living cast, so a steward in one town was as likely to
+            // marry across the map as across the square — and since a cross-house match carries an
+            // alliance edge, the pairing rule was quietly manufacturing ties between realms with
+            // no other connection at all. Proximity reads 100 at a typical separation between this
+            // world's places, so a match at ordinary distance weighs what it always weighed.
+            //
+            // The existing Math.Max(1, …) floor is left alone and does the work it always did: a
+            // distant match becomes unlikely, never impossible, which keeps the occasional
+            // dynastic marriage across the world available as the remarkable thing it should be.
+            weight = weight * (state.Geo?.BetweenActors(actor.Id, other.Id)
+                               ?? Geography.Geography.Neutral) / 100;
+
             candidates.Add(other);
             weights.Add(Math.Max(1, weight));
         }

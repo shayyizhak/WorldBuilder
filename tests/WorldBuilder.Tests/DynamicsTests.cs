@@ -42,7 +42,7 @@ public class DynamicsTests
     /// regression, or bad measurement. Full reasoning, with predictions recorded before their
     /// measurements, is in <c>out/dynamics-metrics-adjudication.md</c>.
     ///
-    /// <b>Three entries left this list by holding</b>, which is the only sanctioned way out.
+    /// <b>Four entries left this list by holding</b>, which is the only sanctioned way out.
     /// <c>covert coup path</c> — ruleset 2 gave the covert path a win branch.
     /// <c>coup success rate (of plotted)</c> — the rate is now asserted pooled across the panel,
     /// where 124 plots support a percentage; per seed it asserts only that the path works at all,
@@ -50,27 +50,30 @@ public class DynamicsTests
     /// <c>plots terminated</c> — redefined over conspiracies that had their full lifespan to
     /// conclude, the same exemption the engine's own termination assertion has always applied.
     ///
-    /// <b>distinct deep-chain shapes</b> — 42 and 56 on two seeds against a bar of 60, up from 44 before
-    /// this phase's tribute and succession changes and 54 before the raid work. <b>Category two,
-    /// a real loss, and recovering.</b> The volume explanation was tested and refuted: seed 7
-    /// produces exactly 611 events under rulesets 1 and 2 — and a *different* 611, the streams
-    /// diverging at event 56 — while seed 42 produced fewer events and more shapes. Variety has
-    /// risen on every mechanic change since without any of them targeting it, which is consistent
-    /// with causal variety being a function of how many mechanics have reachable branches.
-    /// Owning round: the engine-dynamics phase. Parked, watched, not chased.
+    /// <b>verbatim repeat rate</b> — left the list at Stage 6, and this is the entry worth reading
+    /// twice. It sat at 12% and then 11% on seed 7 against a bar of "&lt; 10%" across two rounds
+    /// that both diagnosed it correctly and both failed to fix it: the excess was repelled raids
+    /// against the same targets, the raid mechanic was rebuilt, and the repetition survived. It
+    /// was recorded as unattributed and parked.
     ///
-    /// <b>verbatim repeat rate</b> — 12% on seed 7 and 10% on seed 1234 against a bar of "&lt; 10%".
-    /// <b>Category two, still, and the raid round did not fix it.</b> The diagnosis it produced
-    /// was right — the excess was raids beaten off against the same targets, and the raid
-    /// mechanic has since been rebuilt so raids go either way and stop returning to places that
-    /// repelled them — but repetition survived the fix and moved to seed 7. So repelled raids
-    /// were a contributor and not the whole cause. What remains is unattributed, and finding it
-    /// is the next round's, not this one's: no threshold moved for it.
+    /// Geography closed it without being aimed at it — seed 7 falls 11% → 5%, and every seed now
+    /// holds. In hindsight the cause is legible: a house with no map picked its rival by grievance
+    /// alone, and grievance is sticky, so the same two names transacted forever. Distance did not
+    /// stop them repeating; it gave the world more than one plausible pairing to repeat *with*.
+    /// The unattributed residue was a missing input, not a missing brake, and no threshold moved
+    /// for it in either direction.
+    ///
+    /// <b>distinct deep-chain shapes</b> — 45 on seed 7 against a bar of 60, up from 42 before
+    /// this phase and 44 before the one before it. <b>Category two, a real loss, and recovering.</b>
+    /// The volume explanation was tested and refuted: seed 7 produces exactly 611 events under
+    /// rulesets 1 and 2 — and a *different* 611, the streams diverging at event 56 — while seed 42
+    /// produced fewer events and more shapes. Stage 6 cleared seed 2025 (56 → 66) and moved seed 7
+    /// three points, so one seed now fails where two did. Owning round: the engine-dynamics phase.
+    /// Parked, watched, not chased.
     /// </summary>
     private static readonly string[] KnownFailing =
     [
         "distinct deep-chain shapes",
-        "verbatim repeat rate",
     ];
 
     [Theory]

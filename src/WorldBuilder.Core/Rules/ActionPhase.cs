@@ -246,7 +246,20 @@ public static class ActionPhase
         int opportunity = Math.Clamp(ours * 100 / Math.Max(1, theirs), 20, 300);
         if (state.AtWar(target.Id)) opportunity = opportunity * 3 / 2;
 
-        int warScore = grievance * opportunity / 100;
+        // Who can be reached.
+        //
+        // Grievance and opportunity say whether a house wants a war and whether it would win one.
+        // Neither says whether it can get there, and without that a compact on one coast declared
+        // on a covenant on the other because a slight twenty years ago had compounded — a war
+        // fought entirely in the ledger.
+        //
+        // Multiplied in rather than gated on, and that is the reason WarDeclarationThreshold did
+        // not have to move: proximity reads 100 at a typical separation between this world's
+        // places, so two houses an ordinary distance apart clear the same 70 they always cleared.
+        // Neighbours find it easier and the far coast harder, and nothing had to be re-tuned to
+        // say so.
+        int reach = Between(state, faction.Id, target.Id);
+        int warScore = grievance * opportunity * reach / 10000;
         bool canDeclare = !atWar && warScore >= tick.Config.WarDeclarationThreshold && !state.AtWar(faction.Id);
 
         // Nobody repeats the same gesture at the same rival year after year. Once an insult
@@ -407,7 +420,30 @@ public static class ActionPhase
 
         if (fresh.Count == 0) return;
 
-        Place place = Neediest(fresh, after, most: true);
+        // Where the warband can actually ride to.
+        //
+        // Target selection weighed the stockpile and nothing else, so a house rode past its
+        // neighbour's granary to reach the richest store on the map. That is not a raid; a raid is
+        // a thing you do to the people next to you, and a house that raids across the map is a
+        // house with no geography.
+        //
+        // Proximity is a percentage where 100 is a typical separation between the places this
+        // world has, so a target at an ordinary distance scores exactly what it scored before
+        // geography existed and the mechanic's calibration is inherited rather than re-fitted.
+        // Near roughly doubles the appeal of a store and far roughly halves it, which reorders the
+        // choice without ever forbidding one — so the long ride stays available for a prize that
+        // is worth it.
+        Place place = fresh[0];
+        int bestWorth = int.MinValue;
+
+        foreach (Place candidate in fresh)
+        {
+            int worth = candidate.Stockpile[(int)after] * Reach(state, raider.Id, candidate.Id) / 100;
+            if (worth <= bestWorth) continue;
+            bestWorth = worth;
+            place = candidate;
+        }
+
         Rng rng = tick.Rng(raider.Id, RngPurpose.Raid);
 
         // A raid is one house taking from another, so both sides bring a house.
@@ -500,9 +536,15 @@ public static class ActionPhase
         int ours = state.PowerOf(faction.Id);
         int theirs = state.PowerOf(holder.Id);
 
+        // The other door to a war declaration, and it gets the same distance term. One mechanic
+        // with two decision sites has to weigh reach the same way at both, or the map means one
+        // thing when a house is avenging itself and another when it wants a mine.
+        int holderReach = Between(state, faction.Id, holder.Id);
+
         Span<int> weights =
         [
-            ours * 100 / Math.Max(1, theirs) > 110 && !state.AtWar(faction.Id) ? 45 : 0, // war
+            ours * 100 / Math.Max(1, theirs) > 110 && !state.AtWar(faction.Id)
+                ? 45 * holderReach / 100 : 0,                                             // war
             20 + leader.Traits.Guile / 3,                                                 // tribute
             18,                                                                           // insult
         ];
@@ -585,6 +627,21 @@ public static class ActionPhase
         if (state.AtWar(other.Id)) appeal += 25;
         foreach (Relation war in state.Relations.From(faction.Id, RelationKind.AtWar))
             appeal += state.Relations.ValueOf(other.Id, war.Key.To, RelationKind.Grievance) / 2;
+
+        // Proximity as a precondition rather than a coincidence.
+        //
+        // Alliances were struck between whoever happened to fear the same rising power, with no
+        // regard for whether either could ever march to the other's aid — and the resolution phase
+        // then had those allies turn up at a battlefield a month's travel away. A pact between
+        // realms that cannot reach each other is a line in a ledger.
+        //
+        // Applied to the positive appeal only. Multiplying a negative by a fraction makes distant
+        // hostility *less* negative, which would have distance arguing for the alliance it should
+        // be arguing against — and it would have done it quietly, because the number would still
+        // have been in range. The existing 5–90 clamp is untouched, so a far-off pact stays
+        // possible at the floor rather than becoming impossible.
+        int neighbourly = Between(state, faction.Id, other.Id);
+        if (appeal > 0) appeal = appeal * neighbourly / 100;
 
         bool accepted = rng.Next(100) < Math.Clamp(appeal, 5, 90);
 
@@ -1019,6 +1076,22 @@ public static class ActionPhase
 
     private static EventId Spark(Tick tick, EntityId from, EntityId to) =>
         tick.State.Relations.Find(from, to, RelationKind.Grievance)?.LastCause ?? EventId.None;
+
+    /// <summary>
+    /// How near a house is to a place, as a percentage where 100 is a typical separation on this
+    /// board. The one distance function, reached through the world rather than reimplemented.
+    ///
+    /// Reads <see cref="Geography.Geography.Neutral"/> where the world has no board, which is
+    /// every world folded from a log written before geography existed. Multiplying by 100 and
+    /// dividing by 100 leaves those rules behaving exactly as they did when they were written,
+    /// which is the only correct behaviour for a history that never had a map.
+    /// </summary>
+    private static int Reach(WorldState state, EntityId faction, EntityId place) =>
+        state.Geo?.FromFactionToPlace(faction, place) ?? Geography.Geography.Neutral;
+
+    /// <summary>How near two houses are: the closest their holdings come to each other.</summary>
+    private static int Between(WorldState state, EntityId a, EntityId b) =>
+        state.Geo?.BetweenFactions(a, b) ?? Geography.Geography.Neutral;
 
     /// <summary>Sworn support, in the same units the challenge is scored in.</summary>
     /// <summary>
