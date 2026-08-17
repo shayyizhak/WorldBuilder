@@ -182,6 +182,6 @@ public class GeographyTests
         FormatException thrown = Assert.Throws<FormatException>(
             () => WorldBuilder.Core.Rendering.Replay.Fold(tampered, 42));
 
-        Assert.Contains("stored board is", thrown.Message, StringComparison.Ordinal);
+        Assert.Contains("board offered for it is", thrown.Message, StringComparison.Ordinal);
     }
 }

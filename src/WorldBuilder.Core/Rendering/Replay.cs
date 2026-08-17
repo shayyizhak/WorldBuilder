@@ -15,10 +15,10 @@ namespace WorldBuilder.Core.Rendering;
 public static class Replay
 {
     /// <summary>Rebuilds state by applying every event up to and including <paramref name="untilYear"/>.</summary>
-    public static WorldState Fold(EventLog log, ulong seed, int? untilYear = null)
+    public static WorldState Fold(EventLog log, ulong seed, int? untilYear = null, Board? board = null)
     {
         WorldState state = new() { Seed = seed };
-        Attach(state, log);
+        Attach(state, log, board);
 
         foreach (Event e in log.Events)
         {
@@ -35,10 +35,10 @@ public static class Replay
     /// applied. Used by the formatter so every line is rendered against the state as it stood
     /// at that moment rather than against the end of history.
     /// </summary>
-    public static WorldState Walk(EventLog log, ulong seed, Action<WorldState, Event> visit)
+    public static WorldState Walk(EventLog log, ulong seed, Action<WorldState, Event> visit, Board? board = null)
     {
         WorldState state = new() { Seed = seed };
-        Attach(state, log);
+        Attach(state, log, board);
 
         foreach (Event e in log.Events)
         {
@@ -63,7 +63,12 @@ public static class Replay
     /// wrong map is internally consistent and about somewhere else, and no downstream check would
     /// see anything unusual.
     /// </summary>
-    private static void Attach(WorldState state, EventLog log)
+    /// <param name="offered">
+    /// A board the caller already holds — a measurement panel builds one per seed and never
+    /// stores it. Null means look up the repository's. Either way the log's fingerprint decides:
+    /// offering the wrong board is refused exactly as loudly as finding the wrong one.
+    /// </param>
+    private static void Attach(WorldState state, EventLog log, Board? offered)
     {
         if (log.Count == 0) return;
 
@@ -73,7 +78,7 @@ public static class Replay
         string named = genesis.GetString("board") ?? "";
         if (named.Length == 0) return;
 
-        Board board = Boards.Stored();
+        Board board = offered ?? Boards.Stored();
         if (string.Equals(board.Fingerprint, named, StringComparison.OrdinalIgnoreCase))
         {
             state.Attach(board);
@@ -81,7 +86,7 @@ public static class Replay
         }
 
         throw new FormatException(
-            $"this world was simulated on board {named[..12]} and the stored board is " +
+            $"this world was simulated on board {named[..12]} and the board offered for it is " +
             $"{board.Fingerprint[..12]}. A map that is not the one a history happened on gives " +
             "every distance in it a different answer, and nothing downstream would look wrong.");
     }

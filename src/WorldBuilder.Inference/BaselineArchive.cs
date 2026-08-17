@@ -167,10 +167,15 @@ public static class BaselineArchive
                 "commit, so a baseline cannot be cut from a build that did not record one.");
         }
 
+        // Which board this history happened on, taken from its own record. A ruleset-4 world
+        // that does not carry its board is not a world, so the archive refuses rather than
+        // producing a sealed, hash-verified, unreadable directory.
+        string boardFingerprint = BoardNamedBy(Core.Serialization.JsonlIo.Read(worldPath).Log);
+
         Directory.CreateDirectory(request.To);
 
         List<BaselineArtefact> artefacts = [];
-        foreach ((string name, string role, bool required) in Contents(request.Seed))
+        foreach ((string name, string role, bool required) in Contents(request.Seed, boardFingerprint.Length > 0))
         {
             string source = Path.Combine(request.From, name);
             if (!File.Exists(source))
@@ -183,10 +188,24 @@ public static class BaselineArchive
             string destination = Path.Combine(request.To, name);
             File.Copy(source, destination);
 
+            string sha = Core.Serialization.WorldBundle.HashOf(destination);
+
+            // The archived board must be the board this history happened on, not merely *a*
+            // board. The fingerprint on the genesis event is the sha256 of the map's canonical
+            // bytes, so the two are directly comparable — and a baseline sealed around the wrong
+            // map would be internally consistent and about somewhere else.
+            if (role == "board" && !string.Equals(sha, boardFingerprint, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    $"{name} hashes to {sha[..12]} and this world was simulated on board " +
+                    $"{boardFingerprint[..12]}. Archiving the wrong map would seal a world nobody " +
+                    "can read the distances of.");
+            }
+
             artefacts.Add(new BaselineArtefact(
                 name,
                 source.Replace('\\', '/'),
-                Core.Serialization.WorldBundle.HashOf(destination),
+                sha,
                 new FileInfo(destination).Length,
                 role));
         }
@@ -209,11 +228,20 @@ public static class BaselineArchive
     /// <summary>
     /// What goes into a baseline, and whether its absence is a failure.
     ///
+    /// <b>From ruleset 4, a world is a log and its board.</b> That is a definition rather than a
+    /// checklist item: a cell index means nothing without the board it indexes into, so an
+    /// archive holding the log alone does not hold the world, and it is incomplete by definition
+    /// rather than by oversight. Anything claiming to archive a ruleset-4 world without both is
+    /// wrong about what a world is.
+    ///
+    /// The board is therefore required exactly when the log names one, and not otherwise — the
+    /// ruleset-3 baselines predate boards entirely and must keep verifying.
+    ///
     /// The unverified passages are optional because a run in which nothing was held out of canon
     /// legitimately has none — and the difference between "no file" and "an empty file" is the
     /// absent-versus-withheld distinction this project has now met in four places.
     /// </summary>
-    private static IEnumerable<(string Name, string Role, bool Required)> Contents(ulong seed)
+    private static IEnumerable<(string Name, string Role, bool Required)> Contents(ulong seed, bool hasBoard)
     {
         string stem = $"chronicle-{seed.ToString(CultureInfo.InvariantCulture)}";
         string world = $"world-{seed.ToString(CultureInfo.InvariantCulture)}";
@@ -224,6 +252,23 @@ public static class BaselineArchive
         yield return ("renders.json", "artefact", true);
         yield return ($"{world}.jsonl", "artefact", true);
         yield return ($"{world}.log", "artefact", true);
+
+        if (hasBoard) yield return (Core.Serialization.WorldBundle.BoardName, "board", true);
+    }
+
+    /// <summary>
+    /// The board fingerprint a world's own record names, or empty where it names none.
+    ///
+    /// Read from the genesis event rather than from the bundle header, deliberately. The header
+    /// records what was sitting beside the file; the record says what the history actually
+    /// happened on, and those are the two different things the pair of them exists to tell apart.
+    /// </summary>
+    private static string BoardNamedBy(Core.EventLog log)
+    {
+        if (log.Count == 0) return "";
+
+        Core.Event genesis = log.Events[0];
+        return genesis.Kind != Core.EventKind.GenesisWorld ? "" : genesis.GetString("board") ?? "";
     }
 
     private static string Manifest(

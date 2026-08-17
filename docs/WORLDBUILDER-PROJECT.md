@@ -196,6 +196,10 @@ The fix is a **fingerprint over the producing code**, stored with the artefact. 
 
 **Direction matching is not evidence between mechanisms that both predict the direction.** This is the sharpest methodological lesson the project has produced, and it cost two phases to learn. Stage 6 pre-registered a prediction that causal variety would fall, measured a rise on four seeds of five, and recorded the pre-registered alternative — *distance makes which neighbour you fight a stable fact, and stable facts let chains grow long* — as the surviving explanation. It was not. A control that replaced every proximity with a fresh draw from the same distribution, with **no stability and no spatial structure whatever**, moved the metric at least as far. Both mechanisms predict a rise; confirming the direction separated nothing. A pre-registered prediction that comes true is not self-validating — ask what else would have produced the same result, and build the control that tells them apart.
 
+**The reference panel is not the measurement panel.** Five seeds exist because *hand verification* is expensive — five worlds is about as much prose as a person will read against a record. A statistical comparison needs no hand verification at all: headless simulation, zero model calls, every figure computed in C#. It costs compute and nothing else. **Sizing the second by the cost of the first is what produced a claim the data could not support**, and it went unnoticed for three phases because the number five was never a decision anybody made — it was inherited from a different constraint. The measurement panel is now 207 seeds, and the reference seeds are excluded from it so the two cannot merge again.
+
+**Seen data sizes the next experiment; it does not decide the last one.** The paired variance of the five reference seeds was available and would have made the geography result look better. It was used only to compute N, and that restriction was written down before it was computed. Re-analysing seen data with a newly chosen variance is how a dead result comes back to life wearing better statistics.
+
 **A comparative rule needs a stated minimum panel range, or its rank arm is a coin flip.** Seed 99 was adjudicated against a rank criterion over five separation-spread figures spanning 34–37%; a rank over a degenerate population carries no information, and the rule read as "partially explained" when the population made that arm meaningless. The general form: state, before measuring, the range below which the rank arm is void and the rule falls to its absolute arm. Applied to the controls, the same guard fired immediately — three arm medians spanning 19 points against within-arm spreads of 38 and 44, so **n=5 cannot discriminate them.** Every comparative claim made across this panel is subject to it, including "geography improved four seeds of five".
 
 **A small n read against an unstated baseline manufactures a silent path that is not there.** Alliance moved 0 of 13 and was reported as suggestive of a decorative branch at "about one in eight". The baseline behind that figure was never named; against the rate distance moves anything else, 6%, the true figure is about **45%** — near a coin flip. Inspection then showed the term is live in every one of the thirteen evaluations. The silent-path family has a mirror image: a healthy mechanism diagnosed as dead because nobody wrote down what normal would look like. Both are failures to state the denominator.
@@ -317,11 +321,39 @@ Run as a phase loop rather than as rounds, and it worked the way the previous ph
 
 **Four mechanics gained a distance input and no threshold moved** — raid targeting, war declaration, conquest holdability, and the pairing rules. The budget held: nothing else gained one, and the two parked findings that look adjacent (tribute target selection, heir selection) were noted and left.
 
-**What it was worth.** Conflict acquired a place. A war is now declared over somewhere and fought there — Threi Cut three years running — rather than wandering the map; a conquest is next to what you already hold; a house's enemies are its neighbours. Causal variety rose on four seeds of five, Layer 1 went from three failures to one, and `verbatim repeat rate` cleared everywhere.
+**What it was worth.** Conflict acquired a place. A war is now declared over somewhere and fought there — Threi Cut three years running — rather than wandering the map; a conquest is next to what you already hold; a house's enemies are its neighbours. That is a structural property of individual events and it stands.
+
+> ~~Causal variety rose on four seeds of five, by up to +33, and `verbatim repeat rate` cleared everywhere.~~ **RETIRED.** Measured on a 207-seed panel with all four arms paired, geography − redraw is **−0.53, 95% CI [−2.70, +1.65]** — a precise null, not a failure to detect. Geography's effect on causal variety is not distinguishable from structureless perturbation, and on that panel it is not distinguishable from no distance at all. The five-seed figures were real numbers about five worlds and were never evidence about the engine. See §5c.
 
 **Positions changed nothing else, and that was checkable.** Siting draws on an RNG purpose of its own, so all five seeds produced a byte-identical history to ruleset 3 with only the `cell` fields and the board fingerprint added. Geography present and inert is a real state, and being able to stand in it is what made the four attributions afterwards mean anything.
 
 **The prediction was falsified and that was the most useful part** — see §4's geography cluster. The phase also cost one full re-measurement of its own headline result, because the metric written to check the calibration found the calibration wrong.
+
+### 5c. The controls, and the panel that settled them (ruleset 4, no rule change)
+
+Two phases of measurement after the geography build, neither of which changed a rule. Between them they retired the geography build's headline claim and replaced the project's idea of how big a measurement is.
+
+**The controls.** A synthetic distance model replaces what the four mechanics are told, drawn from each world's own realised proximity distribution so the distribution and the clamp exposure are unchanged and only the *origin* of the values differs. Four of them: `identity` (the board, through the machinery), `flat` (everything typical — reproduces ruleset 3 exactly), `shuffle` (one value per place-pair, fixed at worldgen: stable, no spatial structure) and `redraw` (fresh per decision: no stability, no structure).
+
+**The identity arm is what makes the others readable.** It must reproduce the real world exactly, or a control's result is confounded with RNG re-sequencing — which changes worlds on its own. It failed on first run: 897 of 898 events matched, and the one that did not was the marker recording that the run was a control. The assertion was tightened rather than loosened.
+
+**The result, at N=207 with all four arms paired on the same seeds and boards:**
+
+| contrast | mean | 95% CI | p |
+|---|---|---|---|
+| geography − redraw | **−0.53** | [−2.70, +1.65] | 0.63 |
+| geography − shuffle | +0.62 | [−1.46, +2.71] | 0.56 |
+| shuffle − redraw | −1.15 | [−3.16, +0.86] | 0.26 |
+
+None clears the pre-registered 5-point minimum effect; none survives Holm. **These are precise nulls rather than failures to detect** — the intervals exclude the MDE in both directions. Realised paired σ was 15.87 against 16.48 estimated, so the panel was sized correctly.
+
+**Geography does not move causal variety.** Not relative to structureless perturbation, and on that panel not relative to no distance at all (arm means: flat 64.4, geography 63.1, shuffle 62.4, redraw 63.6 — the geography − flat contrast was *not* pre-registered and is reported as description, not as a test).
+
+**What is untouched by this.** Geography's design rationale was never a claim about causal-variety deltas: distance gates conflict, trade, alliance and — at Stage 11 — rumour. Wars are fought where they are declared. The census of what distance decides stands: 680 decisions consulted a proximity, 555 had room to be moved, 34 were.
+
+**Board geometry is not a first-class variable.** With one board per panel seed and the same seeds re-run on a shared board, var(board) came out negative — the board adds nothing measurable to the discriminating share. Stated with the limitation it needs: **this demonstrates sensitivity strongly and insensitivity only weakly**, because every board sampled came from one generator and may share characteristics an Azgaar export does not.
+
+**The discriminating share per mechanic, on 207 boards:** marriage 24%, alliance 8%, conquest 7%, raid targeting 5%, war declaration 1.5%. Alliance's panel figure of 8% independently confirms the correction to the 0-of-13 finding — at 8%, seeing none in thirteen happens a third of the time.
 
 ### Two cross-cutting concerns
 

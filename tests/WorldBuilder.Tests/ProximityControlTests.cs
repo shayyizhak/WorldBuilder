@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using WorldBuilder.Core;
+using WorldBuilder.Core.Analysis;
 using WorldBuilder.Core.Geography;
 using WorldBuilder.Core.Serialization;
 using Xunit;
@@ -74,6 +75,25 @@ public class ProximityControlTests
             JsonlIo.Serialise(real.Events[0]),
             JsonlIo.Serialise(identity.Events[0])
                 .Replace(",\"control\":\"identity\"", "", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData(7UL, 42)]
+    [InlineData(42UL, 88)]
+    [InlineData(99UL, 74)]
+    [InlineData(1234UL, 64)]
+    [InlineData(2025UL, 56)]
+    public void TheFlatControlReproducesRulesetThreeExactly(ulong seed, int shapes)
+    {
+        // Every consumer multiplies by a proximity and divides by a hundred, so a hundred
+        // everywhere leaves each of them computing what it computed before distance existed.
+        // Pinned against the causal-variety figures measured on the ruleset-3 binary, so the
+        // no-distance arm of a contrast can be run on the same board, build and seed as the
+        // others — a contrast whose arms came from different binaries has a second variable in it.
+        Simulation sim = new(seed, control: ProximityControlKind.Flat);
+        sim.Run(50);
+
+        Assert.Equal(shapes, Audit.Compute(WorldView.Build(sim.Log, seed)).DistinctChainShapes);
     }
 
     [Theory]

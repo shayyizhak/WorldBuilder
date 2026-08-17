@@ -36,7 +36,12 @@ public sealed class WorldView
     public int FirstYear => Log.Count > 0 ? Log.Events[0].Year : 0;
     public int LastYear => Log.Count > 0 ? Log.Events[^1].Year : 0;
 
-    public static WorldView Build(EventLog log, ulong seed)
+    /// <param name="board">
+    /// The board this history was run on, where the caller already holds it. A measurement panel
+    /// makes one board per seed and never stores it, so there is nothing on disk to look up. The
+    /// log's own fingerprint still decides: offering the wrong board is refused.
+    /// </param>
+    public static WorldView Build(EventLog log, ulong seed, Geography.Board? board = null)
     {
         string[] descriptions = new string[log.Count + 1];
         Membership membership = new();
@@ -45,7 +50,7 @@ public sealed class WorldView
         {
             descriptions[e.Id.Value] = EventTemplates.Describe(s, e);
             membership.Observe(s, e);
-        });
+        }, board);
 
         return new WorldView(log, seed, state, descriptions, membership);
     }

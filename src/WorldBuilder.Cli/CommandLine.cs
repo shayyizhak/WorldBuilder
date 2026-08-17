@@ -54,6 +54,7 @@ public static class CommandLine
                 "bundle" => CmdBundle(parsed),
                 "baseline" => CmdBaseline(parsed),
                 "geometry" => CmdGeometry(parsed),
+                "panel" => CmdPanel(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -425,6 +426,196 @@ public static class CommandLine
             string.Join(" < ", ranked.OrderBy(static r => r.Share).Select(static r => $"{r.Seed}({r.Share}%)")));
 
         return 0;
+    }
+
+    // ---- the measurement panel --------------------------------------------
+
+    /// <summary>
+    /// The measurement panel: four arms, paired, on a large panel of seeds that nobody will ever
+    /// read.
+    ///
+    /// <b>The reference panel is not the measurement panel.</b> Five seeds exist because hand
+    /// verification is expensive — five worlds is about as much prose as a person will read
+    /// against a record. A statistical comparison needs no hand verification at all: headless
+    /// simulation, zero model calls, every figure computed here. Sizing the second by the cost of
+    /// the first is how five seeds became a statistical claim, and it is why a result that could
+    /// not survive its own control stood for two phases.
+    ///
+    /// Every world this produces is a control world in the sense that matters — a diagnostic
+    /// artefact, never sealed, never rendered, never archived. Nothing is written to disk at all
+    /// unless <c>--out</c> is given.
+    /// </summary>
+    private static int CmdPanel(Args args)
+    {
+        ulong from = args.ULong("from", 9_000_001);
+        int count = args.Int("count", 207);
+        int years = args.Int("years", 50);
+        double mde = args.Int("mde", 5);
+
+        // The reference seeds are excluded by construction, and asserted rather than assumed —
+        // keeping the two panels separate is the entire point of the exercise.
+        HashSet<ulong> reference = [7, 42, 99, 1234, 2025];
+
+        Console.WriteLine($"measurement panel: {count} seeds from {from}, {years} years, four arms, paired");
+        Console.WriteLine($"  each seed on its own board (wb map make at that seed, {BoardMaker.DefaultWidth}x{BoardMaker.DefaultHeight})");
+        Console.WriteLine();
+
+        (string Name, ProximityControlKind Kind)[] arms =
+        [
+            ("flat", ProximityControlKind.Flat),
+            ("geography", ProximityControlKind.None),
+            ("shuffle", ProximityControlKind.Shuffle),
+            ("redraw", ProximityControlKind.Redraw),
+        ];
+
+        Dictionary<string, List<int>> variety = [];
+        Dictionary<string, List<int>> repeats = [];
+        foreach ((string name, _) in arms) { variety[name] = []; repeats[name] = []; }
+
+        // The geography arm again, on one shared board, so board variance can be separated from
+        // seed variance. Var(own board) = Var(seed) + Var(board); Var(shared board) = Var(seed).
+        List<int> sharedBoardShare = [];
+        List<int> ownBoardShare = [];
+        Dictionary<string, List<int>> shareByMechanic = new(StringComparer.Ordinal);
+        Board shared = Boards.Stored();
+
+        long started = Environment.TickCount64;
+
+        for (int i = 0; i < count; i++)
+        {
+            ulong seed = from + (ulong)i;
+            if (reference.Contains(seed))
+                return Fail($"seed {seed} is a reference seed; the measurement panel must not contain one.");
+
+            Board board = BoardMaker.Make(BoardMaker.DefaultWidth, BoardMaker.DefaultHeight, seed);
+
+            foreach ((string name, ProximityControlKind kind) in arms)
+            {
+                GeographyProbe? probe = name == "geography" ? new GeographyProbe() : null;
+
+                Simulation sim = new(seed, board: board, control: kind) { Probe = probe };
+                sim.Run(years);
+
+                Audit audit = Audit.Compute(WorldView.Build(sim.Log, seed, board));
+                variety[name].Add(audit.DistinctChainShapes);
+                repeats[name].Add(audit.RepeatRatePct);
+
+                if (probe is null) continue;
+
+                ownBoardShare.Add(probe.Overall().SharePct);
+                foreach (DiscriminationSummary s in probe.Summarise())
+                {
+                    if (!shareByMechanic.TryGetValue(s.Mechanic, out List<int>? shares))
+                        shareByMechanic[s.Mechanic] = shares = [];
+                    shares.Add(s.SharePct);
+                }
+            }
+
+            // The same seed on the shared board, geography arm only.
+            GeographyProbe onShared = new();
+            Simulation control = new(seed, board: shared) { Probe = onShared };
+            control.Run(years);
+            sharedBoardShare.Add(onShared.Overall().SharePct);
+
+            if ((i + 1) % 25 == 0)
+                Console.Error.WriteLine($"  {i + 1}/{count} seeds, {(Environment.TickCount64 - started) / 1000}s");
+        }
+
+        Console.WriteLine($"  {count} seeds in {(Environment.TickCount64 - started) / 1000}s");
+        Console.WriteLine();
+
+        Console.WriteLine("  causal variety (distinct deep-chain shapes), per arm");
+        foreach ((string name, _) in arms)
+        {
+            List<int> values = variety[name];
+            Console.WriteLine($"    {name,-12} mean {values.Average(),7:0.00}   sd {Sd(values),6:0.00}   " +
+                              $"min {values.Min(),4}   max {values.Max(),4}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  three pre-registered contrasts, Holm-corrected across the family");
+
+        List<Contrast> contrasts =
+        [
+            PairedStats.Compare("shuffle - redraw", variety["shuffle"], variety["redraw"]),
+            PairedStats.Compare("geography - shuffle", variety["geography"], variety["shuffle"]),
+            PairedStats.Compare("geography - redraw", variety["geography"], variety["redraw"]),
+        ];
+
+        foreach ((Contrast contrast, bool survives, double threshold) in PairedStats.Holm(contrasts))
+        {
+            Console.WriteLine($"    {contrast.Line()}");
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"      Holm threshold {threshold:0.0000} — {(survives ? "survives" : "does not survive")}; " +
+                $"clears the {mde:0} point MDE: {(contrast.ClearsMde(mde) ? "yes" : "no")}"));
+        }
+
+        Contrast headline = contrasts[^1];
+        Console.WriteLine();
+        Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+            $"  realised paired sd on the headline contrast: {headline.Sd:0.00}  " +
+            $"(estimated 16.48 from the reference panel)"));
+
+        // The repeat rate, on the same arms. Reported rather than tested: the MDE was set for
+        // causal variety and inventing a second one here after the fact would be fitting.
+        Console.WriteLine();
+        Console.WriteLine("  verbatim repeat rate, per arm (reported, not tested — no MDE was set for it)");
+        foreach ((string name, _) in arms)
+            Console.WriteLine($"    {name,-12} mean {repeats[name].Average(),6:0.00}%   sd {Sd(repeats[name]),5:0.00}");
+
+        // Board geometry, as a by-product of the panel rather than as a phase of its own.
+        Console.WriteLine();
+        Console.WriteLine("  board geometry — discriminating share, own board against shared board");
+        Console.WriteLine($"    own board    mean {ownBoardShare.Average(),6:0.00}%   sd {Sd(ownBoardShare),5:0.00}");
+        Console.WriteLine($"    shared board mean {sharedBoardShare.Average(),6:0.00}%   sd {Sd(sharedBoardShare),5:0.00}");
+
+        double ownVar = Sd(ownBoardShare) * Sd(ownBoardShare);
+        double seedVar = Sd(sharedBoardShare) * Sd(sharedBoardShare);
+        double boardVar = ownVar - seedVar;
+
+        Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+            $"    var(seed) {seedVar:0.00}   var(seed+board) {ownVar:0.00}   " +
+            $"=> var(board) {boardVar:0.00}  ({(boardVar <= 0 ? "board adds nothing measurable" : $"board sd {Math.Sqrt(boardVar):0.00}")})"));
+
+        Console.WriteLine();
+        Console.WriteLine("  discriminating share per mechanic, across the panel's boards");
+        List<string> mechanics = [.. shareByMechanic.Keys];
+        mechanics.Sort(StringComparer.Ordinal);
+        foreach (string mechanic in mechanics)
+        {
+            List<int> shares = shareByMechanic[mechanic];
+            Console.WriteLine($"    {mechanic,-18} n={shares.Count,4}  mean {shares.Average(),6:0.00}%   sd {Sd(shares),5:0.00}");
+        }
+
+        if (args.Text("out", "") is { Length: > 0 } outDir)
+        {
+            Directory.CreateDirectory(outDir);
+            StringBuilder tsv = new();
+            tsv.Append("seed\tflat\tgeography\tshuffle\tredraw\n");
+            for (int i = 0; i < count; i++)
+            {
+                tsv.Append((from + (ulong)i).ToString(CultureInfo.InvariantCulture));
+                foreach ((string name, _) in arms)
+                    tsv.Append('\t').Append(variety[name][i].ToString(CultureInfo.InvariantCulture));
+                tsv.Append('\n');
+            }
+
+            string path = Path.Combine(outDir, "panel-variety.tsv");
+            File.WriteAllText(path, tsv.ToString());
+            Console.WriteLine();
+            Console.WriteLine($"  per-seed figures: {path}");
+        }
+
+        return 0;
+
+        static double Sd(IReadOnlyList<int> values)
+        {
+            if (values.Count < 2) return 0;
+            double mean = values.Average();
+            double sum = 0;
+            foreach (int v in values) sum += (v - mean) * (v - mean);
+            return Math.Sqrt(sum / (values.Count - 1));
+        }
     }
 
     // ---- baselines --------------------------------------------------------

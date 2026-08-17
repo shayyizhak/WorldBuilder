@@ -18,6 +18,21 @@ public enum ProximityControlKind : byte
     Identity = 1,
 
     /// <summary>
+    /// Every distance answered as exactly typical.
+    ///
+    /// Reproduces pre-geography behaviour on a ruleset-4 build, because every consumer multiplies
+    /// by a proximity and divides by a hundred — so a hundred everywhere leaves each of them
+    /// computing what it computed before distance existed. That is asserted rather than argued:
+    /// on the reference panel it returns the ruleset-3 figures exactly.
+    ///
+    /// It exists so the no-distance arm of a comparison can be run <i>on the same board, the same
+    /// build and the same seed</i> as the others, instead of against an archived measurement from
+    /// a different binary. A contrast whose arms came from different builds is a contrast with a
+    /// second variable in it.
+    /// </summary>
+    Flat = 4,
+
+    /// <summary>
     /// A fresh draw per question, from the world's own realised distribution of proximities.
     ///
     /// Same distribution, same clamp exposure, <b>no stability and no spatial structure</b>. Two
@@ -89,6 +104,7 @@ public sealed class ProximityControl
         ProximityControlKind.None => "",
         ProximityControlKind.Identity => "identity",
         ProximityControlKind.Redraw => "redraw",
+        ProximityControlKind.Flat => "flat",
         _ => "shuffle",
     };
 
@@ -98,8 +114,9 @@ public sealed class ProximityControl
         "identity" => ProximityControlKind.Identity,
         "redraw" => ProximityControlKind.Redraw,
         "shuffle" => ProximityControlKind.Shuffle,
+        "flat" => ProximityControlKind.Flat,
         _ => throw new FormatException(
-            $"unknown proximity control '{name}' — try identity, redraw or shuffle."),
+            $"unknown proximity control '{name}' — try identity, flat, redraw or shuffle."),
     };
 
     /// <summary>
@@ -114,6 +131,9 @@ public sealed class ProximityControl
         {
             case ProximityControlKind.Identity:
                 return real;
+
+            case ProximityControlKind.Flat:
+                return Geography.Neutral;
 
             case ProximityControlKind.Shuffle:
             {
