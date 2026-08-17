@@ -32,9 +32,22 @@ public sealed class Geography
     /// </summary>
     public const int Neutral = 100;
 
+    /// <summary>
+    /// The call sites, numbered so a control can give each its own stream.
+    ///
+    /// Two mechanics asking about the same pair in the same year must not receive correlated
+    /// answers, or the control quietly reintroduces a kind of structure it exists to remove.
+    /// </summary>
+    private const int SitePlaces = 1;
+    private const int SiteFactionToPlace = 2;
+    private const int SiteFactions = 3;
+    private const int SiteActors = 4;
+
     private readonly Board _board;
     private readonly WorldState _state;
     private int _reference = -1;
+    private int _lowest = -1;
+    private int _highest = -1;
 
     internal Geography(Board board, WorldState state)
     {
@@ -43,6 +56,15 @@ public sealed class Geography
     }
 
     public Board Board => _board;
+
+    /// <summary>
+    /// A synthetic replacement for what the board says, or null in a real world.
+    ///
+    /// Every proximity this class returns passes through it, which is what makes "replace the
+    /// distance input at all four sites" one edit rather than four. A world carrying one is a
+    /// diagnostic artefact and says so in its own header.
+    /// </summary>
+    public ProximityControl? Control { get; internal set; }
 
     /// <summary>
     /// The separation a rule should treat as ordinary: the median travel cost between the places
@@ -90,12 +112,60 @@ public sealed class Geography
         }
     }
 
+    /// <summary>
+    /// The lowest and highest proximity this world's places actually present.
+    ///
+    /// The full range a distance term can take here — which is what a question like "could
+    /// varying the distance input have changed this decision at all" needs, and which is not the
+    /// theoretical 0–200 range of the formula. Places sit where they sit, so most of that
+    /// theoretical range never occurs.
+    /// </summary>
+    public (int Lowest, int Highest) RealisedRange
+    {
+        get
+        {
+            if (_lowest >= 0) return (_lowest, _highest);
+
+            List<Place> sited = [];
+            foreach (Place place in _state.Places)
+                if (place.IsSited) sited.Add(place);
+
+            int low = int.MaxValue, high = int.MinValue;
+            for (int a = 0; a < sited.Count; a++)
+                for (int b = a + 1; b < sited.Count; b++)
+                {
+                    int near = BetweenPlaces(sited[a].Id, sited[b].Id);
+                    low = Math.Min(low, near);
+                    high = Math.Max(high, near);
+                }
+
+            if (low > high) return (Neutral, Neutral);
+
+            _lowest = low;
+            _highest = high;
+            return (low, high);
+        }
+    }
+
     /// <summary>How near two places are, as a percentage where 100 is a typical separation.</summary>
     public int BetweenPlaces(EntityId a, EntityId b)
     {
         int from = CellOf(a);
         int to = CellOf(b);
-        return from < 0 || to < 0 ? Neutral : Proximity(_board.Cost(from, to));
+        return from < 0 || to < 0 ? Neutral : Ask(SitePlaces, from, to);
+    }
+
+    /// <summary>
+    /// What the board says about two cells, or what a control says instead.
+    ///
+    /// The single place a proximity is produced, which is what makes replacing the distance
+    /// input across all four mechanics one edit rather than four — and what makes it impossible
+    /// for a site to be missed.
+    /// </summary>
+    private int Ask(int site, int cellA, int cellB)
+    {
+        int real = Proximity(_board.Cost(cellA, cellB));
+        return Control is null ? real : Control.Substitute(site, cellA, cellB, real);
     }
 
     /// <summary>
@@ -111,19 +181,22 @@ public sealed class Geography
         int to = CellOf(place);
         if (to < 0) return Neutral;
 
+        // Nearest by proximity rather than by cost, which is the same thing — proximity falls as
+        // cost rises — and is what lets a control substitute per holding. Under the board the
+        // answer is identical either way; under a control the structure is preserved, so the
+        // "nearest of its holdings" rule still means that.
         int best = -1;
         foreach (Place held in _state.HoldingsOf(faction))
         {
             if (held.Cell < 0) continue;
-            int cost = _board.Cost(held.Cell, to);
-            if (best < 0 || cost < best) best = cost;
+            best = Math.Max(best, Ask(SiteFactionToPlace, held.Cell, to));
         }
 
         // A house that holds nothing has nowhere to march from. It is also, by
         // WorldState.IsDefunct, a house no rule should be considering in the first place — so
         // this is the neutral answer rather than a distant one, to avoid a defunct faction being
         // quietly ranked as merely far away.
-        return best < 0 ? Neutral : Proximity(best);
+        return best < 0 ? Neutral : best;
     }
 
     /// <summary>
@@ -143,12 +216,11 @@ public sealed class Geography
             foreach (Place theirs in _state.HoldingsOf(b))
             {
                 if (theirs.Cell < 0) continue;
-                int cost = _board.Cost(ours.Cell, theirs.Cell);
-                if (best < 0 || cost < best) best = cost;
+                best = Math.Max(best, Ask(SiteFactions, ours.Cell, theirs.Cell));
             }
         }
 
-        return best < 0 ? Neutral : Proximity(best);
+        return best < 0 ? Neutral : best;
     }
 
     /// <summary>How near two people are, by the ground they stand on.</summary>
@@ -156,9 +228,11 @@ public sealed class Geography
     {
         Actor one = _state.ActorOf(a);
         Actor other = _state.ActorOf(b);
-        return one.Place.IsNone || other.Place.IsNone
-            ? Neutral
-            : BetweenPlaces(one.Place, other.Place);
+        if (one.Place.IsNone || other.Place.IsNone) return Neutral;
+
+        int from = CellOf(one.Place);
+        int to = CellOf(other.Place);
+        return from < 0 || to < 0 ? Neutral : Ask(SiteActors, from, to);
     }
 
     /// <summary>The raw travel cost between two places, for reporting rather than for scoring.</summary>

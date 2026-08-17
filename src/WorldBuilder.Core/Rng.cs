@@ -40,6 +40,16 @@ public enum RngPurpose : ulong
     Battle = 51,
     Assassination = 52,
     Raid = 53,
+
+    /// <summary>
+    /// Experimental controls. <b>No rule may ever draw on this.</b>
+    ///
+    /// A control replaces an input a rule reads and must not disturb the stream that rule is
+    /// consuming, or the measured difference is confounded with re-sequencing — which the
+    /// constraint above establishes changes worlds on its own. Numbered far from the rule
+    /// purposes so the separation is visible at a glance.
+    /// </summary>
+    Control = 90,
 }
 
 /// <summary>
@@ -50,6 +60,27 @@ public enum RngPurpose : ulong
 /// draw, so inserting an event into the past — which v2's back-propagation does by design —
 /// would re-roll all subsequent history. Deriving an independent stream per call site means
 /// a retcon in year 12 leaves year 40's unrelated draws byte-identical.
+///
+/// <b>Determinism constraint: draw order within a stream is load-bearing.</b> The per-site
+/// keying above bounds the damage but does not remove it — within one stream, the nth draw is
+/// still the nth draw. So reproducibility is not a property of the rules alone. It is a property
+/// of the rules <i>and the order in which they consume the stream</i>, and a change that alters
+/// no logic can still change every world.
+///
+/// The case that proves it is a short-circuit. A site reading
+/// <code>
+/// won &amp;&amp; margin &gt; bar &amp;&amp; rng.Chance(p) &amp;&amp; holder == defender
+/// </code>
+/// throws its die <i>before</i> testing the holder, so a battle on ground the defender had
+/// already lost consumes a draw anyway. Hoisting that last test into the guard — obviously
+/// equivalent, and what anybody would write — stops the draw in exactly those cases and
+/// re-sequences everything after. It was found by hashing the log, not by reading the code, and
+/// no test in the suite noticed.
+///
+/// Two consequences worth carrying: a refactor at a short-circuiting site is a behavioural
+/// change until a log hash says otherwise, and any diagnostic that needs a second value must
+/// take it from a stream of its own rather than from the one the rule is using — which is what
+/// <see cref="WouldPick"/> and <see cref="RngPurpose.Control"/> exist for.
 /// </summary>
 public struct Rng
 {

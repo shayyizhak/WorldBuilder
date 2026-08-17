@@ -67,7 +67,12 @@ public sealed class Simulation
     /// world in which every distance came out exactly typical, which is the sort of quiet,
     /// plausible uniformity this project has learned to distrust.
     /// </summary>
-    public Simulation(ulong seed, SimConfig? config = null, int startYear = 1, Board? board = null)
+    public Simulation(
+        ulong seed,
+        SimConfig? config = null,
+        int startYear = 1,
+        Board? board = null,
+        ProximityControlKind control = ProximityControlKind.None)
     {
         _config = config ?? SimConfig.Default;
         _forge = new NameForge(seed);
@@ -76,12 +81,28 @@ public sealed class Simulation
         Log = new EventLog();
         Chronicle = new Chronicle(State, Log);
         StartYear = startYear;
+        Control = control;
 
         Board playing = board ?? Boards.Stored();
         State.Attach(playing);
 
-        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing);
+        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing, control);
+
+        // Attached after worldgen, because the empirical distribution it draws from is the set of
+        // proximities this world's places present — which does not exist until they are sited.
+        // That ordering is the point of the control: same distribution, same clamp exposure, and
+        // only the origin of the values changed.
+        if (control != ProximityControlKind.None) State.UseControl(control);
     }
+
+    /// <summary>
+    /// Which synthetic distance model this world ran under, if any.
+    ///
+    /// Anything but <see cref="ProximityControlKind.None"/> makes this a diagnostic artefact
+    /// rather than a world: it is marked in the file header and in the genesis event, and
+    /// <c>wb baseline cut</c> refuses it.
+    /// </summary>
+    public ProximityControlKind Control { get; }
 
     public WorldState State { get; }
     public EventLog Log { get; }

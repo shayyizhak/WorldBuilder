@@ -82,14 +82,26 @@ public static class CommandLine
 
         Directory.CreateDirectory(directory);
 
-        Simulation sim = new(seed);
+        // A control replaces what the rules are told about distance with a synthetic value, so
+        // the resulting world is a diagnostic artefact rather than a history. It is marked in the
+        // header and in the genesis event, and `wb baseline cut` refuses it.
+        ProximityControlKind control = ProximityControl.Parse(args.Text("control", ""));
+
+        Simulation sim = new(seed, control: control);
         sim.Run(years);
 
         string stem = Path.Combine(directory, $"world-{seed.ToString(CultureInfo.InvariantCulture)}");
         string jsonlPath = stem + ".jsonl";
         string logPath = stem + ".log";
 
-        JsonlIo.Write(jsonlPath, sim.Log, seed);
+        JsonlIo.Write(jsonlPath, sim.Log, seed, ProximityControl.NameOf(control));
+
+        if (control != ProximityControlKind.None)
+        {
+            Console.WriteLine($"CONTROL RUN — distances are synthetic ({ProximityControl.NameOf(control)}).");
+            Console.WriteLine("  This world is a diagnostic artefact. It is not canon, it is not to be");
+            Console.WriteLine("  sealed or rendered, and the header says so.");
+        }
 
         Significance minimum = verbose ? Significance.Bookkeeping : Significance.Minor;
         IReadOnlyList<string> lines = LogFormatter.Render(sim.Log, seed, minimum);
@@ -369,6 +381,31 @@ public static class CommandLine
         // The panel median of the discriminating share, which step 1's decision rule is stated
         // against. Printed rather than left to be worked out, because a rule that needs a
         // calculation done by hand is a rule that gets done differently twice.
+        // Where a clamp downstream of the distance term can swallow it whole. Asked of the
+        // mechanism rather than of a sample: "alliance moved 0 of 13" will not resolve at any
+        // seed count worth spending, and this needs no sample at all.
+        Console.WriteLine();
+        Console.WriteLine("  absorbed — evaluations where no distance value in the world's realised");
+        Console.WriteLine("  range could have changed the figure the rule actually uses");
+
+        Dictionary<string, (int Total, int Absorbed)> pooled = new(StringComparer.Ordinal);
+
+        foreach ((ulong seed, GeographyProbe probe, _, _) in panel)
+        {
+            foreach ((string mechanic, (int total, int absorbed)) in probe.Absorbed)
+            {
+                (int t, int a) = pooled.GetValueOrDefault(mechanic);
+                pooled[mechanic] = (t + total, a + absorbed);
+                Console.WriteLine($"    seed {seed,-6} {mechanic,-16} {absorbed}/{total}");
+            }
+        }
+
+        foreach ((string mechanic, (int total, int absorbed)) in pooled)
+        {
+            Console.WriteLine($"    {"pooled",-11} {mechanic,-16} {absorbed}/{total}" +
+                              (total == 0 ? "" : $"  ({absorbed * 100 / total}%)"));
+        }
+
         List<int> shares = [.. panel.Select(static p => p.Probe.Overall().SharePct)];
         shares.Sort();
 

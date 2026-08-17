@@ -69,6 +69,13 @@ public sealed class EventDraft(EventKind kind)
     public EventDraft Set<TEnum>(string key, TEnum value) where TEnum : struct, Enum =>
         Set(key, value.ToString());
 
+    /// <summary>
+    /// Sets a key only when it applies, so the ordinary case writes no key at all rather than an
+    /// empty one — the same rule the world header follows, and for the same reason: a field
+    /// present and blank is not distinguishable from a field that was lost.
+    /// </summary>
+    public EventDraft SetIf(bool when, string key, string value) => when ? Set(key, value) : this;
+
     // Declarative state deltas — the reducer reads these generically.
 
     public EventDraft Pop(EntityId place, int delta) => Delta($"pop:{place}", delta);

@@ -64,6 +64,31 @@ public sealed class GeographyProbe
     public void Rolled(string mechanic, bool discriminated) =>
         _decisions.Add(new DistanceDecision(mechanic, DecisionKind.Roll, 1, 0, discriminated));
 
+    private readonly Dictionary<string, (int Total, int Absorbed)> _absorption = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Records whether a clamp downstream of the distance term could absorb it entirely.
+    ///
+    /// <b>A mechanical property, not a statistical one.</b> "Alliance moved 0 of 13" will not
+    /// resolve at any seed count worth spending — at a 6% flip rate, seeing none in thirteen
+    /// happens about 45% of the time. So the question is asked of the mechanism instead: given
+    /// this evaluation, could <i>any</i> distance value in the world's realised range have
+    /// changed the figure that actually gets used? That is a yes or no per evaluation and needs
+    /// no sample at all.
+    ///
+    /// This is the third appearance of the same family — a correct rule whose input never
+    /// arrives — after the checker's five and the covert coup's structural zero, and the first on
+    /// the mechanics side that an invariant was reporting green.
+    /// </summary>
+    public void Absorption(string mechanic, bool absorbed)
+    {
+        (int total, int wasAbsorbed) = _absorption.GetValueOrDefault(mechanic);
+        _absorption[mechanic] = (total + 1, wasAbsorbed + (absorbed ? 1 : 0));
+    }
+
+    /// <summary>Per mechanic: how many evaluations a clamp could swallow the distance term in.</summary>
+    public IReadOnlyDictionary<string, (int Total, int Absorbed)> Absorbed => _absorption;
+
     /// <summary>Per mechanic, and over the whole run.</summary>
     public List<DiscriminationSummary> Summarise()
     {

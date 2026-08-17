@@ -60,6 +60,30 @@ public sealed class WorldState
         Geo = new Geography.Geography(board, this);
     }
 
+    /// <summary>
+    /// Replaces what the rules are told about distance with a synthetic model, for separating
+    /// explanations that make the same prediction.
+    ///
+    /// Drawn from this world's own realised proximities, so the distribution and the clamp
+    /// exposure downstream are unchanged and the only difference is where the values come from.
+    /// A world that has had this done to it is a diagnostic artefact and says so in its header.
+    /// </summary>
+    public void UseControl(ProximityControlKind kind)
+    {
+        if (Geo is null) throw new InvalidOperationException("a control needs a board to stand in for.");
+
+        List<int> empirical = [];
+        List<Place> sited = [];
+        foreach (Place place in _places)
+            if (place.IsSited) sited.Add(place);
+
+        for (int a = 0; a < sited.Count; a++)
+            for (int b = a + 1; b < sited.Count; b++)
+                empirical.Add(Geo.BetweenPlaces(sited[a].Id, sited[b].Id));
+
+        Geo.Control = new ProximityControl(kind, Seed, empirical);
+    }
+
     // ---- lookup -----------------------------------------------------------
 
     public Actor ActorOf(EntityId id) => _actors[id.Index - 1];

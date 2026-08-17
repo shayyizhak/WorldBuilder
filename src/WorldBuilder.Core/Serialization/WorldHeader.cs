@@ -59,6 +59,20 @@ public sealed record WorldHeader
     public string RenderCacheFingerprint { get; init; } = "";
 
     /// <summary>
+    /// The synthetic distance model this world ran under, and empty for every real world.
+    ///
+    /// A control world is a diagnostic artefact: its rules were told fabricated distances so that
+    /// two explanations which make the same prediction could be told apart. It is a perfectly
+    /// valid history of nowhere, and on disk it is a <c>world-42.jsonl</c> like any other — which
+    /// is exactly why it has to say so here. Nothing that archives, seals or renders a world may
+    /// accept one.
+    /// </summary>
+    public string Control { get; init; } = "";
+
+    /// <summary>True where this world's distances were fabricated rather than measured.</summary>
+    public bool IsControl => Control.Length > 0;
+
+    /// <summary>
     /// True where the file predates provenance in the header. Not an error — the v1 artefacts are
     /// all like this, and they are the hand-verified ones — but it is a thing a reader must be
     /// told rather than left to assume.
@@ -91,6 +105,7 @@ public sealed record WorldHeader
         if (EngineVersion.Length > 0) Append(sb, "engine_version", EngineVersion);
         if (EngineCommit.Length > 0) Append(sb, "engine_commit", EngineCommit);
         if (RulesetVersion.Length > 0) Append(sb, "ruleset_version", RulesetVersion);
+        if (Control.Length > 0) Append(sb, "control", Control);
         if (RenderCacheFingerprint.Length > 0) Append(sb, "render_cache", RenderCacheFingerprint);
 
         if (Artefacts.Count > 0)
@@ -123,6 +138,7 @@ public sealed record WorldHeader
             EngineVersion = Text(root, "engine_version"),
             EngineCommit = Text(root, "engine_commit"),
             RulesetVersion = Text(root, "ruleset_version"),
+            Control = Text(root, "control"),
             RenderCacheFingerprint = Text(root, "render_cache"),
             Artefacts = artefacts,
         };

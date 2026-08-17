@@ -148,6 +148,18 @@ public static class BaselineArchive
                 $"{worldName} has no header, so nothing records what produced it. A baseline whose " +
                 "engine cannot be named is one nobody can reproduce a judgement about.");
 
+        // A control world is a perfectly valid history of nowhere: its rules were told fabricated
+        // distances so that two explanations could be told apart. Sealing one would put a
+        // diagnostic artefact in the place the whole suite measures against, and on disk it looks
+        // like any other world file — which is why the refusal is here rather than in a habit.
+        if (header.IsControl)
+        {
+            throw new InvalidOperationException(
+                $"{worldName} ran under the '{header.Control}' distance control. Its distances are " +
+                "synthetic, so it is a diagnostic artefact rather than a world, and a baseline is " +
+                "the thing everything else is measured against. It cannot be sealed.");
+        }
+
         if (header.EngineCommit.Length == 0)
         {
             throw new FormatException(

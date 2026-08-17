@@ -670,7 +670,7 @@ public static class ActionPhase
         // possible at the floor rather than becoming impossible.
         int neighbourly = Between(state, faction.Id, other.Id);
         int flatAppeal = appeal;
-        if (appeal > 0) appeal = appeal * neighbourly / 100;
+        appeal = Scaled(appeal, neighbourly);
 
         // One draw, compared against both lines. Taking a second for the counterfactual would
         // move every subsequent stream in the year and make the probe change the world it reads.
@@ -678,6 +678,17 @@ public static class ActionPhase
         bool accepted = roll < Math.Clamp(appeal, 5, 90);
 
         tick.Probe?.Rolled("alliance", accepted != roll < Math.Clamp(flatAppeal, 5, 90));
+
+        // Could distance have mattered here at all? Asked of the mechanism rather than of a
+        // sample: if the nearest and furthest proximities this world can present both clamp to
+        // the same figure, then no distance value could have changed this evaluation and the
+        // term is decorative here whatever the dice did.
+        if (tick.Probe is not null && state.Geo is not null)
+        {
+            (int lowest, int highest) = state.Geo.RealisedRange;
+            tick.Probe.Absorption("alliance",
+                Math.Clamp(Scaled(flatAppeal, lowest), 5, 90) == Math.Clamp(Scaled(flatAppeal, highest), 5, 90));
+        }
 
         // Alliances grow out of things that already happened between these two: goods traded,
         // or a war they agreed to stop. Citing them turns pacts and peace treaties from
@@ -1126,6 +1137,14 @@ public static class ActionPhase
     /// <summary>How near two houses are: the closest their holdings come to each other.</summary>
     private static int Between(WorldState state, EntityId a, EntityId b) =>
         state.Geo?.BetweenFactions(a, b) ?? Geography.Geography.Neutral;
+
+    /// <summary>
+    /// An alliance's appeal at a given proximity, before the clamp — the same expression the
+    /// live rule uses, named once so the absorption measurement cannot drift from the decision
+    /// it is measuring.
+    /// </summary>
+    private static int Scaled(int appeal, int proximity) =>
+        appeal > 0 ? appeal * proximity / 100 : appeal;
 
     /// <summary>Sworn support, in the same units the challenge is scored in.</summary>
     /// <summary>

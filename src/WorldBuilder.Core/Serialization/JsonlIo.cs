@@ -12,17 +12,21 @@ namespace WorldBuilder.Core.Serialization;
 /// </summary>
 public static class JsonlIo
 {
-    public static void Write(string path, EventLog log, ulong seed)
+    /// <summary>
+    /// Writes a world file. <paramref name="control"/> names the synthetic distance model a
+    /// diagnostic run used, and is empty for every real world — see <see cref="WorldHeader.Control"/>.
+    /// </summary>
+    public static void Write(string path, EventLog log, ulong seed, string control = "")
     {
         using StreamWriter writer = new(path, append: false, Encoding.UTF8);
         writer.NewLine = "\n";
 
-        writer.WriteLine(Header(seed, log.Count));
+        writer.WriteLine(Header(seed, log.Count, control));
         foreach (Event e in log.Events) writer.WriteLine(Serialise(e));
     }
 
-    public static string Header(ulong seed, int count) =>
-        WorldHeader.ForThisBuild(seed, count).Serialise();
+    public static string Header(ulong seed, int count, string control = "") =>
+        (WorldHeader.ForThisBuild(seed, count) with { Control = control }).Serialise();
 
     public static string Serialise(Event e)
     {
