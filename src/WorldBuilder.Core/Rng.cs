@@ -128,17 +128,52 @@ public struct Rng
     /// Weighted choice. Weights are clamped at zero; returns -1 if every weight is zero,
     /// which callers treat as "this actor does nothing this year".
     /// </summary>
-    public int PickIndexWeighted(ReadOnlySpan<int> weights)
-    {
-        long total = 0;
-        foreach (int w in weights) total += Math.Max(0, w);
-        if (total <= 0) return -1;
+    public int PickIndexWeighted(ReadOnlySpan<int> weights) => PickIndexWeighted(weights, out _, out _);
 
-        long roll = (long)(NextUInt64() % (ulong)total);
+    /// <summary>
+    /// Weighted choice, also reporting where in the distribution the draw landed.
+    ///
+    /// <paramref name="roll"/> and <paramref name="total"/> exist so a counterfactual can ask
+    /// what the same draw would have chosen from a different set of weights — the geography probe
+    /// re-picks with proximity held flat, at the same relative position, and reports whether the
+    /// winner moves. Exposing the draw is what lets that happen without taking a second one, and
+    /// a second draw would move the RNG stream and change the world being measured.
+    /// </summary>
+    public int PickIndexWeighted(ReadOnlySpan<int> weights, out long roll, out long total)
+    {
+        total = 0;
+        foreach (int w in weights) total += Math.Max(0, w);
+        if (total <= 0) { roll = 0; return -1; }
+
+        roll = (long)(NextUInt64() % (ulong)total);
+
+        long remaining = roll;
         for (int i = 0; i < weights.Length; i++)
         {
-            roll -= Math.Max(0, weights[i]);
-            if (roll < 0) return i;
+            remaining -= Math.Max(0, weights[i]);
+            if (remaining < 0) return i;
+        }
+        return weights.Length - 1;
+    }
+
+    /// <summary>
+    /// Which index a draw at the same relative position would have chosen from other weights.
+    ///
+    /// Takes no draw of its own. "The same relative position" is the only sound way to compare
+    /// two weighted picks whose totals differ, and saying so here rather than at the call sites
+    /// keeps the counterfactual one definition rather than four.
+    /// </summary>
+    public static int WouldPick(ReadOnlySpan<int> weights, long roll, long total)
+    {
+        long other = 0;
+        foreach (int w in weights) other += Math.Max(0, w);
+        if (other <= 0 || total <= 0) return -1;
+
+        long remaining = roll * other / total;
+        for (int i = 0; i < weights.Length; i++)
+        {
+            remaining -= Math.Max(0, weights[i]);
+            if (remaining < 0) return i;
         }
         return weights.Length - 1;
     }

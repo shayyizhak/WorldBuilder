@@ -260,7 +260,13 @@ public static class ActionPhase
         // say so.
         int reach = Between(state, faction.Id, target.Id);
         int warScore = grievance * opportunity * reach / 10000;
-        bool canDeclare = !atWar && warScore >= tick.Config.WarDeclarationThreshold && !state.AtWar(faction.Id);
+        bool open = !atWar && !state.AtWar(faction.Id);
+        bool canDeclare = open && warScore >= tick.Config.WarDeclarationThreshold;
+
+        // Whether distance is what closed the door, or opened it. The flat score is the one this
+        // rule computed before geography, so a difference here is the whole of the change.
+        tick.Probe?.Rolled("war declaration",
+            open && canDeclare != grievance * opportunity / 100 >= tick.Config.WarDeclarationThreshold);
 
         // Nobody repeats the same gesture at the same rival year after year. Once an insult
         // or a demand has been made, the next move up the ladder is the interesting one.
@@ -434,15 +440,27 @@ public static class ActionPhase
         // choice without ever forbidding one — so the long ride stays available for a prize that
         // is worth it.
         Place place = fresh[0];
-        int bestWorth = int.MinValue;
+        Place flatPick = fresh[0];
+        int bestWorth = int.MinValue, bestStock = int.MinValue;
+        int nearest = int.MaxValue, furthest = int.MinValue;
 
         foreach (Place candidate in fresh)
         {
-            int worth = candidate.Stockpile[(int)after] * Reach(state, raider.Id, candidate.Id) / 100;
-            if (worth <= bestWorth) continue;
-            bestWorth = worth;
-            place = candidate;
+            int near = Reach(state, raider.Id, candidate.Id);
+            nearest = Math.Min(nearest, near);
+            furthest = Math.Max(furthest, near);
+
+            int worth = candidate.Stockpile[(int)after] * near / 100;
+            if (worth > bestWorth) { bestWorth = worth; place = candidate; }
+
+            // The same choice with proximity held flat, which is exactly what Neediest did
+            // before geography existed. Carried alongside rather than recomputed afterwards so
+            // the counterfactual cannot drift from the decision it is a counterfactual of.
+            int stock = candidate.Stockpile[(int)after];
+            if (stock > bestStock) { bestStock = stock; flatPick = candidate; }
         }
+
+        tick.Probe?.Ranked("raid targeting", fresh.Count, furthest - nearest, flatPick.Id != place.Id);
 
         Rng rng = tick.Rng(raider.Id, RngPurpose.Raid);
 
@@ -541,16 +559,26 @@ public static class ActionPhase
         // thing when a house is avenging itself and another when it wants a mine.
         int holderReach = Between(state, faction.Id, holder.Id);
 
+        bool couldFight = ours * 100 / Math.Max(1, theirs) > 110 && !state.AtWar(faction.Id);
+
         Span<int> weights =
         [
-            ours * 100 / Math.Max(1, theirs) > 110 && !state.AtWar(faction.Id)
-                ? 45 * holderReach / 100 : 0,                                             // war
+            couldFight ? 45 * holderReach / 100 : 0,                                      // war
             20 + leader.Traits.Guile / 3,                                                 // tribute
             18,                                                                           // insult
         ];
 
         Rng rng = tick.Rng(faction.Id, RngPurpose.ActionChoice).Branch(3);
-        switch (rng.PickIndexWeighted(weights))
+        int chosen = rng.PickIndexWeighted(weights, out long roll, out long total);
+
+        if (tick.Probe is not null)
+        {
+            Span<int> flat = [couldFight ? 45 : 0, weights[1], weights[2]];
+            tick.Probe.Ranked("war declaration", 3, Math.Abs(holderReach - Geography.Geography.Neutral),
+                chosen != Rng.WouldPick(flat, roll, total));
+        }
+
+        switch (chosen)
         {
             case 0: DeclareWar(tick, goal, faction, holder, place.Id); break;
             case 1: DemandTribute(tick, goal, faction, holder, leader); break;
@@ -641,9 +669,15 @@ public static class ActionPhase
         // have been in range. The existing 5–90 clamp is untouched, so a far-off pact stays
         // possible at the floor rather than becoming impossible.
         int neighbourly = Between(state, faction.Id, other.Id);
+        int flatAppeal = appeal;
         if (appeal > 0) appeal = appeal * neighbourly / 100;
 
-        bool accepted = rng.Next(100) < Math.Clamp(appeal, 5, 90);
+        // One draw, compared against both lines. Taking a second for the counterfactual would
+        // move every subsequent stream in the year and make the probe change the world it reads.
+        int roll = rng.Next(100);
+        bool accepted = roll < Math.Clamp(appeal, 5, 90);
+
+        tick.Probe?.Rolled("alliance", accepted != roll < Math.Clamp(flatAppeal, 5, 90));
 
         // Alliances grow out of things that already happened between these two: goods traded,
         // or a war they agreed to stop. Citing them turns pacts and peace treaties from

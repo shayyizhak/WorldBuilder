@@ -49,6 +49,32 @@ public class CorpusTests
     }
 
     /// <summary>
+    /// Layer 3 through the entry point <c>wb test corpus</c> uses, not through this file's own.
+    ///
+    /// <b>The substantive failure was never the bug.</b> `wb test corpus` was broken across two
+    /// whole rulesets and nothing failed, because the only thing asserting about the corpus was
+    /// this class, and this class had its own way of getting a world. The command could rot
+    /// indefinitely and the suite would stay green.
+    ///
+    /// So the command's path is now in the standing halt list: <see cref="Corpus.RunAll"/> is
+    /// what the command calls, and this asserts on it. A fix that left it outside the halt
+    /// conditions would have fixed the smaller half.
+    /// </summary>
+    [Fact]
+    public void TheCommandsOwnEntryPointPassesEveryRow()
+    {
+        List<CorpusResult> results = Corpus.RunAll(Directory);
+
+        Assert.Equal(34, results.Count);
+
+        string broken = string.Join("\n  ", results
+            .Where(static r => !r.Passed)
+            .Select(static r => $"{r.Case.Id}: {r.Detail}"));
+
+        Assert.True(broken.Length == 0, $"wb test corpus would report:\n  {broken}");
+    }
+
+    /// <summary>
     /// Every row names a rule the runner knows, and every span it claims is in its passage.
     ///
     /// Cheap, and it catches the typo that would otherwise make a row silently untestable — a

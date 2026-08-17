@@ -124,6 +124,8 @@ public static class LifePhase
         WorldState state = tick.State;
         List<Actor> candidates = [];
         List<int> weights = [];
+        List<int> flatWeights = [];
+        int nearest = int.MaxValue, furthest = int.MinValue;
 
         foreach (Actor other in single)
         {
@@ -149,15 +151,29 @@ public static class LifePhase
             // The existing Math.Max(1, …) floor is left alone and does the work it always did: a
             // distant match becomes unlikely, never impossible, which keeps the occasional
             // dynastic marriage across the world available as the remarkable thing it should be.
-            weight = weight * (state.Geo?.BetweenActors(actor.Id, other.Id)
-                               ?? Geography.Geography.Neutral) / 100;
+            int near = state.Geo?.BetweenActors(actor.Id, other.Id) ?? Geography.Geography.Neutral;
+            nearest = Math.Min(nearest, near);
+            furthest = Math.Max(furthest, near);
+
+            flatWeights.Add(Math.Max(1, weight));
+            weight = weight * near / 100;
 
             candidates.Add(other);
             weights.Add(Math.Max(1, weight));
         }
 
         if (candidates.Count == 0) return null;
-        int index = rng.PickIndexWeighted(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(weights));
+
+        int index = rng.PickIndexWeighted(
+            System.Runtime.InteropServices.CollectionsMarshal.AsSpan(weights), out long roll, out long total);
+
+        if (tick.Probe is not null)
+        {
+            int flat = Rng.WouldPick(
+                System.Runtime.InteropServices.CollectionsMarshal.AsSpan(flatWeights), roll, total);
+            tick.Probe.Ranked("marriage", candidates.Count, furthest - nearest, flat != index);
+        }
+
         return index < 0 ? null : candidates[index];
     }
 

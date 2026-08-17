@@ -53,6 +53,7 @@ public static class CommandLine
                 "map" => CmdMap(parsed),
                 "bundle" => CmdBundle(parsed),
                 "baseline" => CmdBaseline(parsed),
+                "geometry" => CmdGeometry(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -279,6 +280,114 @@ public static class CommandLine
             default:
                 return Fail($"unknown bundle command '{what}' — try write or verify");
         }
+    }
+
+    // ---- geometry ---------------------------------------------------------
+
+    /// <summary>
+    /// What distance actually decided, per seed, and what shape of world it had to work with.
+    ///
+    /// Three figures, and the third is the one that matters. How far apart a world's places are
+    /// and what proximities its rules saw are context; the <b>discriminating share</b> — of the
+    /// decisions distance had any room to move, the share where holding proximity flat changes
+    /// the outcome — is the measurement. A mechanic can consult distance on every decision it
+    /// makes and be changed by it on none.
+    ///
+    /// Simulated rather than loaded, so the panel does not depend on files existing, and against
+    /// <c>--board</c> where a different geometry is being tried.
+    /// </summary>
+    private static int CmdGeometry(Args args)
+    {
+        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+        int years = args.Int("years", 50);
+        string boardPath = args.Text("board", "");
+        Board? board = boardPath.Length > 0 ? BoardIo.Read(boardPath) : null;
+
+        Console.WriteLine(board is null
+            ? $"the stored board — {Boards.Stored().Count} cells, median land separation {Boards.Stored().ReferenceCost}"
+            : $"{boardPath} — {board.Count} cells, median land separation {board.ReferenceCost}");
+        Console.WriteLine();
+
+        Console.WriteLine("  how far apart the places are, in the board's own cost units");
+        Console.WriteLine($"    {"seed",-6} {"pairs",5} {"min",5} {"median",7} {"max",5} {"spread",7}   " +
+                          "(spread = sd as % of mean)");
+
+        List<(ulong Seed, GeographyProbe Probe, SeparationProfile Sep, List<int> Proximities)> panel = [];
+
+        foreach (string raw in seeds)
+        {
+            if (!ulong.TryParse(raw.Trim(), out ulong seed)) continue;
+
+            GeographyProbe probe = new();
+            Simulation sim = new(seed, board: board) { Probe = probe };
+            sim.Run(years);
+
+            SeparationProfile sep = GeographyAudit.Separations(sim.State);
+
+            // Realised proximities: what the world's places actually looked like to a rule,
+            // rather than the range the board could theoretically produce.
+            List<int> proximities = [];
+            List<Place> sited = [.. sim.State.Places.Where(static p => p.IsSited)];
+            for (int a = 0; a < sited.Count; a++)
+                for (int b = a + 1; b < sited.Count; b++)
+                    proximities.Add(sim.State.Geo!.BetweenPlaces(sited[a].Id, sited[b].Id));
+            proximities.Sort();
+
+            panel.Add((seed, probe, sep, proximities));
+
+            Console.WriteLine($"    {seed,-6} {sep.Pairs,5} {sep.Lowest,5} {sep.Median,7} {sep.Highest,5} {sep.SpreadPct,6}%");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  the proximities those places actually presented");
+        Console.WriteLine($"    {"seed",-6} {"lowest",7} {"median",7} {"highest",8}");
+
+        foreach ((ulong seed, _, _, List<int> proximities) in panel)
+        {
+            if (proximities.Count == 0) continue;
+            Console.WriteLine($"    {seed,-6} {proximities[0],7} {proximities[proximities.Count / 2],7} " +
+                              $"{proximities[^1],8}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  discriminating share — of the decisions distance could have moved, the share it did");
+        Console.WriteLine($"    {"seed",-6} {"consulted",10} {"open",6} {"moved",6} {"share",7}   by mechanic");
+
+        foreach ((ulong seed, GeographyProbe probe, _, _) in panel)
+        {
+            DiscriminationSummary all = probe.Overall();
+
+            string detail = string.Join("  ", probe.Summarise()
+                .Select(static s => $"{s.Mechanic} {s.SharePct}% ({s.Discriminated}/{s.Open})"));
+
+            Console.WriteLine($"    {seed,-6} {all.Consulted,10} {all.Open,6} {all.Discriminated,6} " +
+                              $"{all.SharePct,6}%   {detail}");
+        }
+
+        // The panel median of the discriminating share, which step 1's decision rule is stated
+        // against. Printed rather than left to be worked out, because a rule that needs a
+        // calculation done by hand is a rule that gets done differently twice.
+        List<int> shares = [.. panel.Select(static p => p.Probe.Overall().SharePct)];
+        shares.Sort();
+
+        Console.WriteLine();
+        if (shares.Count > 0)
+        {
+            Console.WriteLine($"  panel median discriminating share: {shares[shares.Count / 2]}%  " +
+                              $"(half of it is {shares[shares.Count / 2] / 2}%)");
+        }
+
+        List<(ulong Seed, int Spread, int Share)> ranked =
+            [.. panel.Select(p => (p.Seed, p.Sep.SpreadPct, p.Probe.Overall().SharePct))];
+
+        Console.WriteLine("  rank on separation spread, lowest first: " +
+            string.Join(" < ", ranked.OrderBy(static r => r.Spread).Select(static r => $"{r.Seed}({r.Spread}%)")));
+        Console.WriteLine("  rank on discriminating share, lowest first: " +
+            string.Join(" < ", ranked.OrderBy(static r => r.Share).Select(static r => $"{r.Seed}({r.Share}%)")));
+
+        return 0;
     }
 
     // ---- baselines --------------------------------------------------------
@@ -696,65 +805,27 @@ public static class CommandLine
     {
         Console.WriteLine("layer 3 — the regression corpus");
 
-        Dictionary<ulong, WorldView> worlds = [];
-        List<CorpusCase> cases = Corpus.Load(Corpus.FindDirectory(Directory.GetCurrentDirectory()));
-
+        List<CorpusResult> results = Corpus.RunAll(Corpus.FindDirectory(Directory.GetCurrentDirectory()));
         int missed = 0, noisy = 0;
 
-        foreach (CorpusCase one in cases)
+        foreach (CorpusResult result in results)
         {
-            CorpusResult result;
-            try
-            {
-                result = Corpus.Run(one, World);
-            }
-            catch (InvalidDataException ex)
-            {
-                // A case whose scope no longer exists is a failing case, not a crashed command.
-                // It threw all the way out of the process before, which reported a defect in the
-                // corpus as a defect in the tooling and took the other thirty rows with it.
-                Console.WriteLine($"      MISSED {one.Id}");
-                Console.WriteLine($"             {ex.Message}");
-                missed++;
-                continue;
-            }
-
             if (result.Passed) continue;
 
-            Console.WriteLine($"      {(result.Fired ? "NOISY " : "MISSED")} {one.Id}");
+            Console.WriteLine($"      {(result.Fired ? "NOISY " : "MISSED")} {result.Case.Id}");
             Console.WriteLine($"             {result.Detail}");
             if (result.Fired) noisy++; else missed++;
         }
 
-        Console.WriteLine($"  {cases.Count} rows: {cases.Count - missed - noisy} pass, " +
+        Console.WriteLine($"  {results.Count} rows: {results.Count - missed - noisy} pass, " +
                           $"{missed} not caught, {noisy} false positives on the correction");
 
         if (args.Flag("verbose"))
-            foreach (CorpusCase one in cases)
-                Console.WriteLine($"      {one.Id,-46} {one.ExpectRule}");
+            foreach (CorpusResult result in results)
+                Console.WriteLine($"      {result.Case.Id,-46} {result.Case.ExpectRule}");
 
         return missed + noisy;
-
-        WorldView World(ulong seed)
-        {
-            if (worlds.TryGetValue(seed, out WorldView? cached)) return cached;
-
-            // Seed 42 is the archived world every corpus row is about. Other seeds have no
-            // archived record, so they are simulated — and a case that uses one is asserting
-            // about the current ruleset rather than about a pinned world, which is a thing to
-            // know when it starts failing. No row uses one today.
-            if (seed == 42 && SealedWorld() is string path)
-                return worlds[seed] = WorldView.Build(JsonlIo.Read(path).Log, seed);
-
-            Simulation sim = new(seed);
-            sim.Run(50);
-            return worlds[seed] = WorldView.Build(sim.Log, seed);
-        }
     }
-
-    /// <summary>The sealed v1 seed-42 record. One resolver, shared with the test fixture.</summary>
-    private static string? SealedWorld() =>
-        Corpus.SealedSeed42(AppContext.BaseDirectory, Directory.GetCurrentDirectory());
 
     /// <summary>Layer 1, across the seed panel. A metric that holds on one seed is an anecdote.</summary>
     private static int TestDynamics(Args args)

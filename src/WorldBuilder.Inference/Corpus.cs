@@ -174,6 +174,70 @@ public static class Corpus
         return null;
     }
 
+    private static readonly Lock WorldGate = new();
+    private static readonly Dictionary<ulong, WorldView> Worlds = [];
+
+    /// <summary>
+    /// The world a corpus case is about.
+    ///
+    /// <b>The whole policy, in one place, because there were two of it.</b> Not just the path —
+    /// the decision that seed 42 comes from the sealed record and everything else is simulated.
+    /// Sharing only the path resolver left the two callers still able to disagree about what to
+    /// do with it, which is the same defect one layer down.
+    ///
+    /// Seed 42 is the archived v1 world every row was written against. Re-simulating to obtain it
+    /// makes each row an assertion about whatever the current rules produce, and ruleset 2 moved
+    /// the world under all thirty-four at once. Other seeds have no archived record and are
+    /// simulated — a row that used one would be asserting about the current ruleset, which is a
+    /// thing to know when it starts failing. No row uses one today.
+    /// </summary>
+    public static WorldView WorldFor(ulong seed)
+    {
+        lock (WorldGate)
+        {
+            if (Worlds.TryGetValue(seed, out WorldView? cached)) return cached;
+
+            if (seed == 42
+                && SealedSeed42(AppContext.BaseDirectory, Directory.GetCurrentDirectory()) is string path)
+            {
+                (EventLog archived, ulong archivedSeed) = Core.Serialization.JsonlIo.Read(path);
+                return Worlds[seed] = WorldView.Build(archived, archivedSeed);
+            }
+
+            Simulation sim = new(seed);
+            sim.Run(50);
+            return Worlds[seed] = WorldView.Build(sim.Log, seed);
+        }
+    }
+
+    /// <summary>
+    /// Every row, run. The one entry point for Layer 3, used by <c>wb test corpus</c> and by the
+    /// test that keeps it honest, so the command and the suite cannot come to mean different
+    /// things by "the corpus passes".
+    ///
+    /// A row whose scope no longer exists comes back as a failing row rather than an exception.
+    /// It used to throw all the way out of the process, which reported a defect in one row as a
+    /// defect in the tooling and took the other thirty-three with it.
+    /// </summary>
+    public static List<CorpusResult> RunAll(string? directory = null)
+    {
+        List<CorpusResult> results = [];
+
+        foreach (CorpusCase one in Load(directory ?? FindDirectory(AppContext.BaseDirectory)))
+        {
+            try
+            {
+                results.Add(Run(one, WorldFor));
+            }
+            catch (InvalidDataException ex)
+            {
+                results.Add(new CorpusResult(one, false, false, ex.Message));
+            }
+        }
+
+        return results;
+    }
+
     public static CorpusResult Run(CorpusCase one, Func<ulong, WorldView> world)
     {
         if (!Families.TryGetValue(one.ExpectRule, out string[]? kinds))

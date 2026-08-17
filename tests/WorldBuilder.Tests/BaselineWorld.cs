@@ -25,37 +25,22 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public static class BaselineWorld
 {
-    private static readonly Lock Gate = new();
-    private static WorldView? _seed42;
-
     /// <summary>The v1 seed-42 world, ruleset 1, as archived. Loaded once for the whole run.</summary>
-    public static WorldView Seed42()
-    {
-        lock (Gate)
-        {
-            if (_seed42 is not null) return _seed42;
-
-            (EventLog log, ulong seed) = JsonlIo.Read(Path.Combine(Directory(), "world-42.jsonl"));
-            _seed42 = WorldView.Build(log, seed);
-            return _seed42;
-        }
-    }
+    public static WorldView Seed42() => ForSeed(42);
 
     /// <summary>
-    /// Seeds other than 42 have no archived world, so they are simulated.
+    /// The world a fixture is about, from the one function that decides it.
     ///
-    /// No corpus case uses one. Left working so a future case can, with the caveat that such a
-    /// case is asserting about the current ruleset rather than about a pinned world — which is a
-    /// thing to know when it starts failing.
+    /// <b>This used to be a second implementation of that decision and that is what broke.</b>
+    /// The policy — seed 42 from the sealed record, everything else simulated — lived here and
+    /// again inside <c>wb test corpus</c>, this copy was fixed at ruleset 2 and the other was
+    /// not, and the command spent two rulesets throwing on a scope that no longer existed. Two
+    /// copies of one idea is one idea that gets fixed once, so there is now one.
+    ///
+    /// Layer 4 duplicating the *checker* is deliberate and stays: duplicated verification is the
+    /// property being bought there. Duplicated implementation is not the same thing.
     /// </summary>
-    public static WorldView ForSeed(ulong seed)
-    {
-        if (seed == 42) return Seed42();
-
-        Simulation sim = new(seed);
-        sim.Run(50);
-        return WorldView.Build(sim.Log, seed);
-    }
+    public static WorldView ForSeed(ulong seed) => WorldBuilder.Inference.Corpus.WorldFor(seed);
 
     /// <summary>
     /// The sealed baseline directory, resolved by the same function <c>wb test corpus</c> uses.

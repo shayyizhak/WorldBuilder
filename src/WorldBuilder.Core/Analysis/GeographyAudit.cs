@@ -2,6 +2,15 @@ using WorldBuilder.Core.Geography;
 
 namespace WorldBuilder.Core.Analysis;
 
+/// <summary>
+/// How far apart a world's places are: the shape the rules are actually calibrated against.
+/// </summary>
+/// <param name="SpreadPct">
+/// Standard deviation as a percentage of the mean. Dimensionless on purpose, so two boards of
+/// different scales can be compared on how unequal their separations are rather than how large.
+/// </param>
+public sealed record SeparationProfile(int Pairs, int Lowest, int Highest, int Median, int SpreadPct);
+
 /// <summary>How a mechanic's acts fell out across the board: near, far, and how many of each.</summary>
 /// <param name="Near">Acts whose two ends were closer together than the board's median separation.</param>
 /// <param name="Far">Acts whose two ends were further apart than that.</param>
@@ -106,6 +115,41 @@ public static class GeographyAudit
         }
 
         return pairs == 0 ? (0, 0, 0) : (pairs, lowest, highest);
+    }
+
+    /// <summary>
+    /// How far apart this world's places actually are, in the board's own cost units.
+    ///
+    /// The board's terrain histogram says what a map is made of; this says what a *world* on it
+    /// is shaped like, which is the figure the rules are calibrated against and the one a claim
+    /// about "the board is too uniform" is a claim about.
+    ///
+    /// <b>Spread is reported as a coefficient of variation</b> — the standard deviation as a
+    /// percentage of the mean — rather than as an interquartile range, and the choice matters
+    /// because this figure is compared across boards. An IQR is in cost units, so a board whose
+    /// costs are simply larger looks more varied; a coefficient of variation is dimensionless and
+    /// says what it is meant to say, which is how *unequal* the separations are rather than how
+    /// big.
+    /// </summary>
+    public static SeparationProfile Separations(WorldState state)
+    {
+        List<Place> sited = [.. state.Places.Where(static p => p.IsSited)];
+
+        if (state.Board is not Board board || sited.Count < 2)
+            return new SeparationProfile(0, 0, 0, 0, 0);
+
+        List<int> costs = [];
+        for (int a = 0; a < sited.Count; a++)
+            for (int b = a + 1; b < sited.Count; b++)
+                costs.Add(board.Cost(sited[a].Cell, sited[b].Cell));
+
+        costs.Sort();
+
+        double mean = costs.Average();
+        double variance = costs.Sum(c => (c - mean) * (c - mean)) / costs.Count;
+        int cv = mean <= 0 ? 0 : (int)Math.Round(100 * Math.Sqrt(variance) / mean);
+
+        return new SeparationProfile(costs.Count, costs[0], costs[^1], costs[costs.Count / 2], cv);
     }
 
     /// <summary>

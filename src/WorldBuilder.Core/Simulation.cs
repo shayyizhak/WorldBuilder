@@ -30,6 +30,13 @@ public sealed class Tick(Chronicle chronicle, SimConfig config, NameForge forge,
     /// </summary>
     public Analysis.PlotLedger? Ledger { get; set; }
 
+    /// <summary>
+    /// Optional counterfactual sink for the distance-consuming decisions. Null on an ordinary
+    /// run, read by no rule, and — the part that matters — no site consults it before drawing.
+    /// Every counterfactual reuses the draw the real decision already took.
+    /// </summary>
+    public Analysis.GeographyProbe? Probe { get; set; }
+
     public Rng Rng(EntityId entity, RngPurpose purpose) =>
         Core.Rng.For(State.Seed, Year, entity, purpose);
 
@@ -83,6 +90,9 @@ public sealed class Simulation
 
     /// <summary>Attach before running to account for every conspiracy. Off by default.</summary>
     public Analysis.PlotLedger? Ledger { get; set; }
+
+    /// <summary>Attach before running to measure what distance actually decided. Off by default.</summary>
+    public Analysis.GeographyProbe? Probe { get; set; }
 
     public void Run(int years)
     {
@@ -142,7 +152,7 @@ public sealed class Simulation
         State.Year = year;
         Chronicle.BeginYear(year);
 
-        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger };
+        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger, Probe = Probe };
 
         LifePhase.Run(tick);
         EconomyPhase.Run(tick);

@@ -198,9 +198,24 @@ public static class ResolutionPhase
         // conversion chance is exactly what it was.
         int holdable = state.Geo?.FromFactionToPlace(aggressor.Id, field.Id) ?? Geography.Geography.Neutral;
 
-        if (attackerWon && margin > 25 - foughtHere * 6
-            && rng.Chance(Math.Min(90, (45 + foughtHere * 18) * holdable / 100))
-            && field.Controller == defender.Id)
+        // The roll is taken once and compared against both lines, so attaching a probe cannot
+        // cost a draw. The order is load-bearing and matches what the original short-circuit did
+        // exactly: the dice are thrown when the win was decisive, *before* the holder is checked,
+        // so a battle on ground the defender had already lost still consumes its draw. Getting
+        // that backwards would shift every subsequent stream in the year.
+        bool decisive = attackerWon && margin > 25 - foughtHere * 6;
+        int convert = Math.Min(90, (45 + foughtHere * 18) * holdable / 100);
+        int flatConvert = Math.Min(90, 45 + foughtHere * 18);
+
+        bool held = false;
+        if (decisive)
+        {
+            int roll = rng.Next(100);
+            held = roll < convert;
+            tick.Probe?.Rolled("conquest", held != roll < flatConvert);
+        }
+
+        if (decisive && held && field.Controller == defender.Id)
         {
             tick.Emit(new EventDraft(EventKind.ConflictConquest)
                 .Subject(attackLeader?.Id ?? EntityId.None)
