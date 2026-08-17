@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-4-seed-1234",
+  "created_utc": "2026-08-17T15:03:07Z",
+  "seed": 1234,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "fabf2a61101490bc4450a9781f2ea6a187e966f6",
+  "ruleset_version": "4",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only, and hand verification at ruleset 4 stays blocked until the board question is settled. From ruleset 4 a world is a log and its board, so board.wbmap.json is archived with it and its hash is checked against the fingerprint on the genesis event."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-1234.md", "source_path": "out/ruleset-4/seed-1234/chronicle-1234.md", "sha256": "848a0d95dd6612e96c3be31e8c35e59658a1283efe4647172adc6a311670b663", "bytes": 16691, "role": "artefact" },
+    { "filename": "chronicle-1234.findings.json", "source_path": "out/ruleset-4/seed-1234/chronicle-1234.findings.json", "sha256": "b4d9e0fb628c0075bcb15ee571a39d95a0a6f761a2d50096a6405bada4b6a39c", "bytes": 44946, "role": "anchor" },
+    { "filename": "chronicle-1234.unverified.md", "source_path": "out/ruleset-4/seed-1234/chronicle-1234.unverified.md", "sha256": "7e3cb296ca469dde080bdef143eb4f4caec8d93cdb3cb62c51b5210ac1b5fb43", "bytes": 4885, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-4/seed-1234/renders.json", "sha256": "218a5062f9b939f07a7f04630e6ec77df1a83cde97dd88fd4828c2151ca985f4", "bytes": 22682, "role": "artefact" },
+    { "filename": "world-1234.jsonl", "source_path": "out/ruleset-4/seed-1234/world-1234.jsonl", "sha256": "537cddeccd896e4b367148ce9217e17643201c32db675a5b79f66d7f8bd0dc46", "bytes": 566975, "role": "artefact" },
+    { "filename": "world-1234.log", "source_path": "out/ruleset-4/seed-1234/world-1234.log", "sha256": "18ec3f1144df14c7ba47df856a453978c71e312cd2f36573603b1dcb8a6a41ed", "bytes": 79143, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-4/seed-1234/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}

@@ -1,0 +1,482 @@
+# 428 of 702 events. The other 274 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.MARRIAGE               Hounu Laweim (a:2) marries Wimnall Nind (a:6) at Peirnhewick (p:2)  e:36
+[Y0002]       LIFE.MARRIAGE               Beald Feithsith (a:12) marries Thothbus Treim (a:20) at Pistead (p:3)  e:37
+[Y0002]       LIFE.MARRIAGE               Ba Turtheill (a:14) marries Faeth Paes (a:15) at Staernwefell (p:4)  e:38
+[Y0002] w:1   POLITY.COUP_PLOTTED         Hounu Laweim (a:2) begins conspiring against Bi Froullgeis (a:1) of the Peirnhewick Crown (f:1)  [secret]  e:42
+[Y0002]       CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) occupies Nae Seam (p:8), which no one held  e:43
+[Y0002]       DIPLO.ALLIANCE_FORMED       the Peirnhewick Crown (f:1) seeks an alliance with the Staernwefell Crown (f:3) and is turned away  e:44
+[Y0002]       DIPLO.INSULT                the Pistead Compact (f:2) publicly slights the Peirnhewick Crown (f:1)  e:45
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Staernwefell Crown (f:3) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:46
+
+[Y0003]       LIFE.BIRTH                  Vour Trouthteith (a:23) is born to Ba Turtheill (a:14) at Staernwefell (p:4)  <= e:38  e:50
+[Y0003]       POLITY.COURTS_SUPPORT       Vopeis Foldthous (a:17) wins Grae Sinven (a:19) away from the ruler of the Staernwefell Crown (f:3)  <= e:46  e:54
+[Y0003] w:2   POLITY.COUP_PLOTTED         Faespa Futhbill (a:18) begins conspiring against Stealmaell Nothmi (a:13) of the Staernwefell Crown (f:3)  [secret]  <= e:46  e:55
+[Y0003] w:3   POLITY.COUP_PLOTTED         Thothbus Treim (a:20) begins conspiring against Bi Froullgeis (a:1) of the Peirnhewick Crown (f:1)  [secret]  e:56
+[Y0003]       DIPLO.INSULT                the Peirnhewick Crown (f:1) publicly slights the Staernwefell Crown (f:3)  e:57
+[Y0003]       DIPLO.TRIBUTE_DEMANDED      the Pistead Compact (f:2) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:58
+
+[Y0004]       LIFE.DEATH_NATURAL          Stealmaell Nothmi (a:13), ruler of the Staernwefell Crown (f:3), dies at 48 in Staernwefell (p:4)  e:60
+[Y0004]       LIFE.MARRIAGE               Dar Taldwond (a:4) marries Dinthei Lemmar (a:16), binding the Peirnhewick Crown (f:1) to the Staernwefell Crown (f:3)  e:61
+[Y0004] w:4   ECONOMY.FAMINE              famine at Nae Seam (p:8): 11 dead, grain short by 2  e:65
+[Y0004]       POLITY.COURTS_SUPPORT       Hounu Laweim (a:2) wins Thrallheirn Gend (a:24) away from the ruler of the Peirnhewick Crown (f:1)  e:67
+[Y0004] w:5   POLITY.COUP_PLOTTED         Dar Taldwond (a:4) begins conspiring against Bi Froullgeis (a:1) of the Peirnhewick Crown (f:1)  [secret]  <= e:65  e:68
+[Y0004]       POLITY.COURTS_SUPPORT       Thothbus Treim (a:20) wins Thrallheirn Gend (a:24) away from the ruler of the Peirnhewick Crown (f:1)  e:69
+[Y0004]       POLITY.SUCCESSION           Faeth Paes (a:15) takes the seat of the Staernwefell Crown (f:3) (by the strongest claim)  <= e:60  e:70
+
+[Y0005]       LIFE.DEATH_NATURAL          Tuthwus Deil (a:10), captain of the Pistead Compact (f:2), dies at 31 in Pistead (p:3)  e:72
+[Y0005]       LIFE.MARRIAGE               Brini Thathaen (a:8) marries Krullkell Skild (a:9) at Pistead (p:3)  e:73
+[Y0005]       LIFE.BIRTH                  Maeld Brei (a:26) is born to Hounu Laweim (a:2) at Peirnhewick (p:2)  <= e:36  e:74
+[Y0005]       LIFE.BIRTH                  Duth Traellkeild (a:27) is born to Ba Turtheill (a:14) at Staernwefell (p:4)  <= e:38  e:75
+[Y0005] w:6   ECONOMY.FAMINE              famine at Sa Cut (p:7): 7 dead, grain short by 4  e:77
+[Y0005] w:4   ECONOMY.FAMINE              famine at Nae Seam (p:8), year 2: 30 dead, 76 abandon the place  <= e:65  e:78
+[Y0005] w:1   CONFLICT.ASSASSINATION      Hounu Laweim (a:2)'s attempt on Bi Froullgeis (a:1) fails and is traced back  e:80
+[Y0005]       POLITY.EXILE                Hounu Laweim (a:2) is cast out of the Peirnhewick Crown (f:1) — attempted murder  <= e:80  e:81
+[Y0005] w:5   CONFLICT.ASSASSINATION      Dar Taldwond (a:4) has Bi Froullgeis (a:1) murdered at Peirnhewick (p:2)  <= e:65  e:82
+[Y0005]       LIFE.DEATH_VIOLENT          Bi Froullgeis (a:1), ruler of the Peirnhewick Crown (f:1), is killed by Dar Taldwond (a:4) at Peirnhewick (p:2)  <= e:82  e:83
+[Y0005] w:7   POLITY.COUP_PLOTTED         Vopeis Foldthous (a:17) begins conspiring against Faeth Paes (a:15) of the Staernwefell Crown (f:3)  [secret]  <= e:46  e:84
+[Y0005]       POLITY.COURTS_SUPPORT       Faespa Futhbill (a:18) wins Vopeis Foldthous (a:17) away from the ruler of the Staernwefell Crown (f:3)  <= e:46  e:85
+[Y0005]       ECONOMY.TRADE_PACT          the Pistead Compact (f:2) buys 30 grain from the Peirnhewick Crown (f:1) for 60 silver  e:86
+[Y0005] w:2   POLITY.COUP_RESOLVED        Faespa Futhbill (a:18) challenges Faeth Paes (a:15) for the Staernwefell Crown (f:3) and wins  <= e:55  e:87
+[Y0005] w:2   POLITY.SUCCESSION           Faespa Futhbill (a:18) takes the seat of the Staernwefell Crown (f:3) (coup)  <= e:87  e:88
+[Y0005]       POLITY.EXILE                Faeth Paes (a:15) is cast out of the Staernwefell Crown (f:3) — the losing side of a coup  <= e:87  e:89
+[Y0005]       POLITY.SUCCESSION           Dar Taldwond (a:4) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:83  e:90
+
+[Y0006]       LIFE.DEATH_NATURAL          Dar Taldwond (a:4), ruler of the Peirnhewick Crown (f:1), dies at 42 in Peirnhewick (p:2)  e:92
+[Y0006]       LIFE.DEATH_NATURAL          Hinlaem Bros (a:5), retainer of the Peirnhewick Crown (f:1), dies at 62 in Peirnhewick (p:2)  e:93
+[Y0006]       LIFE.BIRTH                  Tond Mindgeirn (a:28) is born to Ba Turtheill (a:14) at Staernwefell (p:4)  <= e:38  e:94
+[Y0006] w:8   ECONOMY.PLAGUE              plague breaks out at Pistead (p:3) and takes 363  e:96
+[Y0006] w:4   ECONOMY.FAMINE              famine at Nae Seam (p:8), year 3: 11 dead, 39 abandon the place  <= e:65  e:97
+[Y0006] w:9   POLITY.COUP_PLOTTED         Beald Feithsith (a:12) begins conspiring against Vasdo Dri (a:7) of the Pistead Compact (f:2)  [secret]  <= e:96  e:99
+[Y0006]       POLITY.COURTS_SUPPORT       Vopeis Foldthous (a:17) wins Dinthei Lemmar (a:16) away from the ruler of the Staernwefell Crown (f:3)  <= e:46  e:100
+[Y0006]       ECONOMY.TRADE_PACT          the Pistead Compact (f:2) and the Peirnhewick Crown (f:1) agree terms of trade  e:101
+[Y0006]       ECONOMY.TRADE_PACT          the Staernwefell Crown (f:3) buys 30 grain from the Pistead Compact (f:2) for 60 silver  <= e:77  e:102
+[Y0006] w:5   POLITY.PLOT_DIES_WITH_PLOTTER  Dar Taldwond (a:4)'s conspiracy against Bi Froullgeis (a:1) dies with them, 2 years in  [secret]  <= e:68,e:92  e:103
+[Y0006]       POLITY.SUCCESSION           Thothbus Treim (a:20) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:92  e:104
+[Y0006] w:6   ECONOMY.FAMINE_ENDS         the hunger at Sa Cut (p:7) passes after 1 years  <= e:77  e:106
+
+[Y0007]       LIFE.DEATH_NATURAL          Faeth Paes (a:15), exile, dies at 38 in Staernwefell (p:4)  e:107
+[Y0007] w:4   ECONOMY.FAMINE              famine at Nae Seam (p:8), year 4: 11 dead, 32 abandon the place  <= e:65  e:109
+[Y0007]       POLITY.EXILE_RETURN         Hounu Laweim (a:2) returns from exile and takes service with the Pistead Compact (f:2)  <= e:81  e:111
+[Y0007] w:9   CONFLICT.ASSASSINATION      Beald Feithsith (a:12) has Vasdo Dri (a:7) murdered at Pistead (p:3)  <= e:96  e:112
+[Y0007]       LIFE.DEATH_VIOLENT          Vasdo Dri (a:7), ruler of the Pistead Compact (f:2), is killed by Beald Feithsith (a:12) at Pistead (p:3)  <= e:112  e:113
+[Y0007] w:7   CONFLICT.ASSASSINATION      Vopeis Foldthous (a:17) has Faespa Futhbill (a:18) murdered at Staernwefell (p:4)  <= e:46  e:114
+[Y0007]       LIFE.DEATH_VIOLENT          Faespa Futhbill (a:18), ruler of the Staernwefell Crown (f:3), is killed by Vopeis Foldthous (a:17) at Staernwefell (p:4)  <= e:114  e:115
+[Y0007] w:10  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on the Staernwefell Crown (f:3) for Sa Cut (p:7)  e:116
+[Y0007]       ECONOMY.TRADE_PACT          the Peirnhewick Crown (f:1) and the Pistead Compact (f:2) agree terms of trade  <= e:78  e:117
+[Y0007] w:1   POLITY.COUP_RESOLVED        Hounu Laweim (a:2) challenges Thothbus Treim (a:20) for the Peirnhewick Crown (f:1) and wins  <= e:42  e:118
+[Y0007] w:1   POLITY.SUCCESSION           Hounu Laweim (a:2) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:118  e:119
+[Y0007] w:1   LIFE.DEATH_VIOLENT          Thothbus Treim (a:20), ruler of the Peirnhewick Crown (f:1), is killed by Hounu Laweim (a:2) at Peirnhewick (p:2)  <= e:118  e:120
+[Y0007] w:3   POLITY.PLOT_DIES_WITH_PLOTTER  Thothbus Treim (a:20)'s conspiracy against Bi Froullgeis (a:1) dies with them, 4 years in  [secret]  <= e:56,e:120  e:121
+[Y0007] w:10  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Staernwefell Crown (f:3) at Sa Cut (p:7) (29 dead)  <= e:116  e:122
+[Y0007] w:10  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Sa Cut (p:7) from the Staernwefell Crown (f:3)  <= e:122  e:123
+[Y0007]       POLITY.SUCCESSION           Krullkell Skild (a:9) takes the seat of the Pistead Compact (f:2) (by election)  <= e:113  e:124
+[Y0007]       POLITY.SUCCESSION           Dinthei Lemmar (a:16) takes the seat of the Staernwefell Crown (f:3) (by the strongest claim)  <= e:115  e:125
+[Y0007] w:8   ECONOMY.PLAGUE_ENDS         the pestilence at Pistead (p:3) burns out after 1 years  <= e:96  e:127
+
+[Y0008]       LIFE.BIRTH                  Brelddur Gro (a:29) is born to Brini Thathaen (a:8) at Pistead (p:3)  <= e:73  e:128
+[Y0008]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Nae Seam (p:8) (136% of usual)  e:131
+[Y0008]       CONFLICT.RAID               the Peirnhewick Crown (f:1) raids Pistead (p:3), carrying off 55 grain and killing 53  <= e:78  e:133
+[Y0008]       CONFLICT.RAID               the Staernwefell Crown (f:3)'s raid on Puholt (p:5) is beaten off  <= e:77  e:134
+[Y0008] w:7   POLITY.COUP_RESOLVED        Vopeis Foldthous (a:17) challenges Dinthei Lemmar (a:16) for the Staernwefell Crown (f:3) and wins  <= e:84  e:135
+[Y0008] w:7   POLITY.SUCCESSION           Vopeis Foldthous (a:17) takes the seat of the Staernwefell Crown (f:3) (coup)  <= e:135  e:136
+[Y0008]       POLITY.EXILE                Dinthei Lemmar (a:16) is cast out of the Staernwefell Crown (f:3) — the losing side of a coup  <= e:135  e:137
+[Y0008] w:9   POLITY.COUP_RESOLVED        Beald Feithsith (a:12) challenges Krullkell Skild (a:9) for the Pistead Compact (f:2) and wins  <= e:99  e:138
+[Y0008] w:9   POLITY.SUCCESSION           Beald Feithsith (a:12) takes the seat of the Pistead Compact (f:2) (coup)  <= e:138  e:139
+[Y0008]       POLITY.EXILE                Krullkell Skild (a:9) is cast out of the Pistead Compact (f:2) — the losing side of a coup  <= e:138  e:140
+[Y0008] w:10  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Staernwefell Crown (f:3) at Staernwefell (p:4) (115 dead)  <= e:116  e:141
+[Y0008] w:10  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Staernwefell (p:4) from the Staernwefell Crown (f:3)  <= e:141  e:142
+[Y0008]       POLITY.COLLAPSE             the Staernwefell Crown (f:3) is finished — landless, its last 6 followers scatter  <= e:142  e:143
+[Y0008] w:4   ECONOMY.FAMINE_ENDS         the hunger at Nae Seam (p:8) passes after 4 years  <= e:65  e:146
+
+[Y0009] w:11  ECONOMY.FAMINE              famine at Nae Seam (p:8): 5 dead, grain short by 2  e:149
+[Y0009]       POLITY.EXILE_RETURN         Krullkell Skild (a:9) returns from exile and takes service with the Peirnhewick Crown (f:1)  <= e:140  e:151
+[Y0009]       CONFLICT.RAID               the Peirnhewick Crown (f:1) raids Kraefell (p:6), carrying off 56 grain and killing 47  <= e:78  e:152
+[Y0009]       CONFLICT.RAID               the Pistead Compact (f:2) raids Peirnhewick (p:2), carrying off 55 grain and killing 24  <= e:152  e:153
+[Y0009] w:10  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and the Staernwefell Crown (f:3) make peace after 2 years, after the collapse of the Staernwefell Crown  <= e:116  e:154
+
+[Y0010]       LIFE.DEATH_NATURAL          Skaell Meall (a:3), retainer of the Peirnhewick Crown (f:1), dies at 57 in Peirnhewick (p:2)  e:156
+[Y0010]       LIFE.DEATH_NATURAL          Bourwean Houth (a:11), captain of the Pistead Compact (f:2), dies at 60 in Pistead (p:3)  e:157
+[Y0010]       POLITY.EXILE_RETURN         Dinthei Lemmar (a:16) returns from exile and takes service with the Pistead Compact (f:2)  <= e:137  e:161
+[Y0010]       DIPLO.INSULT                the Peirnhewick Crown (f:1) publicly slights the Pistead Compact (f:2)  e:162
+[Y0010] w:11  ECONOMY.FAMINE_ENDS         the hunger at Nae Seam (p:8) passes after 1 years  <= e:149  e:164
+
+[Y0011] w:12  POLITY.COUP_PLOTTED         Krullkell Skild (a:9) begins conspiring against Hounu Laweim (a:2) of the Peirnhewick Crown (f:1)  [secret]  <= e:151  e:167
+[Y0011] w:13  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on the Pistead Compact (f:2) over long-standing grievance  e:168
+[Y0011] w:13  CONFLICT.BATTLE             the Pistead Compact (f:2) defeats the Peirnhewick Crown (f:1) at Pistead (p:3) (64 dead)  <= e:168  e:169
+
+[Y0012] w:14  ECONOMY.PLAGUE              plague breaks out at Peirnhewick (p:2) and takes 171  e:172
+[Y0012] w:16  ECONOMY.FAMINE              famine at Nae Seam (p:8): 7 dead, grain short by 5  e:174
+[Y0012] w:12  CONFLICT.ASSASSINATION      Krullkell Skild (a:9) has Hounu Laweim (a:2) murdered at Pistead (p:3)  <= e:151  e:176
+[Y0012]       LIFE.DEATH_VIOLENT          Hounu Laweim (a:2), ruler of the Peirnhewick Crown (f:1), is killed by Krullkell Skild (a:9) at Pistead (p:3)  <= e:176  e:177
+[Y0012] w:17  POLITY.COUP_PLOTTED         Dinthei Lemmar (a:16) begins conspiring against Beald Feithsith (a:12) of the Pistead Compact (f:2)  [secret]  <= e:161  e:178
+[Y0012]       CONFLICT.RAID               the Pistead Compact (f:2) raids Puholt (p:5), carrying off 26 grain and killing 52  e:179
+[Y0012] w:13  CONFLICT.BATTLE             the Pistead Compact (f:2) defeats the Peirnhewick Crown (f:1) at Kraefell (p:6) (54 dead)  <= e:168  e:180
+[Y0012]       POLITY.SUCCESSION           Ba Turtheill (a:14) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:177  e:181
+
+[Y0013]       LIFE.BIRTH                  Draellou Sea (a:31) is born to Ba Turtheill (a:14) at Staernwefell (p:4)  <= e:38  e:183
+[Y0013] w:14  ECONOMY.PLAGUE              plague at Peirnhewick (p:2), year 2: 132 dead and 111 flee  <= e:172  e:185
+[Y0013] w:18  ECONOMY.PLAGUE              plague breaks out at Puholt (p:5) and takes 162  e:186
+[Y0013] w:19  ECONOMY.PLAGUE              plague breaks out at Nae Seam (p:8) and takes 21  e:187
+[Y0013]       POLITY.COURTS_SUPPORT       Dinthei Lemmar (a:16) wins Gaedrell Meand (a:25) away from the ruler of the Pistead Compact (f:2)  <= e:161  e:189
+[Y0013] w:13  CONFLICT.ASSASSINATION      Ba Turtheill (a:14)'s attempt on Beald Feithsith (a:12) fails and is traced back  e:190
+[Y0013]       POLITY.EXILE                Ba Turtheill (a:14) is cast out of the Peirnhewick Crown (f:1) — attempted murder  <= e:190  e:191
+[Y0013]       CONFLICT.RAID               the Pistead Compact (f:2) raids Staernwefell (p:4), carrying off 39 grain and killing 19  <= e:190  e:192
+[Y0013] w:13  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and the Pistead Compact (f:2) make peace after 2 years, both sides exhausted  <= e:168  e:193
+[Y0013]       POLITY.SUCCESSION           Krullkell Skild (a:9) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:191  e:194
+[Y0013]       POLITY.SECESSION            Staernwefell (p:4) breaks from the Peirnhewick Crown (f:1) as the Burghers of Staernwefell, with Duth Traellkeild (a:27) taking its seat  <= e:191  e:196
+[Y0013] w:15  ECONOMY.FAMINE_ENDS         the hunger at Sa Cut (p:7) passes after 1 years  e:197
+[Y0013] w:16  ECONOMY.FAMINE_ENDS         the hunger at Nae Seam (p:8) passes after 1 years  <= e:174  e:198
+
+[Y0014]       LIFE.DEATH_NATURAL          Grae Sinven (a:19), commoner of the Peirnhewick Crown (f:1), dies at 61 in Staernwefell (p:4)  e:199
+[Y0014]       LIFE.BIRTH                  Tharnpeil Waeld (a:32) is born to Brini Thathaen (a:8) at Pistead (p:3)  <= e:73  e:200
+[Y0014]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Nae Seam (p:8) (132% of usual)  e:203
+[Y0014]       POLITY.EXILE_RETURN         Ba Turtheill (a:14) returns from exile and takes service with the Pistead Compact (f:2)  <= e:191  e:205
+[Y0014] w:17  CONFLICT.ASSASSINATION      an attempt on Beald Feithsith (a:12) fails at Pistead (p:3), unattributed  [secret]  <= e:161  e:206
+[Y0014] w:13  CONFLICT.ASSASSINATION      Krullkell Skild (a:9) has Beald Feithsith (a:12) murdered at Pistead (p:3)  e:207
+[Y0014]       LIFE.DEATH_VIOLENT          Beald Feithsith (a:12), ruler of the Pistead Compact (f:2), is killed by Krullkell Skild (a:9) at Pistead (p:3)  <= e:207  e:208
+[Y0014]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Kraefell (p:6) is beaten off  e:209
+[Y0014]       DIPLO.TRIBUTE_DEMANDED      the Burghers of Staernwefell (f:4) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:210
+[Y0014] w:12  POLITY.PLOT_LAPSES          Krullkell Skild (a:9)'s conspiracy against Hounu Laweim (a:2) lapses after 3 years — its author took the seat by other means  [secret]  <= e:167  e:211
+[Y0014]       POLITY.SUCCESSION           Ba Turtheill (a:14) takes the seat of the Pistead Compact (f:2) (by election)  <= e:208  e:212
+[Y0014] w:14  ECONOMY.PLAGUE_ENDS         the pestilence at Peirnhewick (p:2) burns out after 2 years  <= e:172  e:214
+[Y0014] w:18  ECONOMY.PLAGUE_ENDS         the pestilence at Puholt (p:5) burns out after 1 years  <= e:186  e:215
+[Y0014] w:19  ECONOMY.PLAGUE_ENDS         the pestilence at Nae Seam (p:8) burns out after 1 years  <= e:187  e:216
+
+[Y0015]       LIFE.BIRTH                  Thes Brendweir (a:33) is born to Ba Turtheill (a:14) at Pistead (p:3)  <= e:38  e:217
+[Y0015]       POLITY.CHALLENGE            Dinthei Lemmar (a:16) challenges Ba Turtheill (a:14) openly for the Pistead Compact (f:2), wins, and takes the seat from Ba Turtheill (a:14)  <= e:161  e:221
+[Y0015]       POLITY.EXILE                Ba Turtheill (a:14) is cast out of the Pistead Compact (f:2) — the losing side of an open challenge  <= e:221  e:223
+[Y0015]       POLITY.APPOINTMENT          Wimnall Nind (a:6) is raised to heir of the Peirnhewick Crown (f:1)  e:224
+[Y0015]       CONFLICT.RAID               the Pistead Compact (f:2)'s raid on Sa Cut (p:7) is beaten off  e:225
+[Y0015]       ECONOMY.TRADE_PACT          the Burghers of Staernwefell (f:4) buys 21 grain from the Pistead Compact (f:2) for 42 silver  e:226
+[Y0015]       DIPLO.INSULT                the Burghers of Staernwefell (f:4) publicly slights the Peirnhewick Crown (f:1)  e:227
+[Y0015] w:17  POLITY.PLOT_LAPSES          Dinthei Lemmar (a:16)'s conspiracy against Beald Feithsith (a:12) lapses after 3 years — its author took the seat by other means  [secret]  <= e:178  e:228
+[Y0015]       POLITY.SECESSION            Kraefell (p:6) breaks from the Pistead Compact (f:2) as the Second Crown of Kraefell, with Neldthear Throum (a:34) taking its seat  <= e:225  e:231
+
+[Y0016]       POLITY.EXILE_RETURN         Ba Turtheill (a:14) returns from exile and takes service with the Burghers of Staernwefell (f:4)  <= e:223  e:234
+[Y0016]       POLITY.LEGITIMACY_CRISIS    the Peirnhewick Crown (f:1) spends 50 silver to buy back goodwill  e:235
+[Y0016]       CONFLICT.RAID               the Pistead Compact (f:2)'s raid on Nae Seam (p:8) is beaten off  e:236
+[Y0016]       POLITY.LEGITIMACY_CRISIS    the Pistead Compact (f:2) spends 50 silver to buy back goodwill  <= e:231  e:237
+[Y0016]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Peirnhewick (p:2) is beaten off  e:238
+[Y0016]       DIPLO.TRIBUTE_DEMANDED      the Second Crown of Kraefell (f:5) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:239
+[Y0016]       POLITY.REVOLT               Sa Cut (p:7) rises against the Peirnhewick Crown (f:1), whose standing had fallen to nothing  e:241
+[Y0016] w:20  ECONOMY.PLAGUE_ENDS         the pestilence at Sa Cut (p:7) burns out after 1 years  e:242
+
+[Y0017] w:21  ECONOMY.PLAGUE              plague breaks out at Kraefell (p:6) and takes 323  e:244
+[Y0017]       CONFLICT.RAID               the Peirnhewick Crown (f:1) raids Pistead (p:3), carrying off 49 grain and killing 50  <= e:149  e:246
+[Y0017]       POLITY.APPOINTMENT          Brini Thathaen (a:8) is raised to steward of the Pistead Compact (f:2)  <= e:231  e:247
+[Y0017]       ECONOMY.TRADE_PACT          the Burghers of Staernwefell (f:4) buys 11 grain from the Peirnhewick Crown (f:1) for 22 silver  e:248
+
+[Y0018]       LIFE.BIRTH                  Kaell Rillwem (a:35) is born to Brini Thathaen (a:8) at Pistead (p:3)  <= e:73  e:251
+[Y0018]       POLITY.COURTS_SUPPORT       Wimnall Nind (a:6) wins Vopeis Foldthous (a:17) away from the ruler of the Peirnhewick Crown (f:1)  <= e:241  e:255
+[Y0018]       CONFLICT.ASSASSINATION      Krullkell Skild (a:9) has Dinthei Lemmar (a:16) murdered at Pistead (p:3)  e:256
+[Y0018]       LIFE.DEATH_VIOLENT          Dinthei Lemmar (a:16), ruler of the Pistead Compact (f:2), is killed by Krullkell Skild (a:9) at Pistead (p:3)  <= e:256  e:257
+[Y0018]       ECONOMY.TRADE_PACT          the Burghers of Staernwefell (f:4) and the Peirnhewick Crown (f:1) agree terms of trade  e:258
+[Y0018]       POLITY.SUCCESSION           Goth Beildbea (a:21) takes the seat of the Pistead Compact (f:2) (by election)  <= e:257  e:259
+[Y0018] w:21  ECONOMY.PLAGUE_ENDS         the pestilence at Kraefell (p:6) burns out after 1 years  <= e:244  e:261
+
+[Y0019]       LIFE.MARRIAGE               Goth Beildbea (a:21) marries Neldthear Throum (a:34), binding the Pistead Compact (f:2) to the Second Crown of Kraefell (f:5)  e:263
+[Y0019] w:22  POLITY.COUP_PLOTTED         Wimnall Nind (a:6) begins conspiring against Krullkell Skild (a:9) of the Peirnhewick Crown (f:1)  [secret]  <= e:241  e:266
+[Y0019]       DIPLO.TRIBUTE_DEMANDED      the Peirnhewick Crown (f:1) extracts 68 silver in tribute from the Pistead Compact (f:2)  e:267
+[Y0019]       POLITY.APPOINTMENT          Thethden Steith (a:22) is raised to heir of the Pistead Compact (f:2)  <= e:231  e:268
+[Y0019]       CONFLICT.RAID               the Pistead Compact (f:2)'s raid on Peirnhewick (p:2) is beaten off  <= e:267  e:269
+[Y0019]       DIPLO.INSULT                the Second Crown of Kraefell (f:5) publicly slights the Peirnhewick Crown (f:1)  e:270
+
+[Y0020]       LIFE.BIRTH                  Ve Va (a:37) is born to Goth Beildbea (a:21) at Pistead (p:3)  <= e:263  e:275
+[Y0020]       POLITY.CHALLENGE            Wimnall Nind (a:6) challenges Krullkell Skild (a:9) openly for the Peirnhewick Crown (f:1), wins, and takes the seat from Krullkell Skild (a:9)  <= e:241  e:278
+[Y0020]       LIFE.DEATH_VIOLENT          Krullkell Skild (a:9), ruler of the Peirnhewick Crown (f:1), is killed by Wimnall Nind (a:6) at Peirnhewick (p:2)  <= e:278  e:280
+[Y0020]       POLITY.APPOINTMENT          Thrallheirn Gend (a:24) is raised to heir of the Peirnhewick Crown (f:1)  e:281
+[Y0020]       POLITY.APPOINTMENT          Gaedrell Meand (a:25) is raised to steward of the Pistead Compact (f:2)  <= e:269  e:282
+[Y0020] w:22  POLITY.PLOT_LAPSES          Wimnall Nind (a:6)'s conspiracy against Krullkell Skild (a:9) lapses after 1 years — its author took the seat by other means  [secret]  <= e:266  e:283
+
+[Y0021]       LIFE.MARRIAGE               Thethden Steith (a:22) marries Vour Trouthteith (a:23), binding the Pistead Compact (f:2) to the Burghers of Staernwefell (f:4)  e:286
+[Y0021]       LIFE.MARRIAGE               Thrallheirn Gend (a:24) marries Gaedrell Meand (a:25), binding the Peirnhewick Crown (f:1) to the Pistead Compact (f:2)  e:287
+[Y0021]       LIFE.BIRTH                  Vold Freideth (a:38) is born to Goth Beildbea (a:21) at Pistead (p:3)  <= e:263  e:288
+[Y0021] w:23  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on the Pistead Compact (f:2) over long-standing grievance  e:291
+[Y0021]       POLITY.APPOINTMENT          Maeld Brei (a:26) is raised to steward of the Peirnhewick Crown (f:1)  e:292
+[Y0021]       CONFLICT.RAID               the Pistead Compact (f:2)'s raid on Puholt (p:5) is beaten off  <= e:291  e:293
+[Y0021]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Puholt (p:5) is beaten off  e:294
+[Y0021] w:23  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Pistead Compact (f:2) at Pistead (p:3) (185 dead)  <= e:291  e:295
+[Y0021] w:23  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Pistead (p:3) from the Pistead Compact (f:2)  <= e:295  e:296
+[Y0021]       POLITY.COLLAPSE             the Pistead Compact (f:2) is finished — landless, its last 10 followers scatter  <= e:296  e:297
+
+[Y0022]       LIFE.BIRTH                  Peath Grofa (a:39) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:300
+[Y0022]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Pistead (p:3) is beaten off  e:303
+[Y0022]       DIPLO.ALLIANCE_FORMED       the Second Crown of Kraefell (f:5) seeks an alliance with the Burghers of Staernwefell (f:4) and is turned away  <= e:296  e:304
+[Y0022] w:23  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and the Pistead Compact (f:2) make peace after 1 years, after the collapse of the Pistead Compact  <= e:291  e:305
+
+[Y0023]       LIFE.MARRIAGE               Duth Traellkeild (a:27) marries Tond Mindgeirn (a:28) at Staernwefell (p:4)  e:308
+[Y0023]       LIFE.BIRTH                  Noheil Loum (a:40) is born to Brini Thathaen (a:8) at Pistead (p:3)  <= e:73  e:309
+[Y0023]       LIFE.BIRTH                  Vi Thrinli (a:41) is born to Duth Traellkeild (a:27) at Staernwefell (p:4)  <= e:308  e:310
+[Y0023]       ECONOMY.TRADE_PACT          the Peirnhewick Crown (f:1) and the Second Crown of Kraefell (f:5) agree terms of trade  <= e:174  e:313
+[Y0023]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Sa Cut (p:7) is beaten off  e:314
+
+[Y0024]       LIFE.BIRTH                  Greastha Rou (a:42) is born to Goth Beildbea (a:21) at Pistead (p:3)  <= e:263  e:316
+[Y0024]       LIFE.BIRTH                  Skal Wus (a:43) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:317
+[Y0024]       LIFE.BIRTH                  Beind Grorn (a:44) is born to Duth Traellkeild (a:27) at Staernwefell (p:4)  <= e:308  e:318
+[Y0024]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Pistead (p:3) (143% of usual)  e:320
+[Y0024]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Kraefell (p:6) (142% of usual)  e:322
+[Y0024]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Nae Seam (p:8) (142% of usual)  e:323
+[Y0024]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Nae Seam (p:8) is beaten off  e:325
+
+[Y0025] w:24  POLITY.COUP_PLOTTED         Vopeis Foldthous (a:17) begins conspiring against Wimnall Nind (a:6) of the Peirnhewick Crown (f:1)  [secret]  e:331
+[Y0025]       POLITY.LEGITIMACY_CRISIS    the Peirnhewick Crown (f:1) spends 95 silver buying goodwill for the second time, and is not believed  e:332
+[Y0025]       CONFLICT.RAID               the Peirnhewick Crown (f:1) raids Kraefell (p:6), carrying off 41 grain and killing 37  <= e:174  e:333
+[Y0025]       ECONOMY.TRADE_PACT          the Burghers of Staernwefell (f:4) and the Peirnhewick Crown (f:1) agree terms of trade  e:334
+
+[Y0026]       LIFE.BIRTH                  Nothmeand Trearol (a:45) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:336
+[Y0026]       POLITY.COURTS_SUPPORT       Vopeis Foldthous (a:17) wins Gaedrell Meand (a:25) away from the ruler of the Peirnhewick Crown (f:1)  e:339
+[Y0026]       POLITY.APPOINTMENT          Geabum Stull (a:30) is raised to steward of the Peirnhewick Crown (f:1)  e:340
+[Y0026]       POLITY.REVOLT               Nae Seam (p:8) rises against the Peirnhewick Crown (f:1), whose standing had fallen very low  <= e:339  e:342
+
+[Y0027]       LIFE.BIRTH                  Bror Ster (a:46) is born to Goth Beildbea (a:21) at Pistead (p:3)  <= e:263  e:343
+[Y0027] w:24  CONFLICT.ASSASSINATION      Vopeis Foldthous (a:17) has Wimnall Nind (a:6) murdered at Peirnhewick (p:2)  e:346
+[Y0027]       LIFE.DEATH_VIOLENT          Wimnall Nind (a:6), ruler of the Peirnhewick Crown (f:1), is killed by Vopeis Foldthous (a:17) at Peirnhewick (p:2)  <= e:346  e:347
+[Y0027]       POLITY.SUCCESSION           Brini Thathaen (a:8) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:347,e:247  e:348
+
+[Y0028]       LIFE.DEATH_NATURAL          Tond Mindgeirn (a:28), commoner of the Burghers of Staernwefell (f:4), dies at 22 in Staernwefell (p:4)  e:350
+[Y0028] w:25  POLITY.COUP_PLOTTED         Maeld Brei (a:26) begins conspiring against Brini Thathaen (a:8) of the Peirnhewick Crown (f:1)  [secret]  <= e:342  e:353
+[Y0028]       POLITY.COURTS_SUPPORT       Brelddur Gro (a:29) wins Gaedrell Meand (a:25) away from the ruler of the Peirnhewick Crown (f:1)  <= e:347  e:354
+[Y0028]       ECONOMY.TRADE_PACT          the Peirnhewick Crown (f:1) and the Second Crown of Kraefell (f:5) agree terms of trade  <= e:174  e:355
+
+[Y0029]       LIFE.BIRTH                  Sanoun Dou (a:47) is born to Duth Traellkeild (a:27) at Staernwefell (p:4)  <= e:308  e:358
+[Y0029] w:25  CONFLICT.ASSASSINATION      Maeld Brei (a:26) has Brini Thathaen (a:8) murdered at Pistead (p:3)  <= e:342  e:361
+[Y0029]       LIFE.DEATH_VIOLENT          Brini Thathaen (a:8), ruler of the Peirnhewick Crown (f:1), is killed by Maeld Brei (a:26) at Pistead (p:3)  <= e:361  e:362
+[Y0029]       DIPLO.ALLIANCE_FORMED       the Second Crown of Kraefell (f:5) and the Burghers of Staernwefell (f:4) swear an alliance  <= e:296  e:363
+[Y0029]       POLITY.SUCCESSION           Goth Beildbea (a:21) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:362,e:282  e:364
+
+[Y0030]       LIFE.MARRIAGE               Maeld Brei (a:26) marries Draellou Sea (a:31) at Peirnhewick (p:2)  e:366
+[Y0030]       LIFE.BIRTH                  Dusvoth Pe (a:48) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:367
+[Y0030]       POLITY.CHALLENGE            Vour Trouthteith (a:23) challenges Duth Traellkeild (a:27) openly for the Burghers of Staernwefell (f:4), loses, and Duth Traellkeild (a:27) keeps the seat  <= e:325  e:371
+[Y0030]       LIFE.DEATH_VIOLENT          Vour Trouthteith (a:23), commoner of the Burghers of Staernwefell (f:4), is killed by Duth Traellkeild (a:27) at Staernwefell (p:4)  <= e:371  e:372
+[Y0030] w:26  POLITY.COUP_PLOTTED         Maeld Brei (a:26) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:362  e:373
+[Y0030]       POLITY.COURTS_SUPPORT       Brelddur Gro (a:29) wins Deldfol Saen (a:49) away from the ruler of the Peirnhewick Crown (f:1)  <= e:347  e:374
+[Y0030]       POLITY.APPOINTMENT          Draellou Sea (a:31) is raised to steward of the Peirnhewick Crown (f:1)  e:375
+[Y0030]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Sa Cut (p:7) is beaten off  e:376
+[Y0030] w:25  POLITY.COUP_RESOLVED        Maeld Brei (a:26) challenges Goth Beildbea (a:21) for the Peirnhewick Crown (f:1) and wins  <= e:353  e:377
+[Y0030] w:25  POLITY.SUCCESSION           Maeld Brei (a:26) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:377  e:378
+[Y0030]       POLITY.EXILE                Goth Beildbea (a:21) is cast out of the Peirnhewick Crown (f:1) — the losing side of a coup  <= e:377  e:379
+[Y0030] w:26  POLITY.PLOT_LAPSES          Maeld Brei (a:26)'s conspiracy against Goth Beildbea (a:21) lapses after 0 years — its author took the seat by other means  [secret]  <= e:373  e:380
+
+[Y0031]       LIFE.BIRTH                  Trapearn Sael (a:50) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:383
+[Y0031]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Pistead (p:3) (142% of usual)  e:385
+[Y0031] w:27  POLITY.COUP_PLOTTED         Thrallheirn Gend (a:24) begins conspiring against Maeld Brei (a:26) of the Peirnhewick Crown (f:1)  [secret]  <= e:379  e:388
+[Y0031] w:28  POLITY.COUP_PLOTTED         Brelddur Gro (a:29) begins conspiring against Maeld Brei (a:26) of the Peirnhewick Crown (f:1)  [secret]  <= e:347  e:389
+[Y0031]       DIPLO.INSULT                the Burghers of Staernwefell (f:4) publicly slights the Peirnhewick Crown (f:1)  e:390
+[Y0031]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Nae Seam (p:8) is beaten off  e:391
+[Y0031] w:24  POLITY.COUP_RESOLVED        Vopeis Foldthous (a:17) challenges Maeld Brei (a:26) for the Peirnhewick Crown (f:1) and wins  <= e:331  e:392
+[Y0031] w:24  POLITY.SUCCESSION           Vopeis Foldthous (a:17) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:392  e:393
+[Y0031]       POLITY.EXILE                Maeld Brei (a:26) is cast out of the Peirnhewick Crown (f:1) — the losing side of a coup  <= e:392  e:394
+
+[Y0032]       POLITY.EXILE_RETURN         Goth Beildbea (a:21) returns from exile and takes service with the Burghers of Staernwefell (f:4)  <= e:379  e:401
+[Y0032]       POLITY.COURTS_SUPPORT       Thrallheirn Gend (a:24) wins Peath Grofa (a:39) away from the ruler of the Peirnhewick Crown (f:1)  <= e:379  e:402
+[Y0032]       POLITY.COURTS_SUPPORT       Gaedrell Meand (a:25) wins Peath Grofa (a:39) away from the ruler of the Peirnhewick Crown (f:1)  <= e:394  e:403
+[Y0032]       POLITY.EXILE_RETURN         Maeld Brei (a:26) returns from exile and takes service with the Second Crown of Kraefell (f:5)  <= e:394  e:404
+[Y0032] w:28  CONFLICT.ASSASSINATION      Brelddur Gro (a:29)'s attempt on Vopeis Foldthous (a:17) fails and is traced back  <= e:347  e:405
+[Y0032]       POLITY.EXILE                Brelddur Gro (a:29) is cast out of the Peirnhewick Crown (f:1) — attempted murder  <= e:405  e:406
+[Y0032]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Peirnhewick (p:2) is beaten off  e:407
+[Y0032]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Peirnhewick (p:2) is beaten off  e:408
+[Y0032] w:28  POLITY.COUP_RESOLVED        Brelddur Gro (a:29) challenges Vopeis Foldthous (a:17) for the Peirnhewick Crown (f:1) and wins  <= e:389  e:409
+[Y0032] w:28  POLITY.SUCCESSION           Brelddur Gro (a:29) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:409  e:410
+[Y0032]       POLITY.EXILE                Vopeis Foldthous (a:17) is cast out of the Peirnhewick Crown (f:1) — the losing side of a coup  <= e:409  e:411
+
+[Y0033]       LIFE.DEATH_NATURAL          Vopeis Foldthous (a:17), exile, dies at 61 in Staernwefell (p:4)  e:413
+[Y0033]       LIFE.BIRTH                  Doth Braengourn (a:51) is born to Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:287  e:414
+[Y0033]       POLITY.CHALLENGE            Thrallheirn Gend (a:24) challenges Brelddur Gro (a:29) openly for the Peirnhewick Crown (f:1), wins, and takes the seat from Brelddur Gro (a:29)  <= e:379  e:417
+[Y0033]       LIFE.DEATH_VIOLENT          Brelddur Gro (a:29), ruler of the Peirnhewick Crown (f:1), is killed by Thrallheirn Gend (a:24) at Peirnhewick (p:2)  <= e:417  e:419
+[Y0033]       ECONOMY.TRADE_PACT          the Burghers of Staernwefell (f:4) buys 30 grain from the Peirnhewick Crown (f:1) for 60 silver  <= e:385,e:334  e:420
+[Y0033]       CONFLICT.ASSASSINATION      Duth Traellkeild (a:27)'s attempt on Thrallheirn Gend (a:24) fails and is traced back  e:421
+[Y0033]       POLITY.EXILE                Duth Traellkeild (a:27) is cast out of the Burghers of Staernwefell (f:4) — attempted murder  <= e:421  e:422
+[Y0033]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Pistead (p:3) is beaten off  e:423
+[Y0033] w:27  POLITY.PLOT_LAPSES          Thrallheirn Gend (a:24)'s conspiracy against Maeld Brei (a:26) lapses after 2 years — its author took the seat by other means  [secret]  <= e:388  e:424
+[Y0033]       POLITY.SUCCESSION           Goth Beildbea (a:21) takes the seat of the Burghers of Staernwefell (f:4) (by election)  <= e:422,e:375  e:425
+
+[Y0034] w:29  POLITY.COUP_PLOTTED         Gaedrell Meand (a:25) begins conspiring against Thrallheirn Gend (a:24) of the Peirnhewick Crown (f:1)  [secret]  <= e:394  e:430
+[Y0034]       POLITY.COURTS_SUPPORT       Thes Brendweir (a:33) wins Trapearn Sael (a:50) away from the ruler of the Peirnhewick Crown (f:1)  <= e:411  e:431
+[Y0034]       ECONOMY.TRADE_PACT          the Peirnhewick Crown (f:1) buys 30 grain from the Second Crown of Kraefell (f:5) for 60 silver  <= e:174,e:322,e:355  e:432
+[Y0034]       CONFLICT.ASSASSINATION      an attempt on Thrallheirn Gend (a:24) fails at Peirnhewick (p:2), unattributed  [secret]  e:433
+
+[Y0035]       POLITY.COURTS_SUPPORT       Ba Turtheill (a:14) wins Sos Geith (a:36) away from the ruler of the Burghers of Staernwefell (f:4)  <= e:422  e:441
+[Y0035]       POLITY.COURTS_SUPPORT       Thethden Steith (a:22) wins Trapearn Sael (a:50) away from the ruler of the Peirnhewick Crown (f:1)  <= e:431  e:442
+[Y0035]       POLITY.CHALLENGE            Gaedrell Meand (a:25) challenges Thrallheirn Gend (a:24) openly for the Peirnhewick Crown (f:1), loses, and Thrallheirn Gend (a:24) keeps the seat  <= e:394  e:443
+[Y0035]       POLITY.EXILE                Gaedrell Meand (a:25) is cast out of the Peirnhewick Crown (f:1) — the losing side of an open challenge  <= e:443  e:444
+[Y0035]       POLITY.EXILE_RETURN         Duth Traellkeild (a:27) returns from exile and takes service with the Second Crown of Kraefell (f:5)  <= e:422  e:445
+[Y0035] w:30  POLITY.COUP_PLOTTED         Thes Brendweir (a:33) begins conspiring against Thrallheirn Gend (a:24) of the Peirnhewick Crown (f:1)  [secret]  <= e:411  e:446
+[Y0035]       POLITY.LEGITIMACY_CRISIS    the Peirnhewick Crown (f:1) spends 140 silver to buy back goodwill  <= e:379  e:447
+[Y0035]       DIPLO.TRIBUTE_DEMANDED      the Burghers of Staernwefell (f:4) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:448
+[Y0035]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Puholt (p:5) is beaten off  e:449
+[Y0035]       DIPLO.TRIBUTE_DEMANDED      the Second Crown of Kraefell (f:5) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:450
+[Y0035] w:29  POLITY.COUP_RESOLVED        Gaedrell Meand (a:25) challenges Thrallheirn Gend (a:24) for the Peirnhewick Crown (f:1) and wins  <= e:430  e:451
+[Y0035] w:29  POLITY.SUCCESSION           Gaedrell Meand (a:25) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:451  e:452
+[Y0035] w:29  LIFE.DEATH_VIOLENT          Thrallheirn Gend (a:24), ruler of the Peirnhewick Crown (f:1), is killed by Gaedrell Meand (a:25) at Peirnhewick (p:2)  <= e:451  e:453
+
+[Y0036]       LIFE.DEATH_NATURAL          Ba Turtheill (a:14), captain of the Burghers of Staernwefell (f:4), dies at 60 in Staernwefell (p:4)  e:455
+[Y0036]       LIFE.DEATH_NATURAL          Sos Geith (a:36), retainer of the Burghers of Staernwefell (f:4), dies at 18 in Staernwefell (p:4)  e:456
+[Y0036]       LIFE.BIRTH                  Kraen Geimteas (a:53) is born to Goth Beildbea (a:21) at Staernwefell (p:4)  <= e:263  e:457
+[Y0036]       POLITY.COURTS_SUPPORT       Thethden Steith (a:22) wins Skal Wus (a:43) away from the ruler of the Peirnhewick Crown (f:1)  <= e:431  e:461
+[Y0036] w:31  POLITY.COUP_PLOTTED         Draellou Sea (a:31) begins conspiring against Gaedrell Meand (a:25) of the Peirnhewick Crown (f:1)  [secret]  <= e:452  e:462
+[Y0036]       POLITY.COURTS_SUPPORT       Thes Brendweir (a:33) wins Kaell Rillwem (a:35) away from the ruler of the Peirnhewick Crown (f:1)  <= e:411  e:463
+[Y0036]       DIPLO.INSULT                the Second Crown of Kraefell (f:5) publicly slights the Peirnhewick Crown (f:1)  e:464
+[Y0036]       POLITY.REVOLT               Sa Cut (p:7) rises against the Peirnhewick Crown (f:1), whose standing had fallen to nothing  <= e:463  e:467
+
+[Y0037]       LIFE.MARRIAGE               Geabum Stull (a:30) marries Tharnpeil Waeld (a:32) at Staernwefell (p:4)  e:468
+[Y0037]       POLITY.CHALLENGE            Thethden Steith (a:22) challenges Gaedrell Meand (a:25) openly for the Peirnhewick Crown (f:1), loses, and Gaedrell Meand (a:25) keeps the seat  <= e:431  e:471
+[Y0037]       POLITY.EXILE                Thethden Steith (a:22) is cast out of the Peirnhewick Crown (f:1) — the losing side of an open challenge  <= e:471  e:472
+[Y0037] w:32  POLITY.COUP_PLOTTED         Maeld Brei (a:26) begins conspiring against Neldthear Throum (a:34) of the Second Crown of Kraefell (f:5)  [secret]  <= e:404  e:473
+[Y0037]       POLITY.COURTS_SUPPORT       Draellou Sea (a:31) wins Kaell Rillwem (a:35) away from the ruler of the Peirnhewick Crown (f:1)  <= e:452  e:474
+[Y0037]       POLITY.COURTS_SUPPORT       Thes Brendweir (a:33) wins Deldfol Saen (a:49) away from the ruler of the Peirnhewick Crown (f:1)  <= e:411  e:475
+[Y0037] w:33  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on the Burghers of Staernwefell (f:4) over long-standing grievance  e:476
+[Y0037]       CONFLICT.ASSASSINATION      Goth Beildbea (a:21) has Gaedrell Meand (a:25) murdered at Pistead (p:3)  e:477
+[Y0037]       LIFE.DEATH_VIOLENT          Gaedrell Meand (a:25), ruler of the Peirnhewick Crown (f:1), is killed by Goth Beildbea (a:21) at Pistead (p:3)  <= e:477  e:478
+[Y0037]       CONFLICT.RAID               the Burghers of Staernwefell (f:4)'s raid on Puholt (p:5) is beaten off  <= e:476  e:479
+[Y0037] w:33  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Burghers of Staernwefell (f:4) at Staernwefell (p:4) (128 dead)  <= e:476  e:480
+[Y0037] w:34  POLITY.SUCCESSION_DISPUTED  Tharnpeil Waeld (a:32) contests the claim of Geabum Stull (a:30), the named heir, to the Peirnhewick Crown (f:1) (decided by primogeniture)  <= e:478  e:482
+[Y0037] w:34  POLITY.SUCCESSION           Tharnpeil Waeld (a:32) takes the seat of the Peirnhewick Crown (f:1), setting aside the claim of the named heir Geabum Stull (a:30)  <= e:482  e:483
+[Y0037] w:34  POLITY.PARTITION            the Peirnhewick Crown (f:1) is divided: Geabum Stull (a:30) carries off 2 place(s) as Free Pistead  <= e:482  e:484
+
+[Y0038]       POLITY.EXILE_RETURN         Thethden Steith (a:22) returns from exile and takes service with the Second Crown of Kraefell (f:5)  <= e:472  e:490
+[Y0038]       POLITY.COURTS_SUPPORT       Maeld Brei (a:26) wins Thethden Steith (a:22) away from the ruler of the Second Crown of Kraefell (f:5)  <= e:404  e:491
+[Y0038] w:31  CONFLICT.ASSASSINATION      Draellou Sea (a:31) has Tharnpeil Waeld (a:32) murdered at Pistead (p:3)  <= e:452  e:492
+[Y0038]       LIFE.DEATH_VIOLENT          Tharnpeil Waeld (a:32), ruler of the Peirnhewick Crown (f:1), is killed by Draellou Sea (a:31) at Pistead (p:3)  <= e:492  e:493
+[Y0038]       CONFLICT.RAID               the Burghers of Staernwefell (f:4) raids Kraefell (p:6), carrying off 22 grain and killing 37  e:494
+[Y0038]       ECONOMY.TRADE_PACT          Free Pistead (f:6) buys 30 grain from the Second Crown of Kraefell (f:5) for 60 silver  e:495
+[Y0038]       DIPLO.TRIBUTE_DEMANDED      Free Pistead (f:6) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:496
+[Y0038] w:32  POLITY.COUP_RESOLVED        Maeld Brei (a:26) challenges Neldthear Throum (a:34) for the Second Crown of Kraefell (f:5) and wins  <= e:473  e:497
+[Y0038] w:32  POLITY.SUCCESSION           Maeld Brei (a:26) takes the seat of the Second Crown of Kraefell (f:5) (coup)  <= e:497  e:498
+[Y0038]       POLITY.EXILE                Neldthear Throum (a:34) is cast out of the Second Crown of Kraefell (f:5) — the losing side of a coup  <= e:497  e:499
+[Y0038] w:33  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Burghers of Staernwefell (f:4) at Staernwefell (p:4) (107 dead)  <= e:476  e:500
+[Y0038] w:33  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Staernwefell (p:4) from the Burghers of Staernwefell (f:4)  <= e:500  e:501
+[Y0038]       POLITY.COLLAPSE             the Burghers of Staernwefell (f:4) is finished — landless, its last 5 followers scatter  <= e:501  e:502
+[Y0038]       POLITY.SUCCESSION           Goth Beildbea (a:21) takes the seat of the Peirnhewick Crown (f:1) (by right of birth)  <= e:493,e:375  e:504
+
+[Y0039]       LIFE.MARRIAGE               Thes Brendweir (a:33) marries Peath Grofa (a:39) at Pistead (p:3)  e:507
+[Y0039]       LIFE.MARRIAGE               Kaell Rillwem (a:35) marries Ve Va (a:37) at Pistead (p:3)  e:508
+[Y0039]       LIFE.BIRTH                  Po Rean (a:57) is born to Geabum Stull (a:30) at Pistead (p:3)  <= e:468  e:510
+[Y0039]       POLITY.CHALLENGE            Thes Brendweir (a:33) challenges Goth Beildbea (a:21) openly for the Peirnhewick Crown (f:1), loses, and Goth Beildbea (a:21) keeps the seat  <= e:411  e:513
+[Y0039]       POLITY.EXILE                Thes Brendweir (a:33) is cast out of the Peirnhewick Crown (f:1) — the losing side of an open challenge  <= e:513  e:514
+[Y0039]       POLITY.APPOINTMENT          Noheil Loum (a:40) is raised to heir of the Peirnhewick Crown (f:1)  <= e:379  e:515
+[Y0039]       CONFLICT.ASSASSINATION      an attempt on Goth Beildbea (a:21) fails at Staernwefell (p:4), unattributed  [secret]  e:516
+[Y0039]       CONFLICT.RAID               Free Pistead (f:6)'s raid on Peirnhewick (p:2) is beaten off  e:517
+[Y0039]       DIPLO.INSULT                Free Pistead (f:6) publicly slights the Peirnhewick Crown (f:1)  e:518
+[Y0039] w:30  POLITY.COUP_RESOLVED        Thes Brendweir (a:33)'s conspiracy against Goth Beildbea (a:21) is uncovered after 4 years  <= e:446  e:519
+[Y0039]       POLITY.EXILE                Thes Brendweir (a:33), who had already left, is declared outlaw by the Peirnhewick Crown (f:1) — conspiracy against the seat  <= e:519  e:520
+[Y0039] w:33  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and the Burghers of Staernwefell (f:4) make peace after 2 years, after the collapse of the Burghers of Staernwefell  <= e:476  e:521
+
+[Y0040]       LIFE.MARRIAGE               Vold Freideth (a:38) marries Vi Thrinli (a:41) at Pistead (p:3)  e:526
+[Y0040]       POLITY.APPOINTMENT          Greastha Rou (a:42) is raised to steward of the Peirnhewick Crown (f:1)  <= e:379  e:532
+[Y0040]       CONFLICT.RAID               the Second Crown of Kraefell (f:5)'s raid on Staernwefell (p:4) is beaten off  e:533
+[Y0040]       CONFLICT.RAID               Free Pistead (f:6) raids Kraefell (p:6), carrying off 37 grain and killing 36  e:534
+[Y0040] w:31  POLITY.COUP_RESOLVED        Draellou Sea (a:31)'s conspiracy against Goth Beildbea (a:21) is uncovered after 4 years  <= e:462  e:535
+[Y0040]       POLITY.EXILE                Draellou Sea (a:31) is cast out of the Peirnhewick Crown (f:1) — conspiracy against the seat  <= e:535  e:536
+
+[Y0041]       LIFE.DEATH_NATURAL          Draellou Sea (a:31), exile, dies at 28 in Staernwefell (p:4)  e:539
+[Y0041]       CONFLICT.RAID               the Peirnhewick Crown (f:1) raids Kraefell (p:6) and kills 35, but takes nothing  e:543
+[Y0041]       POLITY.APPOINTMENT          Peath Grofa (a:39) is raised to steward of the Peirnhewick Crown (f:1)  <= e:536  e:544
+[Y0041]       ECONOMY.TRADE_PACT          Free Pistead (f:6) and the Peirnhewick Crown (f:1) agree terms of trade  e:545
+
+[Y0042]       POLITY.EXILE_RETURN         Thes Brendweir (a:33) returns from exile and takes service with Free Pistead (f:6)  <= e:520  e:552
+[Y0042]       POLITY.EXILE_RETURN         Neldthear Throum (a:34) returns from exile and takes service with the Peirnhewick Crown (f:1)  <= e:499  e:553
+[Y0042]       POLITY.COURTS_SUPPORT       Vi Thrinli (a:41) wins Kaell Rillwem (a:35) away from the ruler of the Peirnhewick Crown (f:1)  <= e:536  e:554
+[Y0042] w:35  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on the Second Crown of Kraefell (f:5) over long-standing grievance  e:555
+[Y0042]       POLITY.APPOINTMENT          Nothmeand Trearol (a:45) is raised to steward of the Peirnhewick Crown (f:1)  <= e:536  e:556
+[Y0042] w:35  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Second Crown of Kraefell (f:5) at Kraefell (p:6) (207 dead)  <= e:555  e:557
+
+[Y0043]       LIFE.BIRTH                  Bu Veldel (a:62) is born to Maeld Brei (a:26) at Kraefell (p:6)  <= e:366  e:561
+[Y0043]       LIFE.BIRTH                  Weathkall Pei (a:63) is born to Geabum Stull (a:30) at Pistead (p:3)  <= e:468  e:562
+[Y0043]       POLITY.COURTS_SUPPORT       Neldthear Throum (a:34) wins Kaell Rillwem (a:35) away from the ruler of the Peirnhewick Crown (f:1)  <= e:553  e:566
+[Y0043]       POLITY.COURTS_SUPPORT       Vi Thrinli (a:41) wins Trapearn Sael (a:50) away from the ruler of the Peirnhewick Crown (f:1)  <= e:536  e:567
+[Y0043]       POLITY.APPOINTMENT          Bror Ster (a:46) is raised to steward of the Peirnhewick Crown (f:1)  <= e:536  e:568
+[Y0043]       CONFLICT.RAID               Free Pistead (f:6)'s raid on Staernwefell (p:4) is beaten off  e:569
+[Y0043] w:35  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats the Second Crown of Kraefell (f:5) at Kraefell (p:6) (195 dead)  <= e:555  e:570
+[Y0043] w:35  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Kraefell (p:6) from the Second Crown of Kraefell (f:5)  <= e:570  e:571
+[Y0043]       POLITY.COLLAPSE             the Second Crown of Kraefell (f:5) is finished — landless, its last 12 followers scatter  <= e:571  e:572
+
+[Y0044]       LIFE.DEATH_NATURAL          Thethden Steith (a:22), commoner of the Peirnhewick Crown (f:1), dies at 41 in Kraefell (p:6)  e:575
+[Y0044]       POLITY.COURTS_SUPPORT       Neldthear Throum (a:34) wins Ve Va (a:37) away from the ruler of the Peirnhewick Crown (f:1)  <= e:553  e:578
+[Y0044] w:36  POLITY.COUP_PLOTTED         Vi Thrinli (a:41) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:536  e:579
+[Y0044]       POLITY.LEGITIMACY_CRISIS    the Peirnhewick Crown (f:1) spends 185 silver buying goodwill for the fourth time, and is not believed  <= e:567  e:580
+[Y0044]       CONFLICT.RAID               Free Pistead (f:6)'s raid on Sa Cut (p:7) is beaten off  e:581
+[Y0044] w:35  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and the Second Crown of Kraefell (f:5) make peace after 2 years, after the collapse of the Second Crown of Kraefell  <= e:555  e:582
+
+[Y0045]       LIFE.MARRIAGE               Nothmeand Trearol (a:45) marries Bror Ster (a:46) at Peirnhewick (p:2)  e:584
+[Y0045]       POLITY.COURTS_SUPPORT       Neldthear Throum (a:34) wins Trapearn Sael (a:50) away from the ruler of the Peirnhewick Crown (f:1)  <= e:553  e:587
+[Y0045] w:36  CONFLICT.ASSASSINATION      Vi Thrinli (a:41)'s attempt on Goth Beildbea (a:21) fails and is traced back  <= e:536  e:588
+[Y0045]       POLITY.EXILE                Vi Thrinli (a:41) is cast out of the Peirnhewick Crown (f:1) — attempted murder  <= e:588  e:589
+[Y0045] w:37  POLITY.COUP_PLOTTED         Skal Wus (a:43) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:580  e:590
+[Y0045]       POLITY.APPOINTMENT          Neldthear Throum (a:34) is raised to steward of the Peirnhewick Crown (f:1)  <= e:567  e:591
+[Y0045] w:38  DIPLO.WAR_DECLARED          the Peirnhewick Crown (f:1) declares war on Free Pistead (f:6) over long-standing grievance  e:592
+[Y0045]       CONFLICT.RAID               Free Pistead (f:6)'s raid on Nae Seam (p:8) is beaten off  <= e:592  e:593
+[Y0045] w:38  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats Free Pistead (f:6) at Puholt (p:5) (277 dead)  <= e:592  e:594
+[Y0045] w:38  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Puholt (p:5) from Free Pistead (f:6)  <= e:594  e:595
+
+[Y0046]       LIFE.MARRIAGE               Noheil Loum (a:40) marries Greastha Rou (a:42) at Pistead (p:3)  e:600
+[Y0046]       LIFE.BIRTH                  Taldmuld Po (a:66) is born to Geabum Stull (a:30) at Pistead (p:3)  <= e:468  e:602
+[Y0046] w:39  POLITY.COUP_PLOTTED         Neldthear Throum (a:34) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:553  e:608
+[Y0046]       POLITY.COURTS_SUPPORT       Skal Wus (a:43) wins Ve Va (a:37) away from the ruler of the Peirnhewick Crown (f:1)  <= e:580  e:609
+[Y0046] w:40  POLITY.COUP_PLOTTED         Sanoun Dou (a:47) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:589  e:610
+[Y0046]       POLITY.APPOINTMENT          Dusvoth Pe (a:48) is raised to steward of the Peirnhewick Crown (f:1)  <= e:567  e:611
+[Y0046] w:38  CONFLICT.ASSASSINATION      Goth Beildbea (a:21) has Geabum Stull (a:30) murdered at Pistead (p:3)  e:612
+[Y0046]       LIFE.DEATH_VIOLENT          Geabum Stull (a:30), ruler of Free Pistead (f:6), is killed by Goth Beildbea (a:21) at Pistead (p:3)  <= e:612  e:613
+[Y0046] w:36  POLITY.COUP_RESOLVED        Vi Thrinli (a:41)'s conspiracy against Goth Beildbea (a:21) is uncovered after 2 years  <= e:579  e:614
+[Y0046]       POLITY.EXILE                Vi Thrinli (a:41), who had already left, is declared outlaw by the Peirnhewick Crown (f:1) — conspiracy against the seat  <= e:614  e:615
+[Y0046] w:38  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats Free Pistead (f:6) at Pistead (p:3) (305 dead)  <= e:592  e:616
+[Y0046] w:38  CONFLICT.CONQUEST           the Peirnhewick Crown (f:1) takes Pistead (p:3) from Free Pistead (f:6)  <= e:616  e:617
+[Y0046]       POLITY.COLLAPSE             Free Pistead (f:6) is finished — landless, its last 6 followers scatter  <= e:617  e:618
+
+[Y0047]       LIFE.MARRIAGE               Dusvoth Pe (a:48) marries Deldfol Saen (a:49) at Peirnhewick (p:2)  e:622
+[Y0047]       LIFE.BIRTH                  Thuthkuth Dound (a:69) is born to Goth Beildbea (a:21) at Staernwefell (p:4)  <= e:263  e:623
+[Y0047]       LIFE.BIRTH                  Heldlos Staemmound (a:71) is born to Noheil Loum (a:40) at Pistead (p:3)  <= e:600  e:625
+[Y0047]       POLITY.COURTS_SUPPORT       Neldthear Throum (a:34) wins Vold Freideth (a:38) away from the ruler of the Peirnhewick Crown (f:1)  <= e:553  e:628
+[Y0047] w:37  CONFLICT.ASSASSINATION      an attempt on Goth Beildbea (a:21) fails at Staernwefell (p:4), unattributed  [secret]  <= e:580  e:629
+[Y0047] w:41  POLITY.COUP_PLOTTED         Nothmeand Trearol (a:45) begins conspiring against Goth Beildbea (a:21) of the Peirnhewick Crown (f:1)  [secret]  <= e:615  e:630
+[Y0047] w:40  CONFLICT.ASSASSINATION      Sanoun Dou (a:47) has Goth Beildbea (a:21) murdered at Staernwefell (p:4)  <= e:589  e:631
+[Y0047]       LIFE.DEATH_VIOLENT          Goth Beildbea (a:21), ruler of the Peirnhewick Crown (f:1), is killed by Sanoun Dou (a:47) at Staernwefell (p:4)  <= e:631  e:632
+[Y0047] w:38  DIPLO.PEACE_SIGNED          the Peirnhewick Crown (f:1) and Free Pistead (f:6) make peace after 2 years, after the collapse of Free Pistead  <= e:592  e:633
+[Y0047] w:42  POLITY.SUCCESSION_DISPUTED  Dusvoth Pe (a:48) contests the claim of Neldthear Throum (a:34), the named heir, to the Peirnhewick Crown (f:1) (decided by primogeniture)  <= e:632  e:634
+[Y0047] w:42  POLITY.SUCCESSION           Dusvoth Pe (a:48) takes the seat of the Peirnhewick Crown (f:1), setting aside the claim of the named heir Neldthear Throum (a:34)  <= e:634  e:635
+[Y0047] w:42  POLITY.PARTITION            the Peirnhewick Crown (f:1) is divided: Neldthear Throum (a:34) carries off 3 place(s) as the Sworn Men of Pistead  <= e:634  e:636
+[Y0047]       POLITY.REVOLT               Nae Seam (p:8) rises against the Peirnhewick Crown (f:1), whose standing had fallen to nothing  <= e:636  e:638
+
+[Y0048]       LIFE.BIRTH                  Gir Ges (a:75) is born to Noheil Loum (a:40) at Pistead (p:3)  <= e:600  e:642
+[Y0048]       POLITY.CHALLENGE            Skal Wus (a:43) challenges Dusvoth Pe (a:48) openly for the Peirnhewick Crown (f:1), loses, and Dusvoth Pe (a:48) keeps the seat  <= e:580  e:647
+[Y0048]       LIFE.DEATH_VIOLENT          Skal Wus (a:43), retainer of the Peirnhewick Crown (f:1), is killed by Dusvoth Pe (a:48) at Peirnhewick (p:2)  <= e:647  e:648
+[Y0048] w:41  CONFLICT.ASSASSINATION      Nothmeand Trearol (a:45) has Dusvoth Pe (a:48) murdered at Peirnhewick (p:2)  <= e:615  e:649
+[Y0048]       LIFE.DEATH_VIOLENT          Dusvoth Pe (a:48), ruler of the Peirnhewick Crown (f:1), is killed by Nothmeand Trearol (a:45) at Peirnhewick (p:2)  <= e:649  e:650
+[Y0048]       DIPLO.TRIBUTE_DEMANDED      the Sworn Men of Pistead (f:7) demands tribute of the Peirnhewick Crown (f:1) and is refused  e:651
+[Y0048] w:37  POLITY.PLOT_DIES_WITH_PLOTTER  Skal Wus (a:43)'s conspiracy against Goth Beildbea (a:21) dies with them, 3 years in  [secret]  <= e:590,e:648  e:652
+[Y0048] w:43  POLITY.SUCCESSION_DISPUTED  Noheil Loum (a:40) contests the claim of Maeld Brei (a:26), the named heir, to the Peirnhewick Crown (f:1) (decided by primogeniture)  <= e:650  e:653
+[Y0048] w:43  POLITY.SUCCESSION           Maeld Brei (a:26), the named heir, takes the seat of the Peirnhewick Crown (f:1); the rival claim of Noheil Loum (a:40) is rejected  <= e:653  e:654
+[Y0048] w:43  POLITY.PARTITION            the Peirnhewick Crown (f:1) is divided: Noheil Loum (a:40) carries off 2 place(s) as Free Kraefell  <= e:653  e:655
+
+[Y0049]       LIFE.MARRIAGE               Beind Grorn (a:44) marries Sanoun Dou (a:47) at Staernwefell (p:4)  e:658
+[Y0049]       POLITY.EXILE_RETURN         Vi Thrinli (a:41) returns from exile and takes service with the Sworn Men of Pistead (f:7)  <= e:589  e:661
+[Y0049]       POLITY.COURTS_SUPPORT       Trapearn Sael (a:50) wins Thes Brendweir (a:33) away from the ruler of the Peirnhewick Crown (f:1)  <= e:655  e:662
+[Y0049]       POLITY.APPOINTMENT          Doth Braengourn (a:51) is raised to heir of the Peirnhewick Crown (f:1)  <= e:567  e:663
+[Y0049]       DIPLO.INSULT                the Peirnhewick Crown (f:1) publicly slights Free Kraefell (f:8)  e:664
+[Y0049]       DIPLO.TRIBUTE_DEMANDED      the Sworn Men of Pistead (f:7) demands tribute of Free Kraefell (f:8) and is refused  e:665
+[Y0049] w:44  DIPLO.WAR_DECLARED          Free Kraefell (f:8) declares war on the Peirnhewick Crown (f:1) for Nae Seam (p:8)  <= e:664  e:666
+[Y0049]       DIPLO.ALLIANCE_FORMED       Free Kraefell (f:8) seeks an alliance with the Peirnhewick Crown (f:1) and is turned away  e:667
+[Y0049] w:39  POLITY.COUP_RESOLVED        Neldthear Throum (a:34)'s conspiracy against Maeld Brei (a:26) is uncovered after 3 years  <= e:608  e:668
+[Y0049]       POLITY.EXILE                Neldthear Throum (a:34), who had already left, is declared outlaw by the Peirnhewick Crown (f:1) — conspiracy against the seat  <= e:668  e:669
+[Y0049] w:40  POLITY.COUP_RESOLVED        Sanoun Dou (a:47)'s conspiracy against Maeld Brei (a:26) is uncovered after 3 years  <= e:610  e:670
+[Y0049] w:40  LIFE.DEATH_VIOLENT          Sanoun Dou (a:47) is put to death — executed for conspiracy  <= e:670  e:671
+[Y0049] w:44  CONFLICT.BATTLE             Free Kraefell (f:8) defeats the Peirnhewick Crown (f:1) at Nae Seam (p:8) (22 dead)  <= e:666  e:672
+
+[Y0050]       LIFE.DEATH_NATURAL          Neldthear Throum (a:34), ruler of the Sworn Men of Pistead (f:7), dies at 71 in Pistead (p:3)  e:674
+[Y0050]       POLITY.COURTS_SUPPORT       Duth Traellkeild (a:27) wins Deldfol Saen (a:49) away from the ruler of the Peirnhewick Crown (f:1)  <= e:672  e:679
+[Y0050]       POLITY.COURTS_SUPPORT       Trapearn Sael (a:50) wins Peath Grofa (a:39) away from the ruler of the Peirnhewick Crown (f:1)  <= e:655  e:680
+[Y0050]       POLITY.APPOINTMENT          Deldfol Saen (a:49) is raised to steward of the Peirnhewick Crown (f:1)  <= e:672  e:681
+[Y0050] w:44  CONFLICT.BATTLE             the Peirnhewick Crown (f:1) defeats Free Kraefell (f:8) at Nae Seam (p:8) (18 dead)  <= e:666  e:682
+[Y0050]       POLITY.SUCCESSION           Vi Thrinli (a:41) takes the seat of the Sworn Men of Pistead (f:7) (by right of birth)  <= e:674,e:310  e:683
+
+[Y0051]       POLITY.CHALLENGE            Duth Traellkeild (a:27) challenges Maeld Brei (a:26) openly for the Peirnhewick Crown (f:1), wins, and takes the seat from Maeld Brei (a:26)  <= e:672  e:692
+[Y0051]       LIFE.DEATH_VIOLENT          Maeld Brei (a:26), ruler of the Peirnhewick Crown (f:1), is killed by Duth Traellkeild (a:27) at Peirnhewick (p:2)  <= e:692  e:694
+[Y0051]       POLITY.APPOINTMENT          Trapearn Sael (a:50) is raised to steward of the Peirnhewick Crown (f:1)  <= e:672  e:695
+[Y0051]       DIPLO.INSULT                the Sworn Men of Pistead (f:7) publicly slights Free Kraefell (f:8)  e:696
+[Y0051] w:41  POLITY.COUP_RESOLVED        Nothmeand Trearol (a:45) challenges Duth Traellkeild (a:27) for the Peirnhewick Crown (f:1) and wins  <= e:630  e:697
+[Y0051] w:41  POLITY.SUCCESSION           Nothmeand Trearol (a:45) takes the seat of the Peirnhewick Crown (f:1) (coup)  <= e:697  e:698
+[Y0051] w:41  LIFE.DEATH_VIOLENT          Duth Traellkeild (a:27), ruler of the Peirnhewick Crown (f:1), is killed by Nothmeand Trearol (a:45) at Peirnhewick (p:2)  <= e:697  e:699
+[Y0051] w:44  DIPLO.PEACE_SIGNED          Free Kraefell (f:8) and the Peirnhewick Crown (f:1) make peace after 2 years, both sides exhausted  <= e:666  e:700
