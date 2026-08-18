@@ -2,15 +2,15 @@ war-rule panel: 90 seeds from 9100001, 50 years, four arms, paired
   each seed on its own board; every figure folded from logs, no inference
 
   10/90 seeds, 3s
-  20/90 seeds, 4s
-  30/90 seeds, 6s
-  40/90 seeds, 7s
-  50/90 seeds, 9s
-  60/90 seeds, 10s
-  70/90 seeds, 12s
-  80/90 seeds, 14s
-  90/90 seeds, 15s
-  90 seed(s) in 15s
+  20/90 seeds, 5s
+  30/90 seeds, 7s
+  40/90 seeds, 9s
+  50/90 seeds, 11s
+  60/90 seeds, 12s
+  70/90 seeds, 14s
+  80/90 seeds, 16s
+  90/90 seeds, 17s
+  90 seed(s) in 17s
 
   random arm: 310 removal(s) scheduled, 15 could not be delivered, on 15 of 90 world(s)
 
@@ -60,6 +60,11 @@ war-rule panel: 90 seeds from 9100001, 50 years, four arms, paired
     distinct shapes, random     mean=  63.76   sd=18.57      events mean= 717.30
 
     shapes against history length, null arm: r=0.871 over 90 world(s)
+
+  what a typical world of this engine looks like (null arm, for §4)
+    events        median=709  q1=646  q3=790  n=90
+    shapes        median=63  q1=51  q3=72  n=90
+    runaway year  median=35  q1=18  q3=52  n=90
 
   pre-committed disposition
     NOT EVALUATED — `war − random` is void, so the registered family is incomplete.

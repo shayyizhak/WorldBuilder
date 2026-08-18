@@ -1503,6 +1503,15 @@ public static class CommandLine
                           $"r={Correlation(shapes[WarRulePanel.Null], events[WarRulePanel.Null]):0.000} " +
                           $"over {shapes[WarRulePanel.Null].Count} world(s)");
 
+        // What an ordinary world of this engine looks like, for judging whether a reference world
+        // is a tail. The reference panel cannot answer that about itself: five worlds selected for
+        // being good to read are exactly the sample that cannot say what typical is.
+        Console.WriteLine();
+        Console.WriteLine("  what a typical world of this engine looks like (null arm, for §4)");
+        Console.WriteLine($"    events        {Quantiles(events[WarRulePanel.Null])}");
+        Console.WriteLine($"    shapes        {Quantiles(shapes[WarRulePanel.Null])}");
+        Console.WriteLine($"    runaway year  {Quantiles(runaway[WarRulePanel.Null])}");
+
         Console.WriteLine();
         Console.WriteLine("  pre-committed disposition");
         Console.WriteLine(unmatched > 0
@@ -1582,6 +1591,20 @@ public static class CommandLine
         }
 
         return unmatched > 0 ? 1 : 0;
+    }
+
+    /// <summary>Median and quartiles, labelled, so no bare number can be read as the wrong one.</summary>
+    private static string Quantiles(IReadOnlyList<int> values)
+    {
+        if (values.Count == 0) return "no observations";
+
+        List<int> sorted = [.. values];
+        sorted.Sort();
+
+        return string.Create(CultureInfo.InvariantCulture,
+            $"median={At(0.50)}  q1={At(0.25)}  q3={At(0.75)}  n={sorted.Count}");
+
+        int At(double q) => sorted[Math.Clamp((int)(q * (sorted.Count - 1)), 0, sorted.Count - 1)];
     }
 
     /// <summary>Pearson's r, for reading whether a count is really a rate.</summary>
