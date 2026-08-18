@@ -46,7 +46,7 @@ public static class WarRulePanel
     public static readonly string[] Arms = [Null, Collapse, War, Random];
 
     /// <summary>
-    /// The censoring rule, fixed in <c>docs/brief-ruleset-6-disposition-prereg.md</c> before any
+    /// The censoring rule, fixed in <c>docs/archive/brief-ruleset-6-disposition-prereg.md</c> before any
     /// panel seed was run.
     ///
     /// A world that never reaches 70% concentration is recorded as <c>&gt; last year</c> and enters

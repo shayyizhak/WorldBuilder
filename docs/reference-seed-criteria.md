@@ -1,7 +1,7 @@
 # Reference-seed criteria
 
 **Written before any candidate world was examined**, per §4 and §6 of
-`docs/brief-closing-ruleset-6.md`. Committed on its own so that the ordering is checkable rather
+`docs/archive/brief-closing-ruleset-6.md`. Committed on its own so that the ordering is checkable rather
 than asserted. The only worlds looked at before this was written are the five current reference
 seeds — already examined at length in the two previous reports — and the 90-seed measurement panel,
 which supplies "what typical looks like" and contains no candidate.

@@ -58,7 +58,7 @@ public static class RelationEnds
     ///
     /// <b>Twenty, argued from the cadence of use and the length of a reign</b>, and the argument
     /// was written down and committed before the first ruleset-6 world existed
-    /// (`docs/brief-step-two-design.md`). The recency guard forbids the same pair repeating a
+    /// (`docs/archive/brief-step-two-design.md`). The recency guard forbids the same pair repeating a
     /// pact inside five years, so an active relationship refreshes on a five-year-or-longer
     /// cadence and twenty is four consecutive missed opportunities — a tie in ordinary use never
     /// reaches it. And an arrangement between two houses should outlive a gap without outliving a

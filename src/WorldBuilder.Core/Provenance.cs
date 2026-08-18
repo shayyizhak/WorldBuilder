@@ -129,7 +129,7 @@ public static class Ruleset
     /// this again under a different name for every kind the monotonic sweep turns up.
     ///
     /// <b>The one constant is twenty years, and its argument predates every run that read it</b> —
-    /// `docs/brief-step-two-design.md`, committed before the first ruleset-6 world existed. It is
+    /// `docs/archive/brief-step-two-design.md`, committed before the first ruleset-6 world existed. It is
     /// a timeout rather than a decay, and that is not a detail: decaying the edge value would have
     /// moved what `ProposeAlliance` scores against in every year of every world, which is a diffuse
     /// behavioural change riding inside a step whose subject is whether a tie exists at all.

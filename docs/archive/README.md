@@ -20,6 +20,22 @@ authoritative over any count restated in prose, including in here.
 **Still live, in `../`:**
 
 - `WORLDBUILDER-PROJECT.md` — the standing reference.
-- `phase-controls-and-seal.md` — the current phase.
-- `phase-explain-decide-seal-prereg.md` — a pre-registration the current phase
-  amends and then spends. It stays out of the archive until it has been used.
+- `panel-prereg.md` — §6's family of three has been run and reported; **§7's
+  `flat − geography` contrast is registered and has not been run.** It stays out
+  of the archive until it has been, and `wb panel` cites it by section.
+- `reference-seed-criteria.md` — the criteria and search rule a reference seed is
+  screened against. Standing, not spent: they are reapplied whenever the panel is
+  reconsidered, and `wb refseed` and `ReferencePanel` cite them.
+- `reference-set-verification.md` — a working protocol for a human session, not a
+  brief. Its gate is open and it has not been run.
+- `floor-coverage.md`, `ruleset-6/`, `step-two/` — generated measurement output,
+  each emitted by a named command and quoted by the reports in here. Live because
+  they describe the current ruleset, and because a live document cites one of
+  them.
+
+**A pre-registration stays live until it is spent, and then it is archived with
+the report that spent it.** `phase-explain-decide-seal-prereg.md`,
+`brief-step-two-design.md` and `brief-ruleset-6-disposition-prereg.md` are all in
+here now for that reason. Reading one of those beside its report is the only way
+to check the claim every one of them makes — that the reasoning predates the
+figures — so they are archived together rather than discarded.
