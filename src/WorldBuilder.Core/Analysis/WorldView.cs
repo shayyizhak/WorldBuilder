@@ -27,6 +27,18 @@ public sealed class WorldView
     public WorldState State { get; }
 
     /// <summary>
+    /// The board this history happened on, for anything that needs to replay the log again.
+    ///
+    /// <b>Carried because a view without it is a trap.</b> Five separate places re-fold a view's
+    /// own log to get state at a point in time, and each of them looked up the repository's stored
+    /// board rather than this world's. On the reference seeds those are the same board and nothing
+    /// showed; on a measurement panel, where every seed gets its own board and none is stored, all
+    /// five refuse the world outright. Reading it off the folded state means it cannot disagree
+    /// with what the view was built from.
+    /// </summary>
+    public Geography.Board? Board => State.Board;
+
+    /// <summary>
     /// Who belonged to which house, at each point in the log. Built in the same replay as the
     /// descriptions, so asking "was the killer one of theirs at the time" costs a lookup rather
     /// than a fold — see <see cref="Membership"/> for why it is derived rather than carried.

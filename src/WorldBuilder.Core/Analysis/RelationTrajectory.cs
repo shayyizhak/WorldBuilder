@@ -147,7 +147,7 @@ public static class RelationTrajectory
         }
     }
 
-    public static Report Of(EventLog log, ulong seed = 0)
+    public static Report Of(EventLog log, ulong seed = 0, Geography.Board? board = null)
     {
         int firstYear = log.Events.Count == 0 ? 0 : log.Events[0].Year;
         int lastYear = log.Events.Count == 0 ? 0 : log.Events[^1].Year;
@@ -164,9 +164,10 @@ public static class RelationTrajectory
 
         int year = firstYear;
 
-        // No board. Nothing in the fold's effect on the relation graph consults geography, and
-        // requiring one would make this unable to read a panel world, whose board is made per
-        // seed and never stored.
+        // The board is passed through rather than looked up. Nothing in the fold's effect on the
+        // relation graph consults geography, but the replay still refuses a world whose log names
+        // a board it was not handed — and a measurement panel makes one board per seed and never
+        // stores it, so "look up the repository's" is the wrong answer there and fails loudly.
         Rendering.Replay.Walk(log, seed, (state, e) =>
         {
             // Close out the years the log skipped as well as the ones it filled, so the series is
@@ -201,7 +202,7 @@ public static class RelationTrajectory
             standing = 0;
             foreach (Faction f in state.Factions)
                 if (!state.IsDefunct(f.Id)) standing++;
-        });
+        }, board);
 
         while (year <= lastYear) { Record(); year++; }
 

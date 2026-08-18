@@ -1241,16 +1241,18 @@ public static class CommandLine
             // 40 — so ending a tie both lowers an appeal and *reopens* a gate. Counting them is
             // the difference between a measured channel and two figures that happen to move
             // together.
-            Console.WriteLine("| arm | events | deep chains | distinct shapes | ties ended | " +
-                              "pacts made | alliances made | wars | 70% held from | reproduces the baseline |");
-            Console.WriteLine("|---|---|---|---|---|---|---|---|---|---|");
+            Console.WriteLine("| arm | events | deep chains | distinct shapes | shapes/1k events | " +
+                              "ties ended | pacts made | alliances made | wars | 70% held from | " +
+                              "reproduces the baseline |");
+            Console.WriteLine("|---|---|---|---|---|---|---|---|---|---|---|");
 
             foreach ((string label, TerminationArm arm) in arms)
             {
                 Simulation sim = new(seed, arm: arm);
                 sim.Run(years);
 
-                Audit audit = Audit.Compute(WorldView.Build(sim.Log, seed));
+                WorldView armView = WorldView.Build(sim.Log, seed);
+                Audit audit = Audit.Compute(armView);
                 RelationTrajectory.Report ties = RelationTrajectory.Of(sim.Log, seed);
 
                 // Compared against the log with the arm marker taken back off. The marker is on
@@ -1276,9 +1278,18 @@ public static class CommandLine
                     if (e.Kind == EventKind.DiploWarDeclared) wars++;
                 }
 
-                Console.WriteLine($"| {label} | {sim.Log.Count} | {audit.DeepChains} | " +
-                                  $"{audit.DistinctChainShapes} | {ended} | {pacts} | {allied} | " +
-                                  $"{wars} | {Runaway(sim.Log, seed)} | {(identical ? "**yes**" : "no")} |");
+                // The shape count beside the history it was counted over. Seed 99 lost a quarter of
+                // its events and a third of its shapes, and a metric that scales with length is a
+                // rate wearing a count's clothes — which decides whether its bar can be read as a
+                // regression at all.
+                double perThousand = sim.Log.Count == 0
+                    ? 0
+                    : audit.DistinctChainShapes * 1000.0 / sim.Log.Count;
+
+                Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                    $"| {label} | {sim.Log.Count} | {audit.DeepChains} | " +
+                    $"{audit.DistinctChainShapes} | {perThousand:0.0} | {ended} | {pacts} | " +
+                    $"{allied} | {wars} | {Runaway(armView)} | {(identical ? "**yes**" : "no")} |"));
 
                 // The arm that cannot fire has to reproduce, or nothing else here means anything.
                 if (arm != TerminationArm.None && arm != TerminationArm.All && ended == 0 && !identical)
@@ -1306,36 +1317,17 @@ public static class CommandLine
     }
 
     /// <summary>
-    /// The first year one house held 70% of the settled population, or "never" — the runaway
-    /// figure <c>wb stats</c> reports, recomputed here so an arm can be read without writing files.
+    /// The first year one house held 70% of the settled population, as <c>wb stats</c> reports it.
     ///
-    /// Evaluated after every event rather than at a year boundary, so it names the year the
-    /// threshold was first crossed. Sampling once a year reported it one year late.
+    /// Read off <see cref="WorldStats"/> rather than recomputed. A second implementation stood
+    /// here briefly and disagreed with the first by a year, because it sampled once per year
+    /// rather than after every event — a figure restated at its call site is a figure that goes
+    /// stale in one of them, and this project has the rule written down.
     /// </summary>
-    private static string Runaway(EventLog log, ulong seed)
-    {
-        int hit = 0;
-
-        Replay.Walk(log, seed, (state, e) =>
-        {
-            if (hit != 0) return;
-
-            int total = 0, most = 0;
-            foreach (Place p in state.Places)
-                if (!p.Controller.IsNone) total += p.Population;
-
-            foreach (Faction f in state.Factions)
-            {
-                int mine = 0;
-                foreach (Place p in state.HoldingsOf(f.Id)) mine += p.Population;
-                most = Math.Max(most, mine);
-            }
-
-            if (total > 0 && most * 100 / total >= 70) hit = e.Year;
-        });
-
-        return hit == 0 ? "never" : $"Y{hit.ToString(CultureInfo.InvariantCulture)}";
-    }
+    private static string Runaway(WorldView view) =>
+        WorldStats.Compute(view).RunawayYear is var year and > 0
+            ? $"Y{year.ToString(CultureInfo.InvariantCulture)}"
+            : "never";
 
     /// <summary>
     /// The war-rule experiment. Four arms, paired on the same seeds and boards, log-only.
@@ -1384,9 +1376,17 @@ public static class CommandLine
 
         Dictionary<string, List<int>> runaway = [];
         Dictionary<string, List<int>> shapes = [];
-        foreach (string arm in WarRulePanel.Arms) { runaway[arm] = []; shapes[arm] = []; }
+        Dictionary<string, List<int>> ended = [];
+        Dictionary<string, List<int>> events = [];
+        foreach (string arm in WarRulePanel.Arms)
+        {
+            runaway[arm] = [];
+            shapes[arm] = [];
+            ended[arm] = [];
+            events[arm] = [];
+        }
 
-        int censoredNull = 0, unmatched = 0;
+        int censoredNull = 0, unmatched = 0, scheduled = 0, missed = 0;
         List<string> mismatches = [];
         long started = Environment.TickCount64;
 
@@ -1396,12 +1396,19 @@ public static class CommandLine
             {
                 runaway[r.Arm].Add(WarRulePanel.Censor(r.RunawayYear, years + 1));
                 shapes[r.Arm].Add(r.Shapes);
+                ended[r.Arm].Add(r.TiesEnded);
+                events[r.Arm].Add(r.Events);
 
                 if (r.Arm == WarRulePanel.Null && r.Censored) censoredNull++;
+
+                scheduled += r.Scheduled;
+                missed += r.Missed;
+
                 if (r.ScheduleMatched) continue;
 
                 unmatched++;
-                mismatches.Add($"seed {r.Seed.ToString(CultureInfo.InvariantCulture)}");
+                mismatches.Add(string.Create(CultureInfo.InvariantCulture,
+                    $"{r.Seed} ({r.Missed} of {r.Scheduled})"));
             }
 
             if (!dryRun && (i + 1) % 10 == 0)
@@ -1411,17 +1418,39 @@ public static class CommandLine
         Console.WriteLine($"  {seeds.Count} seed(s) in {(Environment.TickCount64 - started) / 1000}s");
         Console.WriteLine();
 
+        Console.WriteLine($"  random arm: {scheduled} removal(s) scheduled, {missed} could not be " +
+                          $"delivered, on {unmatched} of {seeds.Count} world(s)");
+
         // The random arm has to have delivered its treatment, or the contrast that names it is
-        // measuring something else. A halt condition, not a footnote.
+        // measuring something else. A halt condition, and pre-registered as one.
+        //
+        // The other two contrasts are still valid measurements and are printed, because throwing
+        // away a sound figure to make a halt look tidier helps nobody. What is *not* done is
+        // firing a disposition cell: the family is three and Holm over two is a different test
+        // from the one that was registered.
         if (unmatched > 0)
         {
-            Console.Error.WriteLine(
-                $"wb: the random arm could not match the war arm's removals on {unmatched} world(s): " +
-                string.Join(", ", mismatches.Take(8)) + ". The arms are not matched and the " +
-                "war − random contrast is void.");
-            return 1;
+            Console.WriteLine();
+            Console.WriteLine("  HALT — the arms are not matched, so `war − random` is void and the");
+            Console.WriteLine("  pre-registered family of three cannot be evaluated. No disposition");
+            Console.WriteLine("  cell fires. Worlds that could not be matched, worst first:");
+
+            mismatches.Sort(static (a, b) => string.CompareOrdinal(b, a));
+            foreach (string m in mismatches.Take(12)) Console.WriteLine($"    seed {m}");
+            Console.WriteLine();
         }
 
+        // Printed before anything is concluded from an arm. An arm that changed nothing because it
+        // did nothing and an arm that changed nothing despite doing something are the same row in
+        // every table below, and only this one tells them apart.
+        Console.WriteLine("  treatment delivered — trade ties ended per world, by arm");
+        foreach (string arm in WarRulePanel.Arms)
+        {
+            Console.WriteLine($"    {arm,-10} mean={ended[arm].Average(),5:0.00}   " +
+                              $"total={ended[arm].Sum(),4}   {Dispersion.Range(ended[arm])}");
+        }
+
+        Console.WriteLine();
         Console.WriteLine("  runaway year (first year one house holds 70% of settled population)");
         foreach (string arm in WarRulePanel.Arms)
         {
@@ -1461,12 +1490,24 @@ public static class CommandLine
         foreach (string arm in WarRulePanel.Arms)
         {
             Console.WriteLine($"    distinct shapes, {arm,-10} mean={shapes[arm].Average(),7:0.00}   " +
-                              $"{Dispersion.Sd(shapes[arm]).Padded(11)}");
+                              $"{Dispersion.Sd(shapes[arm]).Padded(11)}   " +
+                              $"events mean={events[arm].Average(),7:0.00}");
         }
+
+        // §2.3's question, answered on ninety worlds instead of on the two that raised it: does
+        // the shape count scale with how much history there is? If it does, a seed that lost a
+        // quarter of its events was always going to lose shapes, and the bar is a rate wearing a
+        // count's clothes.
+        Console.WriteLine();
+        Console.WriteLine($"    shapes against history length, null arm: " +
+                          $"r={Correlation(shapes[WarRulePanel.Null], events[WarRulePanel.Null]):0.000} " +
+                          $"over {shapes[WarRulePanel.Null].Count} world(s)");
 
         Console.WriteLine();
         Console.WriteLine("  pre-committed disposition");
-        Console.WriteLine($"    {Disposition(verdicts)}");
+        Console.WriteLine(unmatched > 0
+            ? "    NOT EVALUATED — `war − random` is void, so the registered family is incomplete."
+            : $"    {Disposition(verdicts)}");
 
         if (dryRun)
         {
@@ -1540,7 +1581,27 @@ public static class CommandLine
                 $"{PairedStats.RequiredN(upper, mde)}"));
         }
 
-        return 0;
+        return unmatched > 0 ? 1 : 0;
+    }
+
+    /// <summary>Pearson's r, for reading whether a count is really a rate.</summary>
+    private static double Correlation(IReadOnlyList<int> a, IReadOnlyList<int> b)
+    {
+        if (a.Count != b.Count || a.Count < 2) return 0;
+
+        double meanA = a.Average(), meanB = b.Average();
+        double top = 0, leftSq = 0, rightSq = 0;
+
+        for (int i = 0; i < a.Count; i++)
+        {
+            double x = a[i] - meanA, y = b[i] - meanB;
+            top += x * y;
+            leftSq += x * x;
+            rightSq += y * y;
+        }
+
+        double bottom = Math.Sqrt(leftSq * rightSq);
+        return bottom == 0 ? 0 : top / bottom;
     }
 
     /// <summary>

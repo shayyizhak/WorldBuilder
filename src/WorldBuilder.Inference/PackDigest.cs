@@ -713,7 +713,7 @@ public sealed record PackDigest
 
                 current[f.Id] = (f.Leader, e.Year);
             }
-        });
+        }, view.Board);
 
         foreach ((EntityId faction, (EntityId holder, int since)) in current)
         {

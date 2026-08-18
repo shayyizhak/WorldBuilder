@@ -1,7 +1,14 @@
 DRY RUN — 5 reference seed(s), four arms, on the stored board
   each seed on the stored board; every figure folded from logs, no inference
 
-  5 seed(s) in 2s
+  5 seed(s) in 1s
+
+  random arm: 17 removal(s) scheduled, 0 could not be delivered, on 0 of 5 world(s)
+  treatment delivered — trade ties ended per world, by arm
+    null       mean= 0.00   total=   0   range=[0, 0] width=0
+    collapse   mean= 4.20   total=  21   range=[3, 7] width=4
+    war        mean= 5.60   total=  28   range=[4, 8] width=4
+    random     mean= 5.80   total=  29   range=[3, 8] width=5
 
   runaway year (first year one house holds 70% of settled population)
     null       mean= 40.60   sd=11.39      range=[22, 52] width=30
@@ -21,10 +28,12 @@ DRY RUN — 5 reference seed(s), four arms, on the stored board
       Holm threshold 0.0500 — does not survive; clears the 5 year MDE: no
 
   secondary, reported and not adjudicated
-    distinct shapes, null       mean=  75.20   sd=22.79   
-    distinct shapes, collapse   mean=  75.20   sd=22.79   
-    distinct shapes, war        mean=  69.20   sd=25.22   
-    distinct shapes, random     mean=  74.80   sd=20.93   
+    distinct shapes, null       mean=  75.20   sd=22.79      events mean= 733.00
+    distinct shapes, collapse   mean=  75.20   sd=22.79      events mean= 733.00
+    distinct shapes, war        mean=  69.20   sd=25.22      events mean= 692.80
+    distinct shapes, random     mean=  74.80   sd=20.93      events mean= 737.40
+
+    shapes against history length, null arm: r=0.994 over 5 world(s)
 
   pre-committed disposition
     war - null is not distinguishable: the five-seed panel caught a tail. SHIP ALL THREE.

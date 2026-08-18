@@ -10,6 +10,12 @@ public sealed record ArmResult(
 {
     /// <summary>True where this world never reached 70% and its runaway year is censored.</summary>
     public bool Censored => RunawayYear == 0;
+
+    /// <summary>Removals the schedule called for, on the random arm; 0 on every other.</summary>
+    public int Scheduled { get; init; }
+
+    /// <summary>Scheduled removals that found no live tie to take.</summary>
+    public int Missed { get; init; }
 }
 
 /// <summary>
@@ -94,7 +100,11 @@ public static class WarRulePanel
         Simulation sim = new(seed, board: board, arm: rules) { RandomTies = schedule };
         sim.Run(years);
 
-        return Reduce(arm, seed, sim, board, schedule?.Matched ?? true);
+        return Reduce(arm, seed, sim, board, schedule?.Matched ?? true) with
+        {
+            Scheduled = schedule?.Years.Count ?? 0,
+            Missed = schedule?.Missed ?? 0,
+        };
     }
 
     private static ArmResult Reduce(string arm, ulong seed, Simulation sim, Board board, bool matched)
@@ -104,7 +114,7 @@ public static class WarRulePanel
         Audit audit = Audit.Compute(view);
 
         int ended = 0;
-        foreach (KindTrajectory k in RelationTrajectory.Of(sim.Log, seed).Kinds)
+        foreach (KindTrajectory k in RelationTrajectory.Of(sim.Log, seed, board).Kinds)
             if (k.Kind == RelationKind.Trade) ended = k.Ended;
 
         return new ArmResult(arm, seed, stats.RunawayYear, audit.DistinctChainShapes,
@@ -115,11 +125,11 @@ public static class WarRulePanel
     /// The degeneracy guard, fixed before the run.
     ///
     /// A contrast on a measure that barely varies is a contrast on granularity. The null arm's
-    /// runaway year must have a standard deviation of at least <see cref="MinimumSpread"/> years
+    /// runaway year must have a standard deviation of at least <see cref="MinimumYearsOfVariation"/> years
     /// across the panel, and no more than half the panel may be censored — a panel mostly made of
     /// worlds where the metric never fires is measuring censoring, not hegemony.
     /// </summary>
-    public const double MinimumSpread = 3.0;
+    public const double MinimumYearsOfVariation = 3.0;
 
     public static string Degeneracy(IReadOnlyList<int> nullArmYears, int censored)
     {
@@ -130,10 +140,10 @@ public static class WarRulePanel
 
         string censoredText = censoredPct.ToString(CultureInfo.InvariantCulture);
 
-        if (sd.Figure < MinimumSpread)
+        if (sd.Figure < MinimumYearsOfVariation)
         {
             return $"VOID — the null arm's runaway year has {sd}, under the " +
-                   $"{MinimumSpread.ToString("0", CultureInfo.InvariantCulture)} year minimum. " +
+                   $"{MinimumYearsOfVariation.ToString("0", CultureInfo.InvariantCulture)} year minimum. " +
                    "The measure cannot express the effect being looked for";
         }
 

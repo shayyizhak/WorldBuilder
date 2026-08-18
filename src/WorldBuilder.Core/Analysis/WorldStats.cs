@@ -82,7 +82,7 @@ public sealed record WorldStats
             foreach (Participant p in e.Participants)
                 if (p.Id.Kind == EntityKind.Actor)
                     actorAppearances[p.Id] = actorAppearances.GetValueOrDefault(p.Id) + 1;
-        });
+        }, view.Board);
 
         if (currentYear != int.MinValue) Snapshot(final, currentYear);
 

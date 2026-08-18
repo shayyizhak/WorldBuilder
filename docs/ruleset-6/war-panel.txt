@@ -1,0 +1,65 @@
+war-rule panel: 90 seeds from 9100001, 50 years, four arms, paired
+  each seed on its own board; every figure folded from logs, no inference
+
+  10/90 seeds, 3s
+  20/90 seeds, 4s
+  30/90 seeds, 6s
+  40/90 seeds, 7s
+  50/90 seeds, 9s
+  60/90 seeds, 10s
+  70/90 seeds, 12s
+  80/90 seeds, 14s
+  90/90 seeds, 15s
+  90 seed(s) in 15s
+
+  random arm: 310 removal(s) scheduled, 15 could not be delivered, on 15 of 90 world(s)
+
+  HALT — the arms are not matched, so `war − random` is void and the
+  pre-registered family of three cannot be evaluated. No disposition
+  cell fires. Worlds that could not be matched, worst first:
+    seed 9100084 (1 of 5)
+    seed 9100077 (1 of 5)
+    seed 9100076 (1 of 4)
+    seed 9100072 (1 of 3)
+    seed 9100064 (1 of 3)
+    seed 9100060 (1 of 5)
+    seed 9100056 (1 of 4)
+    seed 9100048 (1 of 6)
+    seed 9100043 (1 of 3)
+    seed 9100040 (1 of 5)
+    seed 9100039 (1 of 4)
+    seed 9100007 (1 of 4)
+
+  treatment delivered — trade ties ended per world, by arm
+    null       mean= 0.00   total=   0   range=[0, 0] width=0
+    collapse   mean= 4.04   total= 364   range=[0, 13] width=13
+    war        mean= 5.73   total= 516   range=[2, 14] width=12
+    random     mean= 6.02   total= 542   range=[2, 14] width=12
+
+  runaway year (first year one house holds 70% of settled population)
+    null       mean= 34.11   sd=16.93      range=[5, 52] width=47
+    collapse   mean= 34.11   sd=16.93      range=[5, 52] width=47
+    war        mean= 34.38   sd=16.98      range=[5, 52] width=47
+    random     mean= 34.44   sd=17.05      range=[5, 52] width=47
+
+  degeneracy guard: ok — null arm sd=16.93, 32% censored
+
+  three pre-registered contrasts, Holm-corrected across the family
+  (the family is fixed at three and is not extended)
+    war - null               n=  90  mean=  +0.27  sd=2.58      ci95=[-0.27, +0.81]       t=  0.98  p=0.3291
+      Holm threshold 0.0167 — does not survive; clears the 5 year MDE: no
+    war - random             n=  90  mean=  -0.07  sd=2.67      ci95=[-0.63, +0.49]       t= -0.24  p=0.8135
+      Holm threshold 0.0250 — does not survive; clears the 5 year MDE: no
+    collapse - null          n=  90  mean=  +0.00  sd=0.00      ci95=[+0.00, +0.00]       t=  0.00  p=1.0000
+      Holm threshold 0.0500 — does not survive; clears the 5 year MDE: no
+
+  secondary, reported and not adjudicated
+    distinct shapes, null       mean=  63.63   sd=17.94      events mean= 714.23
+    distinct shapes, collapse   mean=  63.63   sd=17.94      events mean= 714.23
+    distinct shapes, war        mean=  63.60   sd=18.63      events mean= 716.50
+    distinct shapes, random     mean=  63.76   sd=18.57      events mean= 717.30
+
+    shapes against history length, null arm: r=0.871 over 90 world(s)
+
+  pre-committed disposition
+    NOT EVALUATED — `war − random` is void, so the registered family is incomplete.

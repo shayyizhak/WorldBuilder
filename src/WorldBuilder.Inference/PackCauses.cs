@@ -185,7 +185,7 @@ public static class PackCauses
     private static WorldState AtEndOf(WorldView view, Dictionary<int, WorldState> cache, int year)
     {
         if (cache.TryGetValue(year, out WorldState? state)) return state;
-        return cache[year] = Replay.Fold(view.Log, view.Seed, year);
+        return cache[year] = Replay.Fold(view.Log, view.Seed, year, view.Board);
     }
 
     private static EntityId Entity(string[] parts, int at) =>
