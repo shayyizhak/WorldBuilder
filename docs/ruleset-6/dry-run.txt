@@ -1,0 +1,56 @@
+DRY RUN — 5 reference seed(s), four arms, on the stored board
+  each seed on the stored board; every figure folded from logs, no inference
+
+  5 seed(s) in 2s
+
+  runaway year (first year one house holds 70% of settled population)
+    null       mean= 40.60   sd=11.39      range=[22, 52] width=30
+    collapse   mean= 40.60   sd=11.39      range=[22, 52] width=30
+    war        mean= 34.00   sd=12.90      range=[21, 52] width=31
+    random     mean= 42.20   sd=12.50      range=[22, 52] width=30
+
+  degeneracy guard: ok — null arm sd=11.39, 20% censored
+
+  three pre-registered contrasts, Holm-corrected across the family
+  (the family is fixed at three and is not extended)
+    war - random             n=   5  mean=  -8.20  sd=11.67     ci95=[-22.69, +6.29]      t= -1.57  p=0.1912
+      Holm threshold 0.0167 — does not survive; clears the 5 year MDE: no
+    war - null               n=   5  mean=  -6.60  sd=10.85     ci95=[-20.08, +6.88]      t= -1.36  p=0.2455
+      Holm threshold 0.0250 — does not survive; clears the 5 year MDE: no
+    collapse - null          n=   5  mean=  +0.00  sd=0.00      ci95=[+0.00, +0.00]       t=  0.00  p=1.0000
+      Holm threshold 0.0500 — does not survive; clears the 5 year MDE: no
+
+  secondary, reported and not adjudicated
+    distinct shapes, null       mean=  75.20   sd=22.79   
+    distinct shapes, collapse   mean=  75.20   sd=22.79   
+    distinct shapes, war        mean=  69.20   sd=25.22   
+    distinct shapes, random     mean=  74.80   sd=20.93   
+
+  pre-committed disposition
+    war - null is not distinguishable: the five-seed panel caught a tail. SHIP ALL THREE.
+
+  decision-rule reachability — every arm shown producible
+  (a rule with an arm no input can reach has been shipped twice here:
+   a criterion the population never met, and a statistic that could not vary)
+    war-null real  war-random real  → war - null real and war - random real: the war rule is the cause
+    war-null real  war-random null  → war - null real and war ≈ random: the world is knife-edge on losing trade ties
+    war-null null  war-random real  → war - null is not distinguishable: the five-seed panel caught a tail
+    war-null null  war-random null  → war - null is not distinguishable: the five-seed panel caught a tail
+    3 distinct cell(s) reachable of 3 in the brief's table
+
+  degeneracy-guard reachability
+    flat panel        → VOID — the null arm's runaway year has sd=0.00, under the 3 year minimum. The measure cannot express the effect being looked for
+    mostly censored   → VOID — 60% of the null panel never reaches 70%. The contrast would be measuring censoring rather than hegemony
+    this dry run      → ok — null arm sd=11.39, 20% censored
+
+  statistic reachability, on these five seeds
+    primary varies      yes
+    censoring exercised yes, 1 world(s)
+    NOTE  'collapse - null' has zero variance on these seeds. Not structurally zero — the collapse arm can move a world — but the
+          panel must show it varying, or the contrast reports nothing.
+
+  sizing, from the paired variance of these seeds (sizing only — this
+  figure does not decide anything about the run it came from)
+    paired sd = 10.85 years on war - null
+    N at that sd, MDE 5, 80% power, two-sided 0.05 = 37
+    one-sided 80% upper bound on sd = 16.91; N there = 90

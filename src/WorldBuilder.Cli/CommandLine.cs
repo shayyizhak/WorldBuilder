@@ -66,6 +66,7 @@ public static class CommandLine
                 "divergence" => CmdDivergence(parsed),
                 "keyshift" => CmdKeyShift(parsed),
                 "discriminate" => CmdDiscriminate(parsed),
+                "warpanel" => CmdWarPanel(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -1334,6 +1335,239 @@ public static class CommandLine
         });
 
         return hit == 0 ? "never" : $"Y{hit.ToString(CultureInfo.InvariantCulture)}";
+    }
+
+    /// <summary>
+    /// The war-rule experiment. Four arms, paired on the same seeds and boards, log-only.
+    ///
+    /// <c>--dry-run</c> runs the reference seeds and reports whether each arm of each decision rule
+    /// is reachable, and what σ the paired contrast has. Both are pre-registration inputs and both
+    /// are computed before the panel is touched.
+    /// </summary>
+    private static int CmdWarPanel(Args args)
+    {
+        ulong from = args.ULong("from", 9_100_001);
+        int count = args.Int("count", 90);
+        int years = args.Int("years", 50);
+        double mde = args.Int("mde", 5);
+        bool dryRun = args.Flag("dry-run");
+
+        List<ulong> seeds = [];
+        List<Board> boards = [];
+
+        if (dryRun)
+        {
+            // The reference seeds, on the stored board, because the dry run's job is to show the
+            // decision rules are reachable on data that already exists — not to spend the panel.
+            foreach (ulong seed in Seeds(args)) { seeds.Add(seed); boards.Add(Boards.Stored()); }
+        }
+        else
+        {
+            HashSet<ulong> reference = [7, 42, 99, 1234, 2025];
+            for (int i = 0; i < count; i++)
+            {
+                ulong seed = from + (ulong)i;
+                if (reference.Contains(seed))
+                    return Fail($"seed {seed} is a reference seed; the panel must not contain one.");
+
+                seeds.Add(seed);
+                boards.Add(BoardMaker.Make(BoardMaker.DefaultWidth, BoardMaker.DefaultHeight, seed));
+            }
+        }
+
+        Console.WriteLine(dryRun
+            ? $"DRY RUN — {seeds.Count} reference seed(s), four arms, on the stored board"
+            : $"war-rule panel: {seeds.Count} seeds from {from}, {years} years, four arms, paired");
+        Console.WriteLine($"  each seed on {(dryRun ? "the stored board" : "its own board")}; " +
+                          "every figure folded from logs, no inference");
+        Console.WriteLine();
+
+        Dictionary<string, List<int>> runaway = [];
+        Dictionary<string, List<int>> shapes = [];
+        foreach (string arm in WarRulePanel.Arms) { runaway[arm] = []; shapes[arm] = []; }
+
+        int censoredNull = 0, unmatched = 0;
+        List<string> mismatches = [];
+        long started = Environment.TickCount64;
+
+        for (int i = 0; i < seeds.Count; i++)
+        {
+            foreach (ArmResult r in WarRulePanel.RunSeed(seeds[i], boards[i], years))
+            {
+                runaway[r.Arm].Add(WarRulePanel.Censor(r.RunawayYear, years + 1));
+                shapes[r.Arm].Add(r.Shapes);
+
+                if (r.Arm == WarRulePanel.Null && r.Censored) censoredNull++;
+                if (r.ScheduleMatched) continue;
+
+                unmatched++;
+                mismatches.Add($"seed {r.Seed.ToString(CultureInfo.InvariantCulture)}");
+            }
+
+            if (!dryRun && (i + 1) % 10 == 0)
+                Console.Error.WriteLine($"  {i + 1}/{seeds.Count} seeds, {(Environment.TickCount64 - started) / 1000}s");
+        }
+
+        Console.WriteLine($"  {seeds.Count} seed(s) in {(Environment.TickCount64 - started) / 1000}s");
+        Console.WriteLine();
+
+        // The random arm has to have delivered its treatment, or the contrast that names it is
+        // measuring something else. A halt condition, not a footnote.
+        if (unmatched > 0)
+        {
+            Console.Error.WriteLine(
+                $"wb: the random arm could not match the war arm's removals on {unmatched} world(s): " +
+                string.Join(", ", mismatches.Take(8)) + ". The arms are not matched and the " +
+                "war − random contrast is void.");
+            return 1;
+        }
+
+        Console.WriteLine("  runaway year (first year one house holds 70% of settled population)");
+        foreach (string arm in WarRulePanel.Arms)
+        {
+            List<int> values = runaway[arm];
+            Console.WriteLine($"    {arm,-10} mean={values.Average(),6:0.00}   " +
+                              $"{Dispersion.Sd(values).Padded(11)}   {Dispersion.Range(values)}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine($"  degeneracy guard: {WarRulePanel.Degeneracy(runaway[WarRulePanel.Null], censoredNull)}");
+        Console.WriteLine();
+
+        List<Contrast> contrasts =
+        [
+            PairedStats.Compare("war - null", runaway[WarRulePanel.War], runaway[WarRulePanel.Null]),
+            PairedStats.Compare("war - random", runaway[WarRulePanel.War], runaway[WarRulePanel.Random]),
+            PairedStats.Compare("collapse - null", runaway[WarRulePanel.Collapse], runaway[WarRulePanel.Null]),
+        ];
+
+        Console.WriteLine("  three pre-registered contrasts, Holm-corrected across the family");
+        Console.WriteLine("  (the family is fixed at three and is not extended)");
+
+        Dictionary<string, (bool Survives, bool Clears)> verdicts = new(StringComparer.Ordinal);
+
+        foreach ((Contrast contrast, bool survives, double threshold) in PairedStats.Holm(contrasts))
+        {
+            Console.WriteLine($"    {contrast.Line()}");
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"      Holm threshold {threshold:0.0000} — {(survives ? "survives" : "does not survive")}; " +
+                $"clears the {mde:0} year MDE: {(contrast.ClearsMde(mde) ? "yes" : "no")}"));
+
+            verdicts[contrast.Name] = (survives, contrast.ClearsMde(mde));
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  secondary, reported and not adjudicated");
+        foreach (string arm in WarRulePanel.Arms)
+        {
+            Console.WriteLine($"    distinct shapes, {arm,-10} mean={shapes[arm].Average(),7:0.00}   " +
+                              $"{Dispersion.Sd(shapes[arm]).Padded(11)}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  pre-committed disposition");
+        Console.WriteLine($"    {Disposition(verdicts)}");
+
+        if (dryRun)
+        {
+            Console.WriteLine();
+            Console.WriteLine("  decision-rule reachability — every arm shown producible");
+            Console.WriteLine("  (a rule with an arm no input can reach has been shipped twice here:");
+            Console.WriteLine("   a criterion the population never met, and a statistic that could not vary)");
+
+            HashSet<string> cells = new(StringComparer.Ordinal);
+            foreach (bool warNullReal in new[] { true, false })
+                foreach (bool warRandomReal in new[] { true, false })
+                {
+                    string cell = Disposition(new Dictionary<string, (bool, bool)>(StringComparer.Ordinal)
+                    {
+                        ["war - null"] = (warNullReal, warNullReal),
+                        ["war - random"] = (warRandomReal, warRandomReal),
+                    });
+
+                    cells.Add(cell);
+                    Console.WriteLine($"    war-null {(warNullReal ? "real " : "null "),-5} " +
+                                      $"war-random {(warRandomReal ? "real " : "null "),-5} → " +
+                                      cell[..cell.IndexOf('.')]);
+                }
+
+            Console.WriteLine($"    {cells.Count} distinct cell(s) reachable of 3 in the brief's table");
+
+            Console.WriteLine();
+            Console.WriteLine("  degeneracy-guard reachability");
+            // Each arm needs an input that reaches *it*, not merely an input that fails. A panel
+            // of identical censored years trips the spread rule first, so it demonstrates the
+            // spread arm twice and the censoring arm never — which is how an unreachable arm
+            // hides inside a reachability check.
+            Console.WriteLine($"    flat panel        → {WarRulePanel.Degeneracy([30, 30, 30, 30, 30], 0)}");
+            Console.WriteLine($"    mostly censored   → {WarRulePanel.Degeneracy([52, 52, 52, 22, 30], 3)}");
+            Console.WriteLine($"    this dry run      → {WarRulePanel.Degeneracy(runaway[WarRulePanel.Null], censoredNull)}");
+
+            Console.WriteLine();
+            Console.WriteLine("  statistic reachability, on these five seeds");
+            Console.WriteLine($"    primary varies      {(Dispersion.Sd(runaway[WarRulePanel.Null]).Figure > 0 ? "yes" : "NO")}");
+            Console.WriteLine($"    censoring exercised {(censoredNull > 0 ? $"yes, {censoredNull} world(s)" : "NO")}");
+
+            // A contrast whose deltas are identically zero on the dry-run seeds is not thereby
+            // structurally zero — but it is the shape that has to be watched, so it is named here
+            // rather than discovered in the panel's output.
+            foreach (Contrast c in contrasts)
+            {
+                if (c.Sd.Figure > 0) continue;
+                Console.WriteLine($"    NOTE  '{c.Name}' has zero variance on these seeds. Not " +
+                                  "structurally zero — the collapse arm can move a world — but the");
+                Console.WriteLine("          panel must show it varying, or the contrast reports nothing.");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("  sizing, from the paired variance of these seeds (sizing only — this");
+            Console.WriteLine("  figure does not decide anything about the run it came from)");
+
+            Contrast warNull = contrasts[0];
+            double sigma = warNull.Sd.Figure;
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"    paired sd = {sigma:0.00} years on war - null"));
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"    N at that sd, MDE {mde:0}, 80% power, two-sided 0.05 = " +
+                $"{PairedStats.RequiredN(sigma, mde)}"));
+
+            // The point estimate of σ from five observations is itself very uncertain, so the
+            // registered N takes the margin in advance rather than regretting it afterwards —
+            // the same move docs/panel-prereg.md §4 made, and for the same reason.
+            double upper = Math.Sqrt(4 * sigma * sigma / 1.6488);
+            Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
+                $"    one-sided 80% upper bound on sd = {upper:0.00}; N there = " +
+                $"{PairedStats.RequiredN(upper, mde)}"));
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// The disposition table from the brief, evaluated rather than read off by a person.
+    ///
+    /// Every cell is reachable and the dry run demonstrates it: a decision rule with an arm no
+    /// input can reach is the shape this project has now been bitten by twice.
+    /// </summary>
+    private static string Disposition(IReadOnlyDictionary<string, (bool Survives, bool Clears)> verdicts)
+    {
+        (bool warNullSurvives, bool warNullClears) = verdicts["war - null"];
+        (bool warRandomSurvives, bool warRandomClears) = verdicts["war - random"];
+
+        bool warNullReal = warNullSurvives && warNullClears;
+        bool warRandomReal = warRandomSurvives && warRandomClears;
+
+        if (!warNullReal)
+        {
+            return "war - null is not distinguishable: the five-seed panel caught a tail. " +
+                   "SHIP ALL THREE.";
+        }
+
+        return warRandomReal
+            ? "war - null real and war - random real: the war rule is the cause. " +
+              "SHIP COLLAPSE + DISUSE, CARD THE WAR RULE."
+            : "war - null real and war ≈ random: the world is knife-edge on losing trade ties. " +
+              "SHIP COLLAPSE + DISUSE; the brake problem is world design, not a rule defect.";
     }
 
     private static int CmdHoldouts(Args args)

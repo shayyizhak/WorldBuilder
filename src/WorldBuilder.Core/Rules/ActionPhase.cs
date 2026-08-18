@@ -18,6 +18,12 @@ public static class ActionPhase
             if (goal.Owner.Kind == EntityKind.Faction) ActOnBehalfOfFaction(tick, goal);
             else if (goal.Owner.Kind == EntityKind.Actor) ActAsPerson(tick, goal);
         }
+
+        // The random arm's removals land here rather than in the consequence phase, so they fall
+        // in the same phase of the same year as the war arm's do. Two phases' difference inside
+        // one year is small, and an experiment whose two treatments are applied at different
+        // points of the tick is one more thing a contrast would be confounded with.
+        if (tick.Allows(TerminationArm.RandomTrade)) RelationEnds.RemoveScheduledAtRandom(tick);
     }
 
     // ---- factions ---------------------------------------------------------

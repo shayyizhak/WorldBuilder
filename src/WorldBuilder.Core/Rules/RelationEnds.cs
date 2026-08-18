@@ -48,6 +48,12 @@ public static class RelationEnds
     public const string Collapse = "collapse";
 
     /// <summary>
+    /// Taken at random, on a schedule matched to the war arm. Never emitted by a real world —
+    /// see <see cref="TerminationArm.RandomTrade"/>.
+    /// </summary>
+    public const string Random = "random";
+
+    /// <summary>
     /// Years without a single dealing before a trade tie is considered abandoned.
     ///
     /// <b>Twenty, argued from the cadence of use and the length of a reign</b>, and the argument
@@ -224,6 +230,53 @@ public static class RelationEnds
             if (state.IsDefunct(tie.Key.From) || state.IsDefunct(tie.Key.To)) continue;
 
             OnItsOwnEvent(tick, tie.Key.From, tie.Key.To, RelationKind.Trade, Disuse, tie.LastCause);
+        }
+    }
+
+    /// <summary>
+    /// Removes the trade ties this year's schedule calls for, chosen uniformly at random.
+    ///
+    /// <b>The discriminating arm, and not a rule.</b> It exists so that "the war rule damages
+    /// histories" can be told apart from "this world is knife-edge on losing trade ties at all" —
+    /// two explanations that make the same prediction about a war-versus-null contrast and have
+    /// entirely different fixes.
+    ///
+    /// Drawn on <see cref="RngPurpose.Control"/>, which no rule may read, so the substitution
+    /// consumes nothing the rules are consuming. Candidates are taken in the graph's own key
+    /// order, which is a property of the data rather than of insertion history, so the choice is
+    /// reproducible from (seed, year) alone.
+    /// </summary>
+    public static void RemoveScheduledAtRandom(Tick tick)
+    {
+        RandomTieSchedule? schedule = tick.RandomTies;
+        if (schedule is null) return;
+
+        int due = schedule.DueIn(tick.Year);
+        if (due == 0) return;
+
+        Rng rng = tick.Rng(RngPurpose.Control).Branch(tick.Year);
+
+        for (int i = 0; i < due; i++)
+        {
+            List<Relation> live = [];
+            foreach (Relation r in tick.State.Relations.All)
+            {
+                if (r.Key.Kind != RelationKind.Trade) continue;
+                if (r.Key.From.CompareTo(r.Key.To) > 0) continue;   // one entry per tie
+                if (tick.State.IsDefunct(r.Key.From) || tick.State.IsDefunct(r.Key.To)) continue;
+                live.Add(r);
+            }
+
+            // A scheduled removal with nothing to remove means the arms are no longer matched.
+            // Recorded rather than skipped: the run has to be able to say the treatment was not
+            // delivered, because a random arm that removed fewer ties is a different experiment.
+            if (live.Count == 0) { schedule.Note(removed: false); continue; }
+
+            Relation chosen = live[rng.Next(live.Count)];
+            Event? ended = OnItsOwnEvent(tick, chosen.Key.From, chosen.Key.To, RelationKind.Trade,
+                Random, chosen.LastCause);
+
+            schedule.Note(removed: ended is not null);
         }
     }
 }

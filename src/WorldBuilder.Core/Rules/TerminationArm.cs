@@ -34,6 +34,22 @@ public enum TerminationArm
     /// <summary>A trade tie nothing has moved for twenty years lapses.</summary>
     Disuse = 4,
 
+    /// <summary>
+    /// Trade ties removed at random on a supplied schedule. <b>Not a rule</b> — a synthetic
+    /// treatment, and the discriminating arm of the war-rule experiment.
+    ///
+    /// Without it, any war-versus-null effect is confounded with "ties came down": a world that
+    /// is knife-edge sensitive to losing trade ties at all would produce exactly the same
+    /// contrast, and the fix for that is a world-design problem rather than a rule defect. The
+    /// arm removes the same number of ties in the same years as the war arm did, chosen
+    /// uniformly at random on <see cref="RngPurpose.Control"/>, which no rule may draw on.
+    ///
+    /// Requires <see cref="Simulation.RandomTies"/> to be set, and throws if it is not: an arm
+    /// that silently removed nothing would report the collapse arm's figures under the random
+    /// arm's name.
+    /// </summary>
+    RandomTrade = 8,
+
     /// <summary>Ruleset 6 as shipped.</summary>
     All = War | Collapse | Disuse,
 }
@@ -61,8 +77,52 @@ public static class TerminationArms
         "war+collapse" => TerminationArm.War | TerminationArm.Collapse,
         "war+disuse" => TerminationArm.War | TerminationArm.Disuse,
         "collapse+disuse" => TerminationArm.Collapse | TerminationArm.Disuse,
+        "random" => TerminationArm.Collapse | TerminationArm.RandomTrade,
         _ => throw new FormatException(
             $"unknown termination arm '{name}'. One of: all, none, war, collapse, disuse, " +
-            "war+collapse, war+disuse, collapse+disuse."),
+            "random, war+collapse, war+disuse, collapse+disuse."),
     };
+}
+
+/// <summary>
+/// The schedule the random arm removes trade ties on, and the account of whether it managed to.
+///
+/// <b>Matched per world, not on average.</b> A random arm that removed a different number of ties
+/// from the war arm, or removed them in different years, is measuring a different treatment and
+/// the contrast between them means nothing. The schedule is therefore taken from the war arm's own
+/// run on the same seed and board — one entry per removal, carrying the year it happened in.
+///
+/// <b>A miss is a halt, not a rounding error.</b> If a year comes up with no live trade tie to
+/// remove, the arms are no longer matched, and the honest thing is for the run to say so rather
+/// than to quietly remove fewer.
+/// </summary>
+public sealed class RandomTieSchedule(IReadOnlyList<int> years)
+{
+    private readonly Dictionary<int, int> _due = Build(years);
+
+    /// <summary>One entry per scheduled removal, carrying the year it is due in.</summary>
+    public IReadOnlyList<int> Years { get; } = [.. years];
+
+    public int Removed { get; private set; }
+
+    /// <summary>Scheduled removals that found no live tie to take. Must be zero.</summary>
+    public int Missed { get; private set; }
+
+    /// <summary>Whether this arm actually delivered the treatment it was supposed to.</summary>
+    public bool Matched => Missed == 0 && Removed == Years.Count;
+
+    public int DueIn(int year) => _due.GetValueOrDefault(year);
+
+    public void Note(bool removed)
+    {
+        if (removed) Removed++;
+        else Missed++;
+    }
+
+    private static Dictionary<int, int> Build(IReadOnlyList<int> years)
+    {
+        Dictionary<int, int> due = [];
+        foreach (int y in years) due[y] = due.GetValueOrDefault(y) + 1;
+        return due;
+    }
 }

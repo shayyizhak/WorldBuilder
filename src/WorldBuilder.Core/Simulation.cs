@@ -43,6 +43,9 @@ public sealed class Tick(Chronicle chronicle, SimConfig config, NameForge forge,
     /// </summary>
     public TerminationArm Arm { get; init; } = TerminationArm.All;
 
+    /// <summary>The random arm's schedule, or null on every run that is not that arm.</summary>
+    public RandomTieSchedule? RandomTies { get; init; }
+
     /// <summary>Whether one termination rule is switched on for this run.</summary>
     public bool Allows(TerminationArm rule) => (Arm & rule) != 0;
 
@@ -135,8 +138,26 @@ public sealed class Simulation
     /// </summary>
     public TerminationArm Arm { get; }
 
+    /// <summary>
+    /// The schedule of random trade-tie removals, for the discriminating arm of the war-rule
+    /// experiment. Set before <see cref="Run"/>, like <see cref="Ledger"/> and <see cref="Probe"/>.
+    ///
+    /// Required by <see cref="TerminationArm.RandomTrade"/> and refused without it: an arm that
+    /// silently removed nothing would publish the collapse arm's figures under the random arm's
+    /// name, which is the quietest way an experiment can lie.
+    /// </summary>
+    public RandomTieSchedule? RandomTies { get; set; }
+
     public void Run(int years)
     {
+        if ((Arm & TerminationArm.RandomTrade) != 0 && RandomTies is null)
+        {
+            throw new InvalidOperationException(
+                "the random arm needs a schedule. Set Simulation.RandomTies from the war arm's " +
+                "own removals on this seed and board — an unmatched random arm measures a " +
+                "different treatment, and an empty one measures the collapse arm.");
+        }
+
         for (int i = 1; i <= years; i++) Step(StartYear + i);
 
         AssertEveryPlotTerminated();
@@ -193,7 +214,10 @@ public sealed class Simulation
         State.Year = year;
         Chronicle.BeginYear(year);
 
-        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger, Probe = Probe, Arm = Arm };
+        Tick tick = new(Chronicle, _config, _forge, year)
+        {
+            Ledger = Ledger, Probe = Probe, Arm = Arm, RandomTies = RandomTies,
+        };
 
         LifePhase.Run(tick);
         EconomyPhase.Run(tick);
