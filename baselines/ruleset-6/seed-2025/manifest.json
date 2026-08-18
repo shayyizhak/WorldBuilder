@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-6-seed-2025",
+  "created_utc": "2026-08-18T14:03:13Z",
+  "seed": 2025,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "f422181e75b8a5ef945e41819fd4ae313f77d759",
+  "ruleset_version": "6",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 6 makes relations terminable \u2014 war closes a trade border, a tie unused for twenty years lapses, and a collapsing house takes its obligations with it. The war rule was accepted on a 90-seed panel where war \u2212 null is \u002B0.27 years, CI [\u22120.27, \u002B0.81], against a 5-year minimum effect."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-2025.md", "source_path": "out/ruleset-6/seed-2025/chronicle-2025.md", "sha256": "a89adb1afa43a1bb2b4e53f7311a7c0282b44ddacf4036c04aec01f883322030", "bytes": 12136, "role": "artefact" },
+    { "filename": "chronicle-2025.findings.json", "source_path": "out/ruleset-6/seed-2025/chronicle-2025.findings.json", "sha256": "7bb3fa017743be2bb673e5e0cd52b13d9d86ba030312f9e6f9dc0395f1c10cd5", "bytes": 45584, "role": "anchor" },
+    { "filename": "chronicle-2025.unverified.md", "source_path": "out/ruleset-6/seed-2025/chronicle-2025.unverified.md", "sha256": "63aa7d23c07e086eee7095b9bf106c153af74918c996f7ecdd904474ba614ce6", "bytes": 8292, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-6/seed-2025/renders.json", "sha256": "a45f16dd81c752bb455e2c28bad7b14859f953f9013e2b30ffcfbefaeaff26c2", "bytes": 20709, "role": "artefact" },
+    { "filename": "world-2025.jsonl", "source_path": "out/ruleset-6/seed-2025/world-2025.jsonl", "sha256": "828ec61cb06e6c9da566062028e0023bb2ac6566eaf0fa019d20da04bdb29a5f", "bytes": 393101, "role": "artefact" },
+    { "filename": "world-2025.log", "source_path": "out/ruleset-6/seed-2025/world-2025.log", "sha256": "812111ec72c20943856aa883b79fbe33ffdfe0f59ae18b7627550a53d7e1de53", "bytes": 59232, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-6/seed-2025/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}

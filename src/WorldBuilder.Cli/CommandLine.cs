@@ -771,7 +771,7 @@ public static class CommandLine
         string set = args.Text("set", "ruleset-4");
 
         List<EventLog> logs = [];
-        foreach (ulong seed in SealedSeeds(args))
+        foreach (ulong seed in SeedsIn(root, set, args))
         {
             string n = seed.ToString(CultureInfo.InvariantCulture);
             string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
@@ -1731,7 +1731,7 @@ public static class CommandLine
         string set = args.Text("set", "ruleset-4");
         string against = args.Text("against", "ruleset-3");
 
-        Holdouts.Report report = Holdouts.Build(root, set, against, SealedSeeds(args));
+        Holdouts.Report report = Holdouts.Build(root, set, against, SeedsIn(root, set, args));
 
         foreach (string line in Holdouts.Render(report)) Console.WriteLine(line);
 
@@ -1761,6 +1761,34 @@ public static class CommandLine
     /// <summary>The seeds a pre-ruleset-6 sealed set contains, for the verbs that read one.</summary>
     private static List<ulong> SealedSeeds(Args args) =>
         Seeds(args, string.Join(",", ReferencePanel.Sealed));
+
+    /// <summary>
+    /// The seeds a sealed set actually contains, read off the directory.
+    ///
+    /// <b>Neither declared list is the right answer for a verb that reads a set by name.</b> The
+    /// live panel is wrong for a historical set and the historical list is wrong for the current
+    /// one — <c>wb holdouts --set ruleset-6</c> went looking for seed 99, which ruleset 6 does not
+    /// hold, on the strength of a default. Which worlds a seal holds is a property of the seal, so
+    /// it is enumerated rather than guessed, and <c>--seeds</c> still overrides.
+    /// </summary>
+    private static List<ulong> SeedsIn(string root, string set, Args args)
+    {
+        if (args.Text("seeds", "") is { Length: > 0 }) return Seeds(args);
+
+        string directory = Path.Combine(root, set);
+        if (!Directory.Exists(directory)) return [.. ReferencePanel.Current];
+
+        List<ulong> found = [];
+        foreach (string path in Directory.GetDirectories(directory, "seed-*"))
+        {
+            string name = Path.GetFileName(path)["seed-".Length..];
+            if (ulong.TryParse(name, NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong seed))
+                found.Add(seed);
+        }
+
+        found.Sort();
+        return found.Count > 0 ? found : [.. ReferencePanel.Current];
+    }
 
     private static List<ulong> Seeds(Args args, string fallback)
     {

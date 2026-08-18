@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-6-seed-1",
+  "created_utc": "2026-08-18T12:46:43Z",
+  "seed": 1,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "f422181e75b8a5ef945e41819fd4ae313f77d759",
+  "ruleset_version": "6",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 6 makes relations terminable \u2014 war closes a trade border, a tie unused for twenty years lapses, and a collapsing house takes its obligations with it. Seed 1 replaced seed 99 in the reference panel at this ruleset, screened against docs/reference-seed-criteria.md; seed 99 never has a conspiracy uncovered at ruleset 6 and so could not support the assertion it was in the panel for."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-1.md", "source_path": "out/ruleset-6/seed-1/chronicle-1.md", "sha256": "4a1ab344bf3ae12a635efce923e508c1ecad23658fe3a9e71bbe0daa8a95053b", "bytes": 15664, "role": "artefact" },
+    { "filename": "chronicle-1.findings.json", "source_path": "out/ruleset-6/seed-1/chronicle-1.findings.json", "sha256": "8f538810b21e611182339855bef8b70579185b7659b9308873e216e4051165fb", "bytes": 45246, "role": "anchor" },
+    { "filename": "chronicle-1.unverified.md", "source_path": "out/ruleset-6/seed-1/chronicle-1.unverified.md", "sha256": "bfbcbaf1c62f4f2d0c8e4aecee796e91023908a3ea00427c47abf73071bb59de", "bytes": 7927, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-6/seed-1/renders.json", "sha256": "e28c939baaf0499b83ebc37fb917d2f943da57ca103c63832e4ea162b93670c9", "bytes": 24408, "role": "artefact" },
+    { "filename": "world-1.jsonl", "source_path": "out/ruleset-6/seed-1/world-1.jsonl", "sha256": "a0214bd25edb199b6102d3cabba7fdeb99cb0ae7e0af780944012ded8f90f6e5", "bytes": 375097, "role": "artefact" },
+    { "filename": "world-1.log", "source_path": "out/ruleset-6/seed-1/world-1.log", "sha256": "789bcb32529063fe681fae5797e5d995044ce2394439a9b5fca171f2097a160e", "bytes": 62068, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-6/seed-1/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}

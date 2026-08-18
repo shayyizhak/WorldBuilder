@@ -1,0 +1,41 @@
+# Unverified passages, seed 2025
+
+Each of these was written twice and failed the check both times, so it is kept out of the chronicle. Nothing here is canon.
+
+
+## The Waeslefell Compact, 2–21
+
+- `ambiguous-short-name` — two powers here are called "compact"; the short form says neither
+- `date-disagreement` — “Vor Saern died in 17, and Vaell Foull took the seat again by right of birth, holding it until the period ended” — says foull took the seat in 10, but and in 17
+
+The Waeslefell Compact’s twenty-year span from 2 to 21 was defined by a single, escalating conflict with the Baesveireach Compact that drained its resources and shattered its authority. The period began with the Compact occupying Fa Cut in 2, a move that preceded a brief marital alliance with Baesveireach in 3. That alliance collapsed in 4 when the Compact declared war on Baesveireach for Thea Seam and broke its previous ties. The resulting war lasted six years and consisted of six battles, all lost by the Waeslefell Compact at Thea Seam. The defeats were severe, with casualties totaling 87 dead across the engagements. The war ended in 10 with both sides exhausted and a peace treaty signed, but the Compact had already suffered significant internal and external damage.
+
+During the war and its aftermath, the Compact faced repeated raids and internal instability. Baesveireach raided Waeslefell in 6, carrying off 30 grain and killing 59, while the Deafil League raided Waeslefell in 8, taking 24 grain and killing 59. The Compact retaliated by raiding Kremoor in 8 and Skomere in 9, carrying off plunder in both instances. Internally, the seat passed three times. Keirn Heapound died in 10, and Vaell Foull took the seat by right of birth. Vaell Foull’s rule was challenged in 13 by Vor Saern, who won the seat in an open challenge, casting Vaell Foull out. Grefraem Meheath was cast out for attempted murder and later declared an outlaw for conspiracy. Four people were courted away from the ruler during this time, indicating a fracturing of loyalty.
+
+The end of the period saw the Compact’s standing fall to nothing, leading to a rebellion at Fa Cut in 13. Vor Saern died in 17, and Vaell Foull took the seat again by right of birth, holding it until the period ended. The Compact continued to raid Kremoor in 18 and Skomere in 19, carrying off plunder, while successfully beating off raids from Baesveireach and the Deafil League. Despite these military successes in raiding and defense, the Compact had lost six battles, suffered eight years of hunger or sickness that killed 302 people, and lost Fa Cut to rebellion. The period closed with Vaell Foull still holding the seat, but the Compact’s power had been significantly diminished by the long war and internal strife.
+
+
+## The Waeslefell Compact, 22–41
+
+- `ambiguous-short-name` — two powers here are called "compact"; the short form says neither
+- `wrong-collapse` — …Peace with Baesveireach was made in 30 after the Baesveireach Compact’s collapse… — nothing here records baesveireach being destroyed
+- `incomplete-enumeration` — Weisfaewick was lost in 33 and is never named
+- `out-of-order` — the killing of Vaell Foull in 24 is what opened the seat, and is told after Ground Raeskur takes it
+
+The Waeslefell Compact’s twenty-year span from 22 to 41 was defined by a violent succession crisis, a protracted war with the Baesveireach Compact, and a final collapse of internal authority. Vaell Foull held the seat until his murder in 24, after which Ground Raeskur took power by right of birth. The Compact’s standing deteriorated through internal purges and external defeats, ending with Nounmam Mith holding the seat by coup while the power’s authority had fallen to nothing.
+
+Ground Raeskur’s rule began with the murder of Vaell Foull at Skomere in 24. He faced immediate hostility from the Baesveireach Compact, which raided Fa Cut in 25, carrying off 20 ore. The Waeslefell Compact declared war in 26 but lost at Thea Seam, suffering 36 dead. It reversed this defeat in 27, killing 30 and taking Thea Seam from the Baesveireach Compact. Internal instability marked Ground Raeskur’s tenure: Staellou Keillthae’s failed attempt on his life in 28 led to Keillthae’s exile and subsequent outlawry. Ground Raeskur ordered the murder of Steapall Faedild at Baesveireach in 29. The Compact won two more battles against the Baesveireach Compact at Baesveireach in 28 and 29, taking that settlement as well. Peace with Baesveireach was made in 30 after the Baesveireach Compact’s collapse. Vamkei Dridrill’s conspiracy against Ground Raeskur was uncovered in 30, leading to Dridrill’s exile. Fur Roundpoull returned from exile in 29 and challenged Ground Raeskur openly in 32, winning the seat. Ground Raeskur was cast out.
+
+Fur Roundpoull’s rule was brief. He died in Waeslefell in 33. Rontaen Sin contested the claim of the named heir Rearn Thill and took the seat, setting aside Rearn Thill’s claim. The Compact was divided, with Rearn Thill carrying off two places as Greater Baesveireach. The Waeslefell Compact declared war on the Deafil League in 34, breaking its alliance with them. It defeated the Deafil League at Skomere, killing 179 and taking the settlement. The Deafil League was finished. Thea Seam rose against the Compact in 35, its standing having fallen to nothing. Nounmam Mith had Rontaen Sin murdered at Waeslefell in 36. Deththou Keis took the seat by right of birth. Nounmam Mith challenged Deththou Keis in 37 and won, taking the seat by coup. Deththou Keis was cast out. The Compact raided Baesveireach in 41, carrying off 22 grain and killing 8. The period ended with Nounmam Mith still holding the seat.
+
+
+## Greater Baesveireach, 33–51
+
+- `relative-time` — "…d Baesveireach, carrying off 22 grain and killing 8 people. The following year, it raided Weisfaewick, takin…" — replace "the following year" with the absolute year from the record, or drop the time reference
+- `ambiguous-short-name` — two powers here are called "compact"; the short form says neither
+
+Greater Baesveireach spent the nineteen years from 33 to 51 in a state of defensive stagnation, its authority challenged by the Waeslefell Compact while its internal leadership underwent a violent transition. The period began with Rearn Thill holding the seat, having secured it in 33 when the Waeslefell Compact was divided and he carried off two places. For the first decade, the power maintained a fragile peace, formalized in 35 when it swore an alliance with Free Kremoor. However, this stability was illusory; the alliance with Free Kremoor did not prevent the Waeslefell Compact from launching raids against Greater Baesveireach’s settlements, nor did it stop the internal rot that would eventually consume its ruler.
+
+The external pressure mounted as the Waeslefell Compact targeted Greater Baesveireach’s holdings. In 41, the Compact raided Baesveireach, carrying off 22 grain and killing 8 people. The following year, it raided Weisfaewick, taking 41 grain and killing 49. Greater Baesveireach attempted to retaliate, sending out four raids between 38 and 43 against Thea Seam, Fa Cut, Waeslefell, and Skomere. All four were beaten off, leaving the power unable to project force while its neighbors suffered plunder. The inability to secure its borders coincided with a shift in leadership. In 47, Feinnind Keitrith, who had returned from exile in 45 to take service with the power, had Sealdvern Geitoun murdered at Waeslefell. This act of internal violence escalated in 48 when Feinnind Keitrith had Rearn Thill murdered at Baesveireach.
+
+Feinnind Keitrith took the seat of Greater Baesveireach in 48 by right of birth, ending Rearn Thill’s rule. His tenure was marked by further purges and the continued return of exiles, including Noulldou Beivourn in 49 and Full Sanweil in 51. In 49, Feinnind Keitrith had Woum Teldlei murdered at Waeslefell. The period ended with Feinnind Keitrith still holding the seat, having survived the internal conflicts that had claimed his predecessor. The power had endured two raids by the Waeslefell Compact and lost two people to its own ordered killings, but it remained intact, its leadership changed by murder rather than conquest.
