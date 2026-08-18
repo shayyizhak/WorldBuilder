@@ -23,7 +23,7 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class SeatTransferTests
 {
-    private static readonly ulong[] Panel = [7, 42, 99, 1234, 2025];
+    private static readonly ulong[] Panel = ReferencePanel.Current;
 
     // ---- both shapes, at the entry point the product calls ------------------
 

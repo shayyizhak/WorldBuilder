@@ -191,7 +191,7 @@ public class DispersionTests
     {
         List<string> unlabelled = [];
 
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             Simulation sim = new(seed);
             sim.Run(20);

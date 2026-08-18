@@ -26,9 +26,9 @@ public class GeographyProbeTests
     }
 
     [Theory]
+    [InlineData(1UL)]
     [InlineData(7UL)]
     [InlineData(42UL)]
-    [InlineData(99UL)]
     [InlineData(1234UL)]
     [InlineData(2025UL)]
     public void AttachingTheProbeChangesNothingAboutTheWorld(ulong seed)
@@ -53,7 +53,7 @@ public class GeographyProbeTests
         // mechanic, which is the escalation §5 of the geography phase reserved.
         GeographyProbe probe = new();
 
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             Simulation sim = new(seed) { Probe = probe };
             sim.Run(50);

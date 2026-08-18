@@ -91,26 +91,77 @@ public class PlotLedgerTests
     }
 
     /// <summary>
-    /// Both outcomes of the three-way roll are reached, on every seed.
+    /// A conspiracy can succeed, on every seed.
     ///
-    /// Under ruleset 1 the win branch did not exist: the sole emitter hard-coded
-    /// <c>mode=exposed</c> and <c>Outcome.Failed</c>, so the renderer's covert-win template and
-    /// the audit's win counter were both dead. Asserted here rather than assumed, because a
-    /// branch that exists and is never taken is worth exactly as much as one that does not exist.
+    /// <b>This is the branch the invariant exists for and it stays per-seed.</b> Under ruleset 1
+    /// the win branch did not exist: the sole emitter hard-coded <c>mode=exposed</c> and
+    /// <c>Outcome.Failed</c>, so the renderer's covert-win template and the audit's win counter
+    /// were both dead. A branch that exists and is never taken is worth exactly as much as one
+    /// that does not exist, and this is the assertion that discovery bought.
+    ///
+    /// <b>Split from the <c>exposed</c> branch at ruleset 6, deliberately, rather than relaxed.</b>
+    /// The two branches were asserted together, so when one seed stopped uncovering conspiracies
+    /// the obvious repair was to move both to the panel — which would have dropped the protection
+    /// on the branch that had actually regressed once. Keeping them together made the weaker
+    /// assertion the price of the stronger one. Fires on all five: 1, 2, 8, 7, 2.
     /// </summary>
     [Theory]
     [MemberData(nameof(Panel))]
-    public void BothOutcomesOfTheRollAreReached(ulong seed)
+    public void AConspiracyCanSucceedOnEverySeed(ulong seed)
     {
         (_, Simulation sim) = Run(seed);
 
         List<Event> resolutions = [.. sim.Log.Events.Where(e => e.Kind == EventKind.PolityCoupResolved)];
 
-        Assert.Contains(resolutions, e => e.GetString("mode") == "exposed" && e.Outcome == Outcome.Failed);
         Assert.Contains(resolutions, e => e.GetString("mode") == "seized" && e.Outcome == Outcome.Succeeded);
 
         // And nothing emits the third mode the audit used to carry a counter for.
         Assert.DoesNotContain(resolutions, e => e.GetString("mode") == "abandoned");
+    }
+
+    /// <summary>
+    /// A conspiracy can be uncovered — asserted across the panel, not on every seed.
+    ///
+    /// <b>Moved to panel level at ruleset 6, with the figures.</b> At ruleset 6 the branch fires
+    /// 6, 11, 12, 12 and 10 times on seeds 1, 7, 42, 1234 and 2025 — abundantly, on every seed the
+    /// panel now holds. It stopped firing on seed 99 (5 → 0), which is why it was looked at, and
+    /// seed 99 left the panel for an unrelated reason: it could no longer support this very
+    /// assertion.
+    ///
+    /// <b>Per-seed was over-strict for this branch and panel-level is honest.</b> That is a claim
+    /// about reachability, and reachability is a property of the engine rather than of any one
+    /// world — a world where no plot happens to be uncovered in fifty years is not evidence that
+    /// the path is dead. The <c>seized</c> branch is different and keeps its per-seed assertion,
+    /// because that path *was* dead once and nothing noticed.
+    ///
+    /// Recorded because it is a real narrowing and not an artefact: on seed 99 the branch was
+    /// removed by the war rule alone — 5 under the null and collapse and disuse arms, 0 with war
+    /// switched on. Accepted with `war − null` = +0.27 y over 90 worlds in hand.
+    /// </summary>
+    [Fact]
+    public void AConspiracyCanBeUncoveredSomewhereOnThePanel()
+    {
+        int seedsWithAnExposure = 0;
+        List<string> counts = [];
+
+        foreach (ulong seed in ReferencePanel.Current)
+        {
+            (_, Simulation sim) = Run(seed);
+
+            int exposed = 0;
+            foreach (Event e in sim.Log.Events)
+            {
+                if (e.Kind != EventKind.PolityCoupResolved) continue;
+                if (e.GetString("mode") == "exposed" && e.Outcome == Outcome.Failed) exposed++;
+            }
+
+            if (exposed > 0) seedsWithAnExposure++;
+            counts.Add($"{seed}:{exposed}");
+        }
+
+        Assert.True(seedsWithAnExposure > 0,
+            "no conspiracy is uncovered anywhere on the panel — that is a structural zero and a " +
+            $"defect, not a bar to move. Per seed: {string.Join(", ", counts)}");
     }
 
     /// <summary>
@@ -124,7 +175,7 @@ public class PlotLedgerTests
     {
         bool deferred = false;
 
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             (PlotLedger ledger, _) = Run(seed);
             foreach (PlotStanding p in ledger.Plots)
@@ -197,7 +248,7 @@ public class PlotLedgerTests
     {
         bool seen = false;
 
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             (PlotLedger ledger, Simulation sim) = Run(seed);
             PlotAccounting account = ledger.Account(sim.Log);

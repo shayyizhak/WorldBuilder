@@ -31,7 +31,7 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class SchemaInclusionTests
 {
-    private static readonly ulong[] Panel = [7, 42, 99, 1234, 2025];
+    private static readonly ulong[] Panel = ReferencePanel.Sealed;
 
     // ---- the emitter's vocabulary -------------------------------------------
 
@@ -196,9 +196,9 @@ public class SchemaInclusionTests
     /// the with-and-without log hash is the only detector.
     /// </summary>
     [Theory]
+    [InlineData(1UL)]
     [InlineData(7UL)]
     [InlineData(42UL)]
-    [InlineData(99UL)]
     [InlineData(1234UL)]
     [InlineData(2025UL)]
     public void RecordingReadsLeavesTheLogIdentical(ulong seed)

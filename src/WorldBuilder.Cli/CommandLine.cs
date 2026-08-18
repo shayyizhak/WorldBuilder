@@ -67,6 +67,7 @@ public static class CommandLine
                 "keyshift" => CmdKeyShift(parsed),
                 "discriminate" => CmdDiscriminate(parsed),
                 "warpanel" => CmdWarPanel(parsed),
+                "refseed" => CmdRefSeed(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -336,7 +337,7 @@ public static class CommandLine
     /// </summary>
     private static int CmdGeometry(Args args)
     {
-        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+        string[] seeds = args.Text("seeds", ReferencePanel.CurrentText)
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         int years = args.Int("years", 50);
@@ -483,7 +484,7 @@ public static class CommandLine
 
         // The reference seeds are excluded by construction, and asserted rather than assumed —
         // keeping the two panels separate is the entire point of the exercise.
-        HashSet<ulong> reference = [7, 42, 99, 1234, 2025];
+        HashSet<ulong> reference = [.. ReferencePanel.Current, .. ReferencePanel.Sealed];
 
         Console.WriteLine($"measurement panel: {count} seeds from {from}, {years} years, four arms, paired");
         Console.WriteLine($"  each seed on its own board (wb map make at that seed, {BoardMaker.DefaultWidth}x{BoardMaker.DefaultHeight})");
@@ -770,7 +771,7 @@ public static class CommandLine
         string set = args.Text("set", "ruleset-4");
 
         List<EventLog> logs = [];
-        foreach (ulong seed in Seeds(args))
+        foreach (ulong seed in SealedSeeds(args))
         {
             string n = seed.ToString(CultureInfo.InvariantCulture);
             string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
@@ -1124,7 +1125,9 @@ public static class CommandLine
 
         bool halt = false;
 
-        foreach (ulong seed in Seeds(args))
+        // The sealed seeds, not the live panel: this compares a fresh run against a ruleset-5
+        // directory, and that directory holds whatever it held when it was sealed.
+        foreach (ulong seed in SealedSeeds(args))
         {
             string n = seed.ToString(CultureInfo.InvariantCulture);
             string path = Path.Combine(root, against, $"seed-{n}", $"world-{n}.jsonl");
@@ -1224,7 +1227,7 @@ public static class CommandLine
 
         bool broken = false;
 
-        foreach (ulong seed in Seeds(args))
+        foreach (ulong seed in SealedSeeds(args))
         {
             string n = seed.ToString(CultureInfo.InvariantCulture);
             string path = Path.Combine(root, against, $"seed-{n}", $"world-{n}.jsonl");
@@ -1355,7 +1358,7 @@ public static class CommandLine
         }
         else
         {
-            HashSet<ulong> reference = [7, 42, 99, 1234, 2025];
+            HashSet<ulong> reference = [.. ReferencePanel.Current, .. ReferencePanel.Sealed];
             for (int i = 0; i < count; i++)
             {
                 ulong seed = from + (ulong)i;
@@ -1593,6 +1596,74 @@ public static class CommandLine
         return unmatched > 0 ? 1 : 0;
     }
 
+    /// <summary>
+    /// Screens seeds against the reference-seed criteria, and finds a replacement where one is
+    /// needed.
+    ///
+    /// The criteria and the search rule were both committed before any candidate world existed
+    /// (`docs/reference-seed-criteria.md`), which is what makes the answer here a screening result
+    /// rather than a preference.
+    /// </summary>
+    private static int CmdRefSeed(Args args)
+    {
+        int years = args.Int("years", 50);
+        int wanted = args.Int("replacements", 0);
+
+        Console.WriteLine("current reference panel, against docs/reference-seed-criteria.md §3");
+        Console.WriteLine();
+
+        List<ulong> failing = [];
+        foreach (ulong seed in Seeds(args))
+        {
+            Suitability s = Screen(seed, years);
+            Console.WriteLine($"  {s.Line()}");
+            if (!s.Suitable) failing.Add(seed);
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(failing.Count == 0
+            ? "  every current reference seed is suitable; no replacement is needed"
+            : $"  {failing.Count} seed(s) fail: {string.Join(", ", failing)}");
+
+        if (wanted <= 0 && failing.Count == 0) return 0;
+
+        int needed = wanted > 0 ? wanted : failing.Count;
+
+        Console.WriteLine();
+        Console.WriteLine($"  searching for {needed} replacement(s), by §5: the lowest seed ≥ 1 that");
+        Console.WriteLine("  satisfies every criterion, skipping the current five and both panel ranges");
+        Console.WriteLine();
+
+        HashSet<ulong> skip = [.. ReferencePanel.Current, .. ReferencePanel.Sealed];
+        List<ulong> found = [];
+
+        for (ulong candidate = 1; candidate < 10_000 && found.Count < needed; candidate++)
+        {
+            if (skip.Contains(candidate)) continue;
+            if (candidate is >= 9_000_001 and <= 9_000_207) continue;
+            if (candidate is >= 9_100_001 and <= 9_100_090) continue;
+
+            Suitability s = Screen(candidate, years);
+            Console.WriteLine($"  {s.Line()}");
+
+            if (s.Suitable) found.Add(candidate);
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(found.Count < needed
+            ? "  NO SUITABLE SEED FOUND in the searched range"
+            : $"  take: {string.Join(", ", found)}");
+
+        return found.Count < needed ? 1 : 0;
+
+        static Suitability Screen(ulong seed, int years)
+        {
+            Simulation sim = new(seed);
+            sim.Run(years);
+            return ReferenceSuitability.Of(WorldView.Build(sim.Log, seed));
+        }
+    }
+
     /// <summary>Median and quartiles, labelled, so no bare number can be read as the wrong one.</summary>
     private static string Quantiles(IReadOnlyList<int> values)
     {
@@ -1660,7 +1731,7 @@ public static class CommandLine
         string set = args.Text("set", "ruleset-4");
         string against = args.Text("against", "ruleset-3");
 
-        Holdouts.Report report = Holdouts.Build(root, set, against, Seeds(args));
+        Holdouts.Report report = Holdouts.Build(root, set, against, SealedSeeds(args));
 
         foreach (string line in Holdouts.Render(report)) Console.WriteLine(line);
 
@@ -1678,12 +1749,24 @@ public static class CommandLine
         return report.Halts ? 1 : 0;
     }
 
-    /// <summary>The five-seed panel, or whatever <c>--seeds</c> names instead.</summary>
-    private static List<ulong> Seeds(Args args)
+    /// <summary>
+    /// The live reference panel, or whatever <c>--seeds</c> names instead.
+    ///
+    /// A verb that reads a *sealed* set off disk wants <see cref="SealedSeeds"/> instead: the live
+    /// panel is what will be cut next, and the seeds a ruleset-4 directory holds are whatever it
+    /// held when it was sealed.
+    /// </summary>
+    private static List<ulong> Seeds(Args args) => Seeds(args, ReferencePanel.CurrentText);
+
+    /// <summary>The seeds a pre-ruleset-6 sealed set contains, for the verbs that read one.</summary>
+    private static List<ulong> SealedSeeds(Args args) =>
+        Seeds(args, string.Join(",", ReferencePanel.Sealed));
+
+    private static List<ulong> Seeds(Args args, string fallback)
     {
         List<ulong> seeds = [];
 
-        foreach (string raw in args.Text("seeds", "7,42,99,1234,2025")
+        foreach (string raw in args.Text("seeds", fallback)
                      .Split(',', StringSplitOptions.RemoveEmptyEntries))
         {
             if (ulong.TryParse(raw.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong seed))
@@ -1836,7 +1919,7 @@ public static class CommandLine
     /// </summary>
     private static int CmdPlots(Args args)
     {
-        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+        string[] seeds = args.Text("seeds", ReferencePanel.CurrentText)
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         int years = args.Int("years", 50);
@@ -1890,7 +1973,7 @@ public static class CommandLine
     /// </summary>
     private static int CmdOutcomes(Args args)
     {
-        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+        string[] seeds = args.Text("seeds", ReferencePanel.CurrentText)
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         int years = args.Int("years", 50);
@@ -2171,7 +2254,7 @@ public static class CommandLine
     /// <summary>Layer 1, across the seed panel. A metric that holds on one seed is an anecdote.</summary>
     private static LayerRun TestDynamics(Args args)
     {
-        string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
+        string[] seeds = args.Text("seeds", ReferencePanel.CurrentText)
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         int failures = 0;

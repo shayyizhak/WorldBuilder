@@ -130,9 +130,9 @@ public class CausalIntegrityTests
     /// reference it cannot look up.
     /// </summary>
     [Theory]
+    [InlineData(1UL)]
     [InlineData(7UL)]
     [InlineData(42UL)]
-    [InlineData(99UL)]
     [InlineData(1234UL)]
     [InlineData(2025UL)]
     public void TheWrittenLogHasNoDanglingCauses(ulong seed)

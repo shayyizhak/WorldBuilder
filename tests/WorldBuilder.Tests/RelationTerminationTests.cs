@@ -18,7 +18,7 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class RelationTerminationTests
 {
-    private static readonly ulong[] Panel = [7, 42, 99, 1234, 2025];
+    private static readonly ulong[] Panel = ReferencePanel.Sealed;
 
     public static TheoryData<ulong> Seeds()
     {

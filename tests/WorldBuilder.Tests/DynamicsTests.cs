@@ -103,7 +103,7 @@ public class DynamicsTests
     {
         HashSet<string> stillBroken = new(StringComparer.Ordinal);
 
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
             foreach (Invariant r in Invariants.Check(World(seed)))
                 if (!r.Held) stillBroken.Add(r.Name);
 
@@ -164,7 +164,7 @@ public class DynamicsTests
     public void EveryRatioMetricHasAReachableNumerator()
     {
         List<Audit> panel = [];
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
             panel.Add(Audit.Compute(World(seed)));
 
         List<string> unreachable = [];

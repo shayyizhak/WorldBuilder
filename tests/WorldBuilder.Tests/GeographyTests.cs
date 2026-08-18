@@ -31,7 +31,7 @@ public class GeographyTests
         // ground the board is made of rather than a point on it. It is never marched on, held,
         // raided or fought over, and a cell for it would put a spurious position into every
         // distance the engine measures.
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             WorldState state = World(seed, 20).State;
 
@@ -105,7 +105,7 @@ public class GeographyTests
         // proximity for every pair would have four mechanics multiplying by a constant and
         // reporting that geography had been consulted — the same defect class as a ratio whose
         // numerator no path can move.
-        foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
+        foreach (ulong seed in ReferencePanel.Current)
         {
             (int pairs, Dispersion range) = GeographyAudit.ProximityRange(World(seed, 20).State);
 

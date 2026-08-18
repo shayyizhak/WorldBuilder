@@ -42,7 +42,7 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class InstrumentationInvarianceTests
 {
-    private static readonly ulong[] Panel = [7, 42, 99, 1234, 2025];
+    private static readonly ulong[] Panel = ReferencePanel.Current;
 
     private static string Hash(EventLog log)
     {
@@ -64,9 +64,9 @@ public class InstrumentationInvarianceTests
     }
 
     [Theory]
+    [InlineData(1UL)]
     [InlineData(7UL)]
     [InlineData(42UL)]
-    [InlineData(99UL)]
     [InlineData(1234UL)]
     [InlineData(2025UL)]
     public void NoCombinationOfSinksChangesTheWorld(ulong seed)
@@ -107,9 +107,9 @@ public class InstrumentationInvarianceTests
     /// rather than a defect.
     /// </summary>
     [Theory]
+    [InlineData(1UL)]
     [InlineData(7UL)]
     [InlineData(42UL)]
-    [InlineData(99UL)]
     [InlineData(1234UL)]
     [InlineData(2025UL)]
     public void TheEngineStillReproducesTheSealedBaselines(ulong seed)

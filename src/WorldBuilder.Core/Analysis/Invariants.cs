@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace WorldBuilder.Core.Analysis;
 
 /// <summary>One invariant, its measured value, and whether it held.</summary>
@@ -61,6 +63,56 @@ public sealed record Invariant(string Name, string Measured, bool Held, string E
 /// </summary>
 public static class Invariants
 {
+    /// <summary>
+    /// The acceptance target for causal variety, and the floor for any world that has never met it.
+    /// </summary>
+    public const int ChainShapeTarget = 60;
+
+    /// <summary>
+    /// Per-seed floors for <c>distinct deep-chain shapes</c>.
+    ///
+    /// <b>Why a floor and not the flat count it replaces.</b> Measured across the 90-seed panel,
+    /// the shape count correlates with a world's length at <c>r = 0.871</c>, and the panel's median
+    /// is 63 against a bar of 60 — so half the engine's ordinary worlds fail it, and a world that
+    /// simply ran shorter fails it for a reason that has nothing to do with causal structure. A flat
+    /// count over worlds that vary two-fold in length is partly a length bar.
+    ///
+    /// <b>Why not a rate.</b> Converting it would mean choosing a shapes-per-event figure that makes
+    /// a world interesting, and there is no argument for what that figure should be. It would be a
+    /// constant chosen by fitting, which this project has a rule about.
+    ///
+    /// <b>The rule for setting one.</b> A seed's floor is <i>its own last accepted value</i>. A seed
+    /// that has never reached <see cref="ChainShapeTarget"/> has no accepted value, so its floor
+    /// stays the target and it stays failing — which is the point: the floor is a regression guard
+    /// and never an excuse. A floor can therefore only be raised, by hand, after a run somebody
+    /// judged good; rerunning never lowers one.
+    ///
+    /// <b>State of the panel at ruleset 6.</b> Seeds 42, 1234 and 2025 clear the target and carry
+    /// floors tighter than it, which catches a regression the old bar would have slept through — a
+    /// fall from 99 to 70 passed <c>&gt;= 60</c> and fails a floor of 99. Seeds 7 (45) and 1 (58)
+    /// have never cleared it and remain known-failing. Seed 7 has been below it since ruleset 1;
+    /// seed 1 was screened into the panel on criteria that deliberately exclude quality proxies,
+    /// and its 58 is ordinary rather than remarkable.
+    /// </summary>
+    public static readonly IReadOnlyDictionary<ulong, int> ChainShapeFloors = new Dictionary<ulong, int>
+    {
+        [1] = ChainShapeTarget,      // 58 at ruleset 6 — never reached the target
+        [7] = ChainShapeTarget,      // 45 at ruleset 6 — never reached the target, since ruleset 1
+        [42] = 99,
+        [1234] = 91,
+        [2025] = 66,
+    };
+
+    /// <summary>
+    /// This seed's floor, or the target for a seed with no declared one.
+    ///
+    /// A world off the reference panel — a measurement-panel seed, an ad-hoc run — gets the target
+    /// rather than a pass. Defaulting to zero would make the metric unfalsifiable everywhere it has
+    /// not been thought about, which is the failure this file's own header is about.
+    /// </summary>
+    public static int ChainShapeFloor(ulong seed) =>
+        ChainShapeFloors.TryGetValue(seed, out int floor) ? floor : ChainShapeTarget;
+
     public static List<Invariant> Check(WorldView view)
     {
         Audit audit = Audit.Compute(view);
@@ -91,7 +143,10 @@ public static class Invariants
         Add("single-actor causal chains",
             $"{audit.LifecycleChains} ({audit.LifecycleChainPct}%)",
             audit.LifecycleChains == 0, "0 chains", audit.DeepChains);
-        Add("distinct deep-chain shapes", audit.DistinctChainShapes, audit.DistinctChainShapes >= 60, ">= 60");
+        int shapeFloor = ChainShapeFloor(view.Seed);
+        Add("distinct deep-chain shapes", audit.DistinctChainShapes,
+            audit.DistinctChainShapes >= shapeFloor,
+            $">= {shapeFloor.ToString(CultureInfo.InvariantCulture)} (this seed's floor)");
         Add("collapses per faction", audit.MaxCollapsesPerFaction, audit.MaxCollapsesPerFaction <= 1, "<= 1");
 
         // Coups are counted among those that reached a decision. Plots overtaken by the target

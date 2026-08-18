@@ -75,7 +75,7 @@ public enum HoldoutVerdict
 public static class Holdouts
 {
     /// <summary>The seed panel. Five, because five baselines were cut, not because five is a sample size.</summary>
-    public static readonly ulong[] Panel = [7, 42, 99, 1234, 2025];
+    public static readonly ulong[] Panel = Core.ReferencePanel.Sealed;
 
     /// <summary>Findings and their fatal flags, back out of a stored sidecar.</summary>
     public static List<SidecarFinding> ReadFindings(string path)
