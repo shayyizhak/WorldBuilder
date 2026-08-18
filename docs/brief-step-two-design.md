@@ -166,6 +166,48 @@ place to say so.
 
 ### The constant, and the argument for it
 
+> **Revised once, before any ruleset-6 world was generated, and the original is left standing
+> below rather than rewritten.** The first design — linear decay of the edge value to zero — was
+> replaced by a disuse *timeout* for two reasons, neither of which is a figure from a run:
+>
+> 1. **Decay changes what every consumer of the trade value sees, every year.**
+>    `ProposeAlliance` scores an approach partly as `Trade / 2`. Decaying the value would move
+>    alliance formation odds in every year of every world, which is a large diffuse behavioural
+>    change riding along inside a step whose entire subject is whether a tie exists. A timeout
+>    changes the fact of the tie and nothing else.
+> 2. **Decay destroys §5's check.** Decay writes `rel:` keys into the yearly drift row from the
+>    first year a tie exists, so the ruleset-6 log would diverge from the ruleset-5 one a decade
+>    before the first termination and §5's halt condition would fire on the first run — spending
+>    the only mechanical guard this step has, on this step's own change.
+>
+> The replacement is stated immediately below. The argument for the original is kept because the
+> part of it that survives — **linear, never proportional** — is the part that matters, and
+> because a pre-registration that quietly becomes whatever was built is worth nothing.
+
+**A trade tie ends after twenty years in which nothing moved it.**
+
+`Relation.LastChangedYear` already records when a tie was last touched, and every rule that trades
+writes through it. So "in use" needs no new state and no new number on the edge: a tie is in use if
+something moved it, and disuse is the absence of that.
+
+**Twenty, because it has to clear the cadence of use and land inside a working life.**
+
+- The recency guard forbids the same pair repeating a pact inside **five** years, so an active
+  relationship refreshes on a five-year-or-longer cadence. A timeout near that would kill
+  relationships between ordinary dealings, which is the mechanic misfiring rather than firing.
+  Twenty is four consecutive missed opportunities, so an ordinarily active tie never reaches it.
+- An arrangement between two houses should outlive a gap and not outlive a generation. Twenty
+  years is this engine's generational scale — `OldAge` is 55, a reign runs about two decades, and
+  a tie made by a ruler who is dead and unremembered is precisely the thing §0 objects to.
+
+The bar §4 sets is that a constant be arguable from what the mechanic represents. Twenty is argued
+from the cadence of use and the length of a reign. No figure from any ruleset-6 run was consulted
+in choosing it, and this paragraph was committed before the first one existed.
+
+---
+
+#### The original argument, superseded — kept for the half of it that survives
+
 **A trade tie loses one point per year, and ends when it reaches zero.**
 
 Two decisions, and the second is the one that matters.
@@ -191,18 +233,31 @@ represents is a halt condition.* One point per year is argued from the unit, not
 No figure below was consulted in choosing it, and the sentence above was written before the first
 ruleset-6 world existed.
 
-**What would falsify it.** If the panel comes back with final ties near zero or near peak, the
-degeneracy guard fires and the fix is the rule, not the number — per §4 and §10. Specifically:
-near zero means the flow model is wrong because refreshment is rarer than assumed, and the answer
-is that trade should be refreshed by ordinary commerce rather than only by pacts; near peak means
-nothing decays because everything is refreshed, and the answer is that the value is not a flow at
-all. Neither answer is "try 2 points per year", and if that is what the number wants to be, this
-document says so before the temptation exists.
+#### What would falsify the constant, under either form
+
+If the panel comes back with final ties near zero or near peak, the degeneracy guard fires and the
+fix is the rule, not the number — per §4 and §10. Near zero means refreshment is rarer than the
+cadence argument assumes, and the answer is that ordinary commerce should refresh a tie rather than
+only a pact; near peak means nothing ever falls out of use, and the answer is that disuse is not
+what ends a trade tie. Neither answer is "try twenty-five years", and if that is what the number
+wants to be, this document says so before the temptation exists.
+
+### How a termination is recognised, and what §5 compares
+
+Every event that ends a tie under the new capability carries `endCause`. No ruleset-5 event carries
+it, so **the first termination is the first event in the ruleset-6 log carrying `endCause`** — an
+exact, mechanical definition for §5 rather than a judgement about which severance was the first
+interesting one.
+
+The war declaration and `DIPLO.ALLIANCE_BROKEN` are deliberately left untouched and therefore carry
+no `endCause`. That is the cost of the decision above to leave the alliance deletion on the war: an
+alliance broken by a war will appear in the cause table as *not named by its event*, which is an
+accurate report of a real gap and is the reason it is being reported rather than papered over.
 
 ### The terminating cause as a rendered field
 
-Three causes reach the field: `war`, `disuse`, `partner-collapse` — except that a collapse ends
-its ties inside `POLITY.COLLAPSE` per §3, so only two reach `ECONOMY.TRADE_COLLAPSE`. If the panel
+Three causes reach the field: `war`, `disuse`, `collapse` — except that a collapse ends its ties
+inside `POLITY.COLLAPSE` per §3, so only two reach `ECONOMY.TRADE_COLLAPSE`. If the panel
 shows one of `war` or `disuse` at zero, the standing rule from step one applies — **a field with
 one reachable value across the panel does not get rendered until it has two** — and the cause is
 recorded in the payload and left out of the sentence.
