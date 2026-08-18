@@ -16,17 +16,17 @@ public static class JsonlIo
     /// Writes a world file. <paramref name="control"/> names the synthetic distance model a
     /// diagnostic run used, and is empty for every real world — see <see cref="WorldHeader.Control"/>.
     /// </summary>
-    public static void Write(string path, EventLog log, ulong seed, string control = "")
+    public static void Write(string path, EventLog log, ulong seed, string control = "", string arm = "")
     {
         using StreamWriter writer = new(path, append: false, Encoding.UTF8);
         writer.NewLine = "\n";
 
-        writer.WriteLine(Header(seed, log.Count, control));
+        writer.WriteLine(Header(seed, log.Count, control, arm));
         foreach (Event e in log.Events) writer.WriteLine(Serialise(e));
     }
 
-    public static string Header(ulong seed, int count, string control = "") =>
-        (WorldHeader.ForThisBuild(seed, count) with { Control = control }).Serialise();
+    public static string Header(ulong seed, int count, string control = "", string arm = "") =>
+        (WorldHeader.ForThisBuild(seed, count) with { Control = control, Arm = arm }).Serialise();
 
     public static string Serialise(Event e)
     {

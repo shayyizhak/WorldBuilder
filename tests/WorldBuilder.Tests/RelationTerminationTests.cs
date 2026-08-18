@@ -215,6 +215,68 @@ public class RelationTerminationTests
     }
 
     /// <summary>
+    /// <b>The null arm reproduces the previous ruleset exactly.</b>
+    ///
+    /// This is the assertion that makes every other arm's figure mean something, and it is not a
+    /// result — it is the check on the instrument. Switching the three termination rules off must
+    /// give back the ruleset-5 log event for event, or the switch itself moved the world and an
+    /// attribution made with it is worthless. Same reasoning as the identity proximity control,
+    /// which exists to prove the substitution machinery consumes nothing from the streams the
+    /// rules draw on.
+    ///
+    /// It also says something about ruleset 6 that nothing else does: **the bump changed nothing
+    /// outside these three rules.** Step one could prove that by comparing against sealed
+    /// baselines because its worlds did not move; this is how the same claim is made once they do.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(Seeds))]
+    public void TurningTheTerminationRulesOffGivesBackTheOldRuleset(ulong seed)
+    {
+        Simulation sim = new(seed, arm: TerminationArm.None);
+        sim.Run(50);
+
+        EventLog baseline = Sealed("ruleset-5", seed);
+        Divergence.Report report = Divergence.Between(
+            baseline, Divergence.WithoutArmMarker(sim.Log), seed);
+
+        Assert.Equal(baseline.Count, sim.Log.Count);
+        Assert.True(report.FirstDifference < 0,
+            $"seed {seed}: the null arm differs from ruleset 5 at index {report.FirstDifference} " +
+            "(year " + report.FirstDifferenceYear + "). Something outside the three termination " +
+            "rules changed, and every arm attribution is void.");
+    }
+
+    /// <summary>
+    /// An arm world says it is one, and nothing will seal it.
+    ///
+    /// A world that ran under a subset of its own ruleset is internally consistent and about
+    /// nowhere, and on disk it is a `world-42.jsonl` like any other. That is exactly why the
+    /// marking has to be in the file rather than in a habit.
+    /// </summary>
+    [Fact]
+    public void AnArmWorldIsMarkedAsADiagnosticArtefact()
+    {
+        Simulation sim = new(7, arm: TerminationArm.War);
+        sim.Run(10);
+
+        string header = WorldBuilder.Core.Serialization.JsonlIo.Header(
+            7, sim.Log.Count, "", TerminationArms.NameOf(TerminationArm.War));
+
+        using System.Text.Json.JsonDocument doc = System.Text.Json.JsonDocument.Parse(header);
+        WorldBuilder.Core.Serialization.WorldHeader parsed =
+            WorldBuilder.Core.Serialization.WorldHeader.Parse(doc.RootElement);
+
+        Assert.True(parsed.IsArm);
+        Assert.True(parsed.IsDiagnostic);
+        Assert.Contains("rule arm", parsed.DiagnosticReason, StringComparison.Ordinal);
+
+        // And a real world is not swept up by the same check.
+        using System.Text.Json.JsonDocument real =
+            System.Text.Json.JsonDocument.Parse(WorldBuilder.Core.Serialization.JsonlIo.Header(7, 10));
+        Assert.False(WorldBuilder.Core.Serialization.WorldHeader.Parse(real.RootElement).IsDiagnostic);
+    }
+
+    /// <summary>
     /// The timeout is a timeout: nothing is drawn from the stream to decide it.
     ///
     /// Asserted because the divergence check above depends on it. A rule that rolled for

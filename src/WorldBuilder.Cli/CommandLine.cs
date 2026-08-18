@@ -4,6 +4,7 @@ using WorldBuilder.Core;
 using WorldBuilder.Core.Analysis;
 using WorldBuilder.Core.Geography;
 using WorldBuilder.Core.Rendering;
+using WorldBuilder.Core.Rules;
 using WorldBuilder.Core.Serialization;
 using WorldBuilder.Inference;
 
@@ -64,6 +65,7 @@ public static class CommandLine
                 "standing" => CmdStanding(parsed),
                 "divergence" => CmdDivergence(parsed),
                 "keyshift" => CmdKeyShift(parsed),
+                "discriminate" => CmdDiscriminate(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -97,20 +99,33 @@ public static class CommandLine
         // header and in the genesis event, and `wb baseline cut` refuses it.
         ProximityControlKind control = ProximityControl.Parse(args.Text("control", ""));
 
-        Simulation sim = new(seed, control: control);
+        // The second kind of diagnostic run: a subset of the ruleset's termination rules, so an
+        // effect can be attributed to a rule rather than to the three that shipped together.
+        // Marked the same way and refused by `wb baseline cut` for the same reason.
+        TerminationArm arm = TerminationArms.Parse(args.Text("arm", ""));
+
+        Simulation sim = new(seed, control: control, arm: arm);
         sim.Run(years);
 
         string stem = Path.Combine(directory, $"world-{seed.ToString(CultureInfo.InvariantCulture)}");
         string jsonlPath = stem + ".jsonl";
         string logPath = stem + ".log";
 
-        JsonlIo.Write(jsonlPath, sim.Log, seed, ProximityControl.NameOf(control));
+        JsonlIo.Write(jsonlPath, sim.Log, seed, ProximityControl.NameOf(control),
+            TerminationArms.NameOf(arm));
 
         if (control != ProximityControlKind.None)
         {
             Console.WriteLine($"CONTROL RUN — distances are synthetic ({ProximityControl.NameOf(control)}).");
             Console.WriteLine("  This world is a diagnostic artefact. It is not canon, it is not to be");
             Console.WriteLine("  sealed or rendered, and the header says so.");
+        }
+
+        if (arm != TerminationArm.All)
+        {
+            Console.WriteLine($"ARM RUN — only some relations can end ({TerminationArms.NameOf(arm)}).");
+            Console.WriteLine("  This world ran under a subset of its own ruleset. It is a diagnostic");
+            Console.WriteLine("  artefact, it is not canon, and the header says so.");
         }
 
         Significance minimum = verbose ? Significance.Bookkeeping : Significance.Minor;
@@ -1176,6 +1191,149 @@ public static class CommandLine
               "changes** — one inserted event, per seed, in the middle of the middle year.");
 
         return unexplained > 0 ? 1 : 0;
+    }
+
+    /// <summary>
+    /// One arm per termination rule, so an effect can be attributed to a rule instead of to the
+    /// three that shipped together.
+    ///
+    /// <b>The null arm is the check on the harness, not a result.</b> A rule that never fires on a
+    /// seed must produce that seed's previous-ruleset log exactly; if it does not, the switch
+    /// itself moved the world and every other arm's figure is void. Same reasoning as the identity
+    /// proximity control, which exists to prove the substitution machinery consumes nothing from
+    /// the streams the rules draw on.
+    ///
+    /// Exits non-zero when a null arm fails to reproduce, because that is a broken instrument
+    /// rather than a finding.
+    /// </summary>
+    private static int CmdDiscriminate(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string against = args.Text("against", "ruleset-5");
+        int years = args.Int("years", 50);
+
+        (string Label, TerminationArm Arm)[] arms =
+        [
+            ("none (= ruleset 5)", TerminationArm.None),
+            ("war only", TerminationArm.War),
+            ("collapse only", TerminationArm.Collapse),
+            ("disuse only", TerminationArm.Disuse),
+            ("all (= ruleset 6)", TerminationArm.All),
+        ];
+
+        bool broken = false;
+
+        foreach (ulong seed in Seeds(args))
+        {
+            string n = seed.ToString(CultureInfo.InvariantCulture);
+            string path = Path.Combine(root, against, $"seed-{n}", $"world-{n}.jsonl");
+            if (!File.Exists(path)) return Fail($"no record at {path}");
+
+            (EventLog baseline, ulong archived) = JsonlIo.Read(path);
+            if (archived != seed) return Fail($"{path} carries seed {archived}, not {seed}");
+
+            Console.WriteLine($"## seed {n}");
+            Console.WriteLine();
+            // Pacts, alliances and wars are here because they are the two channels a `Trade` edge
+            // actually feeds, plus the thing the war rule is attached to. `ProposeAlliance` scores
+            // an approach partly as `Trade / 2`, and `TradePact` refuses outright above a value of
+            // 40 — so ending a tie both lowers an appeal and *reopens* a gate. Counting them is
+            // the difference between a measured channel and two figures that happen to move
+            // together.
+            Console.WriteLine("| arm | events | deep chains | distinct shapes | ties ended | " +
+                              "pacts made | alliances made | wars | 70% held from | reproduces the baseline |");
+            Console.WriteLine("|---|---|---|---|---|---|---|---|---|---|");
+
+            foreach ((string label, TerminationArm arm) in arms)
+            {
+                Simulation sim = new(seed, arm: arm);
+                sim.Run(years);
+
+                Audit audit = Audit.Compute(WorldView.Build(sim.Log, seed));
+                RelationTrajectory.Report ties = RelationTrajectory.Of(sim.Log, seed);
+
+                // Compared against the log with the arm marker taken back off. The marker is on
+                // the genesis event on purpose — an arm world carried away from its file would
+                // otherwise look exactly like a history — but it is a fact about the run rather
+                // than about the world, and left in it diverges every arm at index 0, which is
+                // the instrument reporting its own label as a finding.
+                Divergence.Report divergence = Divergence.Between(
+                    baseline, Divergence.WithoutArmMarker(sim.Log), seed);
+
+                bool identical = divergence.FirstDifference < 0
+                                 && baseline.Count == sim.Log.Count;
+
+                int ended = 0;
+                foreach (KindTrajectory k in ties.Kinds)
+                    if (k.Kind == RelationKind.Trade) ended = k.Ended;
+
+                int allied = 0, pacts = 0, wars = 0;
+                foreach (Event e in sim.Log.Events)
+                {
+                    if (e.Kind == EventKind.DiploAllianceFormed && e.Outcome == Outcome.Succeeded) allied++;
+                    if (e.Kind == EventKind.EconomyTradePact) pacts++;
+                    if (e.Kind == EventKind.DiploWarDeclared) wars++;
+                }
+
+                Console.WriteLine($"| {label} | {sim.Log.Count} | {audit.DeepChains} | " +
+                                  $"{audit.DistinctChainShapes} | {ended} | {pacts} | {allied} | " +
+                                  $"{wars} | {Runaway(sim.Log, seed)} | {(identical ? "**yes**" : "no")} |");
+
+                // The arm that cannot fire has to reproduce, or nothing else here means anything.
+                if (arm != TerminationArm.None && arm != TerminationArm.All && ended == 0 && !identical)
+                {
+                    Console.Error.WriteLine(
+                        $"wb: the '{label}' arm ended no tie on seed {n} and still did not reproduce " +
+                        "the baseline. The switch moved the world; every arm above is void.");
+                    broken = true;
+                }
+
+                if (arm == TerminationArm.None && !identical)
+                {
+                    Console.Error.WriteLine(
+                        $"wb: the null arm does not reproduce the baseline on seed {n} — " +
+                        $"first difference at index {divergence.FirstDifference}. " +
+                        "Ruleset 6 changed something outside the three termination rules.");
+                    broken = true;
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        return broken ? 1 : 0;
+    }
+
+    /// <summary>
+    /// The first year one house held 70% of the settled population, or "never" — the runaway
+    /// figure <c>wb stats</c> reports, recomputed here so an arm can be read without writing files.
+    ///
+    /// Evaluated after every event rather than at a year boundary, so it names the year the
+    /// threshold was first crossed. Sampling once a year reported it one year late.
+    /// </summary>
+    private static string Runaway(EventLog log, ulong seed)
+    {
+        int hit = 0;
+
+        Replay.Walk(log, seed, (state, e) =>
+        {
+            if (hit != 0) return;
+
+            int total = 0, most = 0;
+            foreach (Place p in state.Places)
+                if (!p.Controller.IsNone) total += p.Population;
+
+            foreach (Faction f in state.Factions)
+            {
+                int mine = 0;
+                foreach (Place p in state.HoldingsOf(f.Id)) mine += p.Population;
+                most = Math.Max(most, mine);
+            }
+
+            if (total > 0 && most * 100 / total >= 70) hit = e.Year;
+        });
+
+        return hit == 0 ? "never" : $"Y{hit.ToString(CultureInfo.InvariantCulture)}";
     }
 
     private static int CmdHoldouts(Args args)
@@ -2868,6 +3026,7 @@ public static class CommandLine
             wb — simulated world builder (v0: no AI, no UI)
 
               wb run       [--seed 42] [--years 50] [--out out] [--print] [--verbose]
+                           [--control flat|shuffle|redraw] [--arm war|collapse|disuse|none]
                            simulate a world and write world-<seed>.jsonl and .log
 
               wb log       [--seed 42] [--from Y] [--to Y] [--verbose]
@@ -2968,6 +3127,15 @@ public static class CommandLine
                            ruleset, against where the new mechanic first acted. What replaces the
                            additive-only assertion once a ruleset changes worlds: divergence before
                            the first termination means something else moved the world. Exits 1 there
+
+              wb discriminate [--against ruleset-5] [--seeds 7,42,…] [--years 50]
+                           one arm per termination rule, so an effect can be attributed to a rule
+                           rather than to the three that shipped together. The null arm is the
+                           check on the instrument and not a result: switching all three off must
+                           give back the previous ruleset's log event for event, or the switch
+                           moved the world and every attribution made with it is void. Exits 1
+                           there. `wb run --arm war|collapse|disuse|none` writes one to disk; it is
+                           marked in the header and `wb baseline cut` refuses it
 
               wb keyshift  [--set ruleset-6] [--seeds 7,42,…]
                            what one inserted event costs the render cache. Event.Key is documented

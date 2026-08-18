@@ -16,7 +16,7 @@ public static class ConsequencePhase
         AbsorbSubjects(tick);
         ResolveSuccessions(tick);
         DecayAndDrift(tick);
-        RelationEnds.EndDisusedTrade(tick);
+        if (tick.Allows(TerminationArm.Disuse)) RelationEnds.EndDisusedTrade(tick);
         Breakdown(tick);
         CloseFinishedArcs(tick);
         RetireGoals(tick);
@@ -71,7 +71,7 @@ public static class ConsequencePhase
             // Its obligations end with it, in this event, counted and labelled by kind. A house
             // that keeps its allies and its trading partners for two hundred years after it
             // stopped existing is half of the defect this phase repairs.
-            RelationEnds.Into(draft, state, faction.Id);
+            if (tick.Allows(TerminationArm.Collapse)) RelationEnds.Into(draft, state, faction.Id);
 
             tick.Emit(draft);
         }
@@ -331,7 +331,7 @@ public static class ConsequencePhase
 
         foreach (Place p in holdings) draft.Set($"ctrl:{p.Id}", EntityId.None);
 
-        RelationEnds.Into(draft, tick.State, faction.Id);
+        if (tick.Allows(TerminationArm.Collapse)) RelationEnds.Into(draft, tick.State, faction.Id);
 
         tick.Emit(draft);
     }

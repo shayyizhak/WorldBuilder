@@ -648,8 +648,11 @@ public static class ActionPhase
         // describing something that is not happening. It is also the sharpest edge in this step —
         // twenty-one of the panel's twenty-four declarations are between houses with a live tie,
         // so this cause alone ends most of the ties standing when a war opens.
-        RelationEnds.OnItsOwnEvent(tick, aggressor.Id, defender.Id, RelationKind.Trade,
-            RelationEnds.War, war.Id);
+        if (tick.Allows(TerminationArm.War))
+        {
+            RelationEnds.OnItsOwnEvent(tick, aggressor.Id, defender.Id, RelationKind.Trade,
+                RelationEnds.War, war.Id);
+        }
 
         goal.Arc = arc;
         goal.Progress += 25;

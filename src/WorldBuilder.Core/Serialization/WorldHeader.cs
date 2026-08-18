@@ -73,6 +73,38 @@ public sealed record WorldHeader
     public bool IsControl => Control.Length > 0;
 
     /// <summary>
+    /// The subset of the ruleset's termination rules this world ran under, and empty for every
+    /// real world.
+    ///
+    /// The second way a file on disk can be a diagnostic artefact wearing a history's clothes.
+    /// Ruleset 6 landed three rules that end relations at once and two seeds lost a quarter of
+    /// their history; an arm world runs one of the three so the effect can be attributed to a
+    /// rule instead of to the batch. It is internally consistent and about nowhere, exactly like
+    /// a distance control, and gets the same treatment.
+    /// </summary>
+    public string Arm { get; init; } = "";
+
+    /// <summary>True where this world ran under a subset of its own ruleset.</summary>
+    public bool IsArm => Arm.Length > 0;
+
+    /// <summary>
+    /// True where this world is a diagnostic artefact by any route.
+    ///
+    /// The thing callers should ask. Adding the arm as a second flag beside <see cref="IsControl"/>
+    /// would leave every existing check answering the older, narrower question and passing an arm
+    /// world through — the way a new case gets missed is by adding it beside the old one rather
+    /// than above it.
+    /// </summary>
+    public bool IsDiagnostic => IsControl || IsArm;
+
+    /// <summary>Why this world is a diagnostic artefact, for a refusal that says which.</summary>
+    public string DiagnosticReason => IsControl && IsArm
+        ? $"the '{Control}' distance control and the '{Arm}' rule arm"
+        : IsControl ? $"the '{Control}' distance control"
+        : IsArm ? $"the '{Arm}' rule arm"
+        : "";
+
+    /// <summary>
     /// True where the file predates provenance in the header. Not an error — the v1 artefacts are
     /// all like this, and they are the hand-verified ones — but it is a thing a reader must be
     /// told rather than left to assume.
@@ -106,6 +138,7 @@ public sealed record WorldHeader
         if (EngineCommit.Length > 0) Append(sb, "engine_commit", EngineCommit);
         if (RulesetVersion.Length > 0) Append(sb, "ruleset_version", RulesetVersion);
         if (Control.Length > 0) Append(sb, "control", Control);
+        if (Arm.Length > 0) Append(sb, "arm", Arm);
         if (RenderCacheFingerprint.Length > 0) Append(sb, "render_cache", RenderCacheFingerprint);
 
         if (Artefacts.Count > 0)
@@ -139,6 +172,7 @@ public sealed record WorldHeader
             EngineCommit = Text(root, "engine_commit"),
             RulesetVersion = Text(root, "ruleset_version"),
             Control = Text(root, "control"),
+            Arm = Text(root, "arm"),
             RenderCacheFingerprint = Text(root, "render_cache"),
             Artefacts = artefacts,
         };

@@ -106,6 +106,32 @@ public static class Divergence
         return sb.ToString();
     }
 
+    /// <summary>
+    /// A copy of the log with the diagnostic arm marker taken back off its genesis event.
+    ///
+    /// The marker is on the genesis event on purpose — an arm world carried away from its file
+    /// would otherwise look exactly like a history — but it is a fact about the *run* and not
+    /// about the world. Left in, it diverges every arm at index 0, which is the instrument
+    /// reporting its own label as a finding. It cost one confused run to notice.
+    /// </summary>
+    public static EventLog WithoutArmMarker(EventLog log)
+    {
+        EventLog stripped = new();
+
+        foreach (Event e in log.Events)
+        {
+            if (e.Kind != EventKind.GenesisWorld) { stripped.Append(e); continue; }
+
+            List<KeyValuePair<string, string>> data = [];
+            foreach (KeyValuePair<string, string> kv in e.Data)
+                if (kv.Key != "arm") data.Add(kv);
+
+            stripped.Append(e with { Data = data });
+        }
+
+        return stripped;
+    }
+
     public static Report Between(EventLog older, EventLog newer, ulong seed)
     {
         int firstDifference = -1, firstContent = -1, firstTermination = -1;

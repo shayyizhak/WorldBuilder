@@ -14,7 +14,7 @@ Run against `docs/brief-step-two-relation-termination.md`.
 > reported below.
 
 **Entry state:** ruleset 5, 599 green, 0 failing, 2 skipped.
-**Exit state:** ruleset 6, **607 green, 18 failing**, 2 skipped — categorised in full at the end.
+**Exit state:** ruleset 6, **613 green, 18 failing**, 2 skipped — categorised in full at the end.
 Sixteen of the eighteen are the ruleset bump's bookkeeping; two are real.
 
 ---
@@ -354,10 +354,78 @@ Two more observations from the same two seeds, stated as observations:
   it was Y44. Seeds 7 and 42 were already failing; 2025 still never exceeds 70%.
 - **Those worlds got shorter.** Seed 99 loses 173 events of 704; seed 1234 loses 38 of 864.
 
-There is a plausible mechanism — `ProposeAlliance` scores an approach partly as `Trade / 2`, so
-ending trade ties narrows the road to an alliance, and alliances are the brake on a runaway winner.
-**That is a hypothesis and there is no evidence for it beyond the shapes matching.** It needs a
-phase with a proper control, exactly as §8 says. Not attributed here.
+Attribution to a *rule* is now available and is in the next section. Attribution to a *mechanism*
+is not, and the hypothesis this report first offered has since been measured and does not hold —
+see below.
+
+---
+
+## The discriminator: **the war rule is the whole of it**
+
+Three rules shipped together and two seeds regressed. Three changes and one effect is not a
+finding, it is three candidate findings in one coat. `wb discriminate` runs one arm per rule.
+Output in `docs/step-two/discriminator.md`; the arm switch is `TerminationArm`, marked in the
+header and refused by `wb baseline cut` on exactly the same footing as a distance control.
+
+### The null arm reproduces ruleset 5 **exactly, on all five seeds**
+
+This is the check on the instrument, not a result — if switching the three rules off did not give
+back the old log event for event, the switch itself moved the world and every arm below would be
+worthless. It also carries a claim nothing else in this report can make: **ruleset 6 changed
+nothing outside these three rules.** Step one proved that by comparing against sealed baselines
+while its worlds stood still; this is how the same claim is made once they move. Asserted by
+`TurningTheTerminationRulesOffGivesBackTheOldRuleset`.
+
+The disuse arm reproduces exactly too, on seeds 42 and 99 — it ends no tie there, so it must.
+
+### Seed 99
+
+| arm | events | deep chains | shapes | ties ended | pacts | alliances | wars | 70% from |
+|---|---|---|---|---|---|---|---|---|
+| none (= ruleset 5) | 704 | 87 | 69 | 0 | 14 | 1 | 7 | Y46 |
+| **war only** | **531** | **47** | **45** | 3 | 9 | 0 | 5 | **Y21** |
+| collapse only | 704 | 87 | 69 | 7 | 14 | 1 | 7 | Y46 |
+| disuse only | 704 | 87 | 69 | 0 | 14 | 1 | 7 | Y46 |
+| all (= ruleset 6) | 531 | 47 | 45 | 5 | 9 | 0 | 5 | Y21 |
+
+**War-only is indistinguishable from the full ruleset on every outcome measure.** Collapse-only
+ends seven ties and moves nothing at all. Disuse-only ends nothing.
+
+### The panel
+
+| seed | war-only vs null | collapse-only | disuse-only |
+|---|---|---|---|
+| 7 | no change to chains, shapes or runaway | ends 3 ties, **world unchanged** | ends 1 tie, world unchanged |
+| 42 | no change | ends 4 ties, **world unchanged** | ends 0, reproduces exactly |
+| 99 | **704→531, 69→45 shapes, Y46→Y21** | ends 7 ties, **world unchanged** | ends 0, reproduces exactly |
+| 1234 | **864→826, 97→91 shapes, Y44→Y36** | ends 4 ties, **world unchanged** | ends 1 tie, 156→157 chains |
+| 2025 | no change | ends 3 ties, **world unchanged** | ends 1 tie, world unchanged |
+
+Three findings, in order of confidence:
+
+1. **The war coupling is the sole cause.** The brief called it the sharp edge and it is.
+2. **The collapse cleanup is free.** It ends 3–7 ties per world and changes no outcome measure on
+   any seed. It repairs the §0 defect — a destroyed house keeping its allies and partners forever —
+   at no cost to the histories. If any part of this step survives the halt, it is this part.
+3. **The war rule is high-variance rather than systematically destructive.** Three of five seeds
+   are unchanged in chains, shapes and runaway year; two are badly hurt. That is a different
+   problem from "the rule is wrong" and points at a different fix.
+
+### The mechanism is *not* identified, and the hypothesis this report first offered is wrong
+
+The report initially proposed that ending trade ties narrows the road to an alliance —
+`ProposeAlliance` scores an approach partly as `Trade / 2` — and alliances are the brake on a
+runaway winner. **The counts do not support it.** Alliances per world run 0–2, and seed 1234
+regresses with its alliance count unchanged at 1. A hypothesis resting on a variable that does not
+move is not a hypothesis.
+
+The two hurt seeds do not share a signature either — seed 99 loses two wars and five pacts, seed
+1234 gains a pact and keeps all six wars — which is itself evidence that this is a cascade rather
+than one channel. A `Trade` edge feeds exactly two decisions (`ProposeAlliance`'s appeal, and
+`TradePact`'s refusal above a value of 40, which a termination *reopens*), and once either changes
+one decision, which actors get raised changes, and the per-entity RNG streams change with them.
+
+**Naming the channel needs its own control and does not have one.** Not attributed further.
 
 ---
 
@@ -391,7 +459,7 @@ retained and only the answers and record ids die.
 
 ---
 
-## The suite, in full: 607 green, 18 failing, 2 skipped
+## The suite, in full: 613 green, 18 failing, 2 skipped
 
 | failing | n | what it is |
 |---|---|---|
@@ -417,8 +485,12 @@ Sixteen bookkeeping, two real — the coup reachability above and seed 99's chai
 | `src/WorldBuilder.Core/Analysis/Divergence.cs` | new — §5 |
 | `src/WorldBuilder.Core/Analysis/StandingState.cs` | new — §6 |
 | `src/WorldBuilder.Core/Analysis/KeyBlastRadius.cs` | new — §1 |
-| `src/WorldBuilder.Cli/CommandLine.cs` | `wb ties`, `wb divergence`, `wb standing`, `wb keyshift` |
-| `tests/WorldBuilder.Tests/RelationTerminationTests.cs` | new — 26 tests |
+| `src/WorldBuilder.Core/Rules/TerminationArm.cs` | new — the arm switch |
+| `src/WorldBuilder.Core/Serialization/WorldHeader.cs` | `Arm`, and `IsDiagnostic` above `IsControl` |
+| `src/WorldBuilder.Inference/BaselineArchive.cs` | the cut refuses an arm world, saying which |
+| `src/WorldBuilder.Cli/CommandLine.cs` | `wb ties`, `wb divergence`, `wb standing`, `wb keyshift`, `wb discriminate`, `wb run --arm` |
+| `tests/WorldBuilder.Tests/RelationTerminationTests.cs` | new — 32 tests |
+| `docs/step-two/` | generated: the sweep, the trajectories, the divergence, the discriminator |
 
 No renderer, checker rule, threshold or `SimConfig` value was touched. `EventTemplates` is
 unchanged: the terminating cause is recorded and not rendered, per the standing rule.
@@ -429,6 +501,9 @@ unchanged: the terminating cause is recorded and not rendered, per the standing 
 
 - **The decision on the degeneracy guard.** Pre-registered halt fired; corrected measure says the
   rule is sound. Both readings are above and I did not choose.
+- **The war rule specifically.** The discriminator narrows the whole regression to it. The
+  collapse cleanup and the disuse timeout are clean and could be kept without it — which makes
+  "keep two of three" a real option that did not exist before the arms were run.
 - **Seed 99.** Chain shapes 69 → 45 and a coup branch no longer reached. Whether that is
   acceptable is the same decision.
 - **`disuse` fires once in five worlds.** The twenty-year constant is untested by this panel.

@@ -1,0 +1,458 @@
+# 404 of 698 events. The other 294 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.DEATH_NATURAL          Laldkou We (a:16), captain of the Baesveireach Compact (f:3), dies at 38 in Baesveireach (p:4)  e:36
+[Y0002]       LIFE.MARRIAGE               Ground Raeskur (a:4) marries Fur Roundpoull (a:19) at Waeslefell (p:2)  e:37
+[Y0002]       LIFE.MARRIAGE               Featrein Roumi (a:10) marries Hou Lae (a:18), binding the Deafil League (f:2) to the Baesveireach Compact (f:3)  e:38
+[Y0002]       CONFLICT.CONQUEST           the Waeslefell Compact (f:1) occupies Fa Cut (p:8), which no one held  e:42
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Deafil League (f:2) demands tribute of the Waeslefell Compact (f:1) and is refused  e:43
+[Y0002]       DIPLO.INSULT                the Baesveireach Compact (f:3) publicly slights the Waeslefell Compact (f:1)  e:44
+
+[Y0003]       LIFE.MARRIAGE               Vaell Foull (a:3) marries Freallball Fisu (a:15), binding the Waeslefell Compact (f:1) to the Baesveireach Compact (f:3)  e:47
+[Y0003]       LIFE.MARRIAGE               Bage Busba (a:9) marries Kramboul Dend (a:14), binding the Deafil League (f:2) to the Baesveireach Compact (f:3)  e:48
+[Y0003]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) buys 30 grain from the Deafil League (f:2) for 60 silver  e:52
+[Y0003]       DIPLO.TRIBUTE_DEMANDED      the Waeslefell Compact (f:1) demands tribute of the Baesveireach Compact (f:3) and is refused  e:53
+
+[Y0004]       LIFE.MARRIAGE               Grefraem Meheath (a:2) marries Vor Saern (a:5) at Waeslefell (p:2)  e:55
+[Y0004]       LIFE.BIRTH                  Deththou Keis (a:23) is born to Bage Busba (a:9) at Skomere (p:3)  <= e:48  e:57
+[Y0004]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and the Deafil League (f:2) agree terms of trade  e:63
+[Y0004] w:1   DIPLO.WAR_DECLARED          the Waeslefell Compact (f:1) declares war on the Baesveireach Compact (f:3) for Thea Seam (p:7)  e:64
+[Y0004]       DIPLO.ALLIANCE_BROKEN       the Waeslefell Compact (f:1) breaks its alliance with the Baesveireach Compact (f:3)  <= e:64,e:47  e:65
+[Y0004] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (26 dead)  <= e:64,e:38  e:66
+
+[Y0005]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and the Deafil League (f:2) agree terms of trade  e:73
+[Y0005]       ECONOMY.TRADE_PACT          the Baesveireach Compact (f:3) and the Waeslefell Compact (f:1) agree terms of trade  e:74
+[Y0005] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (20 dead)  <= e:64,e:38  e:75
+
+[Y0006] w:3   ECONOMY.FAMINE              famine at Fa Cut (p:8): 13 dead, grain short by 7  e:80
+[Y0006]       POLITY.COURTS_SUPPORT       Grefraem Meheath (a:2) wins Toulgaern Nein (a:20) away from the ruler of the Waeslefell Compact (f:1)  <= e:80  e:82
+[Y0006]       CONFLICT.RAID               the Baesveireach Compact (f:3) raids Waeslefell (p:2), carrying off 30 grain and killing 59  e:83
+[Y0006] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (13 dead)  <= e:64,e:38  e:84
+
+[Y0007]       LIFE.MARRIAGE               Kae Voth (a:12) marries Drourn Nethi (a:17), binding the Deafil League (f:2) to the Baesveireach Compact (f:3)  e:86
+[Y0007]       LIFE.BIRTH                  Staellou Keillthae (a:27) is born to Grefraem Meheath (a:2) at Waeslefell (p:2)  <= e:55  e:87
+[Y0007] w:3   ECONOMY.FAMINE              famine at Fa Cut (p:8), year 2: 12 dead, 36 abandon the place  <= e:80  e:91
+[Y0007]       POLITY.COURTS_SUPPORT       Hou Lae (a:18) wins Fur Roundpoull (a:19) away from the ruler of the Baesveireach Compact (f:3)  e:93
+[Y0007]       CONFLICT.RAID               the Baesveireach Compact (f:3)'s raid on Weisfaewick (p:5) is beaten off  e:94
+[Y0007] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (11 dead)  <= e:64,e:38  e:95
+[Y0007] w:2   ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 2 years  e:97
+
+[Y0008]       LIFE.DEATH_NATURAL          Toundfein Hond (a:11), captain of the Deafil League (f:2), dies at 60 in Skomere (p:3)  e:98
+[Y0008]       LIFE.BIRTH                  Duthsourn Tae (a:29) is born to Bage Busba (a:9) at Skomere (p:3)  <= e:48  e:99
+[Y0008]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Fa Cut (p:8) (133% of usual)  e:102
+[Y0008]       POLITY.COURTS_SUPPORT       Grefraem Meheath (a:2) wins Rearn Thill (a:22) away from the ruler of the Waeslefell Compact (f:1)  <= e:80  e:104
+[Y0008] w:4   POLITY.COUP_PLOTTED         Hou Lae (a:18) begins conspiring against Sildbeld Bouthwoun (a:13) of the Baesveireach Compact (f:3)  [secret]  e:105
+[Y0008]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Kremoor (p:6), carrying off 27 grain and killing 36  e:106
+[Y0008]       DIPLO.INSULT                the Deafil League (f:2) publicly slights the Waeslefell Compact (f:1)  <= e:106  e:107
+[Y0008]       CONFLICT.RAID               the Deafil League (f:2) raids Waeslefell (p:2), carrying off 24 grain and killing 59  <= e:106  e:108
+[Y0008]       CONFLICT.RAID               the Baesveireach Compact (f:3)'s raid on Fa Cut (p:8) is beaten off  e:109
+[Y0008] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (9 dead)  <= e:64,e:38  e:110
+[Y0008] w:3   ECONOMY.FAMINE_ENDS         the hunger at Fa Cut (p:8) passes after 2 years  <= e:80  e:112
+
+[Y0009]       LIFE.BIRTH                  Vaepe Lirnkour (a:31) is born to Bage Busba (a:9) at Skomere (p:3)  <= e:48  e:114
+[Y0009] w:5   POLITY.COUP_PLOTTED         Grefraem Meheath (a:2) begins conspiring against Keirn Heapound (a:1) of the Waeslefell Compact (f:1)  [secret]  <= e:80  e:118
+[Y0009] w:6   POLITY.COUP_PLOTTED         Steapall Faedild (a:8) begins conspiring against Feasleith Husbill (a:7) of the Deafil League (f:2)  [secret]  <= e:43  e:119
+[Y0009]       POLITY.COURTS_SUPPORT       Hou Lae (a:18) wins Freallball Fisu (a:15) away from the ruler of the Baesveireach Compact (f:3)  e:120
+[Y0009]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Skomere (p:3), carrying off 35 grain and killing 39  e:121
+[Y0009]       CONFLICT.RAID               the Deafil League (f:2) raids Weisfaewick (p:5), carrying off 20 grain and killing 49  <= e:121  e:122
+[Y0009] w:1   CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (8 dead)  <= e:64,e:38  e:123
+[Y0009] w:4   POLITY.COUP_RESOLVED        Hou Lae (a:18)'s conspiracy against Sildbeld Bouthwoun (a:13) is uncovered after 1 years  <= e:105  e:124
+[Y0009] w:4   LIFE.DEATH_VIOLENT          Hou Lae (a:18) is put to death — executed for conspiracy  <= e:124  e:125
+
+[Y0010]       LIFE.DEATH_NATURAL          Keirn Heapound (a:1), ruler of the Waeslefell Compact (f:1), dies at 64 in Waeslefell (p:2)  e:127
+[Y0010] w:8   ECONOMY.FAMINE              famine at Fa Cut (p:8): 8 dead, grain short by 5  e:131
+[Y0010] w:6   CONFLICT.ASSASSINATION      an attempt on Feasleith Husbill (a:7) fails at Skomere (p:3), unattributed  [secret]  <= e:43  e:133
+[Y0010]       CONFLICT.RAID               the Deafil League (f:2) raids Fa Cut (p:8) and kills 4, but takes nothing  e:134
+[Y0010] w:1   DIPLO.PEACE_SIGNED          the Waeslefell Compact (f:1) and the Baesveireach Compact (f:3) make peace after 6 years, both sides exhausted  <= e:64  e:135
+[Y0010]       POLITY.SUCCESSION           Vaell Foull (a:3) takes the seat of the Waeslefell Compact (f:1) (by right of birth)  <= e:127  e:136
+
+[Y0011]       LIFE.DEATH_NATURAL          Feasleith Husbill (a:7), ruler of the Deafil League (f:2), dies at 60 in Skomere (p:3)  e:138
+[Y0011]       LIFE.BIRTH                  Meirnhaes Kould (a:33) is born to Vaell Foull (a:3) at Waeslefell (p:2)  <= e:47  e:139
+[Y0011] w:8   ECONOMY.FAMINE              famine at Fa Cut (p:8), year 2: 9 dead, 24 abandon the place  <= e:131  e:141
+[Y0011] w:5   CONFLICT.ASSASSINATION      Grefraem Meheath (a:2)'s attempt on Vaell Foull (a:3) fails and is traced back  <= e:80  e:143
+[Y0011]       POLITY.EXILE                Grefraem Meheath (a:2) is cast out of the Waeslefell Compact (f:1) — attempted murder  <= e:143  e:144
+[Y0011]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and the Baesveireach Compact (f:3) agree terms of trade  <= e:131  e:145
+[Y0011] w:5   POLITY.COUP_RESOLVED        Grefraem Meheath (a:2)'s conspiracy against Vaell Foull (a:3) is uncovered after 2 years  <= e:118  e:146
+[Y0011]       POLITY.EXILE                Grefraem Meheath (a:2), who had already left, is declared outlaw by the Waeslefell Compact (f:1) — conspiracy against the seat  <= e:146  e:147
+[Y0011] w:9   POLITY.SUCCESSION_DISPUTED  Steapall Faedild (a:8) contests the claim of Bage Busba (a:9), the named heir, to the Deafil League (f:2) (decided by election)  <= e:138  e:148
+[Y0011] w:9   POLITY.SUCCESSION           Steapall Faedild (a:8) takes the seat of the Deafil League (f:2), setting aside the claim of the named heir Bage Busba (a:9)  <= e:148  e:149
+[Y0011]       POLITY.EXILE                Bage Busba (a:9) is cast out of the Deafil League (f:2) — the losing claim  <= e:148  e:150
+
+[Y0012] w:8   ECONOMY.FAMINE              famine at Fa Cut (p:8), year 3: 4 dead, 27 abandon the place  <= e:131  e:153
+[Y0012]       POLITY.COURTS_SUPPORT       Vor Saern (a:5) wins Toulgaern Nein (a:20) away from the ruler of the Waeslefell Compact (f:1)  <= e:153  e:155
+[Y0012]       DIPLO.TRIBUTE_DEMANDED      the Baesveireach Compact (f:3) demands tribute of the Waeslefell Compact (f:1) and is refused  e:156
+[Y0012] w:6   POLITY.PLOT_LAPSES          Steapall Faedild (a:8)'s conspiracy against Feasleith Husbill (a:7) lapses after 3 years — its author took the seat by other means  [secret]  <= e:119  e:157
+[Y0012] w:7   ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 2 years and 6 return to the fields  e:159
+
+[Y0013]       LIFE.DEATH_NATURAL          Sildbeld Bouthwoun (a:13), ruler of the Baesveireach Compact (f:3), dies at 59 in Baesveireach (p:4)  e:160
+[Y0013]       LIFE.DEATH_NATURAL          Freallball Fisu (a:15), captain of the Baesveireach Compact (f:3), dies at 45 in Baesveireach (p:4)  e:161
+[Y0013] w:10  ECONOMY.PLAGUE              plague breaks out at Weisfaewick (p:5) and takes 250  e:163
+[Y0013]       POLITY.EXILE_RETURN         Grefraem Meheath (a:2) returns from exile and takes service with the Deafil League (f:2)  <= e:147  e:166
+[Y0013]       POLITY.CHALLENGE            Vor Saern (a:5) challenges Vaell Foull (a:3) openly for the Waeslefell Compact (f:1), wins, and takes the seat from Vaell Foull (a:3)  <= e:153  e:167
+[Y0013]       POLITY.EXILE                Vaell Foull (a:3) is cast out of the Waeslefell Compact (f:1) — the losing side of an open challenge  <= e:167  e:169
+[Y0013]       POLITY.EXILE_RETURN         Bage Busba (a:9) returns from exile and takes service with the Baesveireach Compact (f:3)  <= e:150  e:170
+[Y0013] w:11  POLITY.SUCCESSION_DISPUTED  Kramboul Dend (a:14) contests the claim of Fur Roundpoull (a:19), the named heir, to the Baesveireach Compact (f:3) (decided by strongest)  <= e:160  e:171
+[Y0013] w:11  POLITY.SUCCESSION           Kramboul Dend (a:14) takes the seat of the Baesveireach Compact (f:3), setting aside the claim of the named heir Fur Roundpoull (a:19)  <= e:171  e:172
+[Y0013]       POLITY.EXILE                Fur Roundpoull (a:19) is cast out of the Baesveireach Compact (f:3) — the losing claim  <= e:171  e:173
+[Y0013]       POLITY.REVOLT               Fa Cut (p:8) rises against the Waeslefell Compact (f:1), whose standing had fallen to nothing  <= e:169  e:175
+
+[Y0014]       LIFE.BIRTH                  Houwearn Mou (a:34) is born to Grefraem Meheath (a:2) at Skomere (p:3)  <= e:55  e:176
+[Y0014]       POLITY.EXILE_RETURN         Vaell Foull (a:3) returns from exile and takes service with the Deafil League (f:2)  <= e:169  e:180
+[Y0014] w:10  ECONOMY.PLAGUE_ENDS         the pestilence at Weisfaewick (p:5) burns out after 1 years  <= e:163  e:182
+
+[Y0015] w:12  ECONOMY.FAMINE              famine at Kremoor (p:6): 28 dead, grain short by 1  e:185
+[Y0015]       INTRIGUE.BETRAYAL           Vaell Foull (a:3) abandons the Deafil League (f:2) for the Waeslefell Compact (f:1)  e:188
+[Y0015] w:14  POLITY.COUP_PLOTTED         Toulgaern Nein (a:20) begins conspiring against Vor Saern (a:5) of the Waeslefell Compact (f:1)  [secret]  e:189
+[Y0015]       CONFLICT.RAID               the Baesveireach Compact (f:3)'s raid on Waeslefell (p:2) is beaten off  e:190
+
+[Y0016]       LIFE.DEATH_NATURAL          Naeld Meirvorn (a:6), steward of the Waeslefell Compact (f:1), dies at 58 in Waeslefell (p:2)  e:192
+[Y0016] w:15  ECONOMY.FAMINE              famine at Skomere (p:3): 45 dead, grain short by 2  e:194
+[Y0016] w:12  ECONOMY.FAMINE              famine at Kremoor (p:6), year 2: 127 dead, 282 abandon the place  <= e:185  e:195
+[Y0016]       POLITY.COURTS_SUPPORT       Grefraem Meheath (a:2) wins Houwearn Mou (a:34) away from the ruler of the Deafil League (f:2)  <= e:166  e:199
+[Y0016] w:14  CONFLICT.ASSASSINATION      an attempt on Vor Saern (a:5) fails at Waeslefell (p:2), unattributed  [secret]  e:200
+[Y0016]       POLITY.APPOINTMENT          Bage Busba (a:9) is raised to heir of the Baesveireach Compact (f:3)  e:201
+[Y0016]       POLITY.REVOLT               Thea Seam (p:7) rises against the Baesveireach Compact (f:3), whose standing had fallen very low  e:203
+
+[Y0017]       LIFE.DEATH_NATURAL          Grefraem Meheath (a:2), captain of the Deafil League (f:2), dies at 43 in Skomere (p:3)  e:204
+[Y0017]       LIFE.DEATH_NATURAL          Vor Saern (a:5), ruler of the Waeslefell Compact (f:1), dies at 41 in Waeslefell (p:2)  e:205
+[Y0017]       LIFE.DEATH_NATURAL          Toulgaern Nein (a:20), commoner of the Waeslefell Compact (f:1), dies at 58 in Weisfaewick (p:5)  e:206
+[Y0017]       POLITY.EXILE_RETURN         Fur Roundpoull (a:19) returns from exile and takes service with the Deafil League (f:2)  <= e:173  e:209
+[Y0017]       CONFLICT.RAID               the Deafil League (f:2)'s raid on Waeslefell (p:2) is beaten off  e:210
+[Y0017]       POLITY.APPOINTMENT          Drourn Nethi (a:17) is raised to steward of the Baesveireach Compact (f:3)  e:211
+[Y0017] w:14  POLITY.PLOT_DIES_WITH_PLOTTER  Toulgaern Nein (a:20)'s conspiracy against Vor Saern (a:5) dies with them, 2 years in  [secret]  <= e:189,e:206  e:212
+[Y0017]       POLITY.SUCCESSION           Vaell Foull (a:3) takes the seat of the Waeslefell Compact (f:1) (by right of birth)  <= e:205  e:213
+[Y0017] w:8   ECONOMY.FAMINE_ENDS         the hunger at Fa Cut (p:8) passes after 7 years and 16 return to the fields  <= e:131  e:215
+[Y0017] w:12  ECONOMY.FAMINE_ENDS         the hunger at Kremoor (p:6) passes after 2 years and 149 return to the fields  <= e:185  e:216
+[Y0017] w:13  ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 2 years and 3 return to the fields  e:217
+[Y0017] w:15  ECONOMY.FAMINE_ENDS         the hunger at Skomere (p:3) passes after 1 years and 116 return to the fields  <= e:194  e:218
+
+[Y0018]       LIFE.DEATH_NATURAL          Kramboul Dend (a:14), ruler of the Baesveireach Compact (f:3), dies at 34 in Baesveireach (p:4)  e:219
+[Y0018]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Thea Seam (p:7) (138% of usual)  e:222
+[Y0018]       POLITY.APPOINTMENT          Ground Raeskur (a:4) is raised to heir of the Waeslefell Compact (f:1)  e:224
+[Y0018]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Kremoor (p:6), carrying off 37 grain and killing 25  e:225
+[Y0018]       CONFLICT.RAID               the Deafil League (f:2)'s raid on Weisfaewick (p:5) is beaten off  <= e:225  e:226
+[Y0018]       POLITY.SUCCESSION           Bage Busba (a:9) takes the seat of the Baesveireach Compact (f:3) (by the strongest claim)  <= e:219,e:201  e:227
+
+[Y0019]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Thea Seam (p:7) (143% of usual)  e:231
+[Y0019]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Fa Cut (p:8) (142% of usual)  e:232
+[Y0019]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Skomere (p:3), carrying off 56 grain and killing 36  e:234
+[Y0019]       CONFLICT.RAID               the Deafil League (f:2)'s raid on Fa Cut (p:8) is beaten off  <= e:234  e:235
+
+[Y0020]       LIFE.MARRIAGE               Steapall Faedild (a:8) marries Touthseand Gourses (a:21) at Skomere (p:3)  e:239
+[Y0020]       POLITY.LEGITIMACY_CRISIS    the Waeslefell Compact (f:1) spends 50 silver to buy back goodwill  e:242
+
+[Y0021]       LIFE.BIRTH                  Greandsam Kreir (a:36) is born to Steapall Faedild (a:8) at Skomere (p:3)  <= e:239  e:246
+[Y0021] w:16  ECONOMY.PLAGUE              plague breaks out at Baesveireach (p:4) and takes 213  e:248
+[Y0021]       POLITY.COURTS_SUPPORT       Ground Raeskur (a:4) wins Thraebaern Ramdem (a:35) away from the ruler of the Waeslefell Compact (f:1)  e:250
+[Y0021]       POLITY.APPOINTMENT          Vamkei Dridrill (a:25) is raised to steward of the Waeslefell Compact (f:1)  e:251
+[Y0021]       DIPLO.TRIBUTE_DEMANDED      the Deafil League (f:2) demands tribute of the Waeslefell Compact (f:1) and is refused  e:252
+[Y0021]       POLITY.LEGITIMACY_CRISIS    the Baesveireach Compact (f:3) spends 50 silver to buy back goodwill  e:253
+
+[Y0022] w:16  ECONOMY.PLAGUE              plague at Baesveireach (p:4), year 2: 179 dead and 224 flee  <= e:248  e:257
+[Y0022]       POLITY.COURTS_SUPPORT       Ground Raeskur (a:4) wins Rontaen Sin (a:24) away from the ruler of the Waeslefell Compact (f:1)  e:259
+[Y0022]       POLITY.COURTS_SUPPORT       Fur Roundpoull (a:19) wins Greandsam Kreir (a:36) away from the ruler of the Deafil League (f:2)  <= e:209  e:260
+[Y0022]       POLITY.APPOINTMENT          Nounmam Mith (a:26) is raised to steward of the Waeslefell Compact (f:1)  <= e:250  e:261
+
+[Y0023]       LIFE.DEATH_NATURAL          Featrein Roumi (a:10), steward of the Deafil League (f:2), dies at 62 in Skomere (p:3)  e:263
+[Y0023]       LIFE.BIRTH                  Maell Koullsis (a:37) is born to Ground Raeskur (a:4) at Waeslefell (p:2)  <= e:37  e:266
+[Y0023] w:16  ECONOMY.PLAGUE              plague at Baesveireach (p:4), year 3: 114 dead and 143 flee  <= e:248  e:268
+[Y0023] w:17  ECONOMY.FAMINE              famine at Thea Seam (p:7): 12 dead, grain short by 7  e:269
+[Y0023] w:18  POLITY.COUP_PLOTTED         Ground Raeskur (a:4) begins conspiring against Vaell Foull (a:3) of the Waeslefell Compact (f:1)  [secret]  e:271
+[Y0023]       POLITY.CHALLENGE            Fur Roundpoull (a:19) challenges Steapall Faedild (a:8) openly for the Deafil League (f:2), wins, and takes the seat from Steapall Faedild (a:8)  <= e:209  e:272
+[Y0023]       POLITY.EXILE                Steapall Faedild (a:8) is cast out of the Deafil League (f:2) — the losing side of an open challenge  <= e:272  e:274
+[Y0023]       POLITY.APPOINTMENT          Staellou Keillthae (a:27) is raised to steward of the Waeslefell Compact (f:1)  <= e:250  e:275
+[Y0023]       POLITY.APPOINTMENT          Touthseand Gourses (a:21) is raised to heir of the Deafil League (f:2)  <= e:260  e:276
+[Y0023]       ECONOMY.TRADE_PACT          the Baesveireach Compact (f:3) buys 30 grain from the Waeslefell Compact (f:1) for 60 silver  <= e:145  e:277
+
+[Y0024]       LIFE.MARRIAGE               Rearn Thill (a:22) marries Vamkei Dridrill (a:25) at Waeslefell (p:2)  e:280
+[Y0024] w:18  CONFLICT.ASSASSINATION      Ground Raeskur (a:4) has Vaell Foull (a:3) murdered at Skomere (p:3)  e:283
+[Y0024]       LIFE.DEATH_VIOLENT          Vaell Foull (a:3), ruler of the Waeslefell Compact (f:1), is killed by Ground Raeskur (a:4) at Skomere (p:3)  <= e:283  e:284
+[Y0024]       POLITY.EXILE_RETURN         Steapall Faedild (a:8) returns from exile and takes service with the Baesveireach Compact (f:3)  <= e:274  e:285
+[Y0024]       POLITY.COURTS_SUPPORT       Sealdvern Geitoun (a:28) wins Greandsam Kreir (a:36) away from the ruler of the Deafil League (f:2)  <= e:260  e:286
+[Y0024]       POLITY.APPOINTMENT          Kae Voth (a:12) is raised to steward of the Deafil League (f:2)  <= e:260  e:287
+[Y0024]       ECONOMY.TRADE_PACT          the Baesveireach Compact (f:3) and the Deafil League (f:2) agree terms of trade  e:288
+[Y0024]       DIPLO.INSULT                the Baesveireach Compact (f:3) publicly slights the Waeslefell Compact (f:1)  e:289
+[Y0024]       POLITY.SUCCESSION           Ground Raeskur (a:4) takes the seat of the Waeslefell Compact (f:1) (by right of birth)  <= e:284,e:224  e:290
+[Y0024]       POLITY.REVOLT               Kremoor (p:6) rises against the Deafil League (f:2), whose standing had fallen very low  <= e:286  e:292
+[Y0024] w:16  ECONOMY.PLAGUE_ENDS         the pestilence at Baesveireach (p:4) burns out after 3 years  <= e:248  e:293
+[Y0024] w:17  ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 1 years  <= e:269  e:294
+
+[Y0025]       LIFE.MARRIAGE               Deththou Keis (a:23) marries Duthsourn Tae (a:29) at Skomere (p:3)  e:297
+[Y0025]       LIFE.MARRIAGE               Nounmam Mith (a:26) marries Staellou Keillthae (a:27) at Waeslefell (p:2)  e:298
+[Y0025]       LIFE.BIRTH                  Fouldraern Thraernveall (a:38) is born to Ground Raeskur (a:4) at Waeslefell (p:2)  <= e:37  e:299
+[Y0025]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Thea Seam (p:7) (129% of usual)  e:305
+[Y0025]       POLITY.COURTS_SUPPORT       Steapall Faedild (a:8) wins Drourn Nethi (a:17) away from the ruler of the Baesveireach Compact (f:3)  <= e:285  e:307
+[Y0025]       POLITY.COURTS_SUPPORT       Sealdvern Geitoun (a:28) wins Deththou Keis (a:23) away from the ruler of the Deafil League (f:2)  <= e:260  e:308
+[Y0025]       POLITY.APPOINTMENT          Sundsea Pim (a:30) is raised to heir of the Waeslefell Compact (f:1)  <= e:250  e:309
+[Y0025]       POLITY.APPOINTMENT          Vaepe Lirnkour (a:31) is raised to steward of the Deafil League (f:2)  <= e:260  e:310
+[Y0025]       CONFLICT.RAID               the Baesveireach Compact (f:3) raids Fa Cut (p:8), carrying off 20 ore and killing 1  e:311
+[Y0025] w:18  POLITY.PLOT_LAPSES          Ground Raeskur (a:4)'s conspiracy against Vaell Foull (a:3) lapses after 2 years — its author took the seat by other means  [secret]  <= e:271  e:312
+
+[Y0026] w:19  POLITY.COUP_PLOTTED         Staellou Keillthae (a:27) begins conspiring against Ground Raeskur (a:4) of the Waeslefell Compact (f:1)  [secret]  <= e:284  e:317
+[Y0026] w:20  POLITY.COUP_PLOTTED         Sealdvern Geitoun (a:28) begins conspiring against Fur Roundpoull (a:19) of the Deafil League (f:2)  [secret]  <= e:260  e:318
+[Y0026] w:21  POLITY.COUP_PLOTTED         Vaepe Lirnkour (a:31) begins conspiring against Fur Roundpoull (a:19) of the Deafil League (f:2)  [secret]  <= e:308  e:319
+[Y0026] w:22  DIPLO.WAR_DECLARED          the Waeslefell Compact (f:1) declares war on the Baesveireach Compact (f:3) over long-standing grievance  e:320
+[Y0026]       POLITY.APPOINTMENT          Sealdvern Geitoun (a:28) is raised to steward of the Deafil League (f:2)  <= e:308  e:321
+[Y0026]       CONFLICT.ASSASSINATION      an attempt on Ground Raeskur (a:4) fails at Waeslefell (p:2), unattributed  [secret]  e:322
+[Y0026] w:22  CONFLICT.BATTLE             the Baesveireach Compact (f:3) and its allies defeat the Waeslefell Compact (f:1) at Thea Seam (p:7) (36 dead)  <= e:320,e:38  e:323
+
+[Y0027]       LIFE.DEATH_NATURAL          Kae Voth (a:12), steward of the Deafil League (f:2), dies at 66 in Skomere (p:3)  e:325
+[Y0027]       LIFE.MARRIAGE               Sealdvern Geitoun (a:28) marries Sundsea Pim (a:30), binding the Deafil League (f:2) to the Waeslefell Compact (f:1)  e:327
+[Y0027] w:23  POLITY.COUP_PLOTTED         Steapall Faedild (a:8) begins conspiring against Bage Busba (a:9) of the Baesveireach Compact (f:3)  [secret]  <= e:285  e:331
+[Y0027]       POLITY.COURTS_SUPPORT       Vamkei Dridrill (a:25) wins Noulldou Beivourn (a:39) away from the ruler of the Waeslefell Compact (f:1)  <= e:323  e:332
+[Y0027]       POLITY.COURTS_SUPPORT       Staellou Keillthae (a:27) wins Noulldou Beivourn (a:39) away from the ruler of the Waeslefell Compact (f:1)  <= e:284  e:333
+[Y0027]       POLITY.COURTS_SUPPORT       Sealdvern Geitoun (a:28) wins Houwearn Mou (a:34) away from the ruler of the Deafil League (f:2)  <= e:260  e:334
+[Y0027]       POLITY.COURTS_SUPPORT       Duthsourn Tae (a:29) wins Deththou Keis (a:23) away from the ruler of the Deafil League (f:2)  <= e:308  e:335
+[Y0027]       POLITY.COURTS_SUPPORT       Vaepe Lirnkour (a:31) wins Houwearn Mou (a:34) away from the ruler of the Deafil League (f:2)  <= e:308  e:336
+[Y0027]       POLITY.LEGITIMACY_CRISIS    the Deafil League (f:2) spends 50 silver to buy back goodwill  <= e:308  e:337
+[Y0027] w:21  POLITY.COUP_RESOLVED        Vaepe Lirnkour (a:31)'s conspiracy against Fur Roundpoull (a:19) is uncovered after 1 years  <= e:319  e:338
+[Y0027] w:21  LIFE.DEATH_VIOLENT          Vaepe Lirnkour (a:31) is put to death — executed for conspiracy  <= e:338  e:339
+[Y0027] w:22  CONFLICT.BATTLE             the Waeslefell Compact (f:1) defeats the Baesveireach Compact (f:3) at Thea Seam (p:7) (30 dead)  <= e:320  e:340
+[Y0027] w:22  CONFLICT.CONQUEST           the Waeslefell Compact (f:1) takes Thea Seam (p:7) from the Baesveireach Compact (f:3)  <= e:340  e:341
+
+[Y0028] w:24  ECONOMY.FAMINE              famine at Thea Seam (p:7): 6 dead, grain short by 4  e:346
+[Y0028] w:23  CONFLICT.ASSASSINATION      Steapall Faedild (a:8) has Bage Busba (a:9) murdered at Baesveireach (p:4)  <= e:285  e:348
+[Y0028]       LIFE.DEATH_VIOLENT          Bage Busba (a:9), ruler of the Baesveireach Compact (f:3), is killed by Steapall Faedild (a:8) at Baesveireach (p:4)  <= e:348  e:349
+[Y0028]       POLITY.COURTS_SUPPORT       Vamkei Dridrill (a:25) wins Rearn Thill (a:22) away from the ruler of the Waeslefell Compact (f:1)  <= e:323  e:350
+[Y0028] w:19  CONFLICT.ASSASSINATION      Staellou Keillthae (a:27)'s attempt on Ground Raeskur (a:4) fails and is traced back  <= e:284  e:351
+[Y0028]       POLITY.EXILE                Staellou Keillthae (a:27) is cast out of the Waeslefell Compact (f:1) — attempted murder  <= e:351  e:352
+[Y0028]       POLITY.COURTS_SUPPORT       Sealdvern Geitoun (a:28) wins Duthsourn Tae (a:29) away from the ruler of the Deafil League (f:2)  <= e:260  e:353
+[Y0028]       POLITY.CHALLENGE            Duthsourn Tae (a:29) challenges Fur Roundpoull (a:19) openly for the Deafil League (f:2), loses, and Fur Roundpoull (a:19) keeps the seat  <= e:308  e:354
+[Y0028]       LIFE.DEATH_VIOLENT          Duthsourn Tae (a:29), retainer of the Deafil League (f:2), is killed by Fur Roundpoull (a:19) at Skomere (p:3)  <= e:354  e:355
+[Y0028]       DIPLO.INSULT                the Deafil League (f:2) publicly slights the Waeslefell Compact (f:1)  e:356
+[Y0028]       POLITY.APPOINTMENT          Deththou Keis (a:23) is raised to steward of the Deafil League (f:2)  <= e:308  e:357
+[Y0028] w:19  POLITY.COUP_RESOLVED        Staellou Keillthae (a:27)'s conspiracy against Ground Raeskur (a:4) is uncovered after 2 years  <= e:317  e:358
+[Y0028]       POLITY.EXILE                Staellou Keillthae (a:27), who had already left, is declared outlaw by the Waeslefell Compact (f:1) — conspiracy against the seat  <= e:358  e:359
+[Y0028] w:20  POLITY.COUP_RESOLVED        Sealdvern Geitoun (a:28) challenges Fur Roundpoull (a:19) for the Deafil League (f:2) and wins  <= e:318  e:360
+[Y0028] w:20  POLITY.SUCCESSION           Sealdvern Geitoun (a:28) takes the seat of the Deafil League (f:2) (coup)  <= e:360  e:361
+[Y0028]       POLITY.EXILE                Fur Roundpoull (a:19) is cast out of the Deafil League (f:2) — the losing side of a coup  <= e:360  e:362
+[Y0028] w:22  CONFLICT.BATTLE             the Waeslefell Compact (f:1) defeats the Baesveireach Compact (f:3) at Baesveireach (p:4) (82 dead)  <= e:320  e:363
+[Y0028] w:25  POLITY.SUCCESSION_DISPUTED  Steapall Faedild (a:8) contests the claim of Drourn Nethi (a:17), the named heir, to the Baesveireach Compact (f:3) (decided by strongest)  <= e:349  e:364
+[Y0028] w:25  POLITY.SUCCESSION           Steapall Faedild (a:8) takes the seat of the Baesveireach Compact (f:3), setting aside the claim of the named heir Drourn Nethi (a:17)  <= e:364  e:365
+[Y0028]       POLITY.EXILE                Drourn Nethi (a:17) is cast out of the Baesveireach Compact (f:3) — the losing claim  <= e:364  e:366
+[Y0028]       POLITY.SECESSION            Kremoor (p:6) breaks from the Deafil League (f:2) as Free Kremoor, with Feinnind Keitrith (a:42) taking its seat  <= e:362  e:369
+
+[Y0029]       LIFE.MARRIAGE               Rontaen Sin (a:24) marries Meirnhaes Kould (a:33) at Waeslefell (p:2)  e:370
+[Y0029]       POLITY.EXILE_RETURN         Fur Roundpoull (a:19) returns from exile and takes service with the Waeslefell Compact (f:1)  <= e:362  e:375
+[Y0029] w:26  POLITY.COUP_PLOTTED         Vamkei Dridrill (a:25) begins conspiring against Ground Raeskur (a:4) of the Waeslefell Compact (f:1)  [secret]  <= e:323  e:376
+[Y0029]       POLITY.EXILE_RETURN         Staellou Keillthae (a:27) returns from exile and takes service with Free Kremoor (f:4)  <= e:359  e:377
+[Y0029] w:22  CONFLICT.ASSASSINATION      Ground Raeskur (a:4) has Steapall Faedild (a:8) murdered at Baesveireach (p:4)  e:378
+[Y0029]       LIFE.DEATH_VIOLENT          Steapall Faedild (a:8), ruler of the Baesveireach Compact (f:3), is killed by Ground Raeskur (a:4) at Baesveireach (p:4)  <= e:378  e:379
+[Y0029]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Baesveireach (p:4), carrying off 55 grain and killing 10  e:380
+[Y0029]       CONFLICT.ASSASSINATION      Sealdvern Geitoun (a:28)'s attempt on Ground Raeskur (a:4) fails and is traced back  e:381
+[Y0029]       POLITY.EXILE                Sealdvern Geitoun (a:28) is cast out of the Deafil League (f:2) — attempted murder  <= e:381  e:382
+[Y0029]       DIPLO.ALLIANCE_FORMED       Free Kremoor (f:4) and the Deafil League (f:2) swear an alliance  <= e:341  e:383
+[Y0029] w:22  CONFLICT.BATTLE             the Waeslefell Compact (f:1) defeats the Baesveireach Compact (f:3) at Baesveireach (p:4) (66 dead)  <= e:320  e:384
+[Y0029] w:22  CONFLICT.CONQUEST           the Waeslefell Compact (f:1) takes Baesveireach (p:4) from the Baesveireach Compact (f:3)  <= e:384  e:385
+[Y0029] w:23  POLITY.PLOT_DIES_WITH_PLOTTER  Steapall Faedild (a:8)'s conspiracy against Bage Busba (a:9) dies with them, 2 years in  [secret]  <= e:331,e:379  e:386
+[Y0029] w:27  POLITY.SUCCESSION_DISPUTED  Deththou Keis (a:23) contests the claim of Touthseand Gourses (a:21), the named heir, to the Deafil League (f:2) (decided by election)  <= e:382  e:387
+[Y0029] w:27  POLITY.SUCCESSION           Deththou Keis (a:23) takes the seat of the Deafil League (f:2), setting aside the claim of the named heir Touthseand Gourses (a:21)  <= e:387  e:388
+[Y0029]       POLITY.EXILE                Touthseand Gourses (a:21) is cast out of the Deafil League (f:2) — the losing claim  <= e:387  e:389
+
+[Y0030]       POLITY.COURTS_SUPPORT       Vamkei Dridrill (a:25) wins Gandkim Kiveald (a:41) away from the ruler of the Waeslefell Compact (f:1)  <= e:323  e:394
+[Y0030]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and Free Kremoor (f:4) agree terms of trade  e:395
+[Y0030]       POLITY.APPOINTMENT          Mirnthei Wa (a:32) is raised to steward of the Waeslefell Compact (f:1)  e:396
+[Y0030]       CONFLICT.RAID               the Deafil League (f:2)'s raid on Baesveireach (p:4) is beaten off  <= e:195  e:397
+[Y0030]       POLITY.APPOINTMENT          Houwearn Mou (a:34) is raised to heir of the Deafil League (f:2)  <= e:389  e:398
+[Y0030] w:22  DIPLO.PEACE_SIGNED          the Waeslefell Compact (f:1) and the Baesveireach Compact (f:3) make peace after 4 years, after the collapse of the Baesveireach Compact  <= e:320  e:399
+[Y0030] w:26  POLITY.COUP_RESOLVED        Vamkei Dridrill (a:25)'s conspiracy against Ground Raeskur (a:4) is uncovered after 1 years  <= e:376  e:400
+[Y0030]       POLITY.EXILE                Vamkei Dridrill (a:25) is cast out of the Waeslefell Compact (f:1) — conspiracy against the seat  <= e:400  e:401
+[Y0030] w:24  ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 2 years  <= e:346  e:403
+
+[Y0031]       LIFE.DEATH_NATURAL          Drourn Nethi (a:17), exile, dies at 69 in Baesveireach (p:4)  e:404
+[Y0031]       LIFE.BIRTH                  Fraen Woudem (a:44) is born to Deththou Keis (a:23) at Skomere (p:3)  <= e:297  e:406
+[Y0031]       POLITY.EXILE_RETURN         Touthseand Gourses (a:21) returns from exile and takes service with Free Kremoor (f:4)  <= e:389  e:411
+[Y0031]       POLITY.COURTS_SUPPORT       Rontaen Sin (a:24) wins Noulldou Beivourn (a:39) away from the ruler of the Waeslefell Compact (f:1)  <= e:401  e:412
+[Y0031]       POLITY.EXILE_RETURN         Vamkei Dridrill (a:25) returns from exile and takes service with Free Kremoor (f:4)  <= e:401  e:413
+[Y0031] w:28  POLITY.COUP_PLOTTED         Sundsea Pim (a:30) begins conspiring against Ground Raeskur (a:4) of the Waeslefell Compact (f:1)  [secret]  <= e:401  e:414
+[Y0031]       POLITY.COURTS_SUPPORT       Houwearn Mou (a:34) wins Fraen Woudem (a:44) away from the ruler of the Deafil League (f:2)  <= e:397  e:415
+[Y0031]       POLITY.LEGITIMACY_CRISIS    the Waeslefell Compact (f:1) spends 95 silver to buy back goodwill  e:416
+[Y0031]       CONFLICT.RAID               the Deafil League (f:2)'s raid on Thea Seam (p:7) is beaten off  <= e:195  e:417
+
+[Y0032]       POLITY.CHALLENGE            Fur Roundpoull (a:19) challenges Ground Raeskur (a:4) openly for the Waeslefell Compact (f:1), wins, and takes the seat from Ground Raeskur (a:4)  <= e:375  e:422
+[Y0032]       POLITY.EXILE                Ground Raeskur (a:4) is cast out of the Waeslefell Compact (f:1) — the losing side of an open challenge  <= e:422  e:424
+[Y0032]       CONFLICT.ASSASSINATION      an attempt on Deththou Keis (a:23) fails at Skomere (p:3), unattributed  [secret]  e:425
+[Y0032] w:29  POLITY.COUP_PLOTTED         Houwearn Mou (a:34) begins conspiring against Deththou Keis (a:23) of the Deafil League (f:2)  [secret]  <= e:397  e:426
+[Y0032]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and Free Kremoor (f:4) agree terms of trade  e:427
+[Y0032]       POLITY.APPOINTMENT          Rontaen Sin (a:24) is raised to steward of the Waeslefell Compact (f:1)  e:428
+[Y0032] w:28  POLITY.COUP_RESOLVED        Sundsea Pim (a:30)'s conspiracy against Fur Roundpoull (a:19) is uncovered after 1 years  <= e:414  e:429
+[Y0032] w:28  LIFE.DEATH_VIOLENT          Sundsea Pim (a:30) is put to death — executed for conspiracy  <= e:429  e:430
+
+[Y0033]       LIFE.DEATH_NATURAL          Fur Roundpoull (a:19), ruler of the Waeslefell Compact (f:1), dies at 65 in Waeslefell (p:2)  e:432
+[Y0033]       POLITY.EXILE_RETURN         Ground Raeskur (a:4) returns from exile and takes service with Free Kremoor (f:4)  <= e:424  e:436
+[Y0033]       POLITY.COURTS_SUPPORT       Houwearn Mou (a:34) wins Greandsam Kreir (a:36) away from the ruler of the Deafil League (f:2)  <= e:397  e:437
+[Y0033]       DIPLO.TRIBUTE_DEMANDED      Free Kremoor (f:4) demands tribute of the Waeslefell Compact (f:1) and is refused  e:438
+[Y0033] w:29  POLITY.COUP_RESOLVED        Houwearn Mou (a:34)'s conspiracy against Deththou Keis (a:23) is uncovered after 1 years  <= e:426  e:439
+[Y0033] w:29  LIFE.DEATH_VIOLENT          Houwearn Mou (a:34) is put to death — executed for conspiracy  <= e:439  e:440
+[Y0033] w:30  POLITY.SUCCESSION_DISPUTED  Rontaen Sin (a:24) contests the claim of Rearn Thill (a:22), the named heir, to the Waeslefell Compact (f:1) (decided by primogeniture)  <= e:432  e:441
+[Y0033] w:30  POLITY.SUCCESSION           Rontaen Sin (a:24) takes the seat of the Waeslefell Compact (f:1), setting aside the claim of the named heir Rearn Thill (a:22)  <= e:441  e:442
+[Y0033] w:30  POLITY.PARTITION            the Waeslefell Compact (f:1) is divided: Rearn Thill (a:22) carries off 2 place(s) as Greater Baesveireach  <= e:441  e:443
+
+[Y0034]       LIFE.BIRTH                  Moll Moteis (a:49) is born to Rearn Thill (a:22) at Baesveireach (p:4)  <= e:280  e:445
+[Y0034]       POLITY.COURTS_SUPPORT       Nounmam Mith (a:26) wins Thraebaern Ramdem (a:35) away from the ruler of the Waeslefell Compact (f:1)  <= e:412  e:450
+[Y0034]       POLITY.EXILE_RETURN         Sealdvern Geitoun (a:28) returns from exile and takes service with Free Kremoor (f:4)  <= e:382  e:451
+[Y0034]       POLITY.APPOINTMENT          Meirnhaes Kould (a:33) is raised to heir of the Waeslefell Compact (f:1)  <= e:429  e:452
+[Y0034] w:32  DIPLO.WAR_DECLARED          the Waeslefell Compact (f:1) declares war on the Deafil League (f:2) over long-standing grievance  e:453
+[Y0034]       DIPLO.ALLIANCE_BROKEN       the Waeslefell Compact (f:1) breaks its alliance with the Deafil League (f:2)  <= e:453,e:327  e:454
+[Y0034]       ECONOMY.TRADE_PACT          the Deafil League (f:2) buys 30 grain from Greater Baesveireach (f:5) for 60 silver  <= e:195  e:455
+[Y0034]       CONFLICT.RAID               Free Kremoor (f:4)'s raid on Thea Seam (p:7) is beaten off  e:456
+[Y0034] w:32  CONFLICT.BATTLE             the Waeslefell Compact (f:1) defeats the Deafil League (f:2) at Skomere (p:3) (179 dead)  <= e:453  e:457
+[Y0034] w:32  CONFLICT.CONQUEST           the Waeslefell Compact (f:1) takes Skomere (p:3) from the Deafil League (f:2)  <= e:457  e:458
+[Y0034]       POLITY.COLLAPSE             the Deafil League (f:2) is finished — landless, its last 4 followers scatter  <= e:458  e:459
+
+[Y0035]       LIFE.BIRTH                  Gendrea Ruld (a:52) is born to Rontaen Sin (a:24) at Waeslefell (p:2)  <= e:370  e:463
+[Y0035] w:33  POLITY.COUP_PLOTTED         Nounmam Mith (a:26) begins conspiring against Rontaen Sin (a:24) of the Waeslefell Compact (f:1)  [secret]  <= e:412  e:468
+[Y0035]       POLITY.CHALLENGE            Staellou Keillthae (a:27) challenges Feinnind Keitrith (a:42) openly for Free Kremoor (f:4), loses, and Feinnind Keitrith (a:42) keeps the seat  <= e:377  e:469
+[Y0035]       LIFE.DEATH_VIOLENT          Staellou Keillthae (a:27), captain of Free Kremoor (f:4), is killed by Feinnind Keitrith (a:42) at Kremoor (p:6)  <= e:469  e:470
+[Y0035]       POLITY.APPOINTMENT          Nounmam Mith (a:26) is raised to steward of the Waeslefell Compact (f:1)  <= e:429  e:471
+[Y0035]       CONFLICT.RAID               Free Kremoor (f:4)'s raid on Fa Cut (p:8) is beaten off  e:472
+[Y0035]       DIPLO.ALLIANCE_FORMED       Free Kremoor (f:4) and Greater Baesveireach (f:5) swear an alliance  <= e:458  e:473
+[Y0035] w:32  DIPLO.PEACE_SIGNED          the Waeslefell Compact (f:1) and the Deafil League (f:2) make peace after 1 years, after the collapse of the Deafil League  <= e:453  e:474
+[Y0035]       POLITY.REVOLT               Thea Seam (p:7) rises against the Waeslefell Compact (f:1), whose standing had fallen to nothing  e:476
+
+[Y0036]       LIFE.BIRTH                  Dirnul Kar (a:54) is born to Rearn Thill (a:22) at Baesveireach (p:4)  <= e:280  e:477
+[Y0036] w:33  CONFLICT.ASSASSINATION      Nounmam Mith (a:26) has Rontaen Sin (a:24) murdered at Waeslefell (p:2)  <= e:412  e:481
+[Y0036]       LIFE.DEATH_VIOLENT          Rontaen Sin (a:24), ruler of the Waeslefell Compact (f:1), is killed by Nounmam Mith (a:26) at Waeslefell (p:2)  <= e:481  e:482
+[Y0036]       DIPLO.INSULT                Free Kremoor (f:4) publicly slights the Waeslefell Compact (f:1)  e:483
+[Y0036]       POLITY.SUCCESSION           Deththou Keis (a:23) takes the seat of the Waeslefell Compact (f:1) (by right of birth)  <= e:482,e:57,e:398  e:484
+
+[Y0037]       LIFE.MARRIAGE               Thraebaern Ramdem (a:35) marries Feinnind Keitrith (a:42), binding the Waeslefell Compact (f:1) to Free Kremoor (f:4)  e:486
+[Y0037]       LIFE.BIRTH                  Vaeshoull Seilhurn (a:56) is born to Deththou Keis (a:23) at Skomere (p:3)  <= e:297  e:487
+[Y0037]       INTRIGUE.BETRAYAL           Ground Raeskur (a:4) abandons Free Kremoor (f:4) for the Waeslefell Compact (f:1)  e:491
+[Y0037] w:34  POLITY.COUP_PLOTTED         Sealdvern Geitoun (a:28) begins conspiring against Feinnind Keitrith (a:42) of Free Kremoor (f:4)  [secret]  <= e:451  e:492
+[Y0037]       POLITY.APPOINTMENT          Thraebaern Ramdem (a:35) is raised to steward of the Waeslefell Compact (f:1)  <= e:429  e:493
+[Y0037]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and Greater Baesveireach (f:5) agree terms of trade  e:494
+[Y0037]       CONFLICT.RAID               Free Kremoor (f:4)'s raid on Waeslefell (p:2) is beaten off  <= e:491  e:495
+[Y0037] w:33  POLITY.COUP_RESOLVED        Nounmam Mith (a:26) challenges Deththou Keis (a:23) for the Waeslefell Compact (f:1) and wins  <= e:468  e:496
+[Y0037] w:33  POLITY.SUCCESSION           Nounmam Mith (a:26) takes the seat of the Waeslefell Compact (f:1) (coup)  <= e:496  e:497
+[Y0037]       POLITY.EXILE                Deththou Keis (a:23) is cast out of the Waeslefell Compact (f:1) — the losing side of a coup  <= e:496  e:498
+[Y0037] w:31  ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 3 years  e:501
+
+[Y0038]       CONFLICT.ASSASSINATION      an attempt on Vamkei Dridrill (a:25) fails at Kremoor (p:6), unattributed  [secret]  e:504
+[Y0038]       POLITY.EXILE_RETURN         Deththou Keis (a:23) returns from exile and takes service with Free Kremoor (f:4)  <= e:498  e:505
+[Y0038]       POLITY.COURTS_SUPPORT       Sealdvern Geitoun (a:28) wins Deththou Keis (a:23) away from the ruler of Free Kremoor (f:4)  <= e:451  e:506
+[Y0038]       CONFLICT.RAID               Free Kremoor (f:4)'s raid on Skomere (p:3) is beaten off  e:507
+[Y0038]       CONFLICT.RAID               Greater Baesveireach (f:5)'s raid on Thea Seam (p:7) is beaten off  e:508
+
+[Y0039]       LIFE.DEATH_NATURAL          Vamkei Dridrill (a:25), captain of Free Kremoor (f:4), dies at 34 in Kremoor (p:6)  e:510
+[Y0039]       LIFE.DEATH_NATURAL          Mirnthei Wa (a:32), steward of the Waeslefell Compact (f:1), dies at 29 in Waeslefell (p:2)  e:511
+[Y0039] w:34  CONFLICT.ASSASSINATION      Sealdvern Geitoun (a:28)'s attempt on Feinnind Keitrith (a:42) fails and is traced back  <= e:451  e:516
+[Y0039]       POLITY.EXILE                Sealdvern Geitoun (a:28) is cast out of Free Kremoor (f:4) — attempted murder  <= e:516  e:517
+[Y0039]       POLITY.APPOINTMENT          Maell Koullsis (a:37) is raised to steward of the Waeslefell Compact (f:1)  <= e:498  e:518
+[Y0039]       CONFLICT.RAID               Greater Baesveireach (f:5)'s raid on Fa Cut (p:8) is beaten off  e:519
+
+[Y0040]       INTRIGUE.BETRAYAL           Touthseand Gourses (a:21) abandons Free Kremoor (f:4) for the Waeslefell Compact (f:1)  e:524
+[Y0040] w:36  POLITY.COUP_PLOTTED         Deththou Keis (a:23) begins conspiring against Feinnind Keitrith (a:42) of Free Kremoor (f:4)  [secret]  <= e:505  e:525
+[Y0040]       POLITY.COURTS_SUPPORT       Greandsam Kreir (a:36) wins Full Sanweil (a:45) away from the ruler of the Waeslefell Compact (f:1)  e:526
+[Y0040]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) and Greater Baesveireach (f:5) agree terms of trade  e:527
+[Y0040]       POLITY.APPOINTMENT          Touthseand Gourses (a:21) is raised to steward of the Waeslefell Compact (f:1)  <= e:498  e:528
+[Y0040]       POLITY.LEGITIMACY_CRISIS    Free Kremoor (f:4) spends 50 silver to buy back goodwill  <= e:517  e:529
+[Y0040]       DIPLO.TRIBUTE_DEMANDED      Greater Baesveireach (f:5) demands tribute of the Waeslefell Compact (f:1) and is refused  e:530
+[Y0040] w:34  POLITY.COUP_RESOLVED        Sealdvern Geitoun (a:28)'s conspiracy against Feinnind Keitrith (a:42) is uncovered after 3 years  <= e:492  e:531
+[Y0040]       POLITY.EXILE                Sealdvern Geitoun (a:28), who had already left, is declared outlaw by Free Kremoor (f:4) — conspiracy against the seat  <= e:531  e:532
+
+[Y0041]       LIFE.DEATH_NATURAL          Deththou Keis (a:23), captain of Free Kremoor (f:4), dies at 37 in Kremoor (p:6)  e:534
+[Y0041]       POLITY.COURTS_SUPPORT       Greandsam Kreir (a:36) wins Noulldou Beivourn (a:39) away from the ruler of the Waeslefell Compact (f:1)  e:542
+[Y0041]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Baesveireach (p:4), carrying off 22 grain and killing 8  e:543
+[Y0041]       POLITY.LEGITIMACY_CRISIS    the Waeslefell Compact (f:1) spends 140 silver buying goodwill for the third time, and is not believed  <= e:498  e:544
+[Y0041]       DIPLO.INSULT                Greater Baesveireach (f:5) publicly slights the Waeslefell Compact (f:1)  <= e:543  e:545
+[Y0041] w:36  POLITY.PLOT_DIES_WITH_PLOTTER  Deththou Keis (a:23)'s conspiracy against Feinnind Keitrith (a:42) dies with them, 1 years in  [secret]  <= e:525,e:534  e:546
+[Y0041] w:35  ECONOMY.FAMINE_ENDS         the hunger at Thea Seam (p:7) passes after 2 years  e:548
+
+[Y0042]       LIFE.BIRTH                  Land Dellnould (a:58) is born to Rearn Thill (a:22) at Baesveireach (p:4)  <= e:280  e:549
+[Y0042]       LIFE.BIRTH                  Songoul Meandwur (a:59) is born to Nounmam Mith (a:26) at Waeslefell (p:2)  <= e:298  e:550
+[Y0042]       LIFE.BIRTH                  Staendvun Krallkell (a:60) is born to Thraebaern Ramdem (a:35) at Waeslefell (p:2)  <= e:486  e:551
+[Y0042]       POLITY.EXILE_RETURN         Sealdvern Geitoun (a:28) returns from exile and takes service with the Waeslefell Compact (f:1)  <= e:517  e:554
+[Y0042]       POLITY.CHALLENGE            Greandsam Kreir (a:36) challenges Nounmam Mith (a:26) openly for the Waeslefell Compact (f:1), wins, and takes the seat from Nounmam Mith (a:26)  e:555
+[Y0042]       POLITY.EXILE                Nounmam Mith (a:26) is cast out of the Waeslefell Compact (f:1) — the losing side of an open challenge  <= e:555  e:557
+[Y0042]       POLITY.APPOINTMENT          Fouldraern Thraernveall (a:38) is raised to steward of the Waeslefell Compact (f:1)  <= e:498  e:558
+[Y0042]       CONFLICT.RAID               the Waeslefell Compact (f:1) raids Weisfaewick (p:5), carrying off 41 grain and killing 49  e:559
+[Y0042]       CONFLICT.RAID               Greater Baesveireach (f:5)'s raid on Waeslefell (p:2) is beaten off  <= e:559  e:560
+
+[Y0043]       LIFE.DEATH_NATURAL          Ground Raeskur (a:4), retainer of the Waeslefell Compact (f:1), dies at 64 in Kremoor (p:6)  e:562
+[Y0043]       LIFE.MARRIAGE               Maell Koullsis (a:37) marries Fouldraern Thraernveall (a:38) at Waeslefell (p:2)  e:564
+[Y0043]       LIFE.BIRTH                  Milkae Drould (a:61) is born to Rearn Thill (a:22) at Baesveireach (p:4)  <= e:280  e:565
+[Y0043]       LIFE.BIRTH                  Hus Kral (a:62) is born to Sealdvern Geitoun (a:28) at Waeslefell (p:2)  <= e:327  e:566
+[Y0043]       POLITY.APPOINTMENT          Sealdvern Geitoun (a:28) is raised to steward of the Waeslefell Compact (f:1)  <= e:557  e:572
+[Y0043]       CONFLICT.RAID               Greater Baesveireach (f:5)'s raid on Skomere (p:3) is beaten off  e:573
+
+[Y0044]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Waeslefell (p:2) (142% of usual)  e:578
+[Y0044]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Skomere (p:3) (145% of usual)  e:579
+[Y0044]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Baesveireach (p:4) (143% of usual)  e:580
+[Y0044]       POLITY.EXILE_RETURN         Nounmam Mith (a:26) returns from exile and takes service with Free Kremoor (f:4)  <= e:557  e:582
+[Y0044]       POLITY.APPOINTMENT          Woum Teldlei (a:40) is raised to steward of the Waeslefell Compact (f:1)  <= e:557  e:583
+[Y0044]       CONFLICT.ASSASSINATION      Feinnind Keitrith (a:42)'s attempt on Greandsam Kreir (a:36) fails and is traced back  e:584
+[Y0044]       POLITY.EXILE                Feinnind Keitrith (a:42) is cast out of Free Kremoor (f:4) — attempted murder  <= e:584  e:585
+[Y0044]       POLITY.SUCCESSION           Nounmam Mith (a:26) takes the seat of Free Kremoor (f:4) (by election)  <= e:585,e:528  e:586
+
+[Y0045]       LIFE.BIRTH                  Da Boum (a:64) is born to Sealdvern Geitoun (a:28) at Waeslefell (p:2)  <= e:327  e:588
+[Y0045]       POLITY.EXILE_RETURN         Feinnind Keitrith (a:42) returns from exile and takes service with Greater Baesveireach (f:5)  <= e:585  e:594
+[Y0045]       POLITY.APPOINTMENT          Gandkim Kiveald (a:41) is raised to steward of the Waeslefell Compact (f:1)  <= e:557  e:595
+
+[Y0046]       LIFE.MARRIAGE               Noulldou Beivourn (a:39) marries Gandkim Kiveald (a:41) at Waeslefell (p:2)  e:598
+[Y0046]       LIFE.MARRIAGE               Woum Teldlei (a:40) marries Lem Hukra (a:43) at Waeslefell (p:2)  e:599
+[Y0046]       LIFE.BIRTH                  Reanddeir Foun (a:66) is born to Rearn Thill (a:22) at Baesveireach (p:4)  <= e:280  e:600
+[Y0046] w:37  ECONOMY.PLAGUE              plague breaks out at Skomere (p:3) and takes 78  e:602
+[Y0046] w:38  POLITY.COUP_PLOTTED         Thraebaern Ramdem (a:35) begins conspiring against Greandsam Kreir (a:36) of the Waeslefell Compact (f:1)  [secret]  <= e:602  e:604
+[Y0046]       POLITY.APPOINTMENT          Noulldou Beivourn (a:39) is raised to steward of the Waeslefell Compact (f:1)  <= e:602  e:605
+
+[Y0047]       LIFE.BIRTH                  Kill Krourge (a:67) is born to Sealdvern Geitoun (a:28) at Waeslefell (p:2)  <= e:327  e:609
+[Y0047] w:37  ECONOMY.PLAGUE              plague at Skomere (p:3), year 2: 98 dead and 176 flee  <= e:602  e:614
+[Y0047] w:38  CONFLICT.ASSASSINATION      Thraebaern Ramdem (a:35) has Greandsam Kreir (a:36) murdered at Skomere (p:3)  <= e:602  e:616
+[Y0047]       LIFE.DEATH_VIOLENT          Greandsam Kreir (a:36), ruler of the Waeslefell Compact (f:1), is killed by Thraebaern Ramdem (a:35) at Skomere (p:3)  <= e:616  e:617
+[Y0047]       CONFLICT.ASSASSINATION      Feinnind Keitrith (a:42) has Sealdvern Geitoun (a:28) murdered at Waeslefell (p:2)  e:618
+[Y0047]       LIFE.DEATH_VIOLENT          Sealdvern Geitoun (a:28), steward of the Waeslefell Compact (f:1), is killed by Feinnind Keitrith (a:42) at Waeslefell (p:2)  <= e:618  e:619
+[Y0047] w:39  POLITY.COUP_PLOTTED         Feinnind Keitrith (a:42) begins conspiring against Rearn Thill (a:22) of Greater Baesveireach (f:5)  [secret]  <= e:594  e:620
+[Y0047] w:40  POLITY.SUCCESSION_DISPUTED  Noulldou Beivourn (a:39) contests the claim of Touthseand Gourses (a:21), the named heir, to the Waeslefell Compact (f:1) (decided by primogeniture)  <= e:617  e:622
+[Y0047] w:40  POLITY.SUCCESSION           Noulldou Beivourn (a:39) takes the seat of the Waeslefell Compact (f:1), setting aside the claim of the named heir Touthseand Gourses (a:21)  <= e:622  e:623
+[Y0047] w:40  POLITY.PARTITION            the Waeslefell Compact (f:1) is divided: Touthseand Gourses (a:21) carries off 2 place(s) as the Skomere Charter  <= e:622  e:624
+
+[Y0048]       LIFE.MARRIAGE               Full Sanweil (a:45) marries Trulla Gre (a:46) at Waeslefell (p:2)  e:627
+[Y0048]       POLITY.CHALLENGE            Woum Teldlei (a:40) challenges Noulldou Beivourn (a:39) openly for the Waeslefell Compact (f:1), wins, and takes the seat from Noulldou Beivourn (a:39)  <= e:624  e:630
+[Y0048]       POLITY.EXILE                Noulldou Beivourn (a:39) is cast out of the Waeslefell Compact (f:1) — the losing side of an open challenge  <= e:630  e:632
+[Y0048] w:39  CONFLICT.ASSASSINATION      Feinnind Keitrith (a:42) has Rearn Thill (a:22) murdered at Baesveireach (p:4)  <= e:594  e:633
+[Y0048]       LIFE.DEATH_VIOLENT          Rearn Thill (a:22), ruler of Greater Baesveireach (f:5), is killed by Feinnind Keitrith (a:42) at Baesveireach (p:4)  <= e:633  e:634
+[Y0048]       POLITY.APPOINTMENT          Trulla Gre (a:46) is raised to steward of the Waeslefell Compact (f:1)  <= e:602  e:635
+[Y0048]       POLITY.SUCCESSION           Feinnind Keitrith (a:42) takes the seat of Greater Baesveireach (f:5) (by right of birth)  <= e:634  e:636
+[Y0048]       POLITY.REVOLT               Fa Cut (p:8) rises against the Waeslefell Compact (f:1), whose standing had fallen to nothing  <= e:632  e:638
+[Y0048] w:37  ECONOMY.PLAGUE_ENDS         the pestilence at Skomere (p:3) burns out after 2 years  <= e:602  e:639
+
+[Y0049]       LIFE.BIRTH                  Skehu Paeldti (a:71) is born to Woum Teldlei (a:40) at Waeslefell (p:2)  <= e:599  e:641
+[Y0049]       POLITY.EXILE_RETURN         Noulldou Beivourn (a:39) returns from exile and takes service with Greater Baesveireach (f:5)  <= e:632  e:646
+[Y0049] w:41  POLITY.COUP_PLOTTED         Gandkim Kiveald (a:41) begins conspiring against Woum Teldlei (a:40) of the Waeslefell Compact (f:1)  [secret]  <= e:614  e:647
+[Y0049] w:42  POLITY.COUP_PLOTTED         Full Sanweil (a:45) begins conspiring against Woum Teldlei (a:40) of the Waeslefell Compact (f:1)  [secret]  <= e:614  e:648
+[Y0049]       POLITY.COURTS_SUPPORT       Trulla Gre (a:46) wins Fraen Woudem (a:44) away from the ruler of the Waeslefell Compact (f:1)  <= e:638  e:649
+[Y0049]       ECONOMY.TRADE_PACT          the Waeslefell Compact (f:1) buys 30 grain from Greater Baesveireach (f:5) for 60 silver  <= e:580,e:527  e:650
+[Y0049]       POLITY.APPOINTMENT          Meirnhaes Kould (a:33) is raised to steward of the Waeslefell Compact (f:1)  <= e:602  e:651
+[Y0049]       CONFLICT.ASSASSINATION      Nounmam Mith (a:26)'s attempt on Woum Teldlei (a:40) fails and is traced back  e:652
+[Y0049]       POLITY.EXILE                Nounmam Mith (a:26) is cast out of Free Kremoor (f:4) — attempted murder  <= e:652  e:653
+[Y0049]       CONFLICT.ASSASSINATION      Feinnind Keitrith (a:42) has Woum Teldlei (a:40) murdered at Waeslefell (p:2)  e:654
+[Y0049]       LIFE.DEATH_VIOLENT          Woum Teldlei (a:40), ruler of the Waeslefell Compact (f:1), is killed by Feinnind Keitrith (a:42) at Waeslefell (p:2)  <= e:654  e:655
+[Y0049] w:39  POLITY.PLOT_LAPSES          Feinnind Keitrith (a:42)'s conspiracy against Rearn Thill (a:22) lapses after 2 years — its author took the seat by other means  [secret]  <= e:620  e:656
+[Y0049] w:43  POLITY.SUCCESSION_DISPUTED  Ronith Wasnur (a:48) contests the claim of Meirnhaes Kould (a:33), the named heir, to the Waeslefell Compact (f:1) (decided by primogeniture)  <= e:655  e:657
+[Y0049] w:43  POLITY.SUCCESSION           Ronith Wasnur (a:48) takes the seat of the Waeslefell Compact (f:1), setting aside the claim of the named heir Meirnhaes Kould (a:33)  <= e:657  e:658
+[Y0049]       POLITY.EXILE                Meirnhaes Kould (a:33) is cast out of the Waeslefell Compact (f:1) — the losing claim  <= e:657  e:659
+[Y0049]       POLITY.SUCCESSION           Til Saeld (a:72) takes the seat of Free Kremoor (f:4) (raised from kremoor, no claimant remaining)  <= e:653  e:661
+
+[Y0050]       LIFE.MARRIAGE               Seithfum Mim (a:47) marries Til Saeld (a:72), binding the Waeslefell Compact (f:1) to Free Kremoor (f:4)  e:665
+[Y0050]       LIFE.BIRTH                  Drae Num (a:73) is born to Thraebaern Ramdem (a:35) at Waeslefell (p:2)  <= e:486  e:666
+[Y0050]       POLITY.EXILE_RETURN         Nounmam Mith (a:26) returns from exile and takes service with the Skomere Charter (f:6)  <= e:653  e:669
+[Y0050] w:41  CONFLICT.ASSASSINATION      Gandkim Kiveald (a:41)'s attempt on Ronith Wasnur (a:48) fails and is traced back  <= e:614  e:670
+[Y0050]       POLITY.EXILE                Gandkim Kiveald (a:41) is cast out of the Waeslefell Compact (f:1) — attempted murder  <= e:670  e:671
+[Y0050]       POLITY.COURTS_SUPPORT       Full Sanweil (a:45) wins Seithfum Mim (a:47) away from the ruler of the Waeslefell Compact (f:1)  <= e:614  e:672
+[Y0050] w:44  POLITY.COUP_PLOTTED         Trulla Gre (a:46) begins conspiring against Ronith Wasnur (a:48) of the Waeslefell Compact (f:1)  [secret]  <= e:638  e:673
+[Y0050]       POLITY.APPOINTMENT          Si Kaernko (a:50) is raised to heir of the Waeslefell Compact (f:1)  <= e:659  e:674
+[Y0050] w:41  POLITY.COUP_RESOLVED        Gandkim Kiveald (a:41)'s conspiracy against Ronith Wasnur (a:48) is uncovered after 1 years  <= e:647  e:675
+[Y0050]       POLITY.EXILE                Gandkim Kiveald (a:41), who had already left, is declared outlaw by the Waeslefell Compact (f:1) — conspiracy against the seat  <= e:675  e:676
+[Y0050] w:42  POLITY.COUP_RESOLVED        Full Sanweil (a:45)'s conspiracy against Ronith Wasnur (a:48) is uncovered after 1 years  <= e:648  e:677
+[Y0050]       POLITY.EXILE                Full Sanweil (a:45) is cast out of the Waeslefell Compact (f:1) — conspiracy against the seat  <= e:677  e:678
+
+[Y0051]       LIFE.DEATH_NATURAL          Ronith Wasnur (a:48), ruler of the Waeslefell Compact (f:1), dies at 18 in Waeslefell (p:2)  e:680
+[Y0051]       POLITY.EXILE_RETURN         Meirnhaes Kould (a:33) returns from exile and takes service with the Skomere Charter (f:6)  <= e:659  e:692
+[Y0051]       POLITY.EXILE_RETURN         Full Sanweil (a:45) returns from exile and takes service with Greater Baesveireach (f:5)  <= e:678  e:693
+[Y0051]       CONFLICT.RAID               Free Kremoor (f:4)'s raid on Fa Cut (p:8) is beaten off  e:694
+[Y0051] w:45  POLITY.SUCCESSION_DISPUTED  Haeth Tha (a:53) contests the claim of Thraebaern Ramdem (a:35), the named heir, to the Waeslefell Compact (f:1) (decided by primogeniture)  <= e:680  e:695
+[Y0051] w:45  POLITY.SUCCESSION           Haeth Tha (a:53) takes the seat of the Waeslefell Compact (f:1), setting aside the claim of the named heir Thraebaern Ramdem (a:35)  <= e:695  e:696
+[Y0051]       POLITY.EXILE                Thraebaern Ramdem (a:35) is cast out of the Waeslefell Compact (f:1) — the losing claim  <= e:695  e:697

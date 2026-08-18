@@ -37,6 +37,15 @@ public sealed class Tick(Chronicle chronicle, SimConfig config, NameForge forge,
     /// </summary>
     public Analysis.GeographyProbe? Probe { get; set; }
 
+    /// <summary>
+    /// Which termination rules this run may use. <see cref="TerminationArm.All"/> on any real
+    /// world; anything else is a diagnostic arm and the header says so.
+    /// </summary>
+    public TerminationArm Arm { get; init; } = TerminationArm.All;
+
+    /// <summary>Whether one termination rule is switched on for this run.</summary>
+    public bool Allows(TerminationArm rule) => (Arm & rule) != 0;
+
     public Rng Rng(EntityId entity, RngPurpose purpose) =>
         Core.Rng.For(State.Seed, Year, entity, purpose);
 
@@ -72,7 +81,8 @@ public sealed class Simulation
         SimConfig? config = null,
         int startYear = 1,
         Board? board = null,
-        ProximityControlKind control = ProximityControlKind.None)
+        ProximityControlKind control = ProximityControlKind.None,
+        TerminationArm arm = TerminationArm.All)
     {
         _config = config ?? SimConfig.Default;
         _forge = new NameForge(seed);
@@ -82,11 +92,12 @@ public sealed class Simulation
         Chronicle = new Chronicle(State, Log);
         StartYear = startYear;
         Control = control;
+        Arm = arm;
 
         Board playing = board ?? Boards.Stored();
         State.Attach(playing);
 
-        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing, control);
+        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing, control, arm);
 
         // Attached after worldgen, because the empirical distribution it draws from is the set of
         // proximities this world's places present — which does not exist until they are sited.
@@ -114,6 +125,15 @@ public sealed class Simulation
 
     /// <summary>Attach before running to measure what distance actually decided. Off by default.</summary>
     public Analysis.GeographyProbe? Probe { get; set; }
+
+    /// <summary>
+    /// Which of ruleset 6's termination rules this run is allowed to use.
+    ///
+    /// Anything but <see cref="TerminationArm.All"/> makes this a diagnostic artefact rather than a
+    /// world, on exactly the same footing as a proximity control: it is marked in the file header
+    /// and in the genesis event, and <c>wb baseline cut</c> refuses it.
+    /// </summary>
+    public TerminationArm Arm { get; }
 
     public void Run(int years)
     {
@@ -173,7 +193,7 @@ public sealed class Simulation
         State.Year = year;
         Chronicle.BeginYear(year);
 
-        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger, Probe = Probe };
+        Tick tick = new(Chronicle, _config, _forge, year) { Ledger = Ledger, Probe = Probe, Arm = Arm };
 
         LifePhase.Run(tick);
         EconomyPhase.Run(tick);

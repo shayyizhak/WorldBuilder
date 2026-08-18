@@ -1,0 +1,110 @@
+# A history of the Rendfeall Vale
+
+Seed 1234, years 1–51. Every name, date and figure below is drawn from the simulation itself.
+
+
+## Wars
+
+_In the order they begin._
+
+### The Long Quarrel over Pei Delve: the Trostead Compact against House Buldbei, 9–11
+
+The Trostead Compact declared war on House Buldbei in year 9, seeking control of Pei Delve. House Buldbei and its allies defeated the Compact at that site later in the same year, with 23 dead. The Compact suffered another defeat at Pei Delve in year 10, where 18 died.
+
+The conflict lasted two years. In year 11, the Trostead Compact and House Buldbei made peace, both sides exhausted.
+
+### The War of the Galweall League's Grudge: the Galweall League against the Trostead Compact, 19–21
+
+The Galweall League declared war on the Trostead Compact in 19, citing a long-standing grievance. The Trostead Compact defeated the Galweall League at Geirnpei Shafts in the same year, with 19 dead.
+
+In 20, Lald Neirntean had Kesfound Thrael murdered at Themoor. Later that year, the Galweall League and its allies defeated the Trostead Compact at Geirnpei Shafts, with 16 dead. The Galweall League took Geirnpei Shafts from the Trostead Compact.
+
+In 21, the Galweall League and the Trostead Compact made peace after 2 years, both sides exhausted.
+
+
+## Powers
+
+_In the order they begin._
+
+### The Galweall League, 2–21
+
+The Galweall League spent twenty years navigating a cycle of violence and shifting alliances, beginning with a marriage to House Buldbei and ending with a new ruler after a fatal purge. The period was defined by a long-standing quarrel with the Trostead Compact, which resulted in two battles and a war that lasted two years. The League suffered four raids and sent out five, while internal stability eroded as exiles returned and key figures were murdered.
+
+Early in the period, the League’s raid on Trostead was beaten off, but it successfully raided Geirnpei Shafts and Pellweagate, carrying off grain and killing dozens. The Trostead Compact retaliated by raiding Gaehollow and Themoor, taking plunder and lives. Lald Neirntean ordered the murders of Faellwil Na and Paepu Noth at Trostead, while Kesfound Thrael returned from exile to serve the League. Threth Kruth also returned from exile, and Neallseis Staend joined the League’s service.
+
+The conflict with the Trostead Compact escalated when the League declared war in year 19. The Compact defeated the League at Geirnpei Shafts, killing 19. In year 20, the League and its allies defeated the Compact at the same site, killing 16 and taking Geirnpei Shafts. Kesfound Thrael abandoned the League for the Compact, and Threth Kruth won Dasould Ream and Hea Brar away from the League’s ruler. Lald Neirntean had Kesfound Thrael murdered at Themoor.
+
+In year 21, Paernso Feand had Lald Neirntean murdered at Themoor, ending Lald’s rule. The League and the Compact made peace after two years of war. Threth Kruth took the seat of the Galweall League by election. Sealfeis Vearn married Beasre Feanwoul, binding the League to House Buldbei. The League held the seat through two rulers, one killed and one still holding at the end of the period.
+
+### The Trostead Compact, 2–21
+
+The Trostead Compact spent twenty years defined by a fragile alliance with House Buldbei that unraveled into war, followed by a collapse of authority that cost it two territories. At the start, the Compact bound itself to House Buldbei through three marriages in years 2 and 6, while occupying Geirnpei Shafts. Faellwil Na ruled until year 4, when he was killed by Lald Neirntean. Neinos Del took the seat by primogeniture after rejecting Frernli Peimeath’s claim, but died in year 5. Neallseis Staend succeeded him, ruling until year 10 when Paepu Noth won a challenge and took the seat by coup, casting Neallseis out.
+
+The Compact’s standing deteriorated rapidly after Paepu Noth’s rise. In year 9, it declared war on House Buldbei over Pei Delve and broke its alliance with them. It lost battles at Pei Delve in years 9 and 10 to House Buldbei and its allies. Pellweagate rose against the Compact in year 10 as its standing fell to nothing, becoming the Rising of Pellweagate with Veith Hei taking its seat. Geirnpei Shafts also rose in year 15 for the same reason. The Compact sent four raids, all carrying off plunder from Gaehollow and Themoor, but suffered ten raids, including those by the Galweall League and House Buldbei.
+
+Paepu Noth was killed by Lald Neirntean in year 17. Kesfound Thrael took the seat by right of birth. The Galweall League declared war on the Compact in year 19 over a long-standing grievance. The Compact defeated the Galweall League at Geirnpei Shafts in year 19 but lost the battle there in year 20, losing the place to them. Kesfound Thrael was killed by Lald Neirntean in year 20. Vun Doultheam took the seat by right of birth. The Compact and the Galweall League made peace in year 21. The period ended with Vun Doultheam holding the seat, having lost Pellweagate and Geirnpei Shafts.
+
+### House Buldbei, 3–22
+
+House Buldbei’s rule from year 3 to 22 was defined by internal violence and a persistent war with the Trostead Compact. The period began with Skengaer Tharsoull holding the seat, but his rule ended quickly when Trurnur Draeltheas had him killed at Micrag in year 7. Threth Kruth took the seat next by the strongest claim, but Trurnur Draeltheas challenged and won, taking the seat by coup in year 8. Trurnur Draeltheas was then murdered by Lall Nealdgum at Micrag in year 9. Kesfound Thrael took the seat by the strongest claim in year 9, only to be challenged and defeated by Lall Nealdgum, who took the seat by coup in year 12. Lall Nealdgum held the seat until the end of the period.
+
+The war with the Trostead Compact began in year 9 when the Compact declared war on House Buldbei for Pei Delve. House Buldbei and its allies defeated the Compact at Pei Delve in year 9, killing 23, and again in year 10, killing 18. The two sides made peace after two years of war. House Buldbei sent out four raids during this period. A raid on Trostead in year 4 was beaten off. Raids on Pellweagate in year 10 and Geirnpei Shafts in year 11 got through but took nothing. A raid on Trostead in year 20 carried off 32 grain and killed 26. The Compact raided Micrag in year 22, carrying off 28 grain and killing 48.
+
+Internal instability marked the era. Four years of hunger at Pei Delve killed 41 people and caused 60 to flee. Pei Delve rose against House Buldbei in year 9, when the house’s standing had fallen to nothing. Two people were cast out as the losing side of a coup. One person already gone was declared outlaw. Two people were murdered from within by their own people. Seven people were courted away from the ruler. The period ended with Lall Nealdgum still holding the seat.
+
+### The Rising of Pellweagate, 16–45
+
+The Rising of Pellweagate spent thirty years as a fractured power, defined by internal instability and external failure. It began in 16 when Veith Hei took the seat after Pellweagate broke from the Trostead Compact. The period was marked by three famines that killed 202 people and five raids that were all beaten off. The power ended in 44 when the Galweall League took Pellweagate and the Rising was finished, its last 7 followers scattering.
+
+Veith Hei held the seat until 32, when Find Bound challenged him openly and won. Find Bound’s rule was short and violent. He cast out Veith Hei, then cast out Beasre Feanwoul after a conspiracy was uncovered. Find Bound himself was cast out in 41 after an attempt on Lan Thraestun failed. During this time, the Rising sent raids on Trostead, Gaehollow, Themoor, and Geirnpei Shafts, all of which were beaten off.
+
+Neallseis Staend took the seat in 41 by election, setting aside the claim of the named heir Lurntu Skondbea. Neallseis died in 42, and Besveir Maleal took the seat by election. Besveir’s rule ended the power. He had Veith Hei murdered in 44, but the Galweall League defeated the Rising at Pellweagate, killing 77. The League took Pellweagate, and the Rising was finished.
+
+### The Galweall League, 22–41
+
+The Galweall League endured twenty years of internal fragmentation and external hostility, defined by a succession of five rulers who held the seat for an average of 3.8 years each. The period began with Threth Kruth in power, who was cast out in 27 after an attempt on Del Monbirn failed. Dreamwein Vous took the seat by election in 27, ruling until Bathwa Bea won a challenge and seized the seat by coup in 36. Thaham Geth then took the seat by coup in 37, holding it until Lan Thraestun won an open challenge in 40. The period ended with Lan Thraestun still holding the seat. Throughout these years, the League suffered ten raids, all beaten off, and launched four raids, three of which carried off plunder.
+
+Internal stability was eroded by persistent conspiracies and challenges. Ten people were cast out for attempted murder, losing a challenge, losing a coup, or conspiracy. Three others were declared outlaws after leaving the League. Two exiles, Besveir Maleal and Veith Hei, returned to take service. The League’s grip on its allies was loose; 29 people were courted away from its ruler. Marriages tied the League to the Rising of Pellweagate in 25 and again in 41. The League fought two wars, spending one year at war. It defeated the Trostead Compact at Trostead in 29, taking the settlement and finishing that power. It defeated House Buldbei at Geirnpei Shafts in 41.
+
+The League’s military actions were mixed. It raided Trostead in 24, Micrag in 31 and 41, and Pei Delve in 33. The raid on Micrag in 41 killed 33 but took nothing. Hunger struck in 23, killing 192 people at Themoor and Gaehollow. The League ordered one killing against an outsider, Tha Vu, in 30. Two of its own people were murdered from within. The League’s standing was marked by the constant need to repel raids from the Trostead Compact, House Buldbei, and the Rising of Pellweagate, and by the frequent turnover of its leadership.
+
+### The Trostead Compact, 22–30
+
+_No verified account of this period. The passage written for it did not check out against the records; it is in `chronicle-1234.unverified.md`._
+
+### House Buldbei, 23–42
+
+House Buldbei’s tenure over these twenty years was defined by a collapse of authority that turned internal fragility into external defeat. The period began with Lall Nealdgum holding the seat, a rule that ended only with his death in 40. His standing had already eroded significantly, allowing Pei Delve to rise against the house in 28 when its standing fell to nothing. This loss of control was mirrored by domestic instability; Beasre Feanwoul was cast out in 24 for an attempted murder, and later declared an outlaw in 26 for a conspiracy, leaving the house with fewer allies and a reputation for internal fracture.
+
+The house’s external posture was equally fragile, marked by a series of failed military actions and a deteriorating relationship with the Galweall League. Between 30 and 39, House Buldbei sent four raids against Geirnpei Shafts, Gaehollow, Themoor, and Trostead, all of which were beaten off. Simultaneously, the house suffered three raids from the Galweall League, which carried off plunder from Micrag in 31 and Pei Delve in 33, and took nothing from Micrag in 41. The tension culminated in 41 when House Buldbei declared war on the Galweall League over a long-standing grievance, breaking their alliance and fighting two battles at Geirnpei Shafts, both of which were lost to the League with 12 and 10 dead respectively.
+
+Lall Nealdgum died in 40, and the seat passed to Dasould Ream after his claim was upheld against Bathwa Bea, who was cast out for his losing claim. Dasould Ream’s rule was brief and violent, ending the period with the house still holding the seat but militarily defeated. In 42, he ordered the murder of Lan Thraestun at Themoor, a killing ordered against people of other powers. The period closed with House Buldbei having lost two battles, suffered four failed raids, and seen its standing diminish from a position of power to one of military failure, with Dasould Ream still holding the seat.
+
+### The Galweall League, 42–51
+
+_No verified account of this period. The passage written for it did not check out against the records; it is in `chronicle-1234.unverified.md`._
+
+### House Buldbei, 43–51
+
+The period from 43 to 51 saw House Buldbei transition from a position of exhausted stability to one of internal collapse and external defeat. The house began the era holding the seat through Dasould Ream, who had ruled since 40. His rule ended in 44 when he was killed by Thaham Geth at Micrag. Brolgou Hald took the seat immediately after, raising it from Micrag with no remaining claimant. Hald’s rule lasted six years before he was murdered by Hibrei Fou at Micrag in 50. Find Bound then took the seat by the strongest claim and held it through the end of the period. Three people held the seat in nine years, with an average tenure of 2.6 years and a median of 1.0. Two rulers were killed; one remained in power.
+
+House Buldbei’s internal cohesion fractured as its own people turned against it. Hibrei Fou, who had returned from exile to take service with the house in 46, murdered Brolgou Hald in 50. This act was followed by Find Bound taking the seat. The house also lost the loyalty of its personnel; Hibrei Fou won Find Bound away in 48. Exiles continued to return throughout the period, with five individuals rejoining the house’s service between 45 and 51. These included Find Bound in 45, Hibrei Fou in 46, Haeldkeind Nen in 47, Vaswei Grand in 48, and Was Leithwon in 51. The house also ordered one killing against a person of another power, having Laelldou Nerum murdered at Themoor in 43.
+
+Externally, the house faced military failure and territorial loss. It sent out two raids, both against the Galweall League. The raid on Pellweagate in 45 was beaten off. The raid on Geirnpei Shafts in 49 was also beaten off. In 51, the Galweall League declared war on House Buldbei over a long-standing grievance and broke its alliance with the house. The Galweall League defeated House Buldbei at Pei Delve in 51, with 12 dead. The Galweall League took Pei Delve from House Buldbei in the same year. One battle was fought, which was lost. One place was lost. The period ended in 51 with Find Bound still holding the seat.
+
+
+## Reigns
+
+_In the order they begin._
+
+### The rule of Find Bound over House Buldbei, 50–51
+
+Find Bound took the seat of House Buldbei in year 50, succeeding Brolgou Hald, who had been killed by Hibrei Fou at Micrag. The succession followed the strongest claim. In year 51, Drean Stulnir was born to Find Bound at Micrag. Was Leithwon returned from exile that same year and took service with the house.
+
+The Galweall League declared war on House Buldbei over a long-standing grievance and broke its alliance with them. House Buldbei spent 54 silver buying goodwill for the third time, but was not believed. The Galweall League defeated House Buldbei at Pei Delve, where 12 people died, and took Pei Delve from them.
+
+### The rule of Fear Mel over the Galweall League, 51–51
+
+In year 51, Greimfourn Goul challenged Mound Sith openly for the Galweall League and won the seat. Mound Sith was killed by Greimfourn Goul at Themoor later that year. The Galweall League broke its alliance with House Buldbei and declared war on them over a long-standing grievance. The League spent 140 silver to buy back goodwill.
+
+Fear Mel challenged Greimfourn Goul for the Galweall League and won. Fear Mel took the seat by coup. Greimfourn Goul was cast out of the Galweall League. The Galweall League defeated House Buldbei at Pei Delve, with 12 dead. The Galweall League took Pei Delve from House Buldbei.

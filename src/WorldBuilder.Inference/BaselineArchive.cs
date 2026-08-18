@@ -152,12 +152,12 @@ public static class BaselineArchive
         // distances so that two explanations could be told apart. Sealing one would put a
         // diagnostic artefact in the place the whole suite measures against, and on disk it looks
         // like any other world file — which is why the refusal is here rather than in a habit.
-        if (header.IsControl)
+        if (header.IsDiagnostic)
         {
             throw new InvalidOperationException(
-                $"{worldName} ran under the '{header.Control}' distance control. Its distances are " +
-                "synthetic, so it is a diagnostic artefact rather than a world, and a baseline is " +
-                "the thing everything else is measured against. It cannot be sealed.");
+                $"{worldName} ran under {header.DiagnosticReason}, so it is a diagnostic artefact " +
+                "rather than a world, and a baseline is the thing everything else is measured " +
+                "against. It cannot be sealed.");
         }
 
         if (header.EngineCommit.Length == 0)

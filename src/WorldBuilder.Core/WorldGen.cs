@@ -17,7 +17,8 @@ public static class WorldGen
 {
     public static void Generate(
         Chronicle chronicle, NameForge forge, SimConfig config, int startYear, Board board,
-        ProximityControlKind control = ProximityControlKind.None)
+        ProximityControlKind control = ProximityControlKind.None,
+        Rules.TerminationArm arm = Rules.TerminationArm.All)
     {
         WorldState state = chronicle.State;
         chronicle.BeginYear(startYear);
@@ -33,6 +34,10 @@ public static class WorldGen
             // In the record as well as in the header. A control world is a diagnostic artefact
             // and a log carried away from its file would otherwise look exactly like a history.
             .SetIf(control != ProximityControlKind.None, "control", ProximityControl.NameOf(control))
+            // Likewise for a world run under a subset of its own ruleset. An arm world is
+            // internally consistent and about nowhere, and without this it would be
+            // indistinguishable from a history by anything but its length.
+            .SetIf(arm != Rules.TerminationArm.All, "arm", Rules.TerminationArms.NameOf(arm))
             .Weight(Significance.Bookkeeping));
 
         // Sited in one pass so every place is spread against every other, whatever kind it is.

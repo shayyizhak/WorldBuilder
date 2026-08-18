@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-5-seed-42",
+  "created_utc": "2026-08-18T03:12:44Z",
+  "seed": 42,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "97e6365cf4af149b38ea05e1ab434bae543b8844",
+  "ruleset_version": "5",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 5 is an additive record change over ruleset 4 \u2014 DIPLO.ALLIANCE_BROKEN is recorded where the alliance was already being destroyed, and AdditiveRecordTests asserts every ruleset-4 event survives unchanged. The world did not move; the record did."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-42.md", "source_path": "out/ruleset-5/seed-42/chronicle-42.md", "sha256": "ef6ec945f3e70efeda7c86bd5279cebdf3cb3d3c74b708e7d8059eea8f02e67d", "bytes": 13426, "role": "artefact" },
+    { "filename": "chronicle-42.findings.json", "source_path": "out/ruleset-5/seed-42/chronicle-42.findings.json", "sha256": "6ad670ef601b6544b150a5a23a7edae88c46c9aaba36b4b62ce2ae86ce8fb8f8", "bytes": 47232, "role": "anchor" },
+    { "filename": "chronicle-42.unverified.md", "source_path": "out/ruleset-5/seed-42/chronicle-42.unverified.md", "sha256": "bdd10369f4f30214f148ce4d4a3141264c37baad940c00a5b70e14693acf2519", "bytes": 10786, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-5/seed-42/renders.json", "sha256": "3734c39c6f4bac305411727638b841315bd4e0cf81be8ad517d0ecf015a5ea03", "bytes": 23816, "role": "artefact" },
+    { "filename": "world-42.jsonl", "source_path": "out/ruleset-5/seed-42/world-42.jsonl", "sha256": "4c96077e39820167d9f4f7887afc61bb5d6973c66f7f30dc46d25c5a9ea04082", "bytes": 516507, "role": "artefact" },
+    { "filename": "world-42.log", "source_path": "out/ruleset-5/seed-42/world-42.log", "sha256": "4f8429852cd49a7760101907446b101609e48379d248bac167dcf0c74b8c0099", "bytes": 77500, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-5/seed-42/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}
