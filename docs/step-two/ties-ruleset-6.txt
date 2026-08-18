@@ -1,0 +1,126 @@
+seed 7, years 1–51, 10 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 73 | 0 | 73 | 73 | **yes** |
+| `Marriage` | 12 | 0 | 12 | 12 | **yes** |
+| `Grievance` | 68 | 0 | 68 | 68 | **yes** |
+| `Alliance` | 3 | 3 | 3 | 0 | no |
+| `Trade` | 4 | 4 | 2 | 0 | no |
+| `Fealty` | 67 | 0 | 67 | 67 | **yes** |
+| `AtWar` | 3 | 3 | 1 | 0 | no |
+
+  Trade: DEGENERATE — final 0 is under a tenth of peak 2; the rule empties the graph  (coarse — reported, not asserted)
+  Trade: mean 41% of available pairs over 27 year(s) with any pair
+  houses standing: peak 3 pair(s), final 0 pair(s)
+  ended by: collapse 2, war 2
+  first termination: year 5 at e:83
+
+panel — Trade: DEGENERATE — final 0 is under a tenth of peak 2; the rule empties the graph  (peaks summed 2, finals summed 0, 4 ended)
+
+panel — Trade terminations by cause:
+  collapse                     2
+  war                          2
+
+2 reachable values. The cause is a real distinction on this panel.
+seed 42, years 1–51, 19 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 191 | 0 | 191 | 191 | **yes** |
+| `Marriage` | 32 | 0 | 32 | 32 | **yes** |
+| `Grievance` | 147 | 0 | 147 | 147 | **yes** |
+| `Alliance` | 8 | 7 | 3 | 1 | no |
+| `Trade` | 7 | 7 | 5 | 0 | no |
+| `Fealty` | 157 | 0 | 157 | 157 | **yes** |
+| `AtWar` | 5 | 5 | 1 | 0 | no |
+
+  Trade: DEGENERATE — final 0 is under a tenth of peak 5; the rule empties the graph  (coarse — reported, not asserted)
+  Trade: mean 70% of available pairs over 51 year(s) with any pair
+  houses standing: peak 10 pair(s), final 1 pair(s)
+  ended by: war 5, collapse 2
+  first termination: year 5 at e:81
+
+panel — Trade: DEGENERATE — final 0 is under a tenth of peak 5; the rule empties the graph  (peaks summed 5, finals summed 0, 7 ended)
+
+panel — Trade terminations by cause:
+  war                          5
+  collapse                     2
+
+2 reachable values. The cause is a real distinction on this panel.
+seed 99, years 1–51, 12 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 55 | 0 | 55 | 55 | **yes** |
+| `Marriage` | 12 | 0 | 12 | 12 | **yes** |
+| `Grievance` | 47 | 0 | 47 | 47 | **yes** |
+| `Alliance` | 3 | 2 | 1 | 1 | no |
+| `Trade` | 5 | 5 | 2 | 0 | no |
+| `Fealty` | 52 | 0 | 52 | 52 | **yes** |
+| `AtWar` | 5 | 5 | 1 | 0 | no |
+
+  Trade: DEGENERATE — final 0 is under a tenth of peak 2; the rule empties the graph  (coarse — reported, not asserted)
+  Trade: mean 91% of available pairs over 33 year(s) with any pair; 6 year(s) held more ties than there were houses to hold them
+  houses standing: peak 3 pair(s), final 0 pair(s)
+  ended by: war 3, collapse 2
+  first termination: year 7 at e:116
+
+panel — Trade: DEGENERATE — final 0 is under a tenth of peak 2; the rule empties the graph  (peaks summed 2, finals summed 0, 5 ended)
+
+panel — Trade terminations by cause:
+  war                          3
+  collapse                     2
+
+2 reachable values. The cause is a real distinction on this panel.
+seed 1234, years 1–51, 20 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 214 | 0 | 214 | 214 | **yes** |
+| `Marriage` | 29 | 0 | 29 | 29 | **yes** |
+| `Grievance` | 183 | 0 | 183 | 183 | **yes** |
+| `Alliance` | 6 | 6 | 4 | 0 | no |
+| `Trade` | 8 | 8 | 4 | 0 | no |
+| `Fealty` | 159 | 0 | 159 | 159 | **yes** |
+| `AtWar` | 6 | 6 | 1 | 0 | no |
+
+  Trade: DEGENERATE — final 0 is under a tenth of peak 4; the rule empties the graph  (coarse — reported, not asserted)
+  Trade: mean 49% of available pairs over 41 year(s) with any pair
+  houses standing: peak 6 pair(s), final 0 pair(s)
+  ended by: war 5, collapse 3
+  first termination: year 9 at e:148
+
+panel — Trade: DEGENERATE — final 0 is under a tenth of peak 4; the rule empties the graph  (peaks summed 4, finals summed 0, 8 ended)
+
+panel — Trade terminations by cause:
+  war                          5
+  collapse                     3
+
+2 reachable values. The cause is a real distinction on this panel.
+seed 2025, years 1–51, 11 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 127 | 0 | 127 | 127 | **yes** |
+| `Marriage` | 18 | 0 | 18 | 18 | **yes** |
+| `Grievance` | 101 | 0 | 101 | 101 | **yes** |
+| `Alliance` | 6 | 4 | 3 | 2 | no |
+| `Trade` | 6 | 4 | 3 | 2 | no |
+| `Fealty` | 110 | 0 | 110 | 110 | **yes** |
+| `AtWar` | 3 | 3 | 1 | 0 | no |
+
+  Trade: ok — peak 3, final 2  (coarse — reported, not asserted)
+  Trade: mean 54% of available pairs over 51 year(s) with any pair
+  houses standing: peak 6 pair(s), final 6 pair(s)
+  ended by: collapse 2, disuse 1, war 1
+  first termination: year 4 at e:64
+
+panel — Trade: ok — peak 3, final 2  (peaks summed 3, finals summed 2, 4 ended)
+
+panel — Trade terminations by cause:
+  collapse                     2
+  disuse                       1
+  war                          1
+
+3 reachable values. The cause is a real distinction on this panel.

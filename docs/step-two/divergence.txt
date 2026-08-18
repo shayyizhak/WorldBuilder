@@ -1,0 +1,20 @@
+seed 7: 526 → 529 events
+  holds — first difference at index 84 (year 5), first termination at index 84 (year 5)
+  first difference in content rather than in ids: index 84
+
+seed 42: 873 → 878 events
+  holds — first difference at index 82 (year 5), first termination at index 82 (year 5)
+  first difference in content rather than in ids: index 82
+
+seed 99: 704 → 531 events
+  holds — first difference at index 143 (year 8), first termination at index 143 (year 8)
+  first difference in content rather than in ids: index 143
+
+seed 1234: 864 → 826 events
+  holds — first difference at index 149 (year 9), first termination at index 149 (year 9)
+  first difference in content rather than in ids: index 149
+
+seed 2025: 698 → 700 events
+  holds — first difference at index 313 (year 25), first termination at index 313 (year 25)
+  first difference in content rather than in ids: index 313
+

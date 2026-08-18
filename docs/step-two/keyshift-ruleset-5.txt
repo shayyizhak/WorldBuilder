@@ -1,0 +1,7 @@
+  seed 7: inserting at year 21 (index 258 of 526) rekeys 7 event(s) — 13 sit in that year — against 1 whose content changed
+  seed 42: inserting at year 28 (index 441 of 873) rekeys 11 event(s) — 21 sit in that year — against 1 whose content changed
+  seed 99: inserting at year 28 (index 354 of 704) rekeys 4 event(s) — 7 sit in that year — against 1 whose content changed
+  seed 1234: inserting at year 31 (index 439 of 864) rekeys 7 event(s) — 14 sit in that year — against 1 whose content changed
+  seed 2025: inserting at year 28 (index 355 of 698) rekeys 14 event(s) — 27 sit in that year — against 1 whose content changed
+
+**43 cached render(s) lose their key for every 5 whose content changes** — one inserted event, per seed, in the middle of the middle year.

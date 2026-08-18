@@ -55,6 +55,14 @@ The brief cites "the within-arm between-seed SD already reported (38 and 44)".
 **Those were ranges, not standard deviations.** My report wrote them as
 "spread", meaning max − min. The standard deviations are **14.17 and 18.54**.
 
+> **Fixed in the emitter, carry-forward phase.** This was the third verdict
+> reported under an ambiguity in an engine figure, so the fix is no longer
+> discipline: every dispersion or interval statistic the harness emits now carries
+> its kind at the point it is made — `sd=14.17`, `range=[38, 76] width=38`,
+> `cv=35.3%`, `ci95=[−2.70, +1.65]`, `var=251.86` — an interval always prints both
+> ends *and* its width, and the word "spread" is retired from every emitted figure.
+> A test asserts it. See `WorldBuilder.Core.Analysis.Dispersion`.
+
 This matters, and is recorded rather than quietly fixed. The degeneracy guard
 compared a band of 19 against those figures:
 
@@ -177,3 +185,52 @@ distribution, on a stream no rule can reach.
 
 The realised paired σ is reported against the 16.48 estimate. A large miss is
 itself a finding about the panel.
+
+---
+
+## 7. Registered after the fact, for the *next* run — `flat − geography`
+
+**Added in the carry-forward phase. Registered, not run.** The panel described
+above has been run once, at N = 207, and this contrast was not part of it.
+
+**The observation this comes from.** Arm means on that run were flat 64.4,
+geography 63.1, shuffle 62.4, redraw 63.6. Geography sits *below* the
+no-distance arm. That contrast was not pre-registered and was correctly reported
+as description only.
+
+**Two readings, both live:**
+
+- distance genuinely constrains — removing options narrows what can happen; or
+- the gap is within noise, which at these intervals it plainly is.
+
+Neither is decidable from the run that produced the observation, and deciding it
+from that run is mining. The panel exists and costs compute and nothing else, so
+this is nearly free next time.
+
+> **Registered contrast: `flat − geography`, paired, on the same seeds and boards.**
+> **MDE: 5 points of causal variety** — the same minimum effect §3 set, and for the
+> same reason: the question is whether the presence of distance is worth treating
+> as a design input, and half of geography's own observed movement is the floor
+> below which it is not a foundation for anything.
+
+**Its own family of one, α = 0.05, no Holm correction.** This is a decision and
+not an oversight. Adding a fourth contrast to §6's family would raise every
+threshold in it and change the verdicts on three contrasts *that have already
+been reported* — re-analysing a settled result by enlarging its family after the
+fact, which is the same move as re-analysing seen data with a newly chosen
+variance, and §2 forbids that in the other direction. §6's family stays fixed at
+three and is not extended.
+
+**Decision rules, fixed here:**
+
+- **Clears the MDE with the interval excluding zero** → the presence of distance
+  moves causal variety, in the direction the arm means suggested. Report the
+  direction plainly, including that it is *negative* if it is: geography's design
+  rationale rests on distance gating conflict, trade and alliance, and never
+  rested on a variety delta in either direction.
+- **Does not clear** → the flat/geography gap is description, permanently, and
+  the observation is closed rather than carried forward again.
+
+**Nothing about this changes the ruleset, and running it changes nothing by
+itself.** `wb panel` computes it and prints it under its own heading. It was
+implemented in the carry-forward phase and the panel was not run.

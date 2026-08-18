@@ -2944,6 +2944,37 @@ public static class CommandLine
                            `haul` and `plunder` and the engine writes `loot`. Exits 1 on a dead
                            read
 
+            standing state — what only ever goes up, and what stops going up
+
+              wb ties      [--set <baselines>|--file <world>] [--kind Trade] [--trajectory]
+                           live ties per year per relation kind, ties made against ties ended, and
+                           peak against final. Peak-against-final is not enough on its own and the
+                           second figure says why: live ties over the pairs of houses that both
+                           still hold ground. A world down to one house cannot hold a trade tie, so
+                           "final near zero" measures hegemony there rather than any rule — and the
+                           same denominator shows ruleset 5's trade graph over 100% full, holding
+                           ties to houses that had ceased to exist. Exits 1 on the degeneracy guard
+
+              wb standing  [--set <baselines>|--from <dir>] [--seeds 7,42,…] [--to <file>]
+                           every piece of standing state and whether anything on the panel ever
+                           made it smaller. Half the monotonic sweep, and it says which half: a
+                           count cannot tell "no removal path" from "a path this panel never
+                           reached", so the column is named for what was observed and the
+                           classification is read off the rules beside it. Always exits 0 —
+                           reporting is the deliverable, repairing is a separate decision
+
+              wb divergence [--against ruleset-5] [--seeds 7,42,…] [--years 50]
+                           where a fresh run stops matching a sealed baseline of the previous
+                           ruleset, against where the new mechanic first acted. What replaces the
+                           additive-only assertion once a ruleset changes worlds: divergence before
+                           the first termination means something else moved the world. Exits 1 there
+
+              wb keyshift  [--set ruleset-6] [--seeds 7,42,…]
+                           what one inserted event costs the render cache. Event.Key is documented
+                           as surviving a shift in log position; it survives a retcon and not an
+                           insertion, because it takes the emission's sequence within its year.
+                           Exits 1 if the measurement cannot reproduce the stored keys it depends on
+
               wb why       e:1188 [--depth 8]      what caused this
               wb what      e:1188 [--depth 4]      what this went on to cause
               wb who       a:112                   an actor's ties and timeline

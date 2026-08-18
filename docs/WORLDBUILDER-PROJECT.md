@@ -33,14 +33,6 @@ The loop:
 
 Later rounds moved from per-round briefs to **loop-prompts**: a document with explicit halt conditions that Claude Code runs unattended until the conditions hold or an abort triggers. This works well for anything machine-checkable and halts for anything requiring prose judgement.
 
-**The abort is the feature, not the failure.** The baseline archive took three revisions and aborted twice. Both aborts were correct, and the second one caught a defect that had been sitting in the tree unnoticed since before version control existed. A loop that halts and reports beats one that resolves ambiguity by guessing. Revisions supersede rather than replace: each report is left standing, because the earlier one is still the record of what was searched for.
-
-**Escalated decisions come back as questions, not as choices already made.** When a loop hits something requiring prose judgement, its report ends with a numbered list of what a human has to decide. That list is the interface between the two halves of this arrangement.
-
-**Claude has no visibility into the code, but it does have the record.** Twice now a question posed as "someone has to read the passage" turned out answerable from the event log plus the round reports. Worth trying before assuming a decision needs eyes on source.
-
-**GitHub access, if it is ever wanted.** Claude's sandbox can reach `github.com` and clone a *public* repo. Private repos are unreachable — no connector, no authentication. The repo is currently private, which is right; uploading specific files on demand costs less context than cloning a C# tree each session, and the line-anchored reports Claude Code produces carry most of the value of direct access.
-
 ---
 
 ## 3. Architecture (settled — do not relitigate without reason)
@@ -63,7 +55,7 @@ Later rounds moved from per-round briefs to **loop-prompts**: a document with ex
 
 ### Stack
 
-- **Engine:** C#/.NET, currently version `1.2.0`. Event sourcing and deterministic simulation fit it well.
+- **Engine:** C#/.NET. Event sourcing and deterministic simulation fit it well.
 - **Inference:** Ollama, local, OpenAI-compatible, model-swappable. Currently `qwen3.6:latest`.
 - **Model licensing: Apache-2.0 only.** Qwen qualifies. This is deliberate — it keeps the base model swappable and makes a future house-style LoRA legally clean to release. Llama and Gemma 1–3 were excluded for custom source-available terms; **Gemma 4 shipped Apache-2.0 in April 2026 and is now eligible.**
 - **Client:** Flutter if a UI is ever built for users. Not a current concern.
@@ -72,12 +64,6 @@ Later rounds moved from per-round briefs to **loop-prompts**: a document with ex
 ### A note on model choice
 
 Qwen is coding-tuned, and the prose was better than expected. There is a temptation to swap to a prose-tuned model. Resist it without testing: five rounds of render work converged on instructions to be *less* creative and more literal — don't invent motive, don't embellish, render a missing input as omission. A model that writes gorgeous fiction is a model that fills gaps beautifully, which is the primary failure mode. Coding-tuned literalism is plausibly why the prose was controllable at all. Any swap must also hold on the constrained-decoding side.
-
-### Zero-inference paths are structural, not observational
-
-`wb book --check-only` holds a `CacheOnlyLlmClient` whose `CompleteAsync` throws. A cache miss surfaces as the missing render it is, rather than being repaired by generating a passage nobody has verified.
-
-The design rule this encodes: **"no call was observed" is not a proof that none was possible; "the call cannot be constructed" is.** The alternative considered and rejected was pointing `--endpoint` at a dead port — which does work, and is worth keeping as a *test* of render-cache completeness, but makes correctness depend on a misconfiguration.
 
 ---
 
@@ -117,8 +103,6 @@ The design rule this encodes: **"no call was observed" is not a proof that none 
 
 Assume it will appear again. It is silent by nature — a gap that presents as a pass.
 
-**The family is not confined to rules.** Two more instances turned up in the filesystem during the baseline archive: `*.jsonl` and `*.log` ignored globally would have dropped two of ten baseline artefacts while the directory still looked complete; and a hash computed over the working tree rather than over what git stores would have been CRLF-dependent. Both have the same shape — a gap that presents as a pass — and neither is in a checker rule.
-
 **`coverage-sound` — two invariants, both required:**
 
 ```
@@ -130,93 +114,44 @@ ACCOUNTING says nothing is dropped *after* extraction. FLOOR says nothing is dro
 
 **Coverage reporting.** Every run emits per-scope `extracted / checked / unresolvable / fired` per rule. A rule extracting nothing from a scope containing the relevant construction emits `rule-inert`. This converts silent inertness into a loud failure.
 
+**A rule that fires without extracting has a floor of zero.** Such rules raise findings through word-scanning paths that never touch their extraction counter. FLOOR protects nothing for them: they can go silent forever and the golden layer will not notice.
+
+Which rules, measured rather than reasoned about — `wb floors --set ruleset-5`, 5 seeds, 60 scopes, 2026-08-18:
+
+| rule | scopes with a floor | of | reason |
+|---|---|---|---|
+| `action` | 11 | 60 | zero at baseline |
+| `coined-term` | 60 | 60 | floored everywhere |
+| `count-enumeration` | 9 | 60 | zero at baseline |
+| `count-narration` | 28 | 60 | zero at baseline |
+| `coverage` | 0 | 60 | no floor on this panel |
+| `date` | 13 | 60 | zero at baseline |
+| `date-agreement` | 24 | 60 | zero at baseline |
+| `departure` | 47 | 60 | zero at baseline |
+| `naming` | 60 | 60 | floored everywhere |
+| `outcome` | 0 | 60 | no floor on this panel |
+| `partition-sum` | 8 | 60 | zero at baseline |
+| `quantity` | 3 | 60 | zero at baseline |
+| `shape` | 0 | 60 | no floor on this panel |
+| `succession` | 12 | 60 | zero at baseline |
+| `summary-body` | 21 | 60 | zero at baseline |
+| `tenure` | 6 | 60 | zero at baseline |
+
+**Three, not six, and not three of the six that were listed.** The hand-written list named `action`, `date`, `quantity` and `tenure` — all of which carry floors in some scopes — and omitted `shape`, which carries none. Wrong in both directions, which is the signature of a list reasoned out rather than measured: a stale list drifts one way.
+
+The three that remain — `coverage`, `outcome`, `shape` — are exactly the three with no `Extracted` call site anywhere in `WorldBuilder.Inference`. Their floors are unreachable rather than unreached, and no re-run changes that.
+
+**The panel is the instrument, and one panel was not enough.** `tenure` reads 0 of 13 on ruleset-4 seed 42 alone and 2 of 60 across that panel — scope selection, not a rule gap. `quantity` read **0 of 60 across the whole ruleset-4 panel** and 3 of 60 at ruleset 5, so what looked like a call site no seed could reach was a call site that panel happened not to reach. A single document cannot separate "not instrumented" from "unreached", a single panel can be wrong about it, and the label therefore reports the reach and leaves the cause to be read off the source. **Eleven of the ruleset-4 panel's twenty holdouts were decided by a rule in this state**, and in all 22 such rows the sidecar carries a `rule-inert` line for the same rule in the same scope — saying both that it read nothing here and that a finding it owns kept the section out of canon. This is the exact configuration Stage 6 forbids on purpose for a premature geography rule, arrived at by accident. Unrepaired deliberately: correcting an extraction counter raises a floor, and re-baselining is an explicit human act.
+
 **Test entry points.** Every rule test enters at the outermost callable production uses. Two tests once passed while the code failed — one hand-fed an event kind the planner never emits, the other called an inner method the public entry point bypassed. **A test feeding an input the production caller never produces is worse than no test**: it converts silence into false confidence.
 
 **Assert extraction, not just absence of failure.** A test asserting "no finding fired" passes when the rule is inert.
 
+**A test that one error cannot pass may still be passed by its opposite.** The ruler list asserted "no two neighbouring spells share a ruler" — satisfied both by collapsing a contested transfer correctly and by deleting a genuine second tenure, which are opposite errors. Same shape as the raid partition that summed while one of its three cells was structurally zero. Assert the collapse *and* the survival.
+
 **Construction-gated rules cannot be required to always extract.** `partition-sum` needs a partition; a two-sentence answer doesn't have one. Loosening extraction to satisfy a blanket coverage requirement is how false positives get manufactured — one attempt cost seven true chronicle sections. Inert is a finding only when the construction is present.
 
 **Completeness rules on fragments are a trap.** They work on whole sections and misfire on short answers.
-
-### On artefacts and provenance
-
-*Added after the baseline archive rounds. This is the newest cluster and probably the least worked-out.*
-
-**A derived artefact drifts silently unless something records what produced it.** The archived `chronicle-42.findings.json` was written by a pre-v1.2 checker and committed in the same commit as the post-v1.2 checker that supersedes it. Git could not show the inconsistency because it was *inside the first commit*. Nothing in the file said which checker wrote it.
-
-The fix is a **fingerprint over the producing code**, stored with the artefact. This generalises: it is the same question Stage 3 asks about cached renders, arriving early in a different costume.
-
-**Prose reproducing byte-identically proves nothing about its sidecar.** `chronicle-42.md`, the suspect-token count and the held-out sections all matched exactly while the coverage accounting had drifted on three scopes. Any check comparing the document would have passed cleanly. **It took the machine-readable block to see it** — which is the argument for the query-side sidecar, made from the other side.
-
-**Hash what the repository stores, not what the working tree holds.** Line endings make a working-tree hash a property of the checkout. `QuerySuite.cs` hashes two different values depending on `core.autocrlf`; the same trap nearly reappeared one field over, in the checker fingerprint itself.
-
-**A stale figure in a reference document behaves exactly like a wrong engine figure.** The checker rule count sat at 17 in a summary doc, propagated into a loop-prompt, and was only caught by someone enumerating `RuleNames.All`. Nothing questioned it, because it was written down. **This document is not exempt from its own lesson** — figures here are as fallible as any other engine output, and the manifest is authoritative over any count restated in prose.
-
-**Verified and derived are different, and only one of them is precious.** The v1 hand-verification attaches to the *prose* — figures, ruler lists, tenure spans, named years. The findings sidecar is derived: a pure function of `(renders.json, checker code)`, recomputable at zero inference cost. That distinction is what let the sidecar be replaced without weakening the baseline, and it is worth asking of every artefact before treating it as irreplaceable.
-
-**Fingerprint the artefact that was actually used, not the inputs that notionally produced it.** The render cache hashes the pack body — what the model is literally shown — rather than the facts the pack was built from. A body hash cannot drift from what was rendered; an input hash can, wherever something transforms inputs into the pack. Same principle as the zero-inference entry point: prefer a guarantee that holds by construction over one that holds if maintained.
-
-**Backward compatibility for unverifiable artefacts is a permanent commitment, not a migration step.** Cache entries predating the input hash are served and counted, never refused, because the v1 cache is entirely of that kind and it is the hand-verified one. A policy that eventually refuses them eventually strands the baseline. State the weaker claim — *these entries' inputs are unverified* — and keep reading them.
-
-**A world is a log plus whatever it cannot be read without.** "The materialised event log is the durable artefact" held for as long as everything in the world was in the log. An imported map broke that half: the log records which cell each place stands on, and a cell index means nothing without the board it indexes into. So a world is a directory, the header carries a hash per stored artefact, and opening verifies them.
-
-**A mismatched artefact hash is the one provenance failure that refuses.** Every other mismatch this engine reports leaves a readable world behind it — an older ruleset, absent provenance, a superseded engine. A board whose hash has moved leaves a world that reads perfectly and is about somewhere else, because every distance in it silently changed. Refuse where the failure has no symptom; note where it has one.
-
-**Hash the file, and name the artefact inside the record too.** The bundle header hashes the map beside the world; the genesis event carries the board's fingerprint. They catch different things — a file that changed under a world, and a world opened beside the wrong map entirely — and only having both makes a log safe to carry away from its bundle.
-
-### On mechanics and reachability
-
-*The engine dynamics phase, ruleset 1 → 3. Five mechanic changes and a great deal found on the way.*
-
-**Skewed outcome distributions are a simulation lesson, not only a rendering one.** It was written down as a fabrication risk — a model scores well guessing the majority case and gets the rare case confidently wrong. It is also how a mechanic becomes decorative: coups 100% exposed, raids 80% beaten off, tribute 82% refused, heirs 82% set aside. A branch that almost never fires is a thing that happens constantly and changes nothing. Audit every outcome-bearing kind on every ruleset change.
-
-**An invariant that cannot vary is not an invariant.** `CoupDecidedPct` had a numerator no code path could reach and reported a plausible zero for months while a threshold was tuned against it. Every ratio metric must assert that at least one path can move it, and must fail at definition time if none can.
-
-**A metric can report zero without meaning none.** `LifecycleChainPct` was integer division: one lifecycle chain in 156 rounded to 0% and the invariant passed on a world containing exactly the construction it forbids. Metrics asserting absence assert a **count**, and carry a constructed positive control — a survey cannot distinguish "does not happen" from "cannot happen".
-
-**A label with no emitter is worse than a dead branch.** `Title.Heir` was set once in worldgen and never again, while four rules read it and three attached weight to it. The designation stopped happening; the weight stayed. Two successive counterweights did nothing because both were attached to an act nobody performed. A dead branch is at least visibly dead; a live rule reading a fiction looks like it works.
-
-**Two subsystems can hold incompatible theories of the same thing and stay invisible while one is disconnected.** A house names its most loyal member; the contest rewards ambition. Nothing noticed for as long as the designation was never consulted. Expect this wherever one component produces an input another consumes — a disconnection hides disagreement.
-
-**A counterweight anti-correlated with its own situation is no counterweight.** The heir carried legitimacy, and a disputed succession is exactly when legitimacy is lowest — the event itself applies −8. Whatever decides a contest must be able to move under the conditions that open it. Prefer a quantity derived from a recorded past act, monotone in elapsed time, over a live state the crisis depresses.
-
-**Hypothesis, three data points: causal variety tracks how many mechanics have genuinely reachable branches.** `distinct deep-chain shapes` on seed 7 fell 54 → 44 during the raid work and rose 44 → 55 across two later changes that did not target it. More reachable branches is the only intervention that has moved it, and it moved it without being aimed at it. If that holds, "is it interesting?" and "does every branch fire?" are closer to the same question than anyone assumed. **Not a conclusion** — worth testing deliberately when Stage 6 adds mechanics.
-
-**Parking is a decision, not neglect.** Not every defect clears the bar. The bar is whether it makes the world less interesting to read or less able to support a campaign — not simulation correctness. Below it, a finding is diagnosed, categorised and parked in `KnownFailing` with its reasoning, watched by the harness. Without an explicit bar, each fix's discoveries set the agenda forever and the roadmap never resumes.
-
-**Create-only beats a human gate, where the property wanted is "this cannot move by rerun."** The archive directory refuses to be overwritten. Replacement requires deliberately moving the old one aside, which is the explicit act. A gate that depends on remembering to be a human is weaker than one that depends on the filesystem.
-
-### On geography and calibration
-
-*Added after Stage 6, ruleset 3 → 4. Four mechanics gained a distance input and no threshold moved.*
-
-**Express a new input as a percentage of what the world already is, and no existing threshold has to move.** Proximity is 100 at a typical separation, and every consumer multiplies by it and divides by a hundred. A pair at an ordinary distance therefore scores exactly what it scored before geography existed, so four mechanics inherited their calibration rather than being re-fitted. The alternative — pick a distance constant and tune it — is how the raid roll acquired its undocumented flat 25, which cost a phase to find and had no defence when found.
-
-**A scale is only self-calibrating if it is calibrated against the population that actually occurs.** Proximity was first defined against the board's median separation over all land cells: arithmetically correct, and useless, because places are sited deliberately far apart and no world ever contained two at that distance. Every proximity came out below 100 and four mechanics documented as "centred" were discounted everywhere. **The defect was invisible in the code and unmissable in the metric** — war declaration reported 0 near and 29 far across the whole panel, a branch that cannot fire wearing a percentage. Same class as `CoupDecidedPct`. Ask what the distribution of the thing being measured actually looks like, not what the container's is.
-
-**Direction matching is not evidence between mechanisms that both predict the direction.** This is the sharpest methodological lesson the project has produced, and it cost two phases to learn. Stage 6 pre-registered a prediction that causal variety would fall, measured a rise on four seeds of five, and recorded the pre-registered alternative — *distance makes which neighbour you fight a stable fact, and stable facts let chains grow long* — as the surviving explanation. It was not. A control that replaced every proximity with a fresh draw from the same distribution, with **no stability and no spatial structure whatever**, moved the metric at least as far. Both mechanisms predict a rise; confirming the direction separated nothing. A pre-registered prediction that comes true is not self-validating — ask what else would have produced the same result, and build the control that tells them apart.
-
-**The reference panel is not the measurement panel.** Five seeds exist because *hand verification* is expensive — five worlds is about as much prose as a person will read against a record. A statistical comparison needs no hand verification at all: headless simulation, zero model calls, every figure computed in C#. It costs compute and nothing else. **Sizing the second by the cost of the first is what produced a claim the data could not support**, and it went unnoticed for three phases because the number five was never a decision anybody made — it was inherited from a different constraint. The measurement panel is now 207 seeds, and the reference seeds are excluded from it so the two cannot merge again.
-
-**Seen data sizes the next experiment; it does not decide the last one.** The paired variance of the five reference seeds was available and would have made the geography result look better. It was used only to compute N, and that restriction was written down before it was computed. Re-analysing seen data with a newly chosen variance is how a dead result comes back to life wearing better statistics.
-
-**A comparative rule needs a stated minimum panel range, or its rank arm is a coin flip.** Seed 99 was adjudicated against a rank criterion over five separation-spread figures spanning 34–37%; a rank over a degenerate population carries no information, and the rule read as "partially explained" when the population made that arm meaningless. The general form: state, before measuring, the range below which the rank arm is void and the rule falls to its absolute arm. Applied to the controls, the same guard fired immediately — three arm medians spanning 19 points against within-arm spreads of 38 and 44, so **n=5 cannot discriminate them.** Every comparative claim made across this panel is subject to it, including "geography improved four seeds of five".
-
-**A small n read against an unstated baseline manufactures a silent path that is not there.** Alliance moved 0 of 13 and was reported as suggestive of a decorative branch at "about one in eight". The baseline behind that figure was never named; against the rate distance moves anything else, 6%, the true figure is about **45%** — near a coin flip. Inspection then showed the term is live in every one of the thirteen evaluations. The silent-path family has a mirror image: a healthy mechanism diagnosed as dead because nobody wrote down what normal would look like. Both are failures to state the denominator.
-
-**Adding an input can raise causal variety as much as adding a branch — but this is now unsupported.** The standing hypothesis was that variety tracks how many mechanics have genuinely reachable branches. Stage 6's rise looked like evidence for a wider form, that variety tracks how many distinct, stable configurations a world can be in. The redraw control removed the support: stability is not required to produce the rise. **Recorded as open, not as knowledge.**
-
-**Repetition can be a missing input rather than a missing brake.** `verbatim repeat rate` survived two rounds that diagnosed it correctly and fixed the wrong thing, and was parked as unattributed. Geography closed it without aiming at it. A house with no map picks its rival by grievance alone, and grievance is sticky, so the same two names transact forever. Distance did not stop them repeating — it gave the world more than one plausible pairing to repeat with. Before adding a cooldown, ask whether the choice has enough inputs to vary.
-
-**One idea implemented twice is one idea fixed once.** "A fixture pinned to a seed is a ruleset-scoped artefact" was learned at ruleset 2 and applied to the test suite's corpus fixture. `wb test corpus` held the same idea in its own copy and was never touched, so it threw on a missing scope for two rulesets in a place nobody ran. This is the silent-path family outside a checker rule for the third recorded time. When a lesson is applied, grep for the second implementation.
-
-**A metric written this round found this round's own defect.** Both the proximity mis-calibration and the doubled panel denominator were found by instrumentation added in the same phase as the code it caught. That is the argument for adding the metric before believing the mechanic, not after.
-
-**Instrumentation invariance is a standing property.** Attaching a measurement must not change the world, asserted by hashing the full event log with and without it across the whole seed panel — and asserted alongside a check that the instruments actually fire, or invariance is satisfied by instruments that never ran. Every probe adopts it. Nothing weaker detects the failure: a run with a perturbed stream is a perfectly plausible run.
-
-**RNG draw order is load-bearing, and this is a constraint on Stage 3's determinism guarantee.** Reproducibility is not a property of the rules alone; it is a property of the rules *and the order in which they consume the stream*. A pure refactor can change every world from that year on. The worked example: a site reading `won && margin > bar && rng.Chance(p) && holder == defender` throws its die *before* testing the holder, so hoisting that test into the guard — obviously equivalent, and what anybody would write — stops the draw in exactly those cases and re-sequences everything after. Every test stayed green; the log hash was the only detector. **A refactor at a short-circuiting site is a behavioural change until a hash says otherwise**, and any diagnostic needing a second value must take it from a stream of its own.
-
-**A control needs an identity arm before its results mean anything.** A synthetic replacement for a real input is only interpretable if the machinery that substitutes it consumes nothing from the streams the rules are drawing on — otherwise the measured difference is confounded with re-sequencing, which the constraint above establishes changes worlds by itself. So the first control built is the one that hands back the real value, and it must reproduce the real world exactly. Its first run failed, and the failure was informative: 897 of 898 events matched, and the one that did not was the marker recording that the run was a control.
 
 ### On measurement
 
@@ -226,34 +161,72 @@ The fix is a **fingerprint over the producing code**, stored with the artefact. 
 
 **Ranking by raw event count systematically under-represents things that ended.** A power destroyed in year 20 had eighteen years to accumulate events; a survivor had fifty. Scope selection by "weightiest" therefore drops exactly the powers whose stories conclude. This matters again at Stage 8's significance threshold, where dropping is mandatory — rate rather than total, or a floor for any power that held land or was destroyed.
 
+**Sidecars are the provenance record for findings.** A panel run that discards them cannot be interrogated afterwards — which emitter produced which row becomes unanswerable without a re-run. Retain by default.
+
 ### On the model itself
 
 **Generation is not reproducible run to run**, despite temperature 0 and a fixed sampling seed. Evidence: the same question with a byte-identical request body was classified causal in one run and factual in another, changing retrieval from three records to one. This is Ollama's own variance.
 
 Consequences: a single-question CLI call is not a valid proxy for a suite run; "16 of 16" is a sample, not a proof; two consecutive identical runs is the honest evidence standard.
 
-**Re-checking is not generation.** Running the checker over a cached `renders.json` involves no inference and *is* reproducible — five identical runs across two builds. The distinction matters: it is what makes a findings sidecar a derived artefact rather than an unrepeatable one.
-
-**The planner mistypes verbatim fields.** Three slips in sixteen on a field it was instructed to copy exactly, and both surviving retrieval files misspell "Hadale Commune" differently. Resolve verbatim fields against the question text or the record — never fuzzy-match the planner's string, because a miss is recoverable and a confident resolution to the wrong entity is not. Years matter most: a mistyped year produces no failure signal, just a plausible answer about the wrong decade.
+**The planner mistypes verbatim fields.** Three slips in sixteen on a field it was instructed to copy exactly. Resolve verbatim fields against the question text or the record — never fuzzy-match the planner's string, because a miss is recoverable and a confident resolution to the wrong entity is not. Years matter most: a mistyped year produces no failure signal, just a plausible answer about the wrong decade.
 
 **Absent vs withheld must be distinguishable.** The same conflation appeared as `unresolvable`-vs-fired in the checker and as one empty-result sentence covering three different situations in the query layer. This is not just phrasing — the v3 epistemic layer's entire premise is that not-known and not-true are different, so the query path has to be able to express it.
+
+### On experiment design
+
+**A pre-registered prediction shared by both competing mechanisms is not a test of either.** Pre-registration constrains the analyst; it does not discriminate for you. The geography prediction was pre-registered, confirmed, and separated nothing.
+
+**A comparative decision rule needs a degeneracy guard** — a stated minimum panel range below which the rank arm is void and the rule falls to its absolute arm. Without it, a tight panel silently converts a rank criterion into a coin flip. Seed 99 was recorded as *failed* rather than mixed on exactly this basis: every seed's spread lay in a 34–37% band, so the rank arm carried no information.
+
+**A guard covers the panel being too small; it does not cover the statistic being structurally constant.** The holdout brief's over-firing arm asked whether the heaviest rule's firing count on *surviving* scopes had risen. A blocking rule fires almost only where it causes a holdout — that is what blocking means — so the count is zero on both sides for every rule the arm is aimed at, and the arm cannot be taken however concentrated the holdouts are. Check that each arm's discriminating half can vary before committing to it.
+
+**Each arm of a pre-committed decision rule must be shown reachable against existing data before the measurement.** That one rule carried two reachability defects, not one: the arm above, and a 20-point range criterion the population had never met — ruleset 3's own spread was `width=42`. A dry run over existing baselines catches both for free, and costs nothing but the reading. The degeneracy guard covers a statistic that varies too little; it does not cover one that cannot vary, and neither covers a threshold no arm could ever clear.
+
+**Seen data sizes the next experiment; it does not decide the last one.** The paired variance figure could have rescued the geography result and was fenced to sizing N only, in writing, before it was computed.
+
+**The reference panel is not the measurement panel.** Five reference seeds exist because hand verification is expensive; statistical comparison needs none. Sizing one by the cost of the other is how five seeds became a statistical claim.
+
+**A contrast family closes when its verdicts are reported.** Enlarging a closed family moves Holm thresholds under already-published verdicts — so `flat − geography` was registered as its own family of one rather than a fourth member of the reported three.
+
+### On plumbing
+
+**The silent-path family is a plumbing phenomenon, not a checker phenomenon.** Now seen in mechanics (covert coup structural zero) and in the independent verifier itself.
+
+**A verifier that reads a field name the engine doesn't write cannot fail.** Layer 4 read `took`/`haul`/`plunder`; the engine writes `loot`, so the three-way raid split had been two-way since the layer was written, with nothing failing because every assertion was about the accounting. Two of the last four defects were field-name mismatches. Assert schema inclusion: every field name a consumer reads exists in the emitter's vocabulary. **Now a standing test rather than a scan** — the vocabulary comes off the records and the reads are *observed* at `Event.GetString` while the consumers run, because a declared list of what a consumer reads is the same artefact that produced five of the silent-path family. 84 names across 42 kinds emitted; 98 reads observed; **zero dead**.
+
+**Four event kinds are declared and never emitted:** `ECONOMY.TRADE_COLLAPSE`, `DIPLO.ALLIANCE_BROKEN`, `CONFLICT.SIEGE`, `INTRIGUE.GRIEVANCE_SETTLED`. Each has a name and a render template and no emitter anywhere in the rules. The structural-zero family again, and the principle the dispersion work already states from the other side: **a label with no emitter is worse than a dead branch.** Substrate audited — see `docs/phase-four-dead-kinds-report.md`: three have the state they need and are emission-only, `CONFLICT.SIEGE` needs new persistent state and is carded.
+
+**Instrumentation invariance.** Attaching a measurement must not change the world, asserted by log hash with and without, across all seeds. A standing property, not probe scaffolding.
+
+**The engine still reproduces the sealed baselines, and that is now asserted.** `InstrumentationInvarianceTests` replays all five sealed ruleset-4 baselines event for event. Nothing asserted it before, and every measurement taken against those baselines rested on it. Same family as the rest of this list: a load-bearing property that no test held.
+
+**RNG draw order is load-bearing.** A pure refactor at a short-circuiting site can change worlds with every test green. The with/without log hash is the only detector.
+
+**An ambiguous figure is a fabrication vector regardless of who reads it next.** Previously filed under rendering as something the engine does to the model; it generalises. Three instances: plague duration in two conventions, an unnamed 0-of-13 denominator, a range read as a spread. Fixed mechanically — dispersion self-identifies at emission (`sd=`, `range=[a, b] width=`, `cv=`, `ci95=`, `var=`).
+
+**A wrong figure in an error message is the same family as an unlabelled one.** `HttpClient` carried a 100s default, so a 900s call died at 100s and reported "did not answer within 900s". A message reporting a limit must print the limit that actually applied.
+
+**A doc comment asserting a property the implementation lacks is the same family as an error message printing the wrong limit.** `Coverage.cs:36` states the read-versus-passed premise cleanly and nothing enforces it, so it misled a reader who had the code open. Both are a claim in the record that nothing checks — same failure, different surface.
+
+**A list in the documentation describing a measurable property of the code should be emitted by the code.** The same family, one step further out. §4's list of rules lacking floor protection was hand-written and wrong in both directions — naming two rules that are protected and omitting one that is not — which is the signature of a list reasoned out rather than measured. It is now generated by `wb floors` and carried here with the command and date that produced it, exactly as the schema sweep is. A declared artefact describing a property of the code is a second copy of that property, kept in step by hand.
+
+**From ruleset 4, a world is a log and its board.**
 
 ---
 
 ## 5. Roadmap
 
-Stages 1 and 2 are complete (v1 render and query). The board is at **https://trello.com/b/Ovwt583e/world-builder** with lists Done → In flight → Foundations → Simulation depth → Scale → Release.
+The board is at **https://trello.com/b/Ovwt583e/world-builder** with lists Done → In flight → Foundations → Simulation depth → Scale → Release.
 
 | # | Stage | Notes |
 |---|---|---|
 | 1 | Finish v1 render | ✅ done |
 | 2 | v1.2 query | ✅ done |
-| — | Archive the v1 golden baseline | ✅ done — see §8 |
-| 3 | Determinism & versioning | ✅ done — decided *and* built |
-| 4 | Automated quality harness | ✅ done — five layers, 456 tests |
-| — | Engine dynamics phase | ✅ done — ruleset 3; see §5a |
-| 5 | Workbench UI | Instrumentation for the builder, not product |
-| 6 | **World substrate: geography, then economy** | Geography ✅ — ruleset 4; see §5b. Economy is the next phase |
+| 3 | Determinism & versioning decision | ✅ done in reduced form — provenance stamp shipped, versioning deferred |
+| 4 | Automated quality harness | Five layers, built. Layer 5 passing 0/0 across five ruleset-4 baselines |
+| 5 | Workbench UI | **Decision pending.** Instrumentation for the builder, not product |
+| 6 | World substrate: geography, then economy | Geography ✅ built and measured. **Economy half not started** |
 | 7 | v2 adjudication & interventions | Prospective first, retroactive last |
 | 8 | LOD contract | **Design only** — keep running 20 actors |
 | 9 | Complexity mechanisms | naming → religion → resources/trade → creatures → tech diffusion |
@@ -266,94 +239,41 @@ Stages 1 and 2 are complete (v1 render and query). The board is at **https://tre
 
 ### Stage detail worth carrying
 
-**Stage 3 — determinism. Settled and built.**
+**Stage 3 — determinism. Settled.** Two things break "seed + intervention log reproduces the world": rule changes (every later stage changes rules) and model variance (proven at v1.2). Both point at **the materialised event log as the durable artefact**; seed is provenance, not a regeneration recipe.
 
-Two things break "seed + intervention log reproduces the world": rule changes (every later stage changes rules) and model variance (proven at v1.2). Both point at **the materialised event log as the durable artefact**; seed is provenance, not a regeneration recipe. Replay stays available within a ruleset version as a debugging tool. **V2 corollary:** the intervention log stores *accepted deltas*, never the prompt that produced them.
+**Versioning is deferred entirely.** Pre-release, single user, test worlds — when rules change, worlds get dumped. What shipped instead is a *provenance stamp*: **written, never read.** It exists because Stage 4's golden diff cannot otherwise distinguish engine change from ruleset change from pack change from Ollama variance. Revisit at Stage 14/15. **V2 corollary:** the intervention log stores *accepted deltas*, never the prompt that produced them.
 
-**The header.** `JsonlIo.Header` carries `engine_version`, `engine_commit` and `ruleset_version` alongside type, seed and event count. Version and commit are read from assembly metadata rather than a source constant — the stale-figure lesson applied to the thing that records provenance. Nothing time- or machine-dependent, so two runs of a seed stay byte-identical. Empty fields are omitted rather than written blank, so a headerless file can't be confused with one carrying empty provenance.
+**Stage 6 — geography. Half built.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Board imported, stored, hashed, verified; positions assigned at worldgen; four mechanics consume distance. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool.
 
-**Opening policy: a newer engine refuses; everything else opens and says so.** Same build, silent. Older engine, changed ruleset, or no provenance at all (every v1 artefact) — opens with a note. Newer refuses with exit 1, overridable by `--accept-newer`, which says that it did.
+**The geography result, recorded honestly.** Geography does **not** move causal variety relative to structureless perturbation. N=207, four arms paired on the same seeds and boards, MDE pre-registered at 5 points.
 
-The asymmetry is deliberate. An unknown event kind already throws loudly; a *new field on an existing kind* would be dropped in silence. Newer-engine is the one direction where the failure is invisible, so it is the one direction that refuses.
+| contrast | mean | 95% CI | p |
+|---|---|---|---|
+| shuffle − redraw | −1.15 | [−3.16, +0.86] | 0.26 |
+| geography − shuffle | +0.62 | [−1.46, +2.71] | 0.56 |
+| geography − redraw | −0.53 | [−2.70, +1.65] | 0.63 |
 
-**Render invalidation keys on the pack body, not on versions.** `ContextPack.InputHash` is a sha256 over literally what the model is shown, so it cannot fall out of step with what was rendered. This was a live defect rather than a hypothesis: `ContextPack.Key` hashed event content keys only, so a change to how a statistic is computed left the events untouched, the key unchanged, and served a passage restating a now-wrong figure — permanently, since cached renders are canon.
+Arm means: flat 64.4, geography 63.1, shuffle 62.4, redraw 63.6. Realised paired σ 15.87 against 16.48 predicted, so the sizing held. **These are precise nulls, not failures to detect** — the headline interval excludes the MDE in both directions.
 
-Keying on the body rather than on notional inputs is the stronger form of the same idea, and the same move as `CacheOnlyLlmClient`: make the guarantee structural rather than maintained. A ruleset bump touching no pack invalidates nothing, which is what keeps the cache worth having as LoRA corpus and Stage 15 cost lever. A mismatched hash is never served; the stale entry stands while a new one is written beside it.
+*Retired:* the +33 causal-variety attribution to geography; `verbatim repeat rate` clearing as a geography result; any claim of the form "geography improved four seeds of five."
 
-**Legacy cache entries are served and counted, never refused — and this should stay true.** The entire v1 cache predates the hash, and it is the hand-verified one. A policy that eventually refuses legacy entries is a policy that eventually strands the baseline everything else is measured against. `wb book` reports how many entries came from unhashed cache — the weaker claim stated rather than assumed, which is sufficient. If strictness is ever wanted, a `--strict-cache` flag off by default gives it for new work without being retroactive.
+*Stands:* the **680 / 555 / 34** census (680 decisions consulted a proximity, 555 had room to be moved, 34 were), which rests on within-world decisions rather than on five worlds. Wars fought where declared. The proximity calibration fix. Alliance's distance term live in 13 of 13. All the engineering.
 
-**Two items carried forward:**
+*Untouched:* geography's design rationale. Distance gates conflict, trade, alliance and later rumour. The variety-delta claim was volunteered, never required.
 
-- **`ruleset_version` — resolved, and now doing real work.** Settled as two counters that coincide: the ruleset carries its own sequence, deliberately not matching any engine version. It is at `4` while `engine_version` stays `1.2.0`. Layer 5 reads it and skips a baseline cut under a different ruleset.
-- **The header's artefact hashes and render-cache fingerprint — built at Stage 6.** Correctly deferred until something produced a bundle for them to describe. An imported map was that artefact, and `WorldBundle` now writes and verifies both. Opening is the one entry point every reader goes through, and a hash mismatch throws.
+**Board geometry is not first-class.** `var(board)` negative against `var(seed)` across 207 boards — with the standing limitation that this shows sensitivity strongly and insensitivity only weakly, since every board came from one generator.
 
-**Stage 6 — geography. Built; see §5b.** Import the physical layer only (terrain, biomes, adjacency, travel cost); simulate the political layer on top. Azgaar gives a cell-adjacency graph free; Watabou MFCG has a de-facto JSON API. **Generators are NOT reproducible across versions** — treat generation as one-time, store the artefact in the world file, hash it into the header, never regenerate from seed. **Watabou TownGeneratorOS is GPL-3.0 — do not embed it**; outputs are permissive, so use the hosted tool. Nothing is embedded: the Azgaar importer consumes an export and no generator code is linked or vendored.
+**No geography checker rule until the terrain pack exists.** A rule written now extracts 0 forever, `rule-inert` cannot fire because the construction is genuinely absent, and FLOOR baselines at 0 — manufacturing the silent-path signature on purpose.
 
-**The stored board is currently made rather than imported.** No Azgaar export was available on the build machine and the generator is a browser application that cannot be driven headlessly, so `maps/board-1.wbmap.json` came from `wb map make` and says so in its own provenance. The importer for the real path is built and tested and the artefact format is identical, so dropping in a real export is a swap — but every world simulated against a board records its hash, so replacing the board means new worlds rather than changed ones.
+**Stage 7 — the collision to resolve.** "Cached renders are canon" and "retroactive authoring back-propagates causes into the past" cannot both hold unconditionally, because back-propagation rewrites events that already have canon prose about them. Decide deliberately in design.
 
-**Stage 7 — the collision to resolve.** "Cached renders are canon" and "retroactive authoring back-propagates causes into the past" cannot both hold unconditionally, because back-propagation rewrites events that already have canon prose about them. Decide deliberately in design. Stage 3's invalidation rule sets the precedent this will be argued from.
+**Stage 8 — the sequencing trap.** Complexity is cheapest to iterate at 20 actors, but LOD changes how entities are *represented*, so every mechanism written before the contract exists gets rewritten after. Write the contract now, defer the population scale-up to Stage 10. Three tiers: statistical populations → named entities → simulated individuals. Crystallisation deterministic via `(world_seed, entity_id, query)`.
 
-**Stage 8 — the sequencing trap.** Complexity is cheapest to iterate at 20 actors, but LOD changes how entities are *represented*, so every mechanism written before the contract exists gets rewritten after. Write the contract now, defer the population scale-up to Stage 10. Three tiers: statistical populations → named entities → simulated individuals. Crystallisation deterministic via `(world_seed, entity_id, query)`. Every Stage 9 mechanism must be expressible at all three tiers.
+**Content packs, species and settings are a Stage 8 concern, not Stage 9.** Stage 8 exists because LOD changes how entities are represented; culture and setting vocabulary are the same trap on two more axes. **Revised exit criterion:** every Stage 9 mechanism must be expressible at all three LOD tiers, parameterisable per culture, and carry no hardcoded setting vocabulary.
 
 **Stage 9 — naming first.** Names carry nearly all the felt sense of distinct cultures, and retrofitting a naming system after the log is full of names is miserable. Religion second — highest yield, because it gives succession disputes *reasons* rather than dice.
 
 **Stage 15 — inference cost.** Local Ollama is free; hosted is not. Bring-your-own-key, hosted inference with quotas, or hosted simulation with client-side rendering. The render cache is the cost lever: cached renders are canon, which means they are also *paid for once*. The lazy-rendering architecture chosen for tractability turns out to be the business model.
-
-### 5a. The engine dynamics phase (ruleset 1 → 3)
-
-Unscheduled, and it came from the harness rather than the roadmap: Layer 1's first run found `coup success` at 0% on every seed, and the invariant meant to catch it had been counting exposures as successes.
-
-**Five mechanic changes**, in order: raid outcome odds and raid target memory; coup plots attach to a **seat** rather than to a person; the covert leak roll becomes three-way (expose / strike / defer) with readiness rising alongside exposure; tribute compliance becomes a gradient rather than a cliff; and `Title.Heir` gains a runtime emitter, with the designation carrying the age of the act that made it.
-
-**What it was worth.** Covert seizure exists where it was structurally impossible — 29 seizures across the panel, success varying 7–35% by seed. The rate is asserted pooled, because fourteen plots cannot support a percentage.
-
-**What it cost, and the discipline that made it stoppable.** Each fix revealed the next; without a bar, a phase like this runs forever. The bar is §4's — does the defect make the world less interesting to read or less able to support a campaign — plus a hard budget of mechanic changes, with a fifth requiring escalation rather than a decision.
-
-**The working-method lesson.** The first four rounds were one brief each, which cost a round-trip per finding, and most of what came back between them was derivable from the record. A phase loop carries the method and the pre-committed decision rules, extends its own queue, and halts only for questions of **semantic intent** — what a mechanic is *for* — which is the one thing that cannot be derived. Write phases, not rounds.
-
-### 5b. Stage 6 — the geography substrate (ruleset 3 → 4)
-
-Run as a phase loop rather than as rounds, and it worked the way the previous phase said it would: no escalation was needed, and the two things worth escalating over — a fifth mechanic and a threshold change — never arose.
-
-**Step 0 first: a ruleset-3 anchor for all five seeds.** Layer 5 had skipped since ruleset 2, so two rulesets of change had landed with no golden anchor, and this phase was about to change the world more than either. Five baselines at `baselines/ruleset-3/seed-*`, all `stability-anchor-only`, Layer 5 passing 0/0 on every one. `wb baseline cut` reads the producing engine out of the world file's own header rather than from the build running it, and its checker fingerprint reproduced the v1 baseline's hand-computed `60f5b325` exactly.
-
-**A world became a bundle.** The map is a stored artefact, hashed into the header; opening verifies and refuses on a mismatch. The genesis event names the board separately, so a log carried away from its bundle still knows which map its cell indices mean.
-
-**Four mechanics gained a distance input and no threshold moved** — raid targeting, war declaration, conquest holdability, and the pairing rules. The budget held: nothing else gained one, and the two parked findings that look adjacent (tribute target selection, heir selection) were noted and left.
-
-**What it was worth.** Conflict acquired a place. A war is now declared over somewhere and fought there — Threi Cut three years running — rather than wandering the map; a conquest is next to what you already hold; a house's enemies are its neighbours. That is a structural property of individual events and it stands.
-
-> ~~Causal variety rose on four seeds of five, by up to +33, and `verbatim repeat rate` cleared everywhere.~~ **RETIRED.** Measured on a 207-seed panel with all four arms paired, geography − redraw is **−0.53, 95% CI [−2.70, +1.65]** — a precise null, not a failure to detect. Geography's effect on causal variety is not distinguishable from structureless perturbation, and on that panel it is not distinguishable from no distance at all. The five-seed figures were real numbers about five worlds and were never evidence about the engine. See §5c.
-
-**Positions changed nothing else, and that was checkable.** Siting draws on an RNG purpose of its own, so all five seeds produced a byte-identical history to ruleset 3 with only the `cell` fields and the board fingerprint added. Geography present and inert is a real state, and being able to stand in it is what made the four attributions afterwards mean anything.
-
-**The prediction was falsified and that was the most useful part** — see §4's geography cluster. The phase also cost one full re-measurement of its own headline result, because the metric written to check the calibration found the calibration wrong.
-
-### 5c. The controls, and the panel that settled them (ruleset 4, no rule change)
-
-Two phases of measurement after the geography build, neither of which changed a rule. Between them they retired the geography build's headline claim and replaced the project's idea of how big a measurement is.
-
-**The controls.** A synthetic distance model replaces what the four mechanics are told, drawn from each world's own realised proximity distribution so the distribution and the clamp exposure are unchanged and only the *origin* of the values differs. Four of them: `identity` (the board, through the machinery), `flat` (everything typical — reproduces ruleset 3 exactly), `shuffle` (one value per place-pair, fixed at worldgen: stable, no spatial structure) and `redraw` (fresh per decision: no stability, no structure).
-
-**The identity arm is what makes the others readable.** It must reproduce the real world exactly, or a control's result is confounded with RNG re-sequencing — which changes worlds on its own. It failed on first run: 897 of 898 events matched, and the one that did not was the marker recording that the run was a control. The assertion was tightened rather than loosened.
-
-**The result, at N=207 with all four arms paired on the same seeds and boards:**
-
-| contrast | mean | 95% CI | p |
-|---|---|---|---|
-| geography − redraw | **−0.53** | [−2.70, +1.65] | 0.63 |
-| geography − shuffle | +0.62 | [−1.46, +2.71] | 0.56 |
-| shuffle − redraw | −1.15 | [−3.16, +0.86] | 0.26 |
-
-None clears the pre-registered 5-point minimum effect; none survives Holm. **These are precise nulls rather than failures to detect** — the intervals exclude the MDE in both directions. Realised paired σ was 15.87 against 16.48 estimated, so the panel was sized correctly.
-
-**Geography does not move causal variety.** Not relative to structureless perturbation, and on that panel not relative to no distance at all (arm means: flat 64.4, geography 63.1, shuffle 62.4, redraw 63.6 — the geography − flat contrast was *not* pre-registered and is reported as description, not as a test).
-
-**What is untouched by this.** Geography's design rationale was never a claim about causal-variety deltas: distance gates conflict, trade, alliance and — at Stage 11 — rumour. Wars are fought where they are declared. The census of what distance decides stands: 680 decisions consulted a proximity, 555 had room to be moved, 34 were.
-
-**Board geometry is not a first-class variable.** With one board per panel seed and the same seeds re-run on a shared board, var(board) came out negative — the board adds nothing measurable to the discriminating share. Stated with the limitation it needs: **this demonstrates sensitivity strongly and insensitivity only weakly**, because every board sampled came from one generator and may share characteristics an Azgaar export does not.
-
-**The discriminating share per mechanic, on 207 boards:** marriage 24%, alliance 8%, conquest 7%, raid targeting 5%, war declaration 1.5%. Alliance's panel figure of 8% independently confirms the correction to the 0-of-13 finding — at 8%, seeing none in thirteen happens a third of the time.
 
 ### Two cross-cutting concerns
 
@@ -373,18 +293,21 @@ Prose that fails validation is kept out of canon rather than corrected by hand. 
 - **Tier 2 — statement validation against events.** Action, succession, outcome, departure, tenure, quantity, date.
 - **Tier 3 — coverage.** Mandatory event classes within a scope's window: collapse, conquest, secession, war/peace, every battle, deaths of seat-holders.
 
-### The 16 rules
+### Counter shapes
 
-`RuleNames.All` yields sixteen distinct owners:
+`extracted` is not one quantity. It is three, and for two of the three shapes it is undefined rather than zero. Reporting all three as `extracted` is what makes the coverage invariants go vacuous exactly where they matter.
 
-```
-action     coined-term   count-enumeration   count-narration
-coverage   date          date-agreement      departure
-naming     outcome       partition-sum       quantity
-shape      succession    summary-body        tenure
-```
+| shape | population | counters | `rule-inert` means |
+|---|---|---|---|
+| **Requirement** — engine supplies a list, rule checks the prose mentions it | items in the list | `required / satisfied / missing` | list non-empty and nothing checked |
+| **Vocabulary scan** — marker from a constant list, support looked up in the body | marker hits in the prose | `scanned == fired + supported` | marker present, neither outcome produced |
+| **Extraction** — pulls a candidate assertion out of the sentence | assertions extracted | `extracted / checked / unresolvable` | construction present, nothing extracted |
 
-**Sixteen, not seventeen.** `unsupported-link` is a finding kind that maps onto `action` rather than a rule of its own, and `name`/`number` verdicts from the vocabulary scan map onto `naming`. Both folds are why a wrong count of 17 circulated. `coverage` and `shape` are completeness rules, gated off on the answer path.
+**The vocabulary-scan shape carries the failure history.** Every historical silent-path defect lived there — `"included"` absent from the partiality-marker list, `people`/`exiles`/`returns` absent from the countables lexicon. So `scanned == fired + supported` is the highest-value invariant in the scheme, and it is the one that does not yet exist. Until it does, a lexicon gap presents as nothing at all.
+
+ACCOUNTING and FLOOR as originally stated apply to the extraction shape only. Requirement and vocabulary rules do not get a re-baseline when instrumented — they get a *first* baseline of a different quantity, and the distinction should stay visible in the record.
+
+**A rule slot created by `Fired` alone is unfalsifiable.** `coverage` and `outcome` have no `Extracted` call sites, so `Inert()` flags them on every passage forever. A detector that alarms unconditionally is worse than no detector: it trains you to skip the output.
 
 ### Sidecar format
 
@@ -393,12 +316,6 @@ shape      succession    summary-body        tenure
 ### Disposal differs between chronicle and query
 
 A chronicle has fifteen sections and can drop one with a note in its place. **A query answer has one answer and nowhere to put a warning.** A fatal finding on an answer returns the retrieved facts plainly, or an admission — never annotated prose carrying a known fabrication.
-
-### The query path has no sidecar
-
-`CmdSuite` prints findings, withheld notes and the coverage table to stdout and writes no file. The only writer of a `*.findings.json` is the chronicle path.
-
-**This is a live gap, not a formatting nicety.** `departure` extraction went 4 → 0 between two v1.2 rounds and nothing caught it, because there was no machine-readable block to diff. The chronicle path had one, and diffing it is the only reason the sidecar drift in §8 was ever visible. Stage 4 backlog.
 
 ---
 
@@ -410,47 +327,28 @@ Five layers, increasing cost:
 2. **Checker rule unit tests** — synthetic passages, positive and negative per rule, plus lexicon-completeness tests (every marker in every list fires its rule on an identical sentence with only the marker swapped).
 3. **Regression corpus** — 31 hand-verified fabrications from the render rounds, each mapped to the rule that should catch it. Cases fixed and then regressed are the highest-value entries.
 4. **Chronicle verified against the log** — ruler lists, departure manner, tenure spans, raid counts (three outcomes), battle counts, killing counts split internal/external, marriage counts, every named year, every proper noun.
-5. **Golden diff** — current output against the stored baseline in §8. Any figure that moves is a failure. **Diff the coverage block too** — extraction counts are far more stable than prose, and a rule going non-zero to zero is the signature of the silent-path family.
+5. **Golden diff** — current output against a stored known-good render. Any figure that moves is a failure. **Diff the coverage block too** — extraction counts are far more stable than prose, and a rule going non-zero to zero is the signature of the silent-path family.
+
+**Layer 3 is now permanently pinned to the sealed v1 record.** 20 of 28 scoped rows only fire against a world that no longer regenerates. "All v1 work can be dumped" is therefore no longer true for that one artefact — the sealed v1 record and its reference facts must survive every future ruleset change.
 
 **Layer 4 deliberately duplicates the checker.** The checker decides what enters canon; the suite decides whether the checker works. A checker that silently stops firing is invisible without an independent verifier. If they ever share an implementation, that property is lost.
 
-### Stage 4 backlog
+**Two standing properties added at the pre-verification phase, both asserted rather than described:**
 
-Carried from v1.2 and from the archive rounds:
-
-- **A supplied figure going unused is caught by nothing** — one answer omitted "504 fled" while the pack supplied it.
-- **A bare count in an answer is verified by no rule** — the vocabulary scan skips numbers under three digits, and `count-vs-list` needs an enumerated list, not four citations.
-- **`departure` 4 → 0 went uncaught.** FLOOR was specified but not in that round's halt list.
-- **Pattern characterisation lands on the easy shape** (records sharing a year and a target) and not the harder one (records sharing a source across differing years).
-- **Query-side findings sidecar** — same `{rule, scope, span, detail, blocking, fatal}` shape plus the per-scope coverage block. The single highest-value item here; see §6.
-- **Split retrieval sets from the planner echo.** Event-ID lists are deterministic, diffable and checkable forever; the echo line is a generation artefact. One echo line is the entire reason retrieval reproduction is permanently skipped.
-- **Emit the question set as data.** It is currently a C# literal in `QuerySuite.ForSeed42`, so archiving it means archiving source.
-- **Keep the dead-endpoint trick as a render-cache completeness test.** Rejected as an archive path, genuinely useful as a test.
+- **Schema inclusion.** Every field name a consumer reads exists in the emitter's vocabulary. Run from both test assemblies — Layer 4 sweeps its own reads, because sweeping it from the checker's side would route the independent verifier through the implementation it exists to be independent of.
+- **The engine still reproduces the sealed ruleset-4 baselines**, event for event, on all five seeds. Only the provenance header differs. Nothing asserted this before, and every measurement taken against those baselines silently rested on it. It fails on a genuine ruleset change, correctly — that is when the baselines are recut.
 
 ---
 
-## 8. The v1 golden baseline
+## 8. Sealed v1 record — seed 42 reference facts (historical)
 
-Sealed at `baselines/v1/seed-42/`, create-only. **`manifest.json` is authoritative** for contents and hashes — deliberately not duplicated here, per the stale-figure lesson in §4.
+> **This describes a world that no longer regenerates.** Under ruleset 4, positions are assigned at worldgen and four mechanics consume distance, so the stream is consumed differently and seed 42 is *a different history* — not a stale one. Everything below remains valid **only** as documentation of the sealed v1 record.
+>
+> It is not dead weight: **Layer 3's regression corpus depends on it permanently** (20 of 28 scoped rows). Keep the sealed record and these facts indefinitely.
+>
+> The live ruleset-4 reference set is a separate artefact, rebuilt by hand. See §9.
 
-**Contents:** the chronicle and its unverified passages; the findings sidecar; `renders.json`; the query answers, retrieval sets and question set; the record and the `.log` view. Plus `manifest.json`, `BASELINE.md`, `.sealed`, and the archive report.
-
-**What is verified versus derived.** The prose is hand-verified — figures, ruler lists, tenure spans, counts, named years. The findings sidecar is *derived*, reproduced from `renders.json` by `wb book --check-only` rather than copied, and pinned as the anchor. The superseded pre-v1.2 sidecar sits beside it as `chronicle-42.findings.pre-v1.2.json`, role `historical-not-anchor`; it must never be used as a diff target.
-
-**Why that file is still there.** It is the evidence for the §4 provenance lesson: a tree internally inconsistent inside its own first commit, where version control cannot show it. Five coverage deltas across 3 of 15 scopes, all explained by the two v1.2 raid-extraction fixes and the `name` → `naming` fold; 163 findings unchanged, 8 real, 4 blocking.
-
-**Recorded deficiencies** (both in the manifest and in `BASELINE.md`):
-
-- `query-coverage-unstructured` — v1's query-side coverage exists only as captured stdout. A rule going non-zero to zero on the query path cannot be detected by a golden diff against this baseline.
-- `retrieval-contains-generated-echo-line` — one planner echo makes the retrieval file not fully deterministic.
-
-**Rules for use.** Create-only: a new baseline requires moving this directory aside under a new name first. `verification: hand-verified` is correct only for seed 42 — baselines for seeds 7, 99, 1234 and 2025 must carry `stability-anchor-only`, since a golden diff needs its anchor stable, not correct, but the distinction must stay legible. `baselines/**` is pinned `-text` and force-included in `.gitignore`; a fresh clone reproduces every hash.
-
----
-
-## 9. Seed 42 reference facts
-
-Verified by hand across many rounds. Useful for any future test, question suite, or sanity check. **694 events in the `.log` view; 1,035 in the record.**
+Verified by hand across many rounds. **694 events in the `.log` view; 1,035 in the record.**
 
 **Powers:** Wurn League (f:1), Kebarrow Compact (f:2), Griwick Compact (f:3), Sworn Men of Meigate (f:4), Sworn Men of Laehiford (f:5), Hadale Commune (f:6), Vea Lode Covenant (f:7).
 
@@ -470,36 +368,38 @@ Verified by hand across many rounds. Useful for any future test, question suite,
 
 **Benchmark chronicle scopes:** Kebarrow Compact 2–21 and 22–41, Sworn Men of Meigate, the Wurn League, the Heth Fal reign.
 
-**Raid prose shape**, since two extraction bugs lived here: raids name a *place* as target — "the Kebarrow Compact raids Hadale and kills 16, but takes nothing" (`e:278`, Y19) — while the event carries both a target faction and a place. A chronicle sentence naming the raided *power* was told no such raid existed, and the phrase reader once ran four words past the end of a name (`"hadale killed 16 but"`). Both fixed, both pinned in `CheckerCorpusTests.cs`.
-
 ---
 
-## 10. Current status
+## 9. Current status
 
-**v1 is complete and archived.**
+**Ruleset 4.** 584 tests green, 2 skipped. No `SimConfig` threshold has moved since ruleset 3, and the engine now provably reproduces all five sealed ruleset-4 baselines event for event.
 
-- **Chronicle:** fifteen scopes, every power covered, figures verify, bad passages excluded automatically with precise diagnostics.
-- **Query:** 16/16 suite questions correct, zero secret leakage, zero fatal findings, retrieval byte-identical across runs, 330 tests green.
-- **Baseline:** sealed at `baselines/v1/seed-42/`, verified from a fresh clone.
+**Done:** v1 render and query. Stage 3 in reduced form (provenance stamp; versioning deferred). Stage 4 harness, five layers. Stage 6 geography half — board imported, stored, hashed, verified; positions at worldgen; four mechanics consuming distance. Four measurement phases, two aborted deliberately at step 1 when their step-1 findings invalidated the rest.
 
-**Stage 3, Stage 4, the engine dynamics phase and Stage 6's geography half are complete.** Ruleset `4`, engine `1.2.0`, 501 tests green.
+**Baselines:** five ruleset-4 machine baselines cut, all seals verifying, Layer 5 passing 0/0. `BaselineArchive` carries the board and checks it against the genesis fingerprint.
 
-- **Harness:** five layers built. Its first act was to find a live simulation defect that months of hand review had missed, and it has since found two of its own instrumentation's.
-- **Engine:** no mechanic is decorative. Every distribution varies; every distance-consuming mechanic acts both near and far. The tightest is war declaration at 86% one way against a bar of 90, on n=23.
-- **Instrumentation is trustworthy:** every rate reports its `n`, percentages are asserted only where `n` supports them, every absence-asserting metric has a constructed counter-example, every ratio's numerator is asserted reachable.
+**The single blocking gap: no verified reference set at ruleset 4.** Machine baselines exist; hand-verified facts do not. Only Shay can close it. Everything is staged in `out/carry-forward/reference-set/` — candidate facts sheet, 16 candidate questions with supporting records, 5 ranked secret candidates, all marked unverified. This is a rebuild, not a re-verification. **The three machine items upstream of it have all returned and none invalidated a staged row**, so `docs/reference-set-verification.md` can start.
 
-**Regression protection is live at the current ruleset.** Five sealed ruleset-4 baselines at `baselines/ruleset-4/seed-*`, each carrying its board, Layer 5 passing 0/0 on all of them. The ruleset-3 set stands beside them and is superseded by nothing; the v1 baseline is untouched. Every baseline except v1 seed-42 carries `verification: stability-anchor-only` — only v1 seed-42 is hand-verified.
+**Parked failures:** seed 7 `distinct deep-chain shapes` at 45 against 60 (was 42). Seed 99 went 74 → 69, recorded unexplained.
 
-**From ruleset 4, a world is a log and its board.** A cell index means nothing without the board it indexes into, so an archive holding the log alone does not hold the world — incomplete by definition rather than by oversight. `BaselineArchive` requires the board exactly when the log names one, and checks its hash against the fingerprint on the genesis event.
+### Open items, in order
 
-**Hand verification is blocked, and the block is named.** No re-verification of seed 42 at ruleset 4 until the board question is settled: a swapped board makes new worlds rather than changed ones, so the verification would be paid for twice. It is the only non-regenerable cost in the project.
+*Machine work — all three are done. Full report: `docs/phase-preverification-machine-report.md`.*
 
-**Judgement on file, and it has been read down.** Geography made the history read better *structurally* — a war is now declared over somewhere and fought there rather than wandering, and the map ends as a connected block. That reading of one chronicle scope stands. **The quantitative claim does not.** A redraw control with no spatial structure and no stability moved causal variety at least as far as geography did, and at n=5 the two cannot be told apart. Layer 1 did go from three failures to one and `verbatim repeat rate` did clear everywhere; what is no longer supported is the attribution of those to distance rather than to perturbation of a similar size. **Open, not knowledge.**
+1. **Holdout distribution across the five ruleset-4 seeds, grouped by rule.** ✅ measured, **escalates**. 20 holdouts of 60 scopes across the panel, spread over eight rules with the heaviest (`action`) at 35% — nowhere near an over-firing verdict. The pre-committed "checker working" arm fails on its second half only: per-seed rate `range=[15, 46] width=31` against a stated 20 points. **Ruleset 3's own spread was `range=[8, 50] width=42`**, so the criterion was never met there either and failing it is not a regression. Scope *selection* is unchanged — the lists differ because the histories do. **The substantive finding is elsewhere**: eleven of the twenty holdouts were decided by a rule whose extraction counter never moved (see §6). That is what needs a human.
+2. **Vea Lode contested-transfer check.** ✅ **no v1 entry is suspect.** Seven contested transfers in the sealed v1 record; six of them are crossed by a hand-verified ruler fact (five on Kebarrow, one on Hadale) and **all six agree with the record**. Vea Lode's own seat has none, so its §8 list was never at risk — a weaker reason than the derivation handling it, and worth stating as such. The ruleset-4 derivation *was* wrong: it collapsed by adjacency rather than by year, which deletes a genuine second tenure. Fixed in both copies. It had never fired, because every second tenure on every sealed record happens to be non-adjacent, so **no staged reference-set row changed** — asserted by re-deriving both rules and diffing.
+3. **Schema assertion.** ✅ **zero dead reads**, now a standing test in both assemblies rather than a scan. 84 field names across 42 emitted kinds; 98 reads observed by recording at `Event.GetString` while the consumers run. One off-kind read (`ECONOMY.FAMINE.refuge`, a conditional field), reported and correct.
 
-**One metric still fails, and it is the same one.** `distinct deep-chain shapes` sits at 45 on seed 7 against a bar of 60, improved from 42, with seed 2025 now clearing it. Category two, a real loss, recovering; parked, watched, not chased. Seed 99 went the other way this phase, 74 → 69, which is recorded and not diagnosed.
+*Shay's own hands, blocking:*
 
-**Two parked findings** remain, each in `KnownFailing` with category, rationale and owning round: tribute target selection (houses demand of whoever they resent, not whoever is weak, so most demands are between near-equals) and heir selection criteria (loyalty names the candidate, ambition wins the contest). Both look adjacent to distance now and neither was touched.
+4. **The 16-question query suite and the withheld-not-absent case.** Layer 3 needs nothing (pinned to the sealed v1 record); Layers 4 and 5 are machine-checkable. **The gate is open** — `docs/reference-set-verification.md` required this phase to name the invalid staged rows, and there are none. Its pre-committed branch did not trigger, so ruler lists may be verified from the derivation output.
 
-**One new exposure, reported and unbuilt.** Places have terrain and positions and the render pack carries neither, so no prose contains geography — measured at one figurative use of "borders" in 12,180 words. **No checker rule reads a cell or a terrain**, so the moment a pack carries either, the model gains a vocabulary it can be wrong in with nothing watching. A fabricated distance is a new fabrication class with zero coverage.
+### The decision waiting
 
-**Next: Stage 6's economy half**, then Stage 5's workbench. Geography deliberately landed before economy, because distance gates trade the way it gates conflict.
+**Stage 5 (workbench) versus Stage 6's economy half.** The workbench case has strengthened: every decisive moment across four phases was an inspection problem — a metric catching a miscalibration, a probe catching an ordering bug, a guard catching an underpowered comparison, a field-name mismatch findable only from outside the code.
+
+**The counter-argument, which should be heard before deciding.** Since Stage 2, everything shipped has been machinery: harness, determinism, geography plumbing, controls, panel, the checker's own verifier. The world itself has not gained a single new *kind of thing*. Stage 6's economy half has now been deferred behind four consecutive phases, and the harness is more tractable than the world — it gives clean, gradeable answers, which is exactly what makes it comfortable to keep building.
+
+Both choices are defensible. **The thing to avoid is a fifth instrumentation phase arriving without that having been a decision.**
+
+**Sequencing constraint on either choice:** the ruleset-4 reference set closes *before* anything touches mechanics. The economy half is such a change; a workbench, if instrumentation invariance holds, is not. This asymmetry is the only thing that bears on the decision from outside the arguments themselves.

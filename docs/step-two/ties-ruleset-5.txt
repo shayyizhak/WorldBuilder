@@ -1,0 +1,90 @@
+seed 7, years 1–51, 5 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 73 | 0 | 73 | 73 | **yes** |
+| `Marriage` | 12 | 0 | 12 | 12 | **yes** |
+| `Grievance` | 68 | 0 | 68 | 68 | **yes** |
+| `Alliance` | 3 | 2 | 3 | 1 | no |
+| `Trade` | 3 | 0 | 3 | 3 | **yes** |
+| `Fealty` | 67 | 0 | 67 | 67 | **yes** |
+| `AtWar` | 3 | 3 | 1 | 0 | no |
+
+  Trade: DEGENERATE — nothing ever ends; `Trade` is still monotonic  (coarse — reported, not asserted)
+  Trade: mean 129% of available pairs over 27 year(s) with any pair; 6 year(s) held more ties than there were houses to hold them
+  houses standing: peak 3 pair(s), final 0 pair(s)
+  first termination: year 5 at e:83
+
+seed 42, years 1–51, 9 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 191 | 0 | 191 | 191 | **yes** |
+| `Marriage` | 32 | 0 | 32 | 32 | **yes** |
+| `Grievance` | 147 | 0 | 147 | 147 | **yes** |
+| `Alliance` | 8 | 4 | 4 | 4 | no |
+| `Trade` | 5 | 0 | 5 | 5 | **yes** |
+| `Fealty` | 157 | 0 | 157 | 157 | **yes** |
+| `AtWar` | 5 | 5 | 1 | 0 | no |
+
+  Trade: DEGENERATE — nothing ever ends; `Trade` is still monotonic  (coarse — reported, not asserted)
+  Trade: mean 187% of available pairs over 51 year(s) with any pair; 13 year(s) held more ties than there were houses to hold them
+  houses standing: peak 10 pair(s), final 1 pair(s)
+  first termination: year 5 at e:81
+
+seed 99, years 1–51, 9 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 135 | 0 | 135 | 135 | **yes** |
+| `Marriage` | 18 | 0 | 18 | 18 | **yes** |
+| `Grievance` | 84 | 0 | 84 | 84 | **yes** |
+| `Alliance` | 5 | 2 | 3 | 3 | no |
+| `Trade` | 7 | 0 | 7 | 7 | **yes** |
+| `Fealty` | 96 | 0 | 96 | 96 | **yes** |
+| `AtWar` | 7 | 7 | 1 | 0 | no |
+
+  Trade: DEGENERATE — nothing ever ends; `Trade` is still monotonic  (coarse — reported, not asserted)
+  Trade: mean 182% of available pairs over 50 year(s) with any pair; 34 year(s) held more ties than there were houses to hold them
+  houses standing: peak 6 pair(s), final 3 pair(s)
+  first termination: year 7 at e:116
+
+seed 1234, years 1–51, 10 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 218 | 0 | 218 | 218 | **yes** |
+| `Marriage` | 29 | 0 | 29 | 29 | **yes** |
+| `Grievance` | 191 | 0 | 191 | 191 | **yes** |
+| `Alliance` | 7 | 5 | 4 | 2 | no |
+| `Trade` | 5 | 0 | 5 | 5 | **yes** |
+| `Fealty` | 179 | 0 | 179 | 179 | **yes** |
+| `AtWar` | 6 | 5 | 1 | 1 | no |
+
+  Trade: DEGENERATE — nothing ever ends; `Trade` is still monotonic  (coarse — reported, not asserted)
+  Trade: mean 165% of available pairs over 51 year(s) with any pair; 23 year(s) held more ties than there were houses to hold them
+  houses standing: peak 6 pair(s), final 1 pair(s)
+  first termination: year 9 at e:148
+
+seed 2025, years 1–51, 5 termination(s)
+
+| kind | ties made | ended | peak live | final live | monotonic |
+|---|---|---|---|---|---|
+| `Kin` | 127 | 0 | 127 | 127 | **yes** |
+| `Marriage` | 18 | 0 | 18 | 18 | **yes** |
+| `Grievance` | 101 | 0 | 101 | 101 | **yes** |
+| `Alliance` | 6 | 2 | 4 | 4 | no |
+| `Trade` | 6 | 0 | 6 | 6 | **yes** |
+| `Fealty` | 110 | 0 | 110 | 110 | **yes** |
+| `AtWar` | 3 | 3 | 1 | 0 | no |
+
+  Trade: DEGENERATE — nothing ever ends; `Trade` is still monotonic  (coarse — reported, not asserted)
+  Trade: mean 104% of available pairs over 51 year(s) with any pair; 16 year(s) held more ties than there were houses to hold them
+  houses standing: peak 6 pair(s), final 6 pair(s)
+  first termination: year 4 at e:64
+
+panel — Trade: DEGENERATE — nothing ever ends; `Trade` across the panel is still monotonic  (peaks summed 26, finals summed 26, 0 ended)
+
+panel — Trade terminations by cause:
+
+No termination of this kind anywhere on the panel.
