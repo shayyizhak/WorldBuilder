@@ -107,10 +107,11 @@ public class GeographyTests
         // numerator no path can move.
         foreach (ulong seed in new ulong[] { 7, 42, 99, 1234, 2025 })
         {
-            (int pairs, int lowest, int highest) = GeographyAudit.ProximitySpread(World(seed, 20).State);
+            (int pairs, Dispersion range) = GeographyAudit.ProximityRange(World(seed, 20).State);
 
             Assert.True(pairs > 0, $"seed {seed} has no pairs of sited places");
-            Assert.True(highest > lowest, $"seed {seed} gives every pair of places the same proximity");
+            Assert.True(range.Width > 0,
+                $"seed {seed} gives every pair of places the same proximity: {range}");
         }
     }
 

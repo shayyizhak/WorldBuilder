@@ -5,11 +5,16 @@ namespace WorldBuilder.Core.Analysis;
 /// <summary>
 /// How far apart a world's places are: the shape the rules are actually calibrated against.
 /// </summary>
-/// <param name="SpreadPct">
+/// <param name="Range">
+/// Lowest and highest separation, as an interval that states both ends and its width. It was a
+/// width of this kind, written down as "spread" and read as a standard deviation, that carried a
+/// verdict in the controls phase.
+/// </param>
+/// <param name="Cv">
 /// Standard deviation as a percentage of the mean. Dimensionless on purpose, so two boards of
 /// different scales can be compared on how unequal their separations are rather than how large.
 /// </param>
-public sealed record SeparationProfile(int Pairs, int Lowest, int Highest, int Median, int SpreadPct);
+public sealed record SeparationProfile(int Pairs, int Median, Dispersion Range, Dispersion Cv);
 
 /// <summary>How a mechanic's acts fell out across the board: near, far, and how many of each.</summary>
 /// <param name="Near">Acts whose two ends were closer together than the board's median separation.</param>
@@ -18,7 +23,7 @@ public sealed record ReachSplit(string Mechanic, int Near, int Far)
 {
     public int Total => Near + Far;
 
-    /// <summary>The share of the commoner side, in the same units the outcome-spread bar uses.</summary>
+    /// <summary>The share of the commoner side, in the same units the outcome-skew bar uses.</summary>
     public int SkewPct => Total == 0 ? 0 : Math.Max(Near, Far) * 100 / Total;
 }
 
@@ -37,7 +42,7 @@ public sealed record ReachSplit(string Mechanic, int Near, int Far)
 /// four rather than a bespoke figure each: one shape, one bar, and four numbers that can be read
 /// against each other.
 ///
-/// The bar is the established outcome-spread bar — no more than 90% one way — and not a new one.
+/// The bar is the established outcome-skew bar — no more than 90% one way — and not a new one.
 /// A mechanic that only ever acts nearby has had distance turned into a gate, which is as
 /// decorative as no distance at all: the far branch exists and never fires. A mechanic that acts
 /// near and far in the same proportions the map offers has not consumed distance at all. Both
@@ -86,7 +91,7 @@ public static class GeographyAudit
     }
 
     /// <summary>
-    /// The spread of proximities between this world's places: the reachability guard for every
+    /// The range of proximities between this world's places: the reachability guard for every
     /// rule that multiplies by one.
     ///
     /// <b>An invariant that cannot vary is not an invariant.</b> If every pair of places came out
@@ -94,10 +99,14 @@ public static class GeographyAudit
     /// geography was consulted. That is precisely the shape <c>CoupDecidedPct</c> had — a
     /// plausible number a threshold was tuned against, from a numerator no path could move — and
     /// it is why this returns the range rather than an average.
+    ///
+    /// A <see cref="Dispersion"/> rather than two ints, so the invariant that prints it cannot
+    /// print a width where a reader expects a standard deviation. It used to be called
+    /// <c>ProximitySpread</c>, and "spread" is the word that meant three different things.
     /// </summary>
-    public static (int Pairs, int Lowest, int Highest) ProximitySpread(WorldState state)
+    public static (int Pairs, Dispersion Range) ProximityRange(WorldState state)
     {
-        if (state.Geo is not Geography.Geography geo) return (0, 0, 0);
+        if (state.Geo is not Geography.Geography geo) return (0, Dispersion.Range(0, 0));
 
         List<Place> sited = [.. state.Places.Where(static p => p.IsSited)];
 
@@ -114,7 +123,9 @@ public static class GeographyAudit
             }
         }
 
-        return pairs == 0 ? (0, 0, 0) : (pairs, lowest, highest);
+        return pairs == 0
+            ? (0, Dispersion.Range(0, 0))
+            : (pairs, Dispersion.Range(lowest, highest, pairs));
     }
 
     /// <summary>
@@ -124,19 +135,23 @@ public static class GeographyAudit
     /// is shaped like, which is the figure the rules are calibrated against and the one a claim
     /// about "the board is too uniform" is a claim about.
     ///
-    /// <b>Spread is reported as a coefficient of variation</b> — the standard deviation as a
+    /// <b>Dispersion is reported as a coefficient of variation</b> — the standard deviation as a
     /// percentage of the mean — rather than as an interquartile range, and the choice matters
     /// because this figure is compared across boards. An IQR is in cost units, so a board whose
     /// costs are simply larger looks more varied; a coefficient of variation is dimensionless and
     /// says what it is meant to say, which is how *unequal* the separations are rather than how
     /// big.
+    ///
+    /// Both figures are returned, each carrying its kind. Reporting only one of a range and a
+    /// coefficient of variation is how the two came to be confused: they were both called the
+    /// spread, in different documents, and the word is now retired from every emitted figure.
     /// </summary>
     public static SeparationProfile Separations(WorldState state)
     {
         List<Place> sited = [.. state.Places.Where(static p => p.IsSited)];
 
         if (state.Board is not Board board || sited.Count < 2)
-            return new SeparationProfile(0, 0, 0, 0, 0);
+            return new SeparationProfile(0, 0, Dispersion.Range(0, 0), Dispersion.Cv(0));
 
         List<int> costs = [];
         for (int a = 0; a < sited.Count; a++)
@@ -145,11 +160,11 @@ public static class GeographyAudit
 
         costs.Sort();
 
-        double mean = costs.Average();
-        double variance = costs.Sum(c => (c - mean) * (c - mean)) / costs.Count;
-        int cv = mean <= 0 ? 0 : (int)Math.Round(100 * Math.Sqrt(variance) / mean);
-
-        return new SeparationProfile(costs.Count, costs[0], costs[^1], costs[costs.Count / 2], cv);
+        return new SeparationProfile(
+            costs.Count,
+            costs[costs.Count / 2],
+            Dispersion.Range(costs[0], costs[^1], costs.Count),
+            Dispersion.Cv(costs));
     }
 
     /// <summary>

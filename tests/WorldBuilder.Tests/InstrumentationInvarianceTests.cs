@@ -78,6 +78,58 @@ public class InstrumentationInvarianceTests
         Assert.Equal(bare, Run(seed, ledger: true, probe: true));
     }
 
+    /// <summary>
+    /// The engine still produces the worlds the sealed ruleset-4 baselines were cut from, event
+    /// for event.
+    ///
+    /// <b>The strong form of the standing rule.</b> The theory above proves that attaching a
+    /// known sink changes nothing; this proves that nothing at all has changed the worlds since
+    /// they were archived — which is the claim every measurement taken against those baselines
+    /// silently rests on, and which no test made. A phase that adds instruments elsewhere in the
+    /// tree can satisfy the theory above while having moved a draw somewhere it does not reach.
+    ///
+    /// <b>The header is excluded and only the header.</b> A world file opens with a provenance
+    /// line carrying the engine commit and the artefact manifest, and both move for reasons that
+    /// are not the world — a commit is not a ruleset. Every event line after it is compared
+    /// verbatim.
+    ///
+    /// This fails on a genuine ruleset change, and correctly: at that point the worlds are
+    /// different histories and the baselines are recut. It is a detector for a world that moved
+    /// while everyone believed the ruleset had not.
+    ///
+    /// <b>Now pointed at ruleset 5, and failing until that set is cut.</b> Recording
+    /// <c>DIPLO.ALLIANCE_BROKEN</c> renumbers every id after the first insertion and rekeys the
+    /// rest of each affected year, so a verbatim replay of the ruleset-4 files cannot pass and
+    /// should not be made to. The world itself did not move, and that claim is carried by
+    /// <see cref="AdditiveRecordTests"/> against those same ruleset-4 files — which is the
+    /// stronger statement and the one worth keeping. This theory resumes its own job the moment
+    /// <c>baselines/ruleset-5/</c> exists, and until then its failure names the work that is owed
+    /// rather than a defect.
+    /// </summary>
+    [Theory]
+    [InlineData(7UL)]
+    [InlineData(42UL)]
+    [InlineData(99UL)]
+    [InlineData(1234UL)]
+    [InlineData(2025UL)]
+    public void TheEngineStillReproducesTheSealedBaselines(ulong seed)
+    {
+        string path = WorldBuilder.Inference.Corpus.SealedWorld($"ruleset-{Ruleset.Version}", seed,
+                          AppContext.BaseDirectory, Directory.GetCurrentDirectory())
+                      ?? throw new FileNotFoundException(
+                          $"no sealed baselines/ruleset-{Ruleset.Version}/seed-{seed} — the ruleset " +
+                          "bumped and the set it owes has not been cut");
+
+        (EventLog archived, ulong archivedSeed) = JsonlIo.Read(path);
+        Assert.Equal(seed, archivedSeed);
+
+        Simulation sim = new(seed);
+        sim.Run(50);
+
+        Assert.Equal(archived.Count, sim.Log.Count);
+        Assert.Equal(Hash(archived), Hash(sim.Log));
+    }
+
     [Fact]
     public void TheSinksBetweenThemActuallyObserveSomething()
     {

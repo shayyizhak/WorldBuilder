@@ -56,5 +56,33 @@ public sealed record LlmOptions
     /// <summary>Keeps the weights resident between calls; a cold load costs ~45 seconds.</summary>
     public string KeepAlive { get; init; } = "30m";
 
+    /// <summary>
+    /// How many generation calls may be in flight against the endpoint at once.
+    ///
+    /// <b>One, and the bound exists because the local model wedged twice.</b> Both times it was
+    /// under concurrent load while a headless measurement panel was saturating the machine, and
+    /// both times the symptom was a request that never returned rather than one that failed. At a
+    /// 207-seed panel with zero model calls that is an annoyance; at Stage 15 it is not, because
+    /// Stage 15's economics rest entirely on the render cache, Stage 10 scales to 2,000+ actors,
+    /// and at that point rendering is the bottleneck and concurrency is not optional. A generation
+    /// path that wedges under concurrent load is a load-bearing defect arriving years early and
+    /// cheaply.
+    ///
+    /// Nothing in the engine issues concurrent calls today — rendering a book is a loop. This is a
+    /// bound rather than a fix for an existing caller: the first thing that parallelises rendering
+    /// meets a stated limit and a loud failure instead of a hang.
+    /// </summary>
+    public int MaxConcurrentCalls { get; init; } = 1;
+
+    /// <summary>
+    /// How long a call waits for a slot before failing.
+    ///
+    /// Long enough that a genuinely slow render ahead of it in the queue is not mistaken for a
+    /// wedge — a 2,000-token pack costs about 80 seconds in prompt evaluation alone — and short
+    /// enough that a wedge is reported rather than waited out. Failing loudly is the requirement;
+    /// the exact number is not load-bearing.
+    /// </summary>
+    public int ConcurrencyWaitSeconds { get; init; } = 300;
+
     public double Temperature => TemperatureCentis / 100.0;
 }

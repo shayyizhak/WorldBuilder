@@ -90,5 +90,49 @@ public static class Ruleset
     /// board. That is what the bundle is for, and it is why the header carries a hash for the
     /// map: a world read beside the wrong one is internally consistent and about somewhere else.
     /// </summary>
-    public const string Version = "4";
+    /// <summary>
+    /// <b>5</b> — <c>DIPLO.ALLIANCE_BROKEN</c> is recorded. <b>An additive record change with no
+    /// simulation change</b>, and the only bump of this counter so far that is.
+    ///
+    /// The alliance was already being destroyed: a war declaration has carried two
+    /// <c>RelDel</c> keys since alliances existed, so the tie died inside the war's payload and no
+    /// line of the log or the prose said so. Fifteen of the panel's twenty-four declarations sever
+    /// a live pact. The event is emitted beside the declaration and carries no state delta, no
+    /// draw from the stream and no arc.
+    ///
+    /// So the counter answers its usual question — would this build, given the same seed, produce
+    /// the same world — with a "yes" it has never been able to give before, and moves anyway,
+    /// because the *file* is different and a reader must be able to tell. What makes the claim
+    /// more than an assertion is <c>AdditiveRecordTests</c>: every event of every sealed ruleset-4
+    /// baseline still appears, in order, with its payload and its causal edges intact, and every
+    /// insertion is this one kind. Ids and keys renumber, because both are derived from position
+    /// in the log; nothing else moves.
+    ///
+    /// Worth being able to point at later. A ruleset bump normally means the histories are now
+    /// different histories and every measurement against the old ones is void. This one does not,
+    /// and the distinction is only durable if it is written down where the counter is.
+    /// </summary>
+    /// <summary>
+    /// <b>6</b> — relations become terminable. Mechanics change, worlds change, and this is the
+    /// ordinary kind of bump that ruleset 5 deliberately was not.
+    ///
+    /// Three rules end a tie where none did before. A declaration of war closes the border the
+    /// two houses were moving goods across, definitionally and without a constant. A trade tie
+    /// nothing has moved for twenty years is abandoned. A house that collapses takes its
+    /// obligations with it — alliance, trade, vassalage, war — inside its own collapse event,
+    /// which now carries the count and the kinds rather than dropping a dozen edges in silence.
+    /// Memory is left alone: a grudge against a house that no longer exists is exactly what a
+    /// world with a memory is supposed to keep.
+    ///
+    /// All three go through <c>RelationEnds</c>, which is the point rather than tidiness. Whatever
+    /// ends a trade tie is the mechanism that ends any tie, and a per-kind mechanism means writing
+    /// this again under a different name for every kind the monotonic sweep turns up.
+    ///
+    /// <b>The one constant is twenty years, and its argument predates every run that read it</b> —
+    /// `docs/brief-step-two-design.md`, committed before the first ruleset-6 world existed. It is
+    /// a timeout rather than a decay, and that is not a detail: decaying the edge value would have
+    /// moved what `ProposeAlliance` scores against in every year of every world, which is a diffuse
+    /// behavioural change riding inside a step whose subject is whether a tie exists at all.
+    /// </summary>
+    public const string Version = "6";
 }

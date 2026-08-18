@@ -93,7 +93,7 @@ public sealed record Audit
     /// <summary>
     /// Raids that were not beaten off, whatever they carried away.
     ///
-    /// The numerator behind the raid-spread invariant, named so the reachability guard can assert
+    /// The numerator behind the raid-skew invariant, named so the reachability guard can assert
     /// that a raid getting through is a thing this engine can do at all.
     /// </summary>
     public required int RaidsThatGotThrough { get; init; }

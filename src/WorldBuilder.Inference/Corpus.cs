@@ -160,13 +160,28 @@ public static class Corpus
     ///
     /// Living here rather than in either caller so there is no second copy to forget again.
     /// </summary>
-    public static string? SealedSeed42(params string[] searchFrom)
+    public static string? SealedSeed42(params string[] searchFrom) =>
+        SealedWorld("v1", 42, searchFrom);
+
+    /// <summary>
+    /// Any sealed baseline's world file, by baseline set and seed.
+    ///
+    /// The general form of <see cref="SealedSeed42"/>, added so that a second baseline set can be
+    /// read without a second copy of the walk. <c>baselines/ruleset-4/seed-42</c> is the machine
+    /// baseline the carry-forward phase runs Layer 3 against to establish which rows depend on
+    /// world state and which do not.
+    /// </summary>
+    public static string? SealedWorld(string set, ulong seed, params string[] searchFrom)
     {
+        string file = $"world-{seed.ToString(System.Globalization.CultureInfo.InvariantCulture)}.jsonl";
+
         foreach (string from in searchFrom)
         {
             for (DirectoryInfo? at = new(from); at is not null; at = at.Parent)
             {
-                string candidate = Path.Combine(at.FullName, "baselines", "v1", "seed-42", "world-42.jsonl");
+                string candidate = Path.Combine(at.FullName, "baselines", set,
+                    $"seed-{seed.ToString(System.Globalization.CultureInfo.InvariantCulture)}", file);
+
                 if (File.Exists(candidate)) return candidate;
             }
         }

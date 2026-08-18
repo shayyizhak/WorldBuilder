@@ -171,7 +171,7 @@ public static class LifePhase
         {
             int flat = Rng.WouldPick(
                 System.Runtime.InteropServices.CollectionsMarshal.AsSpan(flatWeights), roll, total);
-            tick.Probe.Ranked("marriage", candidates.Count, furthest - nearest, flat != index);
+            tick.Probe.Ranked("marriage", candidates.Count, nearest, furthest, flat != index);
         }
 
         return index < 0 ? null : candidates[index];

@@ -74,10 +74,10 @@ public class GeographyProbeTests
         // of how many foregone conclusions a world contained.
         GeographyProbe probe = new();
 
-        probe.Ranked("raid targeting", candidates: 1, spread: 0, discriminated: false);
-        probe.Ranked("raid targeting", candidates: 3, spread: 0, discriminated: false);
-        probe.Ranked("raid targeting", candidates: 3, spread: 40, discriminated: true);
-        probe.Ranked("raid targeting", candidates: 3, spread: 40, discriminated: false);
+        probe.Ranked("raid targeting", candidates: 1, nearest: 100, furthest: 100, discriminated: false);
+        probe.Ranked("raid targeting", candidates: 3, nearest: 100, furthest: 100, discriminated: false);
+        probe.Ranked("raid targeting", candidates: 3, nearest: 80, furthest: 120, discriminated: true);
+        probe.Ranked("raid targeting", candidates: 3, nearest: 80, furthest: 120, discriminated: false);
 
         DiscriminationSummary summary = Assert.Single(probe.Summarise());
 
@@ -91,7 +91,7 @@ public class GeographyProbeTests
     public void AShareOfZeroIsReportedWhereNothingWasOpenRatherThanDividedBy()
     {
         GeographyProbe probe = new();
-        probe.Ranked("raid targeting", candidates: 1, spread: 0, discriminated: false);
+        probe.Ranked("raid targeting", candidates: 1, nearest: 100, furthest: 100, discriminated: false);
 
         Assert.Equal(0, Assert.Single(probe.Summarise()).SharePct);
     }

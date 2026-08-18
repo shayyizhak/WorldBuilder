@@ -71,16 +71,86 @@ public interface ILlmClient
 /// <summary>
 /// Talks to Ollama's native endpoint, which is where structured output lives. Nothing in here
 /// knows which model it is speaking to.
+///
+/// <b>Concurrency is bounded and the deadline is this class's own.</b> Both are the cheap
+/// mitigation for a Stage 15 finding that arrived early: the local model wedged twice under
+/// concurrent load, and the symptom each time was a request that never came back rather than one
+/// that failed. A hang has no diagnosis; a refusal names its cause. See
+/// <see cref="LlmOptions.MaxConcurrentCalls"/> for why that matters years before Stage 15.
 /// </summary>
-public sealed class OllamaClient(LlmOptions options, HttpClient? http = null) : ILlmClient, IDisposable
+public sealed class OllamaClient : ILlmClient, IDisposable
 {
-    private readonly LlmOptions _options = options;
-    private readonly HttpClient _http = http ?? new HttpClient();
-    private readonly bool _ownsHttp = http is null;
+    private readonly LlmOptions _options;
+    private readonly HttpClient _http;
+    private readonly bool _ownsHttp;
+
+    /// <summary>
+    /// The bound. Per client, which is per command: one <c>wb book</c> run holds one of these and
+    /// every call it makes goes through here, so the limit is on the endpoint rather than on a
+    /// particular call site remembering to serialise.
+    /// </summary>
+    private readonly SemaphoreSlim _slots;
+
+    public OllamaClient(LlmOptions options, HttpClient? http = null)
+    {
+        _options = options;
+
+        if (options.MaxConcurrentCalls < 1)
+            throw new ArgumentOutOfRangeException(nameof(options),
+                $"MaxConcurrentCalls is {options.MaxConcurrentCalls}; a bound of zero cannot make a call at all.");
+
+        _slots = new SemaphoreSlim(options.MaxConcurrentCalls, options.MaxConcurrentCalls);
+        _ownsHttp = http is null;
+        _http = http ?? new HttpClient();
+
+        // The deadline belongs to the CancellationTokenSource below, not to HttpClient.
+        //
+        // A live defect rather than tidying: HttpClient's own default is 100 seconds, so a call
+        // configured to wait 900 was cancelled at 100 and then reported as "did not answer within
+        // 900s" — a wrong figure in an error message, which is the same family as an unlabelled
+        // one. A pack of 2,000 tokens costs about 80 seconds in prompt evaluation before a word is
+        // generated, so under concurrent load this fires routinely and misdescribes itself every
+        // time. One deadline, and it is the configured one.
+        if (_ownsHttp) _http.Timeout = Timeout.InfiniteTimeSpan;
+    }
 
     public string ModelTag => _options.Model;
 
     public async Task<LlmResult> CompleteAsync(LlmRequest request, CancellationToken ct = default)
+    {
+        await AcquireAsync(ct);
+
+        try
+        {
+            return await SendAsync(request, ct);
+        }
+        finally
+        {
+            _slots.Release();
+        }
+    }
+
+    /// <summary>
+    /// Takes a slot, or fails saying so.
+    ///
+    /// <b>Loud rather than patient.</b> Waiting forever is what wedging looks like from the
+    /// outside, and a bound whose failure mode is the thing it exists to prevent is not a bound.
+    /// The message names the limit, the wait and the endpoint, because the diagnosis both times was
+    /// "something else was hammering this machine" and nothing in the output said so.
+    /// </summary>
+    private async Task AcquireAsync(CancellationToken ct)
+    {
+        if (await _slots.WaitAsync(TimeSpan.FromSeconds(_options.ConcurrencyWaitSeconds), ct)) return;
+
+        throw new LlmUnavailableException(
+            $"{_options.MaxConcurrentCalls} generation call(s) are already in flight against " +
+            $"{_options.Endpoint} and none finished within {_options.ConcurrencyWaitSeconds}s. " +
+            "Generation is bounded on purpose: the local model has wedged under concurrent load, " +
+            "and a call that waits forever is indistinguishable from the wedge. Let the run in " +
+            "flight finish, or raise LlmOptions.MaxConcurrentCalls deliberately.");
+    }
+
+    private async Task<LlmResult> SendAsync(LlmRequest request, CancellationToken ct)
     {
         string body = BuildBody(request);
         using StringContent content = new(body, Encoding.UTF8, "application/json");
@@ -103,12 +173,17 @@ public sealed class OllamaClient(LlmOptions options, HttpClient? http = null) : 
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)
         {
             throw new LlmUnavailableException(
-                $"model '{_options.Model}' did not answer within {_options.TimeoutSeconds}s.");
+                $"model '{_options.Model}' did not answer within {_options.TimeoutSeconds}s. " +
+                "A generation that hangs rather than failing is how this looked both times the " +
+                "local model wedged under concurrent load; check what else is running.");
         }
 
         using (response)
         {
-            string payload = await response.Content.ReadAsStringAsync(ct);
+            // The body's read shares the call's deadline. On ct alone a response whose headers
+            // arrived and whose body stalled would wait without limit, which is the wedge wearing
+            // a 200.
+            string payload = await response.Content.ReadAsStringAsync(timeout.Token);
             if (!response.IsSuccessStatusCode)
                 throw new LlmUnavailableException($"Ollama returned {(int)response.StatusCode}: {Trim(payload)}");
 
@@ -169,6 +244,7 @@ public sealed class OllamaClient(LlmOptions options, HttpClient? http = null) : 
 
     public void Dispose()
     {
+        _slots.Dispose();
         if (_ownsHttp) _http.Dispose();
     }
 }

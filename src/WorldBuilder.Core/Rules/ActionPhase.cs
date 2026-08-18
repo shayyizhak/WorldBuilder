@@ -460,7 +460,7 @@ public static class ActionPhase
             if (stock > bestStock) { bestStock = stock; flatPick = candidate; }
         }
 
-        tick.Probe?.Ranked("raid targeting", fresh.Count, furthest - nearest, flatPick.Id != place.Id);
+        tick.Probe?.Ranked("raid targeting", fresh.Count, nearest, furthest, flatPick.Id != place.Id);
 
         Rng rng = tick.Rng(raider.Id, RngPurpose.Raid);
 
@@ -574,7 +574,13 @@ public static class ActionPhase
         if (tick.Probe is not null)
         {
             Span<int> flat = [couldFight ? 45 : 0, weights[1], weights[2]];
-            tick.Probe.Ranked("war declaration", 3, Math.Abs(holderReach - Geography.Geography.Neutral),
+            // The one end is the neutral line rather than a second candidate: this ranking weighs
+            // one reach against a fixed alternative, so the width distance had to work with is
+            // how far that reach sits from neutral. Stated as the two ends it is taken between,
+            // so the width is never the only figure recorded.
+            tick.Probe.Ranked("war declaration", 3,
+                Math.Min(holderReach, Geography.Geography.Neutral),
+                Math.Max(holderReach, Geography.Geography.Neutral),
                 chosen != Rng.WouldPick(flat, roll, total));
         }
 
@@ -629,9 +635,69 @@ public static class ActionPhase
         Relation? grudge = state.Relations.Find(aggressor.Id, defender.Id, RelationKind.Grievance);
         if (grudge is not null) draft.Because(grudge.LastCause);
 
-        tick.Emit(draft);
+        // Read before the declaration is folded in, because the declaration is what deletes it.
+        Relation? pact = state.Relations.Find(aggressor.Id, defender.Id, RelationKind.Alliance);
+
+        Event war = tick.Emit(draft);
+        RecordBrokenAlliance(tick, aggressor, defender, pact, war.Id);
+
+        // A declaration of war closes the border these two were moving goods across.
+        //
+        // Definitional rather than probabilistic, and therefore without a constant: "at war" and
+        // "trading" are not two states available at once, and a world that renders both is
+        // describing something that is not happening. It is also the sharpest edge in this step —
+        // twenty-one of the panel's twenty-four declarations are between houses with a live tie,
+        // so this cause alone ends most of the ties standing when a war opens.
+        RelationEnds.OnItsOwnEvent(tick, aggressor.Id, defender.Id, RelationKind.Trade,
+            RelationEnds.War, war.Id);
+
         goal.Arc = arc;
         goal.Progress += 25;
+    }
+
+    /// <summary>
+    /// Names the alliance a declaration of war has just destroyed.
+    ///
+    /// The break already happened — <c>DeclareWar</c> has carried two <c>RelDel</c> keys since the
+    /// alliance existed, so the tie died inside the war's payload and nothing in the log or the
+    /// prose ever said an alliance had ended. Fifteen of the panel's twenty-four declarations sever
+    /// a live pact. This adds the sentence and nothing else.
+    ///
+    /// <b>Record-only, and that is a constraint rather than a description.</b> No state delta, no
+    /// draw from the stream, no arc. The deletion stays where it is, on the war, so every event the
+    /// sealed baselines hold is still emitted with the payload it always had — the log gains a line
+    /// and the world does not move. Attaching this to the war's arc would put it in
+    /// <c>CloseFinishedArcs</c>' touched-this-year set, which is a state change wearing a record
+    /// change's clothes.
+    /// </summary>
+    private static void RecordBrokenAlliance(
+        Tick tick, Faction aggressor, Faction defender, Relation? pact, EventId war)
+    {
+        if (pact is null) return;
+
+        EventDraft draft = new EventDraft(EventKind.DiploAllianceBroken)
+            .By(aggressor.Id)
+            .Object(defender.Id)
+            .At(defender.Seat)
+            .Because(war)
+            .Weight(Significance.Major);
+
+        // What made the tie, not what last touched it. Forty-two of this world's forty-seven
+        // alliances are dynastic — a cross-faction marriage writes the edge — and only five come
+        // from a negotiated pact, so citing DIPLO.ALLIANCE_FORMED would leave most breaks pointing
+        // at nothing. Relation.Cause is set once, at creation, which is exactly the event wanted:
+        // the wedding for a dynastic tie, the accepted proposal for a diplomatic one.
+        //
+        // An origin that does not resolve in the log is left off entirely. A break with no stated
+        // cause renders as a break with no stated cause; a plausible one would render as fact.
+        if (tick.Log.TryGet(pact.Cause, out Event origin))
+        {
+            draft.Because(origin.Id)
+                 .Set("tie", origin.Kind == EventKind.LifeMarriage ? "dynastic" : "negotiated")
+                 .Set("sworn", origin.Year);
+        }
+
+        tick.Emit(draft);
     }
 
     private static void ProposeAlliance(Tick tick, Goal goal, Faction faction, Actor leader)

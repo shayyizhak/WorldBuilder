@@ -139,7 +139,7 @@ public class DynamicsTests
                      "covert coup path",
                      "economy-driven edges",
                      "cross-domain edges",
-                     "raid outcome spread",
+                     "raid outcome skew",
                  })
         {
             Assert.Contains(metric, names);

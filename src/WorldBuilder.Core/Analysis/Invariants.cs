@@ -142,12 +142,12 @@ public static class Invariants
         int raids = beatenOff + tookAHaul + tookNothing;
         int raidSkew = raids == 0 ? 100 : Math.Max(beatenOff, tookAHaul + tookNothing) * 100 / raids;
 
-        Add("raid outcome spread", $"{raidSkew}% one way ({beatenOff} beaten, {tookAHaul} haul, " +
+        Add("raid outcome skew", $"{raidSkew}% one way ({beatenOff} beaten, {tookAHaul} haul, " +
             $"{tookNothing} empty)", raids > 0 && raidSkew <= 90, "<= 90% one way", raids);
 
         // The two mechanics this phase changed after raids, on the same bar rather than a new
         // one. §6 requires a metric for any mechanic whose distribution moved; the bar is the
-        // established outcome-spread bar, not a value invented for these.
+        // established outcome-skew bar, not a value invented for these.
         //
         // Both currently sit near 80%, which passes. That is deliberate: they are watched rather
         // than asserted into compliance, and the residual skew on each is a recorded finding with
@@ -164,11 +164,11 @@ public static class Invariants
         // separately, which is the right home for "does this ever happen at all".
         foreach ((string name, string decision) in new[]
                  {
-                     ("tribute outcome spread", "DIPLO.TRIBUTE_DEMANDED"),
-                     ("heir claim outcome spread", "POLITY.SUCCESSION (claim)"),
+                     ("tribute outcome skew", "DIPLO.TRIBUTE_DEMANDED"),
+                     ("heir claim outcome skew", "POLITY.SUCCESSION (claim)"),
                  })
         {
-            (int n, int skew) = OutcomeAudit.SpreadOf(view.Log, decision);
+            (int n, int skew) = OutcomeAudit.SkewOf(view.Log, decision);
             Add(name, $"{skew}% one way", true, "reported here; asserted pooled", n);
         }
 
@@ -192,15 +192,17 @@ public static class Invariants
         // defect class as a ratio whose numerator no path can reach, arriving through a different
         // door. Asserted on the range, so it fails at definition time rather than after a phase
         // of tuning against it.
-        (int pairs, int lowest, int highest) = GeographyAudit.ProximitySpread(view.State);
+        // Emitted as a labelled range rather than as "38–76", which is the form that was read as a
+        // spread once already. The figure says what kind it is at the point it is made.
+        (int pairs, Dispersion proximity) = GeographyAudit.ProximityRange(view.State);
 
         if (view.State.HasBoard)
         {
-            Add("distance can vary", $"{lowest}–{highest} across {pairs} pairs of places",
-                pairs > 0 && highest > lowest, "a range, not a single value", pairs);
+            Add("distance can vary", $"{proximity} across {pairs} pairs of places",
+                pairs > 0 && proximity.Width > 0, "a range, not a single value", pairs);
         }
 
-        // Each distance-consuming mechanic's near/far split, on the established outcome-spread
+        // Each distance-consuming mechanic's near/far split, on the established outcome-skew
         // bar rather than a new one. A mechanic that only ever acts nearby has had distance
         // turned into a gate, and a gate is as decorative as no distance at all.
         //
@@ -264,8 +266,8 @@ public static class Invariants
 
         foreach ((string name, string decision) in new[]
                  {
-                     ("tribute outcome spread, pooled", "DIPLO.TRIBUTE_DEMANDED"),
-                     ("heir claim outcome spread, pooled", "POLITY.SUCCESSION (claim)"),
+                     ("tribute outcome skew, pooled", "DIPLO.TRIBUTE_DEMANDED"),
+                     ("heir claim outcome skew, pooled", "POLITY.SUCCESSION (claim)"),
                  })
         {
             Dictionary<string, int> pooled = new(StringComparer.Ordinal);
@@ -277,13 +279,13 @@ public static class Invariants
 
             if (pooled.Count == 0) continue;
 
-            OutcomeSpread spread = new(decision, pooled);
-            results.Add(new Invariant(name, $"{spread.SkewPct}% one way",
-                spread.SkewPct <= 90, "<= 90% one way, across the panel", spread.Total));
+            OutcomeSkew skew = new(decision, pooled);
+            results.Add(new Invariant(name, $"{skew.SkewPct}% one way",
+                skew.SkewPct <= 90, "<= 90% one way, across the panel", skew.Total));
         }
 
         // Geography, pooled. Each distance-consuming mechanic must act both near and far across
-        // the panel, on the established outcome-spread bar.
+        // the panel, on the established outcome-skew bar.
         //
         // Both branches being observed somewhere is the reachability half of this, and it is
         // asserted by the bar itself: a mechanic that only ever acted nearby reads 100% one way
@@ -344,6 +346,6 @@ public static class Invariants
         ("economy-driven edges", "an ECONOMY edge into another domain", a => a.EconomyDrivenEdges),
         ("cross-domain edges", "a cross-domain edge", a => a.CrossDomainEdges),
         ("plots terminated", "a terminated plot", a => a.PlotsTerminated),
-        ("raid outcome spread", "a raid that got through", a => a.RaidsThatGotThrough),
+        ("raid outcome skew", "a raid that got through", a => a.RaidsThatGotThrough),
     ];
 }

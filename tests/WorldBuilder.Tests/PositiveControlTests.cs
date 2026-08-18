@@ -191,7 +191,7 @@ public class PositiveControlTests
         Assert.False(collapses.Held);
     }
 
-    // ---- raid outcome spread <= 90% one way -------------------------------
+    // ---- raid outcome skew <= 90% one way -------------------------------
 
     /// <summary>
     /// The detector catches a raid mechanic that only ever goes one way.
@@ -206,8 +206,8 @@ public class PositiveControlTests
         (EventLog log, WorldState state) = Simulated();
 
         Invariant before = Invariants.Check(WorldView.Build(log, 42))
-            .Single(r => r.Name == "raid outcome spread");
-        Assert.True(before.Held, "the panel world already breaches the spread bar");
+            .Single(r => r.Name == "raid outcome skew");
+        Assert.True(before.Held, "the panel world already breaches the skew bar");
 
         // Enough beaten-off raids to drown the real distribution.
         EntityId faction = state.Factions[0].Id;
@@ -229,7 +229,7 @@ public class PositiveControlTests
         }
 
         Invariant after = Invariants.Check(WorldView.Build(log, 42))
-            .Single(r => r.Name == "raid outcome spread");
+            .Single(r => r.Name == "raid outcome skew");
 
         Assert.False(after.Held, $"a world of nothing but repelled raids passed: {after.Measured}");
     }
@@ -251,7 +251,7 @@ public class PositiveControlTests
             "single-actor causal chains",
             "dangling causal references",
             "collapses per faction",
-            "raid outcome spread",
+            "raid outcome skew",
         ];
 
         List<Invariant> results = Invariants.Check(BaselineWorld.Seed42());

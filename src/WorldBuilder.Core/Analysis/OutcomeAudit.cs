@@ -3,7 +3,7 @@ using System.Globalization;
 namespace WorldBuilder.Core.Analysis;
 
 /// <summary>How one decision resolved, across a run or a panel.</summary>
-public sealed record OutcomeSpread(string Decision, IReadOnlyDictionary<string, int> Branches)
+public sealed record OutcomeSkew(string Decision, IReadOnlyDictionary<string, int> Branches)
 {
     public int Total => Branches.Values.Sum();
 
@@ -100,7 +100,7 @@ public static class OutcomeAudit
     }
 
     /// <summary>The panel's decisions pooled, most skewed first.</summary>
-    public static List<OutcomeSpread> Pool(IEnumerable<EventLog> logs)
+    public static List<OutcomeSkew> Pool(IEnumerable<EventLog> logs)
     {
         Dictionary<string, Dictionary<string, int>> pooled = new(StringComparer.Ordinal);
 
@@ -114,17 +114,17 @@ public static class OutcomeAudit
                     into[branch] = into.GetValueOrDefault(branch) + n;
             }
 
-        List<OutcomeSpread> spreads = [];
+        List<OutcomeSkew> skews = [];
         foreach ((string decision, Dictionary<string, int> counts) in pooled)
-            spreads.Add(new OutcomeSpread(decision, counts));
+            skews.Add(new OutcomeSkew(decision, counts));
 
         // Most skewed first; a single-branch decision sorts to the top because it is the extreme
         // case of the thing being ranked, not a separate category.
-        spreads.Sort(static (a, b) => a.SkewPct != b.SkewPct
+        skews.Sort(static (a, b) => a.SkewPct != b.SkewPct
             ? b.SkewPct.CompareTo(a.SkewPct)
             : string.CompareOrdinal(a.Decision, b.Decision));
 
-        return spreads;
+        return skews;
     }
 
     /// <summary>
@@ -205,19 +205,19 @@ public static class OutcomeAudit
     /// reach the mechanic is not reported as perfectly skewed — absence and lopsidedness are
     /// different things and this project has conflated them enough times.
     /// </summary>
-    public static (int Sample, int SkewPct) SpreadOf(EventLog log, string decision)
+    public static (int Sample, int SkewPct) SkewOf(EventLog log, string decision)
     {
         if (!Distributions(log).TryGetValue(decision, out Dictionary<string, int>? counts)) return (0, 0);
 
-        OutcomeSpread spread = new(decision, counts);
-        return (spread.Total, spread.SkewPct);
+        OutcomeSkew skew = new(decision, counts);
+        return (skew.Total, skew.SkewPct);
     }
 
-    public static IReadOnlyList<string> Report(IReadOnlyList<OutcomeSpread> spreads)
+    public static IReadOnlyList<string> Report(IReadOnlyList<OutcomeSkew> skews)
     {
         List<string> lines = [];
 
-        foreach (OutcomeSpread s in spreads)
+        foreach (OutcomeSkew s in skews)
         {
             lines.Add($"  {s.Decision,-38} n={s.Total,-5} skew {s.SkewPct,3}%" +
                       (s.SingleBranch ? "   ONE BRANCH ONLY" : ""));

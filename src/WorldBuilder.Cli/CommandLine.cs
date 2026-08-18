@@ -55,6 +55,15 @@ public static class CommandLine
                 "baseline" => CmdBaseline(parsed),
                 "geometry" => CmdGeometry(parsed),
                 "panel" => CmdPanel(parsed),
+                "reference" => CmdReference(parsed),
+                "seats" => CmdSeats(parsed),
+                "schema" => CmdSchema(parsed),
+                "holdouts" => CmdHoldouts(parsed),
+                "floors" => CmdFloors(parsed),
+                "ties" => CmdTies(parsed),
+                "standing" => CmdStanding(parsed),
+                "divergence" => CmdDivergence(parsed),
+                "keyshift" => CmdKeyShift(parsed),
                 _ => Fail($"unknown command '{args[0]}'"),
             };
         }
@@ -323,9 +332,13 @@ public static class CommandLine
             : $"{boardPath} — {board.Count} cells, median land separation {board.ReferenceCost}");
         Console.WriteLine();
 
+        // Every dispersion figure below carries its kind, and the header no longer has to explain
+        // which one "spread" meant. Two figures written as a spread, meaning max − min, were
+        // carried into a decision rule that read them as standard deviations; both readings of the
+        // verdict aborted, so the conclusion survived, but it survived by luck.
         Console.WriteLine("  how far apart the places are, in the board's own cost units");
-        Console.WriteLine($"    {"seed",-6} {"pairs",5} {"min",5} {"median",7} {"max",5} {"spread",7}   " +
-                          "(spread = sd as % of mean)");
+        Console.WriteLine($"    {"seed",-6} {"pairs",5} {"median",7}   " +
+                          "separation range, and the coefficient of variation");
 
         List<(ulong Seed, GeographyProbe Probe, SeparationProfile Sep, List<int> Proximities)> panel = [];
 
@@ -350,18 +363,18 @@ public static class CommandLine
 
             panel.Add((seed, probe, sep, proximities));
 
-            Console.WriteLine($"    {seed,-6} {sep.Pairs,5} {sep.Lowest,5} {sep.Median,7} {sep.Highest,5} {sep.SpreadPct,6}%");
+            Console.WriteLine($"    {seed,-6} {sep.Pairs,5} {sep.Median,7}   {sep.Range.Padded(30)} {sep.Cv}");
         }
 
         Console.WriteLine();
         Console.WriteLine("  the proximities those places actually presented");
-        Console.WriteLine($"    {"seed",-6} {"lowest",7} {"median",7} {"highest",8}");
+        Console.WriteLine($"    {"seed",-6} {"median",7}   range");
 
         foreach ((ulong seed, _, _, List<int> proximities) in panel)
         {
             if (proximities.Count == 0) continue;
-            Console.WriteLine($"    {seed,-6} {proximities[0],7} {proximities[proximities.Count / 2],7} " +
-                              $"{proximities[^1],8}");
+            Console.WriteLine($"    {seed,-6} {proximities[proximities.Count / 2],7}   " +
+                              $"{Dispersion.Range(proximities)}");
         }
 
         Console.WriteLine();
@@ -417,11 +430,11 @@ public static class CommandLine
                               $"(half of it is {shares[shares.Count / 2] / 2}%)");
         }
 
-        List<(ulong Seed, int Spread, int Share)> ranked =
-            [.. panel.Select(p => (p.Seed, p.Sep.SpreadPct, p.Probe.Overall().SharePct))];
+        List<(ulong Seed, Dispersion Cv, int Share)> ranked =
+            [.. panel.Select(p => (p.Seed, p.Sep.Cv, p.Probe.Overall().SharePct))];
 
-        Console.WriteLine("  rank on separation spread, lowest first: " +
-            string.Join(" < ", ranked.OrderBy(static r => r.Spread).Select(static r => $"{r.Seed}({r.Spread}%)")));
+        Console.WriteLine("  rank on separation cv, lowest first: " +
+            string.Join(" < ", ranked.OrderBy(static r => r.Cv.Figure).Select(static r => $"{r.Seed}({r.Cv})")));
         Console.WriteLine("  rank on discriminating share, lowest first: " +
             string.Join(" < ", ranked.OrderBy(static r => r.Share).Select(static r => $"{r.Seed}({r.Share}%)")));
 
@@ -528,12 +541,13 @@ public static class CommandLine
         foreach ((string name, _) in arms)
         {
             List<int> values = variety[name];
-            Console.WriteLine($"    {name,-12} mean {values.Average(),7:0.00}   sd {Sd(values),6:0.00}   " +
-                              $"min {values.Min(),4}   max {values.Max(),4}");
+            Console.WriteLine($"    {name,-12} mean={values.Average(),7:0.00}   " +
+                              $"{Dispersion.Sd(values).Padded(11)}   {Dispersion.Range(values)}");
         }
 
         Console.WriteLine();
         Console.WriteLine("  three pre-registered contrasts, Holm-corrected across the family");
+        Console.WriteLine("  (docs/panel-prereg.md §6 — this family is fixed at three and is not extended)");
 
         List<Contrast> contrasts =
         [
@@ -552,30 +566,53 @@ public static class CommandLine
 
         Contrast headline = contrasts[^1];
         Console.WriteLine();
+        Console.WriteLine($"  realised paired dispersion on the headline contrast: {headline.Sd}  " +
+                          "(estimated sd=16.48 from the reference panel)");
+
+        // ---- flat − geography, registered separately ------------------------
+        //
+        // Registered in docs/panel-prereg.md §7 after the controls phase, where the arm means came
+        // out flat 64.4 against geography 63.1 — geography below the no-distance arm. That contrast
+        // was not pre-registered and was correctly reported as description only. It is registered
+        // now, before the next run, so the next run tests it rather than mines it.
+        //
+        // <b>Its own family, not a fourth member of the original three.</b> Adding it to that Holm
+        // family would raise every threshold in it and change the verdicts on three contrasts that
+        // have already been reported — re-analysing a settled result by enlarging its family after
+        // the fact, which is the same move as re-analysing seen data with a newly chosen variance.
+        // One contrast, α = 0.05, no correction to apply.
+        Contrast flatMinusGeography =
+            PairedStats.Compare("flat - geography", variety["flat"], variety["geography"]);
+
+        Console.WriteLine();
+        Console.WriteLine("  flat - geography — registered separately, its own family of one (α = 0.05)");
+        Console.WriteLine($"    {flatMinusGeography.Line()}");
         Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
-            $"  realised paired sd on the headline contrast: {headline.Sd:0.00}  " +
-            $"(estimated 16.48 from the reference panel)"));
+            $"      α 0.05, no Holm correction — {(flatMinusGeography.P <= 0.05 ? "significant" : "not significant")}; " +
+            $"clears the {mde:0} point MDE: {(flatMinusGeography.ClearsMde(mde) ? "yes" : "no")}"));
+        Console.WriteLine("      not in the three-contrast family above: enlarging that family after its");
+        Console.WriteLine("      results were reported would move thresholds under a settled verdict.");
 
         // The repeat rate, on the same arms. Reported rather than tested: the MDE was set for
         // causal variety and inventing a second one here after the fact would be fitting.
         Console.WriteLine();
         Console.WriteLine("  verbatim repeat rate, per arm (reported, not tested — no MDE was set for it)");
         foreach ((string name, _) in arms)
-            Console.WriteLine($"    {name,-12} mean {repeats[name].Average(),6:0.00}%   sd {Sd(repeats[name]),5:0.00}");
+            Console.WriteLine($"    {name,-12} mean={repeats[name].Average(),6:0.00}%   {Dispersion.Sd(repeats[name])}");
 
         // Board geometry, as a by-product of the panel rather than as a phase of its own.
         Console.WriteLine();
         Console.WriteLine("  board geometry — discriminating share, own board against shared board");
-        Console.WriteLine($"    own board    mean {ownBoardShare.Average(),6:0.00}%   sd {Sd(ownBoardShare),5:0.00}");
-        Console.WriteLine($"    shared board mean {sharedBoardShare.Average(),6:0.00}%   sd {Sd(sharedBoardShare),5:0.00}");
+        Console.WriteLine($"    own board    mean={ownBoardShare.Average(),6:0.00}%   {Dispersion.Sd(ownBoardShare)}");
+        Console.WriteLine($"    shared board mean={sharedBoardShare.Average(),6:0.00}%   {Dispersion.Sd(sharedBoardShare)}");
 
-        double ownVar = Sd(ownBoardShare) * Sd(ownBoardShare);
-        double seedVar = Sd(sharedBoardShare) * Sd(sharedBoardShare);
-        double boardVar = ownVar - seedVar;
+        Dispersion ownVar = Dispersion.Variance(ownBoardShare);
+        Dispersion seedVar = Dispersion.Variance(sharedBoardShare);
+        double boardVar = ownVar.Figure - seedVar.Figure;
 
-        Console.WriteLine(string.Create(CultureInfo.InvariantCulture,
-            $"    var(seed) {seedVar:0.00}   var(seed+board) {ownVar:0.00}   " +
-            $"=> var(board) {boardVar:0.00}  ({(boardVar <= 0 ? "board adds nothing measurable" : $"board sd {Math.Sqrt(boardVar):0.00}")})"));
+        Console.WriteLine($"    from the seed alone {seedVar}; from seed and board together {ownVar}; " +
+                          $"the difference {Dispersion.Variance(boardVar)}  " +
+                          $"({(boardVar <= 0 ? "board adds nothing measurable" : $"board {Dispersion.Sd(Math.Sqrt(boardVar))}")})");
 
         Console.WriteLine();
         Console.WriteLine("  discriminating share per mechanic, across the panel's boards");
@@ -584,7 +621,8 @@ public static class CommandLine
         foreach (string mechanic in mechanics)
         {
             List<int> shares = shareByMechanic[mechanic];
-            Console.WriteLine($"    {mechanic,-18} n={shares.Count,4}  mean {shares.Average(),6:0.00}%   sd {Sd(shares),5:0.00}");
+            Console.WriteLine($"    {mechanic,-18} n={shares.Count,4}  mean={shares.Average(),6:0.00}%   " +
+                              $"{Dispersion.Sd(shares)}");
         }
 
         if (args.Text("out", "") is { Length: > 0 } outDir)
@@ -607,15 +645,576 @@ public static class CommandLine
         }
 
         return 0;
+    }
 
-        static double Sd(IReadOnlyList<int> values)
+    // ---- the reference set ------------------------------------------------
+
+    /// <summary>
+    /// Stages the materials a human needs to establish a new world's reference facts, and stops.
+    ///
+    /// <b>It prepares the reading. It does not perform it.</b> Nothing this writes is verified,
+    /// every page says so, and nothing it writes may enter the test suite as a fixture. That is not
+    /// caution — §4's rule is that a wrong engine figure is worse than a wrong model figure because
+    /// nothing questions it, and a machine-derived facts sheet that lost its banner would be exactly
+    /// that with a decade of shelf life.
+    ///
+    /// <b>Why a new set rather than a re-check.</b> Seed 42 at ruleset 4 is a different history, not
+    /// a stale one: positions are assigned at worldgen and four mechanics consume distance, so the
+    /// stream is consumed differently from the first year. §9's facts are about a world that no
+    /// longer exists and there is nothing to diff. What is worth spending human attention on is the
+    /// irreducible set the suite actually depends on, and nothing more.
+    ///
+    /// Zero inference: no client is constructed and no render is read.
+    /// </summary>
+    private static int CmdReference(Args args)
+    {
+        WorldView view = Load(args);
+
+        string outDir = args.Text("to", Path.Combine(DefaultOutputDirectory, "carry-forward", "reference-set"));
+
+        Console.WriteLine($"seed {view.Seed}, ruleset {Ruleset.Version} — " +
+                          $"{view.Log.Count} records, years {view.FirstYear}–{view.LastYear}" +
+                          (view.State.HasBoard ? ", on a board" : ", no board"));
+        Console.WriteLine();
+
+        foreach (string path in ReferenceSet.Write(view, outDir)) Console.WriteLine($"  {path}");
+
+        Console.WriteLine();
+        Console.WriteLine("  Machine-derived and unverified, all of it. Nothing above is ground truth and");
+        Console.WriteLine("  nothing above may be used as a fixture. It exists to make the reading cheaper.");
+        return 0;
+    }
+
+    // ---- the pre-verification instruments ---------------------------------
+
+    /// <summary>
+    /// What the seat-moving records say before a ruler list is made of them.
+    ///
+    /// The derivation's own output cannot answer the question it is asked here. "No duplicate in
+    /// the list" holds both when a contested transfer is collapsed correctly and when a genuine
+    /// second tenure is deleted, so the raw moves have to be read beside it.
+    /// </summary>
+    private static int CmdSeats(Args args)
+    {
+        WorldView view = Load(args);
+
+        Console.WriteLine($"seed {view.Seed}, ruleset {Ruleset.Version} — " +
+                          $"{view.Log.Count} records, years {view.FirstYear}–{view.LastYear}");
+        Console.WriteLine();
+
+        List<SeatRepeat> repeats = SeatTransfers.Repeats(view);
+        int contested = 0, second = 0, unclassified = 0;
+
+        foreach (SeatRepeat repeat in repeats)
         {
-            if (values.Count < 2) return 0;
-            double mean = values.Average();
-            double sum = 0;
-            foreach (int v in values) sum += (v - mean) * (v - mean);
-            return Math.Sqrt(sum / (values.Count - 1));
+            Console.WriteLine($"  {repeat.Describe(view.State)}");
+
+            switch (repeat.Shape)
+            {
+                case SeatRepeatShape.ContestedTransfer: contested++; break;
+                case SeatRepeatShape.SecondTenure: second++; break;
+                default: unclassified++; break;
+            }
         }
+
+        if (repeats.Count == 0) Console.WriteLine("  no person appears twice on any seat");
+
+        Console.WriteLine();
+        Console.WriteLine($"  {contested} contested transfer(s), {second} second tenure(s), " +
+                          $"{unclassified} fitting neither shape");
+
+        if (args.Flag("lists"))
+        {
+            Console.WriteLine();
+            foreach (Faction f in view.State.Factions)
+            {
+                List<SeatSpell> history = ReferenceSet.SeatHistory(view, f.Id);
+                if (history.Count == 0) continue;
+
+                Console.WriteLine($"  {f.Name}: " + string.Join("; ", history.Select(h =>
+                    $"{view.State.NameOf(h.Ruler)} {h.From}–" +
+                    $"{(h.Ended == "still holding" ? "" : h.To.ToString(CultureInfo.InvariantCulture))} ({h.Ended})")));
+            }
+        }
+
+        // A case fitting neither shape is escalated rather than given a rule of its own.
+        return unclassified == 0 ? 0 : 1;
+    }
+
+    /// <summary>
+    /// Every field name a consumer reads, against every field name the emitter writes.
+    ///
+    /// A verifier that reads a name the engine does not write cannot fail. The vocabulary comes
+    /// off real records rather than off a declared table, because the rules decide what is written
+    /// and a table beside them is a second thing to keep in step.
+    /// </summary>
+    private static int CmdSchema(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", "ruleset-4");
+
+        List<EventLog> logs = [];
+        foreach (ulong seed in Seeds(args))
+        {
+            string n = seed.ToString(CultureInfo.InvariantCulture);
+            string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
+            if (!File.Exists(path)) return Fail($"no record at {path}");
+
+            (EventLog log, ulong _) = JsonlIo.Read(path);
+            logs.Add(log);
+        }
+
+        Dictionary<EventKind, SortedSet<string>> vocabulary = EventSchema.Emitted(logs);
+
+        foreach (string line in EventSchema.Render(vocabulary)) Console.WriteLine(line);
+
+        Console.WriteLine();
+        Console.WriteLine($"{EventSchema.Anywhere(vocabulary).Count} distinct field name(s) across " +
+                          $"{vocabulary.Count} event kind(s), from {logs.Count} record(s) of {set}.");
+
+        if (!args.Flag("reads"))
+        {
+            Console.WriteLine();
+            Console.WriteLine("Add --reads to run the consumers and resolve what they asked for against this.");
+            return 0;
+        }
+
+        // The sweep runs one world. Every kind's vocabulary is still the panel's, so a read on a
+        // kind this seed happens not to contain is resolved against what the other four wrote.
+        ulong sweepSeed = args.ULong("seed", 42);
+        string directory = Path.Combine(root, set,
+            $"seed-{sweepSeed.ToString(CultureInfo.InvariantCulture)}");
+
+        (EventLog world, ulong swept) = JsonlIo.Read(Path.Combine(directory,
+            $"world-{sweepSeed.ToString(CultureInfo.InvariantCulture)}.jsonl"));
+
+        List<SchemaRead> rows = EventSchema.Resolve(
+            SchemaSweep.Run(WorldView.Build(world, swept), directory), vocabulary);
+
+        List<SchemaRead> dead = [.. rows.Where(static r => r.DeadRead)];
+        List<SchemaRead> offKind = [.. rows.Where(static r => r.OffKind)];
+
+        Console.WriteLine();
+        Console.WriteLine($"## Reads, swept on {set} seed {swept}");
+        Console.WriteLine();
+        Console.WriteLine($"{rows.Count} (kind, field) read(s); {dead.Count} dead, {offKind.Count} off-kind.");
+        Console.WriteLine();
+
+        // Dead reads fail. An off-kind read is reported and not judged: walking every event and
+        // asking each for `deaths` is a legitimate shape, and asserting on it manufactures false
+        // positives, which is how a blanket coverage rule once cost seven true sections.
+        foreach (SchemaRead row in dead)
+            Console.WriteLine($"  DEAD  {EventKinds.Name(row.Kind)}.{row.Field}");
+
+        foreach (SchemaRead row in offKind)
+            Console.WriteLine($"  off   {EventKinds.Name(row.Kind)}.{row.Field}");
+
+        if (args.Flag("verbose"))
+            foreach (SchemaRead row in rows.Where(static r => r.EmittedOnThisKind))
+                Console.WriteLine($"  ok    {EventKinds.Name(row.Kind)}.{row.Field}");
+
+        Console.WriteLine();
+        Console.WriteLine(dead.Count == 0
+            ? "No consumer read a name the emitter writes nowhere."
+            : $"{dead.Count} dead read(s). A verifier that reads a name the engine does not write cannot fail.");
+
+        return dead.Count == 0 ? 0 : 1;
+    }
+
+    /// <summary>
+    /// Where the checker's holdouts land, grouped by rule, across a whole baseline set.
+    ///
+    /// Reads the stored sidecars. Recomputing them would run today's rules over yesterday's prose,
+    /// which gives the same figure on both sides of the comparison and lets a rule that has since
+    /// gone quiet agree with the bug it exists to expose.
+    /// </summary>
+    /// <summary>
+    /// Which rules FLOOR can protect, measured across a baseline set rather than reasoned about.
+    ///
+    /// <b>Why this is a command and not a paragraph.</b> The project document carried a hand-written
+    /// list of the rules lacking floor protection. Measured, it was wrong in both directions —
+    /// naming two rules that are protected in some scopes and missing one that is protected in
+    /// none. A stale list drifts one way; a list wrong in both directions was never measured at
+    /// all, it was reasoned out from which rules seemed as though they ought to be uninstrumented.
+    ///
+    /// So the list is emitted from the sidecars the checker wrote, and the document carries the
+    /// output with the command that produced it. Same standing rule as the schema sweep, and the
+    /// same reason: a declared artefact describing a measurable property of the code is a second
+    /// copy of that property, kept in step by hand.
+    /// </summary>
+    private static int CmdFloors(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", $"ruleset-{Ruleset.Version}");
+
+        List<IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>>> panel = [];
+        List<ulong> read = [];
+
+        foreach (ulong seed in Seeds(args))
+        {
+            string sidecar = Path.Combine(root, set, $"seed-{seed.ToString(CultureInfo.InvariantCulture)}",
+                $"chronicle-{seed.ToString(CultureInfo.InvariantCulture)}.findings.json");
+
+            if (!File.Exists(sidecar)) continue;
+
+            panel.Add(FindingsSidecar.ReadCoverage(sidecar));
+            read.Add(seed);
+        }
+
+        // A sweep that silently read nothing reports the same empty table as a sweep that read
+        // everything and found nothing to say. The whole brief this came from is about that.
+        if (panel.Count == 0)
+        {
+            Console.Error.WriteLine($"wb: no sidecars under {Path.Combine(root, set)} — nothing measured");
+            return 1;
+        }
+
+        List<FloorReason> rows = GoldenDiff.FloorClassification(panel);
+
+        Console.WriteLine($"floor coverage — {set}, {panel.Count} seed(s): " +
+                          string.Join(", ", read));
+        Console.WriteLine();
+        Console.WriteLine("| rule | scopes with a floor | of | reason |");
+        Console.WriteLine("|---|---|---|---|");
+
+        int unreachable = 0;
+        foreach (FloorReason r in rows)
+        {
+            Console.WriteLine($"| `{r.Rule}` | {r.WithFloor} | {r.Scopes} | {r.Reason} |");
+            if (r.Reason == "no floor on this panel") unreachable++;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine($"{unreachable} rule(s) have no floor anywhere on this panel: FLOOR cannot " +
+                          "fail for them, on any seed, under the current counter scheme.");
+
+        string? to = args.Text("to", "") is { Length: > 0 } path ? path : null;
+        if (to is not null)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+
+            List<string> lines =
+            [
+                $"| rule | scopes with a floor | of | reason |",
+                "|---|---|---|---|",
+                .. rows.Select(r => $"| `{r.Rule}` | {r.WithFloor} | {r.Scopes} | {r.Reason} |"),
+            ];
+            File.WriteAllLines(to, lines);
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// What the relation graph does over the life of a world: how many ties of each kind were
+    /// made, how many ended, and where the live count peaked against where it finished.
+    ///
+    /// <b>Folded from the record, never from a re-run.</b> That is what lets it read a sealed
+    /// baseline of an older ruleset and produce the "before" column for a change that has since
+    /// happened — the engine that wrote those files no longer exists to be asked.
+    ///
+    /// Exits non-zero on the step-two brief's §4 degeneracy guard: a fully connected trade graph
+    /// carries no information and neither does an empty one, so a final count near zero or near
+    /// peak stops the loop on the exit code rather than on somebody reading the table.
+    /// </summary>
+    private static int CmdTies(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", "");
+        RelationKind guarded = Enum.Parse<RelationKind>(args.Text("kind", "Trade"), ignoreCase: true);
+
+        List<(ulong Seed, RelationTrajectory.Report Report)> panel = [];
+
+        // Either a whole baseline set, or one world file — the second is how a run that has not
+        // been sealed yet gets measured, which is every run before the cut.
+        if (set.Length > 0)
+        {
+            foreach (ulong seed in Seeds(args))
+            {
+                string n = seed.ToString(CultureInfo.InvariantCulture);
+                string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
+                if (!File.Exists(path)) return Fail($"no record at {path}");
+
+                (EventLog log, ulong _) = JsonlIo.Read(path);
+                panel.Add((seed, RelationTrajectory.Of(log, seed)));
+            }
+        }
+        else
+        {
+            WorldView view = Load(args);
+            panel.Add((view.Seed, RelationTrajectory.Of(view.Log, view.Seed)));
+        }
+
+        bool degenerate = false;
+        int pooledPeak = 0, pooledFinal = 0, pooledEnded = 0;
+
+        foreach ((ulong seed, RelationTrajectory.Report report) in panel)
+        {
+            foreach (string line in RelationTrajectory.Render(report, seed)) Console.WriteLine(line);
+            Console.WriteLine();
+
+            if (report.Of(guarded) is { } watched)
+            {
+                pooledPeak += watched.Peak;
+                pooledFinal += watched.Final;
+                pooledEnded += watched.Ended;
+
+                // Reported per seed, asserted pooled. At a peak of three the non-degenerate range
+                // is two values wide and one tie decides the verdict, which tests the granularity
+                // rather than the rule.
+                Console.WriteLine($"  {guarded}: {RelationTrajectory.Degeneracy(watched)}" +
+                    (watched.Peak <= 20 ? "  (coarse — reported, not asserted)" : ""));
+
+                // The same question against the pairs that actually existed. A world down to one
+                // house cannot hold a trade tie, and calling that "the rule emptied the graph"
+                // measures hegemony rather than the rule.
+                Console.WriteLine($"  {guarded}: " +
+                    RelationTrajectory.DensityOf(watched, report.AvailablePairs));
+                Console.WriteLine($"  houses standing: " +
+                    $"peak {report.PeakAvailablePairs} pair(s), final {report.FinalAvailablePairs} pair(s)");
+
+                List<(string Cause, int Count)> causes = report.Causes(guarded);
+                if (causes.Count > 0)
+                {
+                    Console.WriteLine($"  ended by: " +
+                        string.Join(", ", causes.Select(c => $"{c.Cause} {c.Count}")));
+                }
+
+                if (args.Flag("trajectory"))
+                {
+                    Console.WriteLine("  live by year: " + string.Join(" ", watched.Live));
+                }
+            }
+
+            Console.WriteLine($"  first termination: " +
+                (report.FirstTerminationYear is { } y
+                    ? $"year {y.ToString(CultureInfo.InvariantCulture)} at {report.FirstTerminationAt}"
+                    : "never"));
+            Console.WriteLine();
+        }
+
+        // Pooled, because a per-seed cause table is too small to read a distribution off and a
+        // per-seed degeneracy band at a peak of three is two values wide.
+        {
+            string verdict = RelationTrajectory.Degeneracy(pooledPeak, pooledFinal, pooledEnded,
+                $"`{guarded}` across the panel");
+            degenerate = verdict.StartsWith("DEGENERATE", StringComparison.Ordinal);
+
+            Console.WriteLine($"panel — {guarded}: {verdict}  " +
+                              $"(peaks summed {pooledPeak}, finals summed {pooledFinal}, " +
+                              $"{pooledEnded} ended)");
+            Console.WriteLine();
+
+            Dictionary<string, int> pooled = new(StringComparer.Ordinal);
+            foreach ((ulong _, RelationTrajectory.Report report) in panel)
+                foreach ((string cause, int n) in report.Causes(guarded))
+                    pooled[cause] = pooled.GetValueOrDefault(cause) + n;
+
+            Console.WriteLine($"panel — {guarded} terminations by cause:");
+            foreach ((string cause, int n) in pooled.OrderByDescending(static kv => kv.Value)
+                         .ThenBy(static kv => kv.Key, StringComparer.Ordinal))
+            {
+                Console.WriteLine($"  {cause,-28} {n}");
+            }
+
+            // A cause field with one reachable value across the panel is a field that renders as
+            // a universal. Step one found `tie` in exactly that state and the standing rule came
+            // out of it: it does not get rendered until it has two.
+            Console.WriteLine();
+            Console.WriteLine(pooled.Count switch
+            {
+                0 => "No termination of this kind anywhere on the panel.",
+                1 => $"ONE reachable value ({pooled.Keys.First()}). Record it; do not render it.",
+                _ => $"{pooled.Count} reachable values. The cause is a real distinction on this panel.",
+            });
+        }
+
+        return degenerate ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Every piece of standing state, and whether anything on the panel ever made it smaller.
+    ///
+    /// <b>Half of the monotonic sweep, and it says which half.</b> Counts can separate "came down"
+    /// from "never came down". They cannot separate "has no removal path" from "has one nothing
+    /// reached", and this project has already paid for treating a whole quiet panel as proof of
+    /// the former. The other half is read off the rules by a person and put beside this.
+    /// </summary>
+    private static int CmdStanding(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", "");
+
+        List<(EventLog Log, ulong Seed)> panel = [];
+
+        if (set.Length > 0)
+        {
+            foreach (ulong seed in Seeds(args))
+            {
+                string n = seed.ToString(CultureInfo.InvariantCulture);
+                string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
+                if (!File.Exists(path)) return Fail($"no record at {path}");
+
+                (EventLog log, ulong _) = JsonlIo.Read(path);
+                panel.Add((log, seed));
+            }
+        }
+        else
+        {
+            string directory = args.Text("from", DefaultOutputDirectory);
+            foreach (ulong seed in Seeds(args))
+            {
+                string n = seed.ToString(CultureInfo.InvariantCulture);
+                string path = Path.Combine(directory, $"world-{n}.jsonl");
+                if (!File.Exists(path)) return Fail($"no record at {path}");
+
+                (EventLog log, ulong _) = JsonlIo.Read(path);
+                panel.Add((log, seed));
+            }
+        }
+
+        List<StandingItem> rows = StandingState.Sweep(panel);
+        IReadOnlyList<string> lines = StandingState.Render(rows, panel.Count);
+
+        foreach (string line in lines) Console.WriteLine(line);
+
+        if (args.Text("to", "") is { Length: > 0 } to)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+            File.WriteAllLines(to, lines);
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
+        // Reported, never repaired here. Fixing an unbounded list is how a bounded phase stops
+        // being bounded, so this exits 0 whatever it finds.
+        return 0;
+    }
+
+    /// <summary>
+    /// Where a fresh run stops matching a sealed baseline of the previous ruleset, against where
+    /// the change that was meant to separate them first acted.
+    ///
+    /// Exits non-zero when a seed diverges *before* its first termination, which is the step-two
+    /// brief's §5 halt: it means something other than the intended change moved the world.
+    /// </summary>
+    private static int CmdDivergence(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string against = args.Text("against", "ruleset-5");
+        int years = args.Int("years", 50);
+
+        bool halt = false;
+
+        foreach (ulong seed in Seeds(args))
+        {
+            string n = seed.ToString(CultureInfo.InvariantCulture);
+            string path = Path.Combine(root, against, $"seed-{n}", $"world-{n}.jsonl");
+            if (!File.Exists(path)) return Fail($"no record at {path}");
+
+            (EventLog older, ulong archived) = JsonlIo.Read(path);
+            if (archived != seed) return Fail($"{path} carries seed {archived}, not {seed}");
+
+            Simulation sim = new(seed);
+            sim.Run(years);
+
+            Divergence.Report report = Divergence.Between(older, sim.Log, seed);
+
+            Console.WriteLine($"seed {n}: {report.OldCount} → {report.NewCount} events");
+            Console.WriteLine($"  {report.Verdict}");
+            Console.WriteLine($"  first difference in content rather than in ids: " +
+                (report.FirstContentDifference < 0
+                    ? "none"
+                    : $"index {report.FirstContentDifference.ToString(CultureInfo.InvariantCulture)}"));
+            Console.WriteLine();
+
+            halt |= !report.Holds;
+        }
+
+        return halt ? 1 : 0;
+    }
+
+    /// <summary>
+    /// What one inserted event costs the render cache, measured rather than reasoned about.
+    ///
+    /// <c>Event.Key</c> is documented as existing so a cached render survives a shift in log
+    /// position. It survives a retcon and it does not survive an insertion, because the key takes
+    /// the emission's sequence within its year — so inserting one event rekeys every later event
+    /// in that year, and a pack keyed on those events loses its identity without its content
+    /// having moved. Sized here while it is cheap; the fix belongs to Stage 7, which is where it
+    /// starts to bite.
+    /// </summary>
+    private static int CmdKeyShift(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", $"ruleset-{Ruleset.Version}");
+
+        int rekeyed = 0, changed = 0, unexplained = 0;
+
+        foreach (ulong seed in Seeds(args))
+        {
+            string n = seed.ToString(CultureInfo.InvariantCulture);
+            string path = Path.Combine(root, set, $"seed-{n}", $"world-{n}.jsonl");
+            if (!File.Exists(path)) return Fail($"no record at {path}");
+
+            (EventLog log, ulong _) = JsonlIo.Read(path);
+            KeyBlastRadius.Report report = KeyBlastRadius.Measure(log, seed);
+
+            Console.WriteLine("  " + report.Line);
+            rekeyed += report.Rekeyed;
+            changed += report.Changed;
+            unexplained += report.Unexplained;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(unexplained > 0
+            ? $"{unexplained} event(s) before the insertion point already fail to reproduce their " +
+              "stored key. This measurement's model of the key is wrong; the figures above are void."
+            : $"**{rekeyed} cached render(s) lose their key for every {changed} whose content " +
+              "changes** — one inserted event, per seed, in the middle of the middle year.");
+
+        return unexplained > 0 ? 1 : 0;
+    }
+
+    private static int CmdHoldouts(Args args)
+    {
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", "ruleset-4");
+        string against = args.Text("against", "ruleset-3");
+
+        Holdouts.Report report = Holdouts.Build(root, set, against, Seeds(args));
+
+        foreach (string line in Holdouts.Render(report)) Console.WriteLine(line);
+
+        string? to = args.Text("to", "") is { Length: > 0 } path ? path : null;
+        if (to is not null)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+            File.WriteAllLines(to, Holdouts.Render(report));
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
+        // Non-zero where the phase's halt conditions are met, so the loop stops on the exit code
+        // rather than on somebody reading the table.
+        return report.Halts ? 1 : 0;
+    }
+
+    /// <summary>The five-seed panel, or whatever <c>--seeds</c> names instead.</summary>
+    private static List<ulong> Seeds(Args args)
+    {
+        List<ulong> seeds = [];
+
+        foreach (string raw in args.Text("seeds", "7,42,99,1234,2025")
+                     .Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (ulong.TryParse(raw.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ulong seed))
+                seeds.Add(seed);
+        }
+
+        return seeds;
     }
 
     // ---- baselines --------------------------------------------------------
@@ -829,7 +1428,7 @@ public static class CommandLine
             logs.Add(sim.Log);
         }
 
-        List<OutcomeSpread> pooled = OutcomeAudit.Pool(logs);
+        List<OutcomeSkew> pooled = OutcomeAudit.Pool(logs);
 
         Console.WriteLine($"outcome distributions, pooled over {logs.Count} seeds, most skewed first");
         Console.WriteLine();
@@ -837,7 +1436,7 @@ public static class CommandLine
 
         Console.WriteLine();
         Console.WriteLine("reachability");
-        foreach (OutcomeSpread s in pooled)
+        foreach (OutcomeSkew s in pooled)
         {
             if (!s.SingleBranch) continue;
             Console.WriteLine($"  {s.Decision}: only \"{s.Commonest}\" was ever emitted across the panel — " +
@@ -987,15 +1586,22 @@ public static class CommandLine
     /// Layers 1–3 need neither a model nor a render and are fast enough to run on every commit.
     /// Layer 4 needs a chronicle; layer 5 needs a stored one to compare against.
     /// </summary>
+    /// <summary>
+    /// What one layer did: whether it executed, and what it found if it did.
+    ///
+    /// The distinction is the whole point of this type existing rather than an <c>int</c>. A layer
+    /// that could not run returns no failures, and so does a layer that ran and was satisfied —
+    /// which made the two indistinguishable in the only line most readers see.
+    /// </summary>
+    private readonly record struct LayerRun(string Name, bool Ran, int Failures, string Why = "")
+    {
+        public static LayerRun Skipped(string name, string why) => new(name, false, 0, why);
+        public static LayerRun Completed(string name, int failures) => new(name, true, failures);
+    }
+
     private static int CmdTest(Args args)
     {
         string layer = args.Positional(0) ?? "all";
-        int failures = 0;
-
-        if (layer is "dynamics" or "all") failures += TestDynamics(args);
-        if (layer is "corpus" or "all") failures += TestCorpus(args);
-        if (layer is "chronicle" or "all") failures += TestChronicle(args);
-        if (layer is "golden" or "all") failures += TestGolden(args);
 
         if (layer is "checker")
         {
@@ -1004,8 +1610,39 @@ public static class CommandLine
             return 0;
         }
 
+        List<LayerRun> runs = [];
+
+        if (layer is "dynamics" or "all") runs.Add(TestDynamics(args));
+        if (layer is "corpus" or "all") runs.Add(TestCorpus(args));
+        if (layer is "chronicle" or "all") runs.Add(TestChronicle(args));
+        if (layer is "golden" or "all") runs.Add(TestGolden(args));
+
+        int failures = 0, ran = 0;
+        foreach (LayerRun r in runs)
+        {
+            failures += r.Failures;
+            if (r.Ran) ran++;
+        }
+
+        // The top line reports what ran, not only what failed.
+        //
+        // "all layers passed" over a skipped layer is a clean bill of health issued without an
+        // examination, and this command printed exactly that while layer 5 sat out a ruleset
+        // mismatch and layer 4 sat out a missing chronicle. Same family as a detector that alarms
+        // unconditionally and as an error message printing a limit that did not apply: accurate
+        // about what it found, silent about whether it looked.
         Console.WriteLine();
-        Console.WriteLine(failures == 0 ? "all layers passed" : $"{failures} failures");
+        Console.WriteLine($"{ran} of {runs.Count} layers ran" +
+                          (failures == 0 ? ", none failed" : $", {failures} failures"));
+
+        foreach (LayerRun r in runs)
+            if (!r.Ran)
+                Console.WriteLine($"  {r.Name} SKIPPED — {r.Why}");
+
+        Console.WriteLine("  layer 2 runs under `dotnet test`; it is not one of the above.");
+
+        // A skip is not a failure and must not become one — that was the settled decision and it
+        // stays. It is reported instead, which is the thing that was missing.
         return failures == 0 ? 0 : 1;
     }
 
@@ -1029,7 +1666,7 @@ public static class CommandLine
     /// silent-path family: one idea implemented twice, fixed once, and the unfixed copy failing
     /// in a place nobody was looking.
     /// </summary>
-    private static int TestCorpus(Args args)
+    private static LayerRun TestCorpus(Args args)
     {
         Console.WriteLine("layer 3 — the regression corpus");
 
@@ -1052,11 +1689,11 @@ public static class CommandLine
             foreach (CorpusResult result in results)
                 Console.WriteLine($"      {result.Case.Id,-46} {result.Case.ExpectRule}");
 
-        return missed + noisy;
+        return LayerRun.Completed("layer 3", missed + noisy);
     }
 
     /// <summary>Layer 1, across the seed panel. A metric that holds on one seed is an anecdote.</summary>
-    private static int TestDynamics(Args args)
+    private static LayerRun TestDynamics(Args args)
     {
         string[] seeds = args.Text("seeds", "7,42,99,1234,2025")
             .Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -1119,14 +1756,14 @@ public static class CommandLine
                               $"expected {r.Expected}" + Sample(r));
         }
 
-        return failures;
+        return LayerRun.Completed("layer 1", failures);
 
         static string Sample(Invariant r) =>
             r.Sample <= 0 ? "" : $"   [n={r.Sample}" + (r.Coarse ? $", {r.PointsPerObservation}]" : "]");
     }
 
     /// <summary>Layer 4 — the chronicle against the log that produced it.</summary>
-    private static int TestChronicle(Args args)
+    private static LayerRun TestChronicle(Args args)
     {
         WorldView view = Load(args);
         ulong seed = args.ULong("seed", 42);
@@ -1139,7 +1776,7 @@ public static class CommandLine
         if (!File.Exists(path))
         {
             Console.WriteLine($"  no chronicle at {path}; skipped");
-            return 0;
+            return LayerRun.Skipped("layer 4", $"no chronicle at {path}");
         }
 
         List<ChronicleAudit.Complaint> complaints = ChronicleAudit.Check(view, File.ReadAllText(path));
@@ -1147,7 +1784,7 @@ public static class CommandLine
             Console.WriteLine($"      FAIL {c.Section}: {c.Kind} — {c.Detail}");
 
         Console.WriteLine($"  {complaints.Count} complaints");
-        return complaints.Count;
+        return LayerRun.Completed("layer 4", complaints.Count);
     }
 
     /// <summary>Layer 5 — against the most recent stored render.</summary>
@@ -1163,7 +1800,7 @@ public static class CommandLine
     /// from stored prose. Recomputing runs today's rules over yesterday's text, and a rule that
     /// has gone quiet then reports the same figure on both sides.
     /// </summary>
-    private static int TestGoldenAgainstBaseline(Args args, string baselineDir)
+    private static LayerRun TestGoldenAgainstBaseline(Args args, string baselineDir)
     {
         ulong seed = args.ULong("seed", 42);
         string stem = $"chronicle-{seed.ToString(CultureInfo.InvariantCulture)}";
@@ -1182,7 +1819,7 @@ public static class CommandLine
             if (File.Exists(required)) continue;
             Console.WriteLine($"  missing {required}");
             Console.WriteLine("  produce the current side with: wb book --out <dir> --check-only --factions all");
-            return 1;
+            return new LayerRun("layer 5", Ran: false, Failures: 1, Why: $"missing {required}");
         }
 
         // The anchor is ruleset-scoped, and comparing across rulesets compares two different
@@ -1199,14 +1836,23 @@ public static class CommandLine
                               "the current one are different worlds and a diff between them means nothing.");
             Console.WriteLine("  A new baseline under the current ruleset needs a render round, which is " +
                               "generation. The sealed baseline stays sealed.");
-            return 0;
+            return LayerRun.Skipped("layer 5",
+                $"baseline is ruleset {baselineRuleset}, build runs ruleset {Ruleset.Version}");
         }
 
         List<Drift> drift = GoldenDiff.Compare(File.ReadAllText(storedProse), File.ReadAllText(currentProse));
 
-        drift.AddRange(GoldenDiff.CoverageSound(
-            FindingsSidecar.ReadCoverage(storedSidecar),
-            GoldenDiff.AsCoverage(FindingsSidecar.ReadCoverage(currentSidecar))));
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>> stored =
+            FindingsSidecar.ReadCoverage(storedSidecar);
+
+        drift.AddRange(GoldenDiff.CoverageSound(stored, GoldenDiff.AsCoverage(
+            FindingsSidecar.ReadCoverage(currentSidecar))));
+
+        // How much of the coverage half actually had a floor to stand on. FLOOR skips any row the
+        // baseline recorded at zero, and on seed 42 that is 129 rows of 208 — protection silently
+        // absent for most of the document, which is the condition `rule-inert` exists to make loud
+        // one layer down and which went untraced one layer up.
+        drift.AddRange(GoldenDiff.FloorCoverage(stored));
 
         // The query half. The v1 baseline has no query sidecar — it records
         // query-coverage-unstructured as a deficiency — so there is nothing here to diff yet.
@@ -1248,10 +1894,10 @@ public static class CommandLine
             Console.WriteLine();
             Console.WriteLine("  a sealed baseline is create-only and this layer never writes to one.");
             Console.WriteLine("  to establish a new baseline, move the directory aside first.");
-            return Math.Max(failures, 1);
+            return LayerRun.Completed("layer 5", Math.Max(failures, 1));
         }
 
-        return failures;
+        return LayerRun.Completed("layer 5", failures);
     }
 
     /// <summary>
@@ -1276,7 +1922,7 @@ public static class CommandLine
                 : "1";
     }
 
-    private static int TestGolden(Args args)
+    private static LayerRun TestGolden(Args args)
     {
         ulong seed = args.ULong("seed", 42);
         string outDir = args.Text("out", DefaultOutputDirectory);
@@ -1296,7 +1942,8 @@ public static class CommandLine
             Console.WriteLine("  nothing stored yet; run `wb test golden --accept` to store this render");
             if ((args.Flag("accept") || args.Flag("rebaseline")) && File.Exists(current))
                 Accept(goldenDir, current, seed, "");
-            return 0;
+            return LayerRun.Skipped("layer 5",
+                golden is null ? "no stored render to compare against" : $"no current render at {current}");
         }
 
         string currentText = File.ReadAllText(current);
@@ -1329,7 +1976,7 @@ public static class CommandLine
         Console.WriteLine($"  against {Path.GetFileName(golden)}: {failures} failed, " +
                           $"{drift.Count - failures} noted");
 
-        if (!args.Flag("accept") && !args.Flag("rebaseline")) return failures;
+        if (!args.Flag("accept") && !args.Flag("rebaseline")) return LayerRun.Completed("layer 5", failures);
 
         // Accepting must not quietly lower a floor.
         //
@@ -1349,7 +1996,7 @@ public static class CommandLine
             Console.WriteLine("  fix the extraction, or re-baseline deliberately:");
             Console.WriteLine("      wb test golden --seed <n> --rebaseline --why \"<reason>\"");
 
-            return Math.Max(failures, 1);
+            return LayerRun.Completed("layer 5", Math.Max(failures, 1));
         }
 
         Accept(goldenDir, current, seed, args.Flag("rebaseline") ? args.Text("why", "") : "");
@@ -1376,7 +2023,7 @@ public static class CommandLine
         }
 
         File.WriteAllText(FloorPath(goldenDir, seed), Coverage.ToJson(asCoverage));
-        return failures;
+        return LayerRun.Completed("layer 5", failures);
     }
 
     /// <summary>
@@ -2254,6 +2901,48 @@ public static class CommandLine
                            git stores at the commit the artefacts name, and seal it
               wb baseline check <dir>
                            the seal against the manifest, and the manifest against the files
+
+              wb reference [--file <world>] [--to out/carry-forward/reference-set]
+                           stage what a human needs to establish a new world's reference facts: a
+                           candidate sheet in the shape of §9, sixteen candidate query questions
+                           with the records each answer came from, and ranked candidates for the
+                           canonical withheld-not-absent case. Zero inference — no client is
+                           constructed. Every page is marked machine-derived and unverified, and
+                           none of it may be used as a fixture. It prepares the reading; it does
+                           not perform it
+
+            pre-verification — three instruments, upstream of any hand verification
+
+              wb holdouts  [--set ruleset-4] [--against ruleset-3] [--seeds 7,42,…] [--to <file>]
+                           where the checker's holdouts land, grouped by rule, across a baseline
+                           set. Read from the stored sidecars and never recomputed: today's rules
+                           over yesterday's prose give the same figure on both sides, so a rule
+                           that has gone quiet agrees with the bug it exists to expose. Exits 1
+                           when the pre-committed halt conditions are met
+
+              wb seats     [--file <world>] [--lists]
+                           every case where one person appears twice on one seat, classified: one
+                           contested transfer (two records, one year, one hold) or a genuine second
+                           tenure (different years, two holds). The ruler list cannot answer this
+                           about itself — "no duplicate" holds both when a transfer collapses
+                           correctly and when a tenure is deleted. Exits 1 on a repeat fitting
+                           neither shape
+
+              wb floors    [--set ruleset-5] [--seeds 7,42,…] [--to <file>]
+                           how far FLOOR reaches, per rule, across a baseline set's sidecars.
+                           FLOOR skips any row the baseline recorded at zero, so a rule that
+                           extracted nothing has no floor to breach and can go quiet forever
+                           without the golden layer noticing. Emitted rather than written down:
+                           the hand-kept list of which rules those were named two that are
+                           protected and missed one that is not
+
+              wb schema    [--set ruleset-4] [--reads] [--verbose]
+                           the emitter's field vocabulary, from the records rather than from a
+                           declared table. --reads runs every consumer with a recorder attached
+                           and resolves what they asked for against it. A verifier that reads a
+                           name the engine does not write cannot fail: layer 4 read `took`,
+                           `haul` and `plunder` and the engine writes `loot`. Exits 1 on a dead
+                           read
 
               wb why       e:1188 [--depth 8]      what caused this
               wb what      e:1188 [--depth 4]      what this went on to cause

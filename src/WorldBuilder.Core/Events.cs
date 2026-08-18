@@ -169,8 +169,19 @@ public sealed record Event
         return EntityId.None;
     }
 
+    /// <summary>
+    /// A payload field, or null where this event does not carry one.
+    ///
+    /// The single choke point every payload read goes through — <see cref="GetInt"/>,
+    /// <see cref="GetLong"/> and <see cref="GetEntity"/> all land here — which is why
+    /// <see cref="EventFieldReadLog"/> observes it. A field name the emitter never writes returns
+    /// null forever and reads downstream as a zero, an empty string or "no such entity", none of
+    /// which fails. See that type for the eighth instance of it.
+    /// </summary>
     public string? GetString(string key)
     {
+        EventFieldReadLog.Note(Kind, key);
+
         foreach (KeyValuePair<string, string> kv in Data)
             if (kv.Key == key) return kv.Value;
         return null;

@@ -1,40 +1,37 @@
 using System.Reflection;
 using WorldBuilder.Core;
 using WorldBuilder.Core.Analysis;
-using WorldBuilder.Core.Serialization;
 using Xunit;
 
 namespace WorldBuilder.Chronicle.Tests;
 
 /// <summary>
-/// Layer 4: the sealed baseline chronicle, verified against the record that produced it.
+/// Layer 4: a sealed baseline chronicle, verified against the record that produced it.
 ///
 /// The layer that replaces the hand review. It reads the same document a person read for eleven
 /// rounds and asks the same questions — are these the rulers, do these years match, is this
 /// figure the one this scope earns — with the difference that it asks every time and never
 /// remembers wrong.
+///
+/// <b>Run against every sealed baseline, not only v1.</b> Ruleset 4 produced a second seed-42
+/// chronicle from a different history, and a layer whose job is to notice a checker going quiet is
+/// worth as much on the ruleset the engine currently runs as on the one it shipped. Nothing here is
+/// a re-verification: these are the checks that need no human, and on the ruleset-4 document they
+/// are all that can be said until somebody reads it.
 /// </summary>
 public class ChronicleLayerTests
 {
-    private static string Baseline()
+    public static TheoryData<BaselineUnderTest> Baselines()
     {
-        for (DirectoryInfo? at = new(AppContext.BaseDirectory); at is not null; at = at.Parent)
-        {
-            string candidate = Path.Combine(at.FullName, "baselines", "v1", "seed-42");
-            if (Directory.Exists(candidate)) return candidate;
-        }
-
-        throw new DirectoryNotFoundException($"no baselines/v1/seed-42 above {AppContext.BaseDirectory}");
+        TheoryData<BaselineUnderTest> data = [];
+        foreach (BaselineUnderTest one in SealedBaselines.All) data.Add(one);
+        return data;
     }
 
-    private static WorldView World()
-    {
-        (EventLog log, ulong seed) = JsonlIo.Read(Path.Combine(Baseline(), "world-42.jsonl"));
-        return WorldView.Build(log, seed);
-    }
+    private static WorldView World(BaselineUnderTest baseline) => SealedBaselines.World(baseline);
 
-    private static List<Section> Chronicle() =>
-        ChronicleReader.Sections(File.ReadAllText(Path.Combine(Baseline(), "chronicle-42.md")));
+    private static List<Section> Sections(BaselineUnderTest baseline) =>
+        SealedBaselines.Sections(baseline);
 
     // ---- the structural guarantee -----------------------------------------
 
@@ -61,20 +58,48 @@ public class ChronicleLayerTests
             a => a.GetName().Name == "WorldBuilder.Inference");
     }
 
+    /// <summary>
+    /// Both baselines are present and are different worlds.
+    ///
+    /// Asserted so the theory below cannot pass by silently running twice over the same document.
+    /// Seed 42 at ruleset 4 shares its seed with v1 and nothing else: the record diverges because
+    /// four mechanics consume distance and the stream is consumed differently.
+    /// </summary>
+    [Fact]
+    public void TheTwoBaselinesAreDifferentWorlds()
+    {
+        WorldView v1 = World(SealedBaselines.V1);
+        WorldView ruleset4 = World(SealedBaselines.Ruleset4);
+
+        Assert.Equal(v1.Seed, ruleset4.Seed);
+        Assert.NotEqual(v1.Log.Count, ruleset4.Log.Count);
+
+        // The names differ too, which is what makes the corpus's twenty world-dependent rows
+        // world-dependent: the new history has no Sworn Men of Meigate.
+        Assert.NotEqual(
+            v1.State.Factions.Select(static f => f.Name).OrderBy(static n => n, StringComparer.Ordinal),
+            ruleset4.State.Factions.Select(static f => f.Name).OrderBy(static n => n, StringComparer.Ordinal));
+
+        // v1 predates geography and has no board; ruleset 4 is a log and its board.
+        Assert.False(v1.State.HasBoard);
+        Assert.True(ruleset4.State.HasBoard);
+    }
+
     // ---- the document itself ----------------------------------------------
 
-    [Fact]
-    public void TheBaselineChronicleHasTheSectionsItClaims()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void TheBaselineChronicleHasTheSectionsItClaims(BaselineUnderTest baseline)
     {
-        string markdown = File.ReadAllText(Path.Combine(Baseline(), "chronicle-42.md"));
+        string markdown = SealedBaselines.Markdown(baseline);
 
-        // Fifteen scopes, of which three carry no verified account and are held out. Both figures
-        // are asserted: the second alone would drift downwards without anyone noticing, since a
-        // chronicle that excluded more would simply have fewer sections with prose in it.
-        Assert.Equal(15, ChronicleReader.Headings(markdown).Count);
+        // Both figures are asserted: the second alone would drift downwards without anyone
+        // noticing, since a chronicle that excluded more would simply have fewer sections with
+        // prose in it.
+        Assert.Equal(baseline.Headings, ChronicleReader.Headings(markdown).Count);
 
-        List<Section> withProse = Chronicle();
-        Assert.Equal(12, withProse.Count);
+        List<Section> withProse = Sections(baseline);
+        Assert.Equal(baseline.WithProse, withProse.Count);
         Assert.All(withProse, s => Assert.False(string.IsNullOrWhiteSpace(s.Body)));
     }
 
@@ -90,15 +115,16 @@ public class ChronicleLayerTests
     /// Three of the last four rounds had a date error, in three different event types. What makes
     /// those catchable is a year outside the world, not a year outside a heading.
     /// </summary>
-    [Fact]
-    public void EveryDatedYearIsAYearTheWorldRan()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void EveryDatedYearIsAYearTheWorldRan(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
         int first = view.Log.Events.Where(e => e.Significance >= Significance.Minor).Min(e => e.Year);
 
         List<string> wrong = [];
 
-        foreach (Section s in Chronicle())
+        foreach (Section s in Sections(baseline))
             foreach (int year in ChronicleReader.YearsStated(s.Body))
             {
                 if (year >= first && year <= view.LastYear) continue;
@@ -114,15 +140,16 @@ public class ChronicleLayerTests
     /// "held the seat since year 1" reached canon twice. The world's first narratable year is 2;
     /// year 1 holds one bookkeeping row creating the world and no pack ever contains it.
     /// </summary>
-    [Fact]
-    public void NoSectionCitesAYearTheRecordDoesNotHave()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void NoSectionCitesAYearTheRecordDoesNotHave(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
         int first = view.Log.Events.Where(e => e.Significance >= Significance.Minor).Min(e => e.Year);
 
         List<string> wrong = [];
 
-        foreach (Section s in Chronicle())
+        foreach (Section s in Sections(baseline))
             foreach (int year in ChronicleReader.YearsStated(s.Body))
                 if (year < first) wrong.Add($"{s.Heading}: cites {year}, before the record opens at {first}");
 
@@ -130,10 +157,11 @@ public class ChronicleLayerTests
     }
 
     /// <summary>Every proper noun in the document is a name the world actually holds.</summary>
-    [Fact]
-    public void EveryProperNounIsInTheRecord()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void EveryProperNounIsInTheRecord(BaselineUnderTest baseline)
     {
-        HashSet<string> known = RecordFacts.AllNameWords(World());
+        HashSet<string> known = RecordFacts.AllNameWords(World(baseline));
 
         // Ordinary English that wears a capital mid-sentence in this document's register.
         HashSet<string> ordinary = new(StringComparer.OrdinalIgnoreCase)
@@ -145,7 +173,7 @@ public class ChronicleLayerTests
 
         List<string> unknown = [];
 
-        foreach (Section s in Chronicle())
+        foreach (Section s in Sections(baseline))
             foreach (string noun in ChronicleReader.ProperNouns(s.Body))
             {
                 if (ordinary.Contains(noun) || known.Contains(noun)) continue;
@@ -164,15 +192,48 @@ public class ChronicleLayerTests
     /// that fell through every branch would be reported as a natural death, which is the quietest
     /// possible way to be wrong about a murder.
     /// </summary>
-    [Fact]
-    public void EveryHoldOnEverySeatEndsInAKnownWay()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void EveryHoldOnEverySeatEndsInAKnownWay(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
         string[] known = ["killed", "cast out", "died", "replaced", "still holding"];
+
+        int holds = 0;
 
         foreach (Faction f in view.State.Factions)
             foreach (Held held in RecordFacts.SeatHistory(view, f.Id))
+            {
                 Assert.Contains(held.Ended, known);
+                holds++;
+            }
+
+        // A partition asserted over nothing is satisfied by an empty world. Both baselines hold
+        // dozens of spells; the figure is not pinned because it is a fact about the history rather
+        // than about the check.
+        Assert.True(holds > 10, $"{baseline}: only {holds} seat spells to partition");
+
+        // And it is a ruler list, not a record list. A contested transfer emits both the challenge
+        // that decided it and a succession row beside it, so reading both put the same man on the
+        // same seat twice in the same year. Nothing here failed on that, because every assertion
+        // was about the partition; the list itself was never checked.
+        //
+        // Asserted on the year and not on the person, which is the whole correction. "No two
+        // neighbouring spells share a ruler" is satisfied by a derivation that collapses a
+        // contested transfer correctly *and* by one that deletes a genuine second tenure, and
+        // those are opposite errors. What a ruler list may never contain is one person holding one
+        // seat twice in one year; the same person back later is a second hold and must survive.
+        foreach (Faction f in view.State.Factions)
+        {
+            List<Held> history = RecordFacts.SeatHistory(view, f.Id);
+
+            for (int i = 1; i < history.Count; i++)
+            {
+                Assert.False(history[i - 1].Ruler == history[i].Ruler && history[i - 1].From == history[i].From,
+                    $"{baseline}: {view.State.NameOf(history[i].Ruler)} holds " +
+                    $"{f.Name} twice in {history[i].From}");
+            }
+        }
     }
 
     /// <summary>
@@ -182,15 +243,17 @@ public class ChronicleLayerTests
     /// is how founding rulers were invisible until round 8. Every faction created by a secession
     /// must have a first holder dated to that secession.
     /// </summary>
-    [Fact]
-    public void AFoundingHolderIsPartOfTheSeatHistory()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void AFoundingHolderIsPartOfTheSeatHistory(BaselineUnderTest baseline)
     {
-        WorldView view = World();
-        int checkedFactions = 0;
+        WorldView view = World(baseline);
+        int checkedFactions = 0, secessions = 0;
 
         foreach (Event e in view.Log.Events)
         {
             if (e.Kind != EventKind.PolitySecession || e.Subject.IsNone) continue;
+            secessions++;
 
             // The house that broke away, not the one it broke from.
             EntityId born = RecordFacts.NewHouse(e);
@@ -204,17 +267,21 @@ public class ChronicleLayerTests
             checkedFactions++;
         }
 
-        // The four secessions of seed 42. Asserted so this cannot pass by finding none.
-        Assert.Equal(4, checkedFactions);
+        // Every secession in the record was checked, and there was at least one to check. Derived
+        // from the world rather than pinned at four: v1 has four and ruleset 4 is a different
+        // history, so a hard figure here would be asserting v1's shape of a second world.
+        Assert.Equal(secessions, checkedFactions);
+        Assert.True(checkedFactions > 0, $"{baseline}: no secession in the record to check");
     }
 
     /// <summary>Tenure spans are clamped to the window at both ends; one-sided clamping was the round-8 bug.</summary>
-    [Fact]
-    public void TenureSpansAreClampedAtBothEnds()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void TenureSpansAreClampedAtBothEnds(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
 
-        foreach (Section s in Chronicle())
+        foreach (Section s in Sections(baseline))
         {
             if (!s.HasWindow || s.IsReign) continue;
 
@@ -240,10 +307,11 @@ public class ChronicleLayerTests
     }
 
     /// <summary>Raid counts split three ways and the parts sum to the whole.</summary>
-    [Fact]
-    public void RaidTalliesPartitionTheRaids()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void RaidTalliesPartitionTheRaids(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
 
         foreach (Faction f in view.State.Factions)
         {
@@ -261,13 +329,32 @@ public class ChronicleLayerTests
             RecordFacts.RaidsSent(view, f.Id, view.FirstYear, view.LastYear).Total);
 
         Assert.Equal(inRecord, counted);
+        Assert.True(inRecord > 0, $"{baseline}: no raids in the record to partition");
+
+        // All three branches are populated, not merely accounted for.
+        //
+        // This is the assertion that was missing, and its absence hid a real defect for as long as
+        // Layer 4 has existed: the haul figure was read from a data key the engine never writes, so
+        // every successful raid came back as "took nothing". The sums balanced, the totals matched
+        // the record, and the split was two-way while claiming to be three. **Assert extraction,
+        // not just absence of failure** — a partition whose third cell is structurally always zero
+        // is a partition that cannot report what it was written for.
+        RaidTally all = new(
+            view.State.Factions.Sum(f => RecordFacts.RaidsSent(view, f.Id, view.FirstYear, view.LastYear).BeatenOff),
+            view.State.Factions.Sum(f => RecordFacts.RaidsSent(view, f.Id, view.FirstYear, view.LastYear).TookAHaul),
+            view.State.Factions.Sum(f => RecordFacts.RaidsSent(view, f.Id, view.FirstYear, view.LastYear).TookNothing));
+
+        Assert.True(all.BeatenOff > 0, $"{baseline}: no raid was beaten off");
+        Assert.True(all.TookAHaul > 0, $"{baseline}: no raid came away with anything — the haul figure is inert");
+        Assert.True(all.TookNothing > 0, $"{baseline}: no raid got through empty");
     }
 
     /// <summary>Battles, killings and marriages are counted without dropping rows.</summary>
-    [Fact]
-    public void TheOtherTalliesAccountForEveryRow()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void TheOtherTalliesAccountForEveryRow(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
 
         int battlesInRecord = view.Log.Events.Count(e => e.Kind == EventKind.ConflictBattle);
         int battlesCounted = view.State.Factions.Sum(f =>
@@ -281,6 +368,18 @@ public class ChronicleLayerTests
 
         int marriagesInRecord = view.Log.Events.Count(e => e.Kind == EventKind.LifeMarriage);
         Assert.True(marriagesInRecord > 0, "the record holds no marriages to count");
+
+        // Killings split internal and external, and the split accounts for every violent death
+        // whose killer served a house at the time. Asserted as a partition rather than as a figure,
+        // since the figure is a fact about the history.
+        int killings = 0;
+        foreach (Faction f in view.State.Factions)
+        {
+            (int inside, int outside) = RecordFacts.Killings(view, f.Id, view.FirstYear, view.LastYear);
+            killings += inside + outside;
+        }
+
+        Assert.True(killings > 0, $"{baseline}: no killings attributed to any house");
     }
 
     // ---- statistics carry a scope -----------------------------------------
@@ -293,35 +392,44 @@ public class ChronicleLayerTests
     /// deliberate error below is caught by comparing the two windows, which is the only way to
     /// see it — the sentence is grammatical, the number is real, and it is about the wrong thing.
     /// </summary>
-    [Fact]
-    public void AFactionLifetimeFigureInsideAReignIsCaught()
+    [Theory]
+    [MemberData(nameof(Baselines))]
+    public void AFactionLifetimeFigureInsideAReignIsCaught(BaselineUnderTest baseline)
     {
-        WorldView view = World();
+        WorldView view = World(baseline);
 
-        Section reign = Chronicle().First(s => s.IsReign && s.HasWindow);
-        Faction subject = view.State.Factions.First(f =>
-            reign.Heading.Contains(f.Name.Replace("the ", "", StringComparison.OrdinalIgnoreCase),
-                StringComparison.OrdinalIgnoreCase));
+        // A reign whose window disagrees with its house's lifetime on raids sent. Searched for
+        // rather than taken first: where the two windows agree, quoting one inside the other is
+        // undetectable, and a test that took the first reign would pass by coincidence on one
+        // baseline and fail on the other for a reason that is not a defect.
+        foreach (Section reign in Sections(baseline).Where(static s => s.IsReign && s.HasWindow))
+        {
+            Faction? subject = view.State.Factions.FirstOrDefault(f =>
+                reign.Heading.Contains(f.Name.Replace("the ", "", StringComparison.OrdinalIgnoreCase),
+                    StringComparison.OrdinalIgnoreCase));
 
-        RaidTally forTheReign = RecordFacts.RaidsSent(view, subject.Id, reign.FromYear, reign.ToYear);
-        RaidTally forTheLifetime = RecordFacts.RaidsSent(view, subject.Id, view.FirstYear, view.LastYear);
+            if (subject is null) continue;
 
-        // The premise of the check: the two windows disagree, so quoting one inside the other is
-        // detectable. If they ever agreed, this test would be passing by coincidence.
-        Assert.True(forTheLifetime.Total > forTheReign.Total,
-            $"{subject.Name}: lifetime {forTheLifetime.Total} raids, reign window {forTheReign.Total} — " +
-            "no scope error is detectable here");
+            RaidTally forTheReign = RecordFacts.RaidsSent(view, subject.Id, reign.FromYear, reign.ToYear);
+            RaidTally forTheLifetime = RecordFacts.RaidsSent(view, subject.Id, view.FirstYear, view.LastYear);
 
-        // The deliberate defect: the lifetime figure, stated inside the reign.
-        string defective = $"Under his rule the house sent {forTheLifetime.Total} raids.";
+            if (forTheLifetime.Total <= forTheReign.Total) continue;
 
-        List<int> stated = ChronicleReader.Figures(defective);
+            // The deliberate defect: the lifetime figure, stated inside the reign.
+            List<int> stated = ChronicleReader.Figures(
+                $"Under his rule the house sent {forTheLifetime.Total} raids.");
 
-        Assert.Contains(forTheLifetime.Total, stated);
-        Assert.DoesNotContain(forTheReign.Total, stated);
+            Assert.Contains(forTheLifetime.Total, stated);
+            Assert.DoesNotContain(forTheReign.Total, stated);
 
-        // And the true telling passes the same check.
-        Assert.Contains(forTheReign.Total,
-            ChronicleReader.Figures($"Under his rule the house sent {forTheReign.Total} raids."));
+            // And the true telling passes the same check.
+            Assert.Contains(forTheReign.Total,
+                ChronicleReader.Figures($"Under his rule the house sent {forTheReign.Total} raids."));
+
+            return;
+        }
+
+        Assert.Fail($"{baseline}: no reign section whose window disagrees with its house's lifetime " +
+                    "on raids sent, so no scope error is detectable in this document");
     }
 }

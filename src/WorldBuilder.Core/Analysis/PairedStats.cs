@@ -2,18 +2,24 @@ using System.Globalization;
 
 namespace WorldBuilder.Core.Analysis;
 
-/// <summary>One paired contrast, with everything needed to read it honestly.</summary>
-public sealed record Contrast(string Name, int N, double Mean, double Sd, double T, double P, double Low, double High)
+/// <summary>
+/// One paired contrast, with everything needed to read it honestly.
+///
+/// The two dispersion figures are <see cref="Dispersion"/> rather than bare doubles, so neither
+/// can reach a report without saying which it is. A standard deviation and the half-width of an
+/// interval are the same order of magnitude here and were confused once already.
+/// </summary>
+public sealed record Contrast(string Name, int N, double Mean, Dispersion Sd, double T, double P, Dispersion Ci95)
 {
-    public double StandardError => N <= 1 ? 0 : Sd / Math.Sqrt(N);
+    public double StandardError => N <= 1 ? 0 : Sd.Figure / Math.Sqrt(N);
 
     /// <summary>Whether the whole confidence interval clears a minimum effect, in either direction.</summary>
-    public bool ClearsMde(double mde) => Math.Abs(Mean) >= mde && Low * High > 0;
+    public bool ClearsMde(double mde) => Math.Abs(Mean) >= mde && Ci95.Low * Ci95.High > 0;
 
     public string Line() =>
         string.Create(CultureInfo.InvariantCulture,
-            $"{Name,-24} n={N,4}  mean {Mean,7:+0.00;-0.00}  sd {Sd,6:0.00}  " +
-            $"95% CI [{Low,7:+0.00;-0.00}, {High,7:+0.00;-0.00}]  t {T,6:0.00}  p {P:0.0000}");
+            $"{Name,-24} n={N,4}  mean={Mean,7:+0.00;-0.00}  {Sd.Padded(11)}  " +
+            $"{Ci95.Padded(24)}  t={T,6:0.00}  p={P:0.0000}");
 }
 
 /// <summary>
@@ -37,7 +43,8 @@ public static class PairedStats
             throw new ArgumentException($"{name}: {a.Count} against {b.Count} — a paired contrast needs both arms on the same units.");
 
         int n = a.Count;
-        if (n < 2) return new Contrast(name, n, 0, 0, 0, 1, 0, 0);
+        if (n < 2)
+            return new Contrast(name, n, 0, Dispersion.Sd(0, n), 0, 1, Dispersion.Ci95(0, 0, n));
 
         double[] d = new double[n];
         for (int i = 0; i < n; i++) d[i] = a[i] - b[i];
@@ -55,7 +62,8 @@ public static class PairedStats
         double p = se == 0 ? 1 : TwoSidedP(t, df);
         double critical = InverseT(0.975, df);
 
-        return new Contrast(name, n, mean, sd, t, p, mean - critical * se, mean + critical * se);
+        return new Contrast(name, n, mean, Dispersion.Sd(sd, n), t, p,
+            Dispersion.Ci95(mean - critical * se, mean + critical * se, n));
     }
 
     /// <summary>

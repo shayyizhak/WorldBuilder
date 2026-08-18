@@ -3,6 +3,19 @@ using System.Text;
 
 namespace WorldBuilder.Inference;
 
+/// <summary>
+/// One rule's floor coverage across whatever was measured, and how far it reaches.
+/// </summary>
+/// <param name="Reason">
+/// <c>floored everywhere</c>, <c>zero at baseline</c> (reachable, unreached in some scopes), or
+/// <c>no floor on this panel</c> (zero in every scope of every seed measured). The last says what
+/// was observed and not why — see <see cref="GoldenDiff.FloorClassification"/>.
+/// </param>
+public sealed record FloorReason(string Rule, int WithFloor, int Scopes, string Reason)
+{
+    public int Pct => Scopes == 0 ? 0 : WithFloor * 100 / Scopes;
+}
+
 /// <summary>One difference between a stored render and a new one.</summary>
 public sealed record Drift(string Section, string Kind, string Detail)
 {
@@ -149,6 +162,115 @@ public static class GoldenDiff
                 drift.Add(new Drift(section, "accounting", line));
 
         return drift;
+    }
+
+    /// <summary>
+    /// How much of the document FLOOR actually protects, and where it does not.
+    ///
+    /// <b>The gap this closes.</b> <see cref="CoverageSound"/> skips any row the baseline recorded
+    /// at zero — correctly, because a rule that read nothing then cannot read less now — and says
+    /// nothing about having done so. On seed 42 that is 129 rows of 208: FLOOR protection silently
+    /// absent for most of the document, in a layer whose entire purpose is to notice absence. It
+    /// is the <c>rule-inert</c> condition one layer up, and it was invisible for the same reason
+    /// <c>rule-inert</c> was invented to fix.
+    ///
+    /// <b>Reported, never failed.</b> A zero floor is not a regression, and a rule that is
+    /// construction-gated has honest zeros — <c>partition-sum</c> needs a partition. Gating on
+    /// this would manufacture exactly the false positives that once cost seven true sections. The
+    /// row is a note whose job is to keep the denominator in front of the reader.
+    ///
+    /// <b>Why the reason is not classified here.</b> Two different conditions produce a zero: a
+    /// rule with no extraction call site at all, and one whose call site this document never
+    /// reached. They are indistinguishable inside one document by construction — both read zero —
+    /// and separating them needs the whole seed panel. See
+    /// <see cref="FloorClassification"/>, which is where the split is drawn and where it belongs.
+    /// </summary>
+    public static List<Drift> FloorCoverage(
+        IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>> stored)
+    {
+        Dictionary<string, (int WithFloor, int Total)> byRule = new(StringComparer.Ordinal);
+
+        foreach ((_, IReadOnlyDictionary<string, RuleCounts> rules) in stored)
+            foreach ((string rule, RuleCounts counts) in rules)
+            {
+                (int with, int total) = byRule.GetValueOrDefault(rule, (0, 0));
+                byRule[rule] = (counts.Extracted > 0 ? with + 1 : with, total + 1);
+            }
+
+        List<string> names = [.. byRule.Keys];
+        names.Sort(StringComparer.Ordinal);
+
+        List<Drift> drift = [];
+        int floored = 0, rows = 0;
+
+        foreach (string rule in names)
+        {
+            (int with, int total) = byRule[rule];
+            floored += with;
+            rows += total;
+
+            if (with == total) continue;
+
+            drift.Add(new Drift("(coverage)", "no-floor",
+                with == 0
+                    ? $"{rule}: no floor in any of {total} scope(s) — FLOOR cannot fail for it here"
+                    : $"{rule}: floor in {with} of {total} scope(s); {total - with} unprotected"));
+        }
+
+        if (rows > 0)
+            drift.Add(new Drift("(coverage)", "floor-reach",
+                $"FLOOR compared {floored} of {rows} rule rows across {stored.Count} scope(s)"));
+
+        return drift;
+    }
+
+    /// <summary>
+    /// Why each rule's floor is missing, drawn across the whole seed panel.
+    ///
+    /// The split the single-document view cannot make:
+    ///
+    /// <list type="bullet">
+    /// <item><b>zero at baseline</b> — zero in some scopes and non-zero in others. The call site is
+    /// reachable and those documents did not reach it, which is a fact about scope selection
+    /// rather than about the rule.</item>
+    /// <item><b>no floor on this panel</b> — zero in every scope of every seed. FLOOR cannot fail
+    /// for it on any seed here.</item>
+    /// </list>
+    ///
+    /// <b>What the second label deliberately does not claim.</b> It would be natural to call it
+    /// "not instrumented", and for three of the four rules it finds that is true. It is not true
+    /// for <c>quantity</c>, which has an <c>Extracted</c> call site that no panel seed reaches — a
+    /// dead path rather than a missing one, and a worse finding rather than a lesser one. Counts
+    /// alone cannot tell "no call site" from "call site never reached", and a label asserting the
+    /// first would be the absent-versus-unknown conflation this project has now met in five
+    /// places. The measurement reports the reach; which of the two produced it is read off the
+    /// source and stated by a person.
+    /// </summary>
+    public static List<FloorReason> FloorClassification(
+        IReadOnlyList<IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>>> panel)
+    {
+        Dictionary<string, (int WithFloor, int Total)> totals = new(StringComparer.Ordinal);
+
+        foreach (IReadOnlyDictionary<string, IReadOnlyDictionary<string, RuleCounts>> seed in panel)
+            foreach ((_, IReadOnlyDictionary<string, RuleCounts> rules) in seed)
+                foreach ((string rule, RuleCounts counts) in rules)
+                {
+                    (int with, int total) = totals.GetValueOrDefault(rule, (0, 0));
+                    totals[rule] = (counts.Extracted > 0 ? with + 1 : with, total + 1);
+                }
+
+        List<string> names = [.. totals.Keys];
+        names.Sort(StringComparer.Ordinal);
+
+        List<FloorReason> rows = [];
+        foreach (string rule in names)
+        {
+            (int with, int total) = totals[rule];
+            rows.Add(new FloorReason(rule, with, total,
+                with == 0 ? "no floor on this panel" : with == total ? "floored everywhere" : "zero at baseline"));
+        }
+
+        return rows;
     }
 
     /// <summary>

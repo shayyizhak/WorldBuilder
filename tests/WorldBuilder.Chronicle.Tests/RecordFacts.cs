@@ -62,17 +62,36 @@ public static class RecordFacts
 
         took.Sort(static (a, b) => a.Year.CompareTo(b.Year));
 
+        // One hold, however many records moved the seat.
+        //
+        // A contested transfer emits two: the challenge that decided it, and a POLITY.SUCCESSION
+        // beside it carrying the state change. Reading both as separate holds put the same man on
+        // the same seat twice in the same year — "Pouldrir Ho 15–15, Pouldrir Ho 15–20" — which is
+        // not a ruler list, and §7 says this layer verifies ruler lists. It did not break any
+        // assertion here, because every assertion was about the partition rather than about the
+        // list, which is its own small lesson about what "verified" was covering.
+        //
+        // The year decides, not adjacency. Collapsing any two neighbouring appearances by one
+        // person, whatever their years, also deletes a genuine second tenure — the same man back
+        // on the same seat with nobody recorded between — and "no duplicate in the list" is
+        // satisfied by both the correct collapse and that deletion. Derived here a second time
+        // rather than shared with the engine's copy, like everything else in this file.
+        List<(int Year, EntityId Ruler)> distinct = [];
+        foreach ((int year, EntityId ruler) in took)
+            if (distinct.Count == 0 || distinct[^1].Ruler != ruler || distinct[^1].Year != year)
+                distinct.Add((year, ruler));
+
         List<Held> spells = [];
 
-        for (int i = 0; i < took.Count; i++)
+        for (int i = 0; i < distinct.Count; i++)
         {
-            int from = took[i].Year;
-            int to = i + 1 < took.Count ? took[i + 1].Year : view.LastYear;
+            int from = distinct[i].Year;
+            int to = i + 1 < distinct.Count ? distinct[i + 1].Year : view.LastYear;
 
-            (string ended, EntityId by) = HowItEnded(view, faction, took[i].Ruler, from, to,
-                last: i + 1 == took.Count);
+            (string ended, EntityId by) = HowItEnded(view, faction, distinct[i].Ruler, from, to,
+                last: i + 1 == distinct.Count);
 
-            spells.Add(new Held(took[i].Ruler, faction, from, to, ended, by));
+            spells.Add(new Held(distinct[i].Ruler, faction, from, to, ended, by));
         }
 
         return spells;
@@ -290,11 +309,20 @@ public static class RecordFacts
         return serving == faction;
     }
 
-    private static int Took(Event e)
-    {
-        foreach (KeyValuePair<string, string> d in e.Data)
-            if (d.Key is "took" or "haul" or "plunder" && int.TryParse(d.Value, out int n)) return n;
-
-        return 0;
-    }
+    /// <summary>
+    /// What a raid carried off, from the key the engine actually writes.
+    ///
+    /// <b>The silent-path family, inside the layer that exists to catch it.</b> This read
+    /// <c>took</c>, <c>haul</c> and <c>plunder</c>; the engine has only ever written <c>loot</c>.
+    /// So every successful raid came back as zero and Layer 4's three-way raid split has been a
+    /// two-way one since it was written — the partition still summed, the totals still matched the
+    /// record, and nothing failed. A correct rule whose input never arrives, presenting as a pass,
+    /// for the eighth recorded time.
+    ///
+    /// Read against the key list rather than one string, because the list was the defect: three
+    /// plausible names and not the real one is what a lexicon assembled from memory looks like. It
+    /// is the record that decides, so <c>loot</c> is asserted to be present and non-zero somewhere
+    /// by <c>RaidTalliesPartitionTheRaids</c> — absence of failure is not extraction.
+    /// </summary>
+    private static int Took(Event e) => e.GetInt("loot");
 }

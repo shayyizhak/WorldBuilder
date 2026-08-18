@@ -6,9 +6,13 @@ namespace WorldBuilder.Core.Analysis;
 /// <param name="Mechanic">Which of the four consumers made it.</param>
 /// <param name="Kind">A ranking over candidates, or a single roll against a line.</param>
 /// <param name="Candidates">How many options were open. One means there was nothing to choose between.</param>
-/// <param name="Spread">
-/// The proximity range across those options — the width distance had to work with. Zero for a
-/// roll, and zero for a ranking whose candidates all sit the same distance away.
+/// <param name="Range">
+/// The proximity range across those options — the width distance had to work with. Zero-width for
+/// a roll, and zero-width for a ranking whose candidates all sit the same distance away.
+///
+/// A <see cref="Dispersion"/> rather than an int width, which is the same figure this field used
+/// to hold under the name <c>Spread</c>. Nothing prints it today, and that is exactly when to
+/// name it properly: the ambiguity is created where the number is made, not where it is read.
 /// </param>
 /// <param name="Discriminated">
 /// Whether the outcome actually differed with proximity held flat at
@@ -18,7 +22,7 @@ public sealed record DistanceDecision(
     string Mechanic,
     DecisionKind Kind,
     int Candidates,
-    int Spread,
+    Dispersion Range,
     bool Discriminated);
 
 public enum DecisionKind : byte
@@ -57,12 +61,17 @@ public sealed class GeographyProbe
     public IReadOnlyList<DistanceDecision> Decisions => _decisions;
 
     /// <summary>Records a decision that ranged over several candidates.</summary>
-    public void Ranked(string mechanic, int candidates, int spread, bool discriminated) =>
-        _decisions.Add(new DistanceDecision(mechanic, DecisionKind.Ranking, candidates, spread, discriminated));
+    /// <param name="nearest">The closest candidate's proximity.</param>
+    /// <param name="furthest">The furthest candidate's proximity. Equal to <paramref name="nearest"/>
+    /// where every candidate sits the same distance away, which is a real and common case.</param>
+    public void Ranked(string mechanic, int candidates, int nearest, int furthest, bool discriminated) =>
+        _decisions.Add(new DistanceDecision(mechanic, DecisionKind.Ranking, candidates,
+            Dispersion.Range(nearest, furthest, candidates), discriminated));
 
     /// <summary>Records a decision that compared one figure against a line.</summary>
     public void Rolled(string mechanic, bool discriminated) =>
-        _decisions.Add(new DistanceDecision(mechanic, DecisionKind.Roll, 1, 0, discriminated));
+        _decisions.Add(new DistanceDecision(mechanic, DecisionKind.Roll, 1,
+            Dispersion.Range(0, 0, 1), discriminated));
 
     private readonly Dictionary<string, (int Total, int Absorbed)> _absorption = new(StringComparer.Ordinal);
 
@@ -101,7 +110,7 @@ public sealed class GeographyProbe
             // "Open" counts only the decisions distance could have moved: a ranking over one
             // candidate, or one whose candidates are all equidistant, had no room to differ and
             // counting it would dilute the share with decisions nobody could have made otherwise.
-            bool couldHaveMattered = d.Kind == DecisionKind.Roll || (d.Candidates > 1 && d.Spread > 0);
+            bool couldHaveMattered = d.Kind == DecisionKind.Roll || (d.Candidates > 1 && d.Range.Width > 0);
 
             byMechanic[d.Mechanic] =
                 (total + 1, discriminated + (d.Discriminated ? 1 : 0), open + (couldHaveMattered ? 1 : 0));
