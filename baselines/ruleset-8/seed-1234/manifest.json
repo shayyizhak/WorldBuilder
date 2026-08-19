@@ -1,10 +1,10 @@
 {
   "baseline_id": "ruleset-8-seed-1234",
-  "created_utc": "2026-08-19T12:02:32Z",
+  "created_utc": "2026-08-19T22:11:24Z",
   "seed": 1234,
   "verification": "stability-anchor-only",
   "engine_version": "1.2.0",
-  "engine_commit": "b0a6c4b47ba9e2c9381eff33b981b0ebfdd4e08f",
+  "engine_commit": "68a7198d0fb039d24cb17e5bffaaacbf05a83377",
   "ruleset_version": "8",
   "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
   "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
@@ -23,14 +23,14 @@
     "model_digest": ""
   },
   "notes": [
-    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 8 stops a declaration of war claiming it broke an alliance that was not there - 14 phantom relDel keys across the panel, on DIPLO.WAR_DECLARED, for edges the graph did not hold. A record change with no simulation change: against the sealed ruleset-7 baselines every event appears in the same order with the same shape, none added and none removed, every payload key present as an ordered subsequence, and the only omissions are those phantom severances; the live world equals the ruleset-7 fold on all 27 components of WorldState. The off-switch (--no-sever-guard) gives ruleset 7\u0027s emission back. Chronicle rendered with: wb book --factions all."
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 8 stops a declaration of war claiming it broke an alliance that was not there - 14 phantom relDel keys across the panel, on DIPLO.WAR_DECLARED, for edges the graph did not hold. A record change with no simulation change: against the sealed ruleset-7 baselines every event appears in the same order with the same shape, none added and none removed, every payload key present as an ordered subsequence, and the only omissions are those phantom severances; the live world equals the ruleset-7 fold on all 27 components of WorldState. The off-switch (--no-sever-guard) gives ruleset 7\u0027s emission back. Chronicle rendered with: wb book --factions all. Cut after the ruleset was committed, so engine_commit contains the ruleset this seals - the first set for which that is true since ruleset 6."
   ],
   "artefacts": [
     { "filename": "chronicle-1234.md", "source_path": "out/ruleset-8/seed-1234/chronicle-1234.md", "sha256": "be4cd0126a4c50d88276fb71483fce35623912734649d6caec3ab3ac317ed45d", "bytes": 8712, "role": "artefact" },
     { "filename": "chronicle-1234.findings.json", "source_path": "out/ruleset-8/seed-1234/chronicle-1234.findings.json", "sha256": "b16eddd1e21d42efd064cfe1c7d7a238131af122be240965533a04107b5137a3", "bytes": 42363, "role": "anchor" },
     { "filename": "chronicle-1234.unverified.md", "source_path": "out/ruleset-8/seed-1234/chronicle-1234.unverified.md", "sha256": "77e3af4a723c4cc74dc85904fba27b512bfb317d462531e01aa8540dbaa441af", "bytes": 12016, "role": "artefact" },
     { "filename": "renders.json", "source_path": "out/ruleset-8/seed-1234/renders.json", "sha256": "eebba6c77187d1637e8f540fec4d3782f8b4f69b68ffd74e3787598543721b83", "bytes": 20543, "role": "artefact" },
-    { "filename": "world-1234.jsonl", "source_path": "out/ruleset-8/seed-1234/world-1234.jsonl", "sha256": "8c544ee2bce7ee4bbed36db1d11d401e8550ef69190975d83a0a33c07c0671d1", "bytes": 574116, "role": "artefact" },
+    { "filename": "world-1234.jsonl", "source_path": "out/ruleset-8/seed-1234/world-1234.jsonl", "sha256": "ba078b679706eede22180f32657ecf21030ae4078787713ad52fd525a8e1b922", "bytes": 574116, "role": "artefact" },
     { "filename": "world-1234.log", "source_path": "out/ruleset-8/seed-1234/world-1234.log", "sha256": "936f234291ba4a0903ce849fbb7c8cc8654e65abfefb6a49cedc37a6ad78781b", "bytes": 73403, "role": "artefact" },
     { "filename": "board.wbmap.json", "source_path": "out/ruleset-8/seed-1234/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
   ]

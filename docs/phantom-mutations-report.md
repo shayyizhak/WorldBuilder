@@ -273,17 +273,24 @@ missed with the halt silently not firing — is ruled out by the direct count an
 artefacts the archive split still owes: chronicle, findings sidecar, unverified passages, `renders.json`,
 world log, readable log and board.
 
-| seed | records | seal | chronicle | findings |
-|---|---|---|---|---|
-| 1 | 760 | `1e004883…` | 10,973 b | 46,571 b |
-| 7 | 594 | `5e448f03…` | — | — |
-| 42 | 954 | `5dcc03d5…` | 11,502 b | 46,935 b |
-| 1234 | 897 | `213031a8…` | — | — |
-| 2025 | 772 | `c2421344…` | — | — |
+| seed | records | seal |
+|---|---|---|
+| 1 | 760 | `7cb60c2b…` |
+| 7 | 594 | `965ece0c…` |
+| 42 | 954 | `d5925c04…` |
+| 1234 | 897 | `81ebe108…` |
+| 2025 | 772 | `3fd3d847…` |
 
 `wb baseline check` passes on all five. The checker fingerprint is `60f5b325…` — **identical to
 ruleset 7's**, which is correct: no checker file changed, so the rules that judged these chronicles are
 the same rules.
+
+**Cut twice.** The first cut stamped `b0a6c4b`, which contains ruleset 6, because the ruleset was
+still uncommitted — see §10. After committing as `68a7198` the five sets were cut again, and these are
+those seals. **The second cut needed no inference at all:** only the world header carries the commit,
+so the events were byte-identical and `wb book --check-only` hit every cached render, reproducing all
+five chronicles and findings sidecars byte for byte. What would have been five seeds of model time was
+a rebuild, five re-runs and a re-check.
 
 **Layer 5 is back at 4 of 4 layers.** It went quiet between the bump and the cut, exactly as the brief
 said it would, and `wb test --baseline baselines/ruleset-8/seed-42` now runs it: 0 failed, 15 noted.
@@ -319,8 +326,13 @@ rendering figure, not a ruleset one, and this brief changed no checker rule.
 
 ## 6. Re-stage — §6
 
-All seven artefacts regenerated against the new seal `5dcc03d5…` into `out/reference-set-r8/`.
+All seven artefacts regenerated against the new seal `d5925c04…` into `out/reference-set-r8/`.
 `wb stage --seed 42` reports **no halt condition met**, and everything still says `verified: no`.
+
+**Staged twice, once per cut.** The second re-stage, against the re-cut seal, moved **one line per
+artefact and nothing else** — the seal itself, in the five artefacts that quote it. `checks.md`
+does not quote it and is byte-identical, live retrieval probes included, which also says the planner
+gave the same answers on a second run. The table below is the substantive diff, ruleset 7 → 8.
 
 The staging output directory is now named for the ruleset rather than hardcoded to `r7`, so a bump
 cannot quietly overwrite the previous set — which is the "before" side of every diff like this one.
@@ -370,6 +382,8 @@ relation, 18 suite-eligible — every requirement still met and every count unch
 |---|---|---|
 | `NoEventClaimsAChangeTheStateDoesNotHold` | no mutation key names something the state does not hold | 5 |
 | `TheOnlyKeysNamingNobodyAreTheTwoAlreadyKnown` | the unrepaired `leg:-` site stays at exactly two keys | 5 |
+| `EverySealsCommitContainsTheRulesetItSeals` | every manifest's commit contains the ruleset it claims | all sets |
+| `TheUnrepairableSetsAreTheTwoRulesetsThatWereNeverCommitted` | the exception list is exactly the two that cannot be repaired | — |
 | `TheAuditProbesEveryKeyFamilyTheReducerApplies` | the audit's coverage list matches the reducer's own `switch` | 1 |
 | `Ruleset8DropsOnlyPhantomSeverancesFromTheRuleset7Record` | same events, same order, only phantom severances dropped | 5 |
 | `Ruleset8LeavesTheWorldWhereRuleset7LeftIt` | all 27 state components equal the sealed ruleset-7 fold | 5 |
@@ -410,16 +424,42 @@ same two fire against the sealed **ruleset-7** world, so they predate this chang
 
 ---
 
-## 10. One provenance caveat, for the record
+## 10. A seal's commit now has to contain the ruleset it seals
 
-Every ruleset-8 manifest stamps `engine_commit b0a6c4b47ba9e2c9381eff33b981b0ebfdd4e08f`, and **that
-commit contains ruleset 6**. The ruleset-8 code is uncommitted, so the build's source metadata carries
-HEAD, and the seal names a commit from which this world cannot be regenerated.
+The first ruleset-8 cut stamped `engine_commit b0a6c4b`, and **that commit contains ruleset 6** — the
+code was still uncommitted, so the build's source metadata carried HEAD. A seal names a commit so that
+a reader can go there, build, and regenerate the world; that one named a build which would produce a
+different history. The seal verified, every artefact hash matched, and the single property the seal
+exists to carry did not hold.
 
-**Ruleset 7's own baselines have the same defect** — their manifests name the same commit — so this is
-the established practice in this tree rather than something introduced here, and it was not changed
-mid-brief. It is worth knowing, because a seal exists so a reader can reproduce the world from the
-commit it names, and right now two baseline sets name a commit that cannot.
+**It had happened twice before, and nothing checked.** Auditing every manifest in the archive:
 
-The checker fingerprint is unaffected: it hashes five checker files as stored in git at that commit,
-none of which this brief touched, which is why it comes out identical to ruleset 7's.
+| set | manifest claims | commit contains | |
+|---|---|---|---|
+| `ruleset-3` | 3 | 3 | ✓ |
+| `ruleset-4` | 4 | 4 | ✓ |
+| `ruleset-5` | 5 | **4** | ✗ |
+| `ruleset-6` | 6 | 6 | ✓ |
+| `ruleset-7` | 7 | **6** | ✗ |
+| `ruleset-8` | 8 | **6** → **8** | ✗ → ✓ |
+
+Always the same way: bump the ruleset in the working tree, cut, commit afterwards.
+
+**Rulesets 5 and 7 exist in no commit of this repository at all**, so those two sets can never be
+re-cut correctly — the code that produced them was never stored. Walking the branch confirms it: no
+commit in the history carries either version. That is unrepairable rather than merely outstanding, and
+it is recorded as such.
+
+**Three things now hold.** `BaselineArchive.Cut` refuses to seal a baseline whose commit does not
+contain its ruleset, naming the fix in the message — so a fourth instance cannot be created.
+`SealProvenanceTests.EverySealsCommitContainsTheRulesetItSeals` walks every manifest under
+`baselines/` (discovered, not listed) and asserts the claim, with the two unrepairable sets named as
+explicit exceptions and a floor on how many must be confirmed, so a run where everything fell into the
+exception list fails rather than reads clean. And
+`TheUnrepairableSetsAreTheTwoRulesetsThatWereNeverCommitted` asserts the exception list is exactly
+those two and re-derives the reason — that no commit carries either ruleset — so the list cannot be
+widened to fit a new failure.
+
+The ruleset-8 set was re-cut against `68a7198` and is the first set since ruleset 6 whose commit
+contains its own ruleset. The checker fingerprint is unaffected either way: it hashes five checker
+files as stored in git, none of which this brief touched, which is why it is identical to ruleset 7's.

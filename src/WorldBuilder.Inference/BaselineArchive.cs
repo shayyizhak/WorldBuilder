@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace WorldBuilder.Inference;
 
@@ -90,6 +91,48 @@ public static class BaselineArchive
         return (fingerprint, inputs);
     }
 
+    /// <summary>The file the ruleset counter lives in, read out of git to check a seal's claim.</summary>
+    public const string RulesetSource = "src/WorldBuilder.Core/Provenance.cs";
+
+    /// <summary>
+    /// The ruleset version a commit contains, or null where git cannot read it there.
+    ///
+    /// <b>Why a seal has to be able to answer this.</b> A baseline's manifest names an engine commit,
+    /// and the whole purpose of naming it is that a reader can go to that commit and regenerate the
+    /// world. A manifest claiming ruleset 8 whose commit contains ruleset 6 names a build that would
+    /// produce a different history — the seal verifies, every hash matches, and the one thing it is
+    /// for does not hold.
+    ///
+    /// It has happened three times, always the same way: the ruleset was bumped in the working tree,
+    /// the baselines were cut before committing, and the build stamped HEAD. Rulesets 5 and 7 exist in
+    /// no commit at all as a result, so those two sets can never be re-cut correctly — the code that
+    /// produced them was never stored. That is why <see cref="Cut"/> now refuses rather than leaving
+    /// this to be noticed later.
+    ///
+    /// Read from git rather than the working tree, for the reason the checker fingerprint is: the
+    /// question is what the repository stores at that commit, and the working tree is a different
+    /// thing that happens to be nearby.
+    /// </summary>
+    public static string? RulesetAt(string repositoryRoot, string commit)
+    {
+        byte[] blob;
+        try
+        {
+            blob = GitBlob(repositoryRoot, commit, RulesetSource);
+        }
+        catch (InvalidOperationException)
+        {
+            // The commit predates the file, or git cannot reach it. Null is "cannot say", which the
+            // caller has to handle as its own case rather than as a mismatch.
+            return null;
+        }
+
+        Match match = Regex.Match(
+            Encoding.UTF8.GetString(blob), @"const\s+string\s+Version\s*=\s*""([^""]+)""");
+
+        return match.Success ? match.Groups[1].Value : null;
+    }
+
     private static byte[] GitBlob(string repositoryRoot, string commit, string path)
     {
         ProcessStartInfo start = new("git", ["cat-file", "blob", $"{commit}:{path}"])
@@ -165,6 +208,29 @@ public static class BaselineArchive
             throw new FormatException(
                 $"{worldName} records no engine commit. The checker fingerprint is taken at that " +
                 "commit, so a baseline cannot be cut from a build that did not record one.");
+        }
+
+        // The commit has to contain the ruleset the manifest is about to claim.
+        //
+        // A seal names an engine commit so a reader can go there and regenerate the world; a manifest
+        // saying ruleset 8 whose commit holds ruleset 6 names a build that would produce a different
+        // history, and every hash in it still matches. The failure is invisible from inside the
+        // artefact, which is why it went unnoticed three times: bump the ruleset in the working tree,
+        // cut before committing, and the build stamps HEAD. Rulesets 5 and 7 exist in no commit at
+        // all because of it, so those two sets can never be re-cut correctly.
+        //
+        // Refused rather than warned. The cheap fix is to commit first and cut second, and a warning
+        // at this point is a note nobody reads until the set it describes is already sealed.
+        if (header.RulesetVersion.Length > 0 &&
+            RulesetAt(request.RepositoryRoot, header.EngineCommit) is { } sealedRuleset &&
+            !string.Equals(sealedRuleset, header.RulesetVersion, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                $"{worldName} was produced under ruleset {header.RulesetVersion}, and its engine " +
+                $"commit {header.EngineCommit[..12]} contains ruleset {sealedRuleset}. A seal names " +
+                "the commit so the world can be regenerated from it, and this one cannot be. Commit " +
+                "the ruleset, rebuild so the header carries the new commit, re-run the world, and " +
+                "cut from that.");
         }
 
         // Which board this history happened on, taken from its own record. A ruleset-4 world

@@ -1,10 +1,10 @@
 {
   "baseline_id": "ruleset-8-seed-42",
-  "created_utc": "2026-08-19T10:40:07Z",
+  "created_utc": "2026-08-19T22:11:24Z",
   "seed": 42,
   "verification": "stability-anchor-only",
   "engine_version": "1.2.0",
-  "engine_commit": "b0a6c4b47ba9e2c9381eff33b981b0ebfdd4e08f",
+  "engine_commit": "68a7198d0fb039d24cb17e5bffaaacbf05a83377",
   "ruleset_version": "8",
   "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
   "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
@@ -23,14 +23,14 @@
     "model_digest": ""
   },
   "notes": [
-    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 8 stops a declaration of war claiming it broke an alliance that was not there - 14 phantom relDel keys across the panel, on DIPLO.WAR_DECLARED, for edges the graph did not hold. A record change with no simulation change: against the sealed ruleset-7 baselines every event appears in the same order with the same shape, none added and none removed, every payload key present as an ordered subsequence, and the only omissions are those phantom severances; the live world equals the ruleset-7 fold on all 27 components of WorldState. The off-switch (--no-sever-guard) gives ruleset 7\u0027s emission back. Chronicle rendered with: wb book --factions all."
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 8 stops a declaration of war claiming it broke an alliance that was not there - 14 phantom relDel keys across the panel, on DIPLO.WAR_DECLARED, for edges the graph did not hold. A record change with no simulation change: against the sealed ruleset-7 baselines every event appears in the same order with the same shape, none added and none removed, every payload key present as an ordered subsequence, and the only omissions are those phantom severances; the live world equals the ruleset-7 fold on all 27 components of WorldState. The off-switch (--no-sever-guard) gives ruleset 7\u0027s emission back. Chronicle rendered with: wb book --factions all. Cut after the ruleset was committed, so engine_commit contains the ruleset this seals - the first set for which that is true since ruleset 6."
   ],
   "artefacts": [
     { "filename": "chronicle-42.md", "source_path": "out/ruleset-8/seed-42/chronicle-42.md", "sha256": "b829a2e9bfab63029ca53cbfde4c61622881c17f37177e4abf5593c0a0562fd5", "bytes": 11502, "role": "artefact" },
     { "filename": "chronicle-42.findings.json", "source_path": "out/ruleset-8/seed-42/chronicle-42.findings.json", "sha256": "a535a31aaa0288f7f1c6c0287efff44065acc343c16edd3d694cb5b8e997e006", "bytes": 46935, "role": "anchor" },
     { "filename": "chronicle-42.unverified.md", "source_path": "out/ruleset-8/seed-42/chronicle-42.unverified.md", "sha256": "412d92024b10eb7990ceb35b8017bb6b1860e4643ef2c29bdbc65806681c8363", "bytes": 13900, "role": "artefact" },
     { "filename": "renders.json", "source_path": "out/ruleset-8/seed-42/renders.json", "sha256": "a28941c0dfdf07d2bf273d7ceea69cf4852cc2ccd5ec88ac304c63d94d908243", "bytes": 24610, "role": "artefact" },
-    { "filename": "world-42.jsonl", "source_path": "out/ruleset-8/seed-42/world-42.jsonl", "sha256": "7a117644e4c8c412090bef8df34291bc1d7b623a3302461d95153193cc7bf948", "bytes": 557410, "role": "artefact" },
+    { "filename": "world-42.jsonl", "source_path": "out/ruleset-8/seed-42/world-42.jsonl", "sha256": "4debb348f3bd0931a3585479012e575b76ac29dc663c66633e848860a1c28278", "bytes": 557410, "role": "artefact" },
     { "filename": "world-42.log", "source_path": "out/ruleset-8/seed-42/world-42.log", "sha256": "4a6cd33210eeb06744f2ce2c631f743f46941b040d43ac85e594a6a4bdfd8e2d", "bytes": 78229, "role": "artefact" },
     { "filename": "board.wbmap.json", "source_path": "out/ruleset-8/seed-42/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
   ]
