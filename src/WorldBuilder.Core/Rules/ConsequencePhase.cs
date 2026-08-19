@@ -799,11 +799,24 @@ public static class ConsequencePhase
     {
         WorldState state = tick.State;
 
+        // One event for the whole sweep, carrying the count and the reasons — POLITY.COLLAPSE's
+        // shape. Not one per goal: a year retiring four of them would go from one bookkeeping row
+        // to four, and nothing between them reads the book, so the batch is faithful.
+        List<(Goal Goal, GoalEnd Why)> retiring = [];
+
         foreach (Goal goal in state.Goals.Snapshot())
         {
+            // Three reasons, not one condition. They were sharing an `if`, which made "a goal
+            // that ran out of time" and "a goal that got what it wanted" the same event as far
+            // as anything outside this method could tell — and those are the two endings a
+            // reader of the history would most want told apart.
             bool ownerGone = goal.Owner.Kind == EntityKind.Actor && !state.ActorOf(goal.Owner).IsAlive;
-            if (ownerGone || goal.Progress >= 100 || tick.Year > goal.ExpiresYear)
-                state.Goals.Remove(goal);
+
+            if (ownerGone) retiring.Add((goal, GoalEnd.OwnerDeadAtRetirement));
+            else if (goal.Progress >= 100) retiring.Add((goal, GoalEnd.Completed));
+            else if (tick.Year > goal.ExpiresYear) retiring.Add((goal, GoalEnd.Expired));
         }
+
+        GoalRecord.EndWithoutAHost(tick, retiring);
     }
 }

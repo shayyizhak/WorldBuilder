@@ -51,13 +51,17 @@ public class InstrumentationInvarianceTests
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString())));
     }
 
-    private static string Run(ulong seed, bool ledger, bool probe)
+    private static string Run(ulong seed, bool ledger, bool probe, bool goals = false)
     {
         Simulation sim = new(seed)
         {
             Ledger = ledger ? new PlotLedger() : null,
             Probe = probe ? new GeographyProbe() : null,
         };
+
+        // Attached here rather than through a property on Simulation because the book lives on the
+        // state, and it is attachable before the first tick because worldgen forms no goals.
+        if (goals) sim.State.Goals.Watch = new GoalCensus();
 
         sim.Run(50);
         return Hash(sim.Log);
@@ -76,6 +80,11 @@ public class InstrumentationInvarianceTests
         Assert.Equal(bare, Run(seed, ledger: true, probe: false));
         Assert.Equal(bare, Run(seed, ledger: false, probe: true));
         Assert.Equal(bare, Run(seed, ledger: true, probe: true));
+
+        // The goal census, alone and beside the others. It observes the phase that decides what
+        // every actor does, so it is the sink with the most opportunity to disturb a stream.
+        Assert.Equal(bare, Run(seed, ledger: false, probe: false, goals: true));
+        Assert.Equal(bare, Run(seed, ledger: true, probe: true, goals: true));
     }
 
     /// <summary>
@@ -137,11 +146,20 @@ public class InstrumentationInvarianceTests
         // shape of a test that reports coverage it does not have.
         PlotLedger ledger = new();
         GeographyProbe probe = new();
+        GoalCensus goals = new();
 
         Simulation sim = new(42) { Ledger = ledger, Probe = probe };
+        sim.State.Goals.Watch = goals;
         sim.Run(50);
 
         Assert.NotEmpty(ledger.Plots);
         Assert.NotEmpty(probe.Decisions);
+
+        // Every arm of the census, so an invariance theory satisfied by a sink that sees nothing
+        // cannot pass. Creation, advance and ending are three separate paths through the book.
+        Assert.NotEmpty(goals.Created);
+        Assert.NotEmpty(goals.Advanced);
+        Assert.NotEmpty(goals.Ended);
+        Assert.NotEmpty(goals.Refused);
     }
 }

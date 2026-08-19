@@ -382,7 +382,7 @@ public static class ResolutionPhase
     /// </summary>
     private static void Seize(Tick tick, Arc arc, Actor plotter, Actor target, Faction faction, int age)
     {
-        Event seized = tick.Emit(new EventDraft(EventKind.PolityCoupResolved)
+        EventDraft coup = new EventDraft(EventKind.PolityCoupResolved)
             .Subject(plotter.Id)
             .Object(target.Id)
             .By(faction.Id)
@@ -393,11 +393,13 @@ public static class ResolutionPhase
             .Leg(faction.Id, -10)
             .InArc(arc.Id)
             .Because(arc.Origin)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
         // The goal is spent either way: the man either has the seat or has been caught trying.
         Goal? goal = tick.State.Goals.Find(plotter.Id, GoalKind.SeizeLeadership);
-        if (goal is not null) tick.State.Goals.Remove(goal);
+        if (goal is not null) GoalRecord.End(tick, coup, goal, GoalEnd.Spent);
+
+        Event seized = tick.Emit(coup);
 
         ActionPhase.SettleCoup(tick, faction, winner: plotter, loser: target, seized);
     }
@@ -524,7 +526,7 @@ public static class ResolutionPhase
 
         tick.Ledger?.Examined(arc.Id, tick.Year, "exposed", terminal: true);
 
-        Event exposed = tick.Emit(new EventDraft(EventKind.PolityCoupResolved)
+        EventDraft uncovering = new EventDraft(EventKind.PolityCoupResolved)
             .Subject(plotter.Id)
             .Object(target.Id)
             .By(faction.Id)
@@ -536,10 +538,12 @@ public static class ResolutionPhase
             .Rel(target.Id, plotter.Id, RelationKind.Grievance, 40)
             .InArc(arc.Id)
             .Because(arc.Origin)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
         Goal? goal = state.Goals.Find(plotter.Id, GoalKind.SeizeLeadership);
-        if (goal is not null) state.Goals.Remove(goal);
+        if (goal is not null) GoalRecord.End(tick, uncovering, goal, GoalEnd.Spent);
+
+        Event exposed = tick.Emit(uncovering);
 
         // A house can only put its own to death. Where the conspirator has already gone — and
         // an uncovering routinely lands years after the flight — the reach it actually has is

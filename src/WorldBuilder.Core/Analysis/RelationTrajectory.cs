@@ -47,6 +47,31 @@ public sealed record Termination(int Year, RelationKind Kind, EntityId From, Ent
     EventId At, EventKind Via, string Cause)
 {
     public const string Unnamed = "(not named by its event)";
+
+    /// <summary>
+    /// The year this tie was made, folded from the record, or null where the record does not say.
+    ///
+    /// <b>Not read off the closing event's payload.</b> Only <c>ECONOMY.TRADE_COLLAPSE</c> carries a
+    /// <c>made</c> key, so a span derived from payload alone opens with <c>?</c> on every alliance
+    /// and every war — and a <c>?</c> that means *the derivation did not look there* is the
+    /// absent-versus-unknown conflation the whole terminated-relations table exists to avoid. The
+    /// fold sees every making, whether the making was written by a payload verb or applied in code,
+    /// for the same reason the population series is folded rather than counted from event kinds.
+    ///
+    /// A tie made, ended and made again carries the <b>most recent</b> making, because that is the
+    /// span the closing event closed rather than the first one anybody ever struck.
+    ///
+    /// Null therefore means the record genuinely holds no making for it — a tie already live before
+    /// the first event of the log, which is possible for a log that opens mid-history and does not
+    /// arise in a world folded from its own genesis.
+    /// </summary>
+    public int? Made { get; init; }
+
+    /// <summary>The span as a reader needs it, with an unknown opening labelled as one.</summary>
+    public string Span => Made is { } made
+        ? $"{made.ToString(CultureInfo.InvariantCulture)} – {Year.ToString(CultureInfo.InvariantCulture)} " +
+          $"({(Year - made).ToString(CultureInfo.InvariantCulture)}y)"
+        : $"(no making in the record) – {Year.ToString(CultureInfo.InvariantCulture)}";
 }
 
 /// <summary>
@@ -62,6 +87,10 @@ public sealed record Termination(int Year, RelationKind Kind, EntityId From, Ent
 /// the whole of war and peace was invisible to it and the kind simply did not appear in the table.
 /// A measurement that reimplements the fold measures the reimplementation. This one replays the
 /// record through the engine's own reducer and diffs the graph it produces.
+///
+/// The same argument settles where a span *opens*, and it is the inversion of that defect: reading
+/// the closing event's payload for a <c>made</c> key finds one on trade and on nothing else, so
+/// every alliance and every war opened with <c>?</c>. See <see cref="Termination.Made"/>.
 ///
 /// <b>Directed edges are the state; unordered pairs are the unit reported.</b> The state has to be
 /// directed or it is not the graph: <see cref="EventDraft.RelBoth"/> writes two keys and the
@@ -153,6 +182,12 @@ public static class RelationTrajectory
         int lastYear = log.Events.Count == 0 ? 0 : log.Events[^1].Year;
 
         HashSet<Tie> live = [];
+
+        // When each live tie was made, so a termination can state a span rather than half of one.
+        // Overwritten on every making: a tie remade after a break opens its second span at the
+        // second making, and the first is closed already.
+        Dictionary<Tie, int> madeIn = [];
+
         Dictionary<RelationKind, int> created = [];
         Dictionary<RelationKind, int> ended = [];
         Dictionary<RelationKind, List<int>> perYear = [];
@@ -183,7 +218,12 @@ public static class RelationTrajectory
                 now.Add(Tie.Of(r.Key.From, r.Key.To, r.Key.Kind));
 
             foreach (Tie tie in now)
-                if (!live.Contains(tie)) created[tie.Kind] = created.GetValueOrDefault(tie.Kind) + 1;
+            {
+                if (live.Contains(tie)) continue;
+
+                created[tie.Kind] = created.GetValueOrDefault(tie.Kind) + 1;
+                madeIn[tie] = e.Year;
+            }
 
             foreach (Tie tie in live)
             {
@@ -191,7 +231,14 @@ public static class RelationTrajectory
 
                 ended[tie.Kind] = ended.GetValueOrDefault(tie.Kind) + 1;
                 terminations.Add(new Termination(e.Year, tie.Kind, tie.Low, tie.High, e.Id, e.Kind,
-                    e.GetString(CauseField) ?? Termination.Unnamed));
+                    e.GetString(CauseField) ?? Termination.Unnamed)
+                {
+                    Made = madeIn.TryGetValue(tie, out int made) ? made : null,
+                });
+
+                // Dropped rather than left standing, so a tie made again later cannot inherit the
+                // opening year of a span that is already closed.
+                madeIn.Remove(tie);
             }
 
             live = now;

@@ -63,6 +63,10 @@ public static class CommandLine
                 "floors" => CmdFloors(parsed),
                 "ties" => CmdTies(parsed),
                 "standing" => CmdStanding(parsed),
+                "goals" => CmdGoals(parsed),
+                "mutations" => CmdMutations(parsed),
+                "bookpressure" => CmdBookPressure(parsed),
+                "stage" => CmdStage(parsed).GetAwaiter().GetResult(),
                 "divergence" => CmdDivergence(parsed),
                 "keyshift" => CmdKeyShift(parsed),
                 "discriminate" => CmdDiscriminate(parsed),
@@ -106,7 +110,18 @@ public static class CommandLine
         // Marked the same way and refused by `wb baseline cut` for the same reason.
         TerminationArm arm = TerminationArms.Parse(args.Text("arm", ""));
 
-        Simulation sim = new(seed, control: control, arm: arm);
+        // The third kind: goal transitions left out of the record, which is what ruleset 6 did.
+        // Same standing and the same refusal — it exists so "ruleset 7 changed nothing outside goal
+        // recording" is a checkable claim rather than an assurance.
+        bool recordGoals = !args.Flag("no-goal-record");
+
+        // The fourth: a severance written whether or not the tie is live, which is what ruleset 7
+        // did. Same standing and the same refusal, so "ruleset 8 changed nothing but the phantom
+        // keys" is checkable rather than asserted.
+        bool guardSeverances = !args.Flag("no-sever-guard");
+
+        Simulation sim = new(seed, control: control, arm: arm, recordGoals: recordGoals,
+            guardSeverances: guardSeverances);
         sim.Run(years);
 
         string stem = Path.Combine(directory, $"world-{seed.ToString(CultureInfo.InvariantCulture)}");
@@ -114,7 +129,7 @@ public static class CommandLine
         string logPath = stem + ".log";
 
         JsonlIo.Write(jsonlPath, sim.Log, seed, ProximityControl.NameOf(control),
-            TerminationArms.NameOf(arm));
+            TerminationArms.NameOf(arm, recordGoals, guardSeverances));
 
         if (control != ProximityControlKind.None)
         {
@@ -128,6 +143,20 @@ public static class CommandLine
             Console.WriteLine($"ARM RUN — only some relations can end ({TerminationArms.NameOf(arm)}).");
             Console.WriteLine("  This world ran under a subset of its own ruleset. It is a diagnostic");
             Console.WriteLine("  artefact, it is not canon, and the header says so.");
+        }
+
+        if (!recordGoals)
+        {
+            Console.WriteLine($"ARM RUN — goal transitions are not in the record ({GoalRecord.OffArm}).");
+            Console.WriteLine("  This world reproduces ruleset 6: a fold of its log holds no goals at");
+            Console.WriteLine("  all. It is a diagnostic artefact, it is not canon, and the header says so.");
+        }
+
+        if (!guardSeverances)
+        {
+            Console.WriteLine($"ARM RUN — severances are written unguarded ({RelationEnds.UnguardedArm}).");
+            Console.WriteLine("  This world reproduces ruleset 7: a declaration of war claims to break an");
+            Console.WriteLine("  alliance whether or not one existed. Diagnostic, not canon, header says so.");
         }
 
         Significance minimum = verbose ? Significance.Bookkeeping : Significance.Minor;
@@ -750,7 +779,7 @@ public static class CommandLine
 
                 Console.WriteLine($"  {f.Name}: " + string.Join("; ", history.Select(h =>
                     $"{view.State.NameOf(h.Ruler)} {h.From}–" +
-                    $"{(h.Ended == "still holding" ? "" : h.To.ToString(CultureInfo.InvariantCulture))} ({h.Ended})")));
+                    $"{(h.Open ? "" : h.To.ToString(CultureInfo.InvariantCulture))} ({h.Ended})")));
             }
         }
 
@@ -1107,6 +1136,243 @@ public static class CommandLine
 
         // Reported, never repaired here. Fixing an unbounded list is how a bounded phase stops
         // being bounded, so this exits 0 whatever it finds.
+        return 0;
+    }
+
+    /// <summary>
+    /// The goal lifecycle, counted: every transition, where it happens, and what a fold of the
+    /// world's own record fails to reproduce.
+    ///
+    /// <b>Simulates rather than reading a baseline off disk</b>, and that is forced rather than
+    /// preferred: goals are not in the log, so a world loaded from a record has none and the only
+    /// place the live lifecycle exists is a run. The record is still used — each world's own log is
+    /// folded back and the two are compared field by field.
+    ///
+    /// Exits 0 whatever it finds. The audit reports; the emission design follows from it.
+    /// </summary>
+    /// <summary>
+    /// §5 of the phase-2 brief: what the goal books held when a runaway formed.
+    ///
+    /// Reports and exits 0. It feeds the brake decision rather than making it.
+    /// </summary>
+    private static int CmdBookPressure(Args args)
+    {
+        int years = args.Int("years", 50);
+
+        List<BookPressureSeed> panel = [];
+        foreach (ulong seed in Seeds(args)) panel.Add(BookPressure.Run(seed, years));
+
+        IReadOnlyList<string> lines = BookPressure.Render(panel);
+        foreach (string line in lines) Console.WriteLine(line);
+
+        if (args.Text("to", "") is { Length: > 0 } to)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+            File.WriteAllLines(to, lines);
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// Stages the reference material a human verification session reads —
+    /// <c>docs/loop-stage-reference-set-r7.md</c>.
+    ///
+    /// <b>Machine work only. It verifies nothing and marks nothing verified.</b> Exits non-zero when
+    /// a §6 halt condition is met, so the loop stops on the exit code rather than on somebody reading
+    /// the report.
+    ///
+    /// <b>The live half of §1.1 is optional and says so when it is skipped.</b> The structural probes
+    /// need no model; asking what a *planner* emits does. A run without one is not wrong, it is
+    /// narrower, and the report distinguishes the two rather than reporting a zero either way.
+    /// </summary>
+    private static async Task<int> CmdStage(Args args)
+    {
+        ulong seed = args.ULong("seed", 42);
+        string root = args.Text("baselines", "baselines");
+        string set = args.Text("set", $"ruleset-{Ruleset.Version}");
+        // Named for the ruleset rather than hardcoded, so a bump does not quietly overwrite the
+        // previous ruleset's staged material — which is the "before" side of every re-stage diff.
+        string outDir = args.Text("to",
+            Path.Combine(DefaultOutputDirectory, $"reference-set-r{Ruleset.Version}"));
+
+        // The world comes off the sealed baseline, not out of a fresh run. Staging material for a
+        // seal it was not derived from is the one way this could quietly go wrong.
+        string world = Path.Combine(root, set, $"seed-{seed.ToString(CultureInfo.InvariantCulture)}",
+            $"world-{seed.ToString(CultureInfo.InvariantCulture)}.jsonl");
+
+        if (!File.Exists(world)) return Fail($"no sealed world at '{world}'");
+
+        // Read off `.sealed` rather than recomputed, so the material is stamped with the seal the
+        // baseline actually carries. `wb baseline check` is what says that seal is honest; this only
+        // has to quote it.
+        string sealFile = Path.Combine(Path.GetDirectoryName(world)!, ".sealed");
+        if (!File.Exists(sealFile)) return Fail($"no seal at '{sealFile}' — the baseline is unsealed");
+        string seal = File.ReadAllText(sealFile).Trim();
+
+        BundleOpen opened = WorldBundle.Open(world, acceptNewer: false);
+        foreach (string note in opened.Notes) Console.Error.WriteLine($"wb: {note}");
+        WorldView view = WorldView.Build(opened.Log, opened.Seed);
+
+        LlmOptions options = LlmOptions.Default with
+        {
+            Model = args.Text("model", LlmOptions.Default.Model),
+            Endpoint = args.Text("endpoint", LlmOptions.Default.Endpoint),
+        };
+
+        bool live = !args.Flag("no-model");
+        using OllamaClient? client = live ? new OllamaClient(options) : null;
+        QueryEngine engine = new(client ?? (ILlmClient)new CacheOnlyLlmClient(options.Model), view);
+
+        // A 22 GB model is evicted between runs and loading it counts against the first call's
+        // timeout rather than against nothing. Paid here, where it is visible.
+        if (client is not null) await Warm(client);
+
+        Console.WriteLine($"seed {view.Seed}, ruleset {Ruleset.Version} — {view.Log.Count} records, " +
+                          $"years {view.FirstYear}–{view.LastYear}");
+        Console.WriteLine($"  seal {seal}");
+        Console.WriteLine();
+
+        // §1.1's end-to-end half: the planner classifies, the engine retrieves, and nothing is
+        // generated — PrepareAsync stops before the model is asked to write.
+        List<RetrievalProbe> asked = [];
+        if (live)
+        {
+            RelationTrajectory.Report ties = RelationTrajectory.Of(view.Log, view.Seed, view.State.Board);
+            SeedHoldouts held = Holdouts.ForSeed(root, set, view.Seed);
+
+            // Spread across the categories, not the first six.
+            //
+            // Taking the head gave six seat questions, which are the narrowest shape there is: all
+            // entity-scoped, all `POLITY`, all resolving to a faction. Six samples of one shape do not
+            // say what a planner does with a world-scoped question or a count, which are the two that
+            // could plausibly name a bookkeeping topic. "Representative" has to mean across the
+            // categories or the check is narrower than it reads.
+            List<ReferenceStaging.Candidate> all = ReferenceStaging.Questions(engine, view, held, ties);
+            List<ReferenceStaging.Candidate> sample = [];
+
+            foreach (string category in new[]
+                     {
+                         ReferenceStaging.NegativePremise, ReferenceStaging.SuppliedFigure,
+                         ReferenceStaging.TerminatedRelation, ReferenceStaging.Ordinary,
+                     })
+            {
+                foreach (ReferenceStaging.Candidate c in all.Where(c => c.Category == category).Take(2))
+                    sample.Add(c);
+            }
+
+            foreach (ReferenceStaging.Candidate c in sample)
+            {
+                Console.WriteLine($"  planning: {c.Text}");
+                try
+                {
+                    QueryPreparation prepared = await engine.PrepareAsync(c.Text);
+
+                    int goals = prepared.Retrieved.Count(id =>
+                        ReferenceStaging.IsGoalRow(view.Log.Get(id)));
+
+                    // A bare zero is not a reading. Where the real path retrieved nothing, the reason
+                    // it gives is recorded beside the count — "no such entity" and "nothing of that
+                    // kind happened" are different facts about the world and about the question, and
+                    // one of them means the question is unaskable as phrased rather than answered.
+                    string note = prepared.Retrieved.Count > 0
+                        ? ""
+                        : prepared.Unresolvable is { } cannot
+                            ? $"not run: {cannot}"
+                            : prepared.FalsePremise is { } wrong
+                                ? $"false premise reported: {wrong}"
+                                : $"`{engine.Explain(prepared.Plan).Why}` — planned subject " +
+                                  $"\"{prepared.Plan.Subject}\", shape {prepared.Plan.Shape}, " +
+                                  $"topics [{string.Join(" ", prepared.Plan.Topics)}]";
+
+                    asked.Add(new RetrievalProbe("live", c.Text, goals, prepared.Retrieved.Count, note));
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Reported, never swallowed. A model that could not be reached is a narrower run
+                    // and must not read as "no goal row reached retrieval".
+                    Console.Error.WriteLine($"wb: the model did not answer ({ex.Message}); " +
+                                            "the live half of §1.1 is incomplete and the report says so.");
+                    break;
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        ReferenceStaging.Run run = ReferenceStaging.Execute(
+            engine, view, seal, root, set, outDir, asked);
+
+        foreach (string path in run.Written) Console.WriteLine($"  {path}");
+        Console.WriteLine();
+
+        if (run.Halted)
+        {
+            Console.WriteLine($"HALT — {run.Halts.Count} condition(s) met:");
+            foreach (string halt in run.Halts) Console.WriteLine($"  - {halt}");
+        }
+        else
+        {
+            Console.WriteLine("No halt condition met. The material is staged.");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("  Nothing in this run is verified. Every row says so, and no artefact here");
+        Console.WriteLine("  may be used as a fixture.");
+
+        return run.Halted ? 1 : 0;
+    }
+
+    /// <summary>
+    /// The §1.1 mutation-notify audit — every payload key that asserts a state change, and whether
+    /// the state it names moved.
+    ///
+    /// Exits non-zero where any key has an absent referent, which is the <c>GoalBook.Remove</c>
+    /// family. A clamped delta is reported and does not fail the run: a floor is a property of the
+    /// quantity, and suppressing the key would delete the record of a penalty that was levied.
+    /// </summary>
+    private static int CmdMutations(Args args)
+    {
+        int years = args.Int("years", 50);
+
+        List<MutationAuditSeed> panel = [];
+        foreach (ulong seed in Seeds(args)) panel.Add(MutationAudit.Run(seed, years));
+
+        IReadOnlyList<string> lines = MutationAudit.Render(panel);
+        foreach (string line in lines) Console.WriteLine(line);
+
+        if (args.Text("to", "") is { Length: > 0 } to)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+            File.WriteAllLines(to, lines);
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
+        int phantom = panel.Sum(static s => s.Families.Sum(static f => f.NoReferent));
+        return phantom > 0 ? 1 : 0;
+    }
+
+    private static int CmdGoals(Args args)
+    {
+        int years = args.Int("years", 50);
+
+        List<GoalAuditSeed> panel = [];
+        foreach (ulong seed in Seeds(args)) panel.Add(GoalAudit.Run(seed, years));
+
+        IReadOnlyList<string> lines = GoalAudit.Render(panel);
+        foreach (string line in lines) Console.WriteLine(line);
+
+        if (args.Text("to", "") is { Length: > 0 } to)
+        {
+            string? dir = Path.GetDirectoryName(to);
+            if (dir is { Length: > 0 }) Directory.CreateDirectory(dir);
+            File.WriteAllLines(to, lines);
+            Console.Error.WriteLine($"wb: written to {to}");
+        }
+
         return 0;
     }
 
@@ -1837,6 +2103,14 @@ public static class CommandLine
                     Verification = args.Text("verification", "stability-anchor-only"),
                     Model = args.Text("model", LlmOptions.Default.Model),
                     ModelDigest = args.Text("model-digest", ""),
+                    // <b>The invocation belongs in the record, and does not have a field of its own.</b>
+                    // The chronicle a baseline seals depends on `wb book`'s section arguments —
+                    // `--factions all` renders thirteen scopes for seed 42 where the default renders
+                    // nine — and nothing in the manifest says which were used. Cutting ruleset 7 with
+                    // the defaults produced a 42-scope panel against ruleset 6's 58 and would have made
+                    // the holdout comparison meaningless; recovering the original invocation meant
+                    // diffing the two scope lists by hand. Until there is a field for it, the note is
+                    // where a cut should say how its artefacts were produced. Carded.
                     Notes = args.Text("note", "") is { Length: > 0 } note ? [note] : [],
                 });
 

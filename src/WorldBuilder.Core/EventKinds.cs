@@ -58,6 +58,12 @@ public static class EventKinds
         EventKind.IntrigueBetrayal => "INTRIGUE.BETRAYAL",
         EventKind.IntrigueGrievanceSettled => "INTRIGUE.GRIEVANCE_SETTLED",
 
+        // A family of its own, because a goal belongs to a faction or to an actor indifferently and
+        // filing it under POLITY or INTRIGUE would misname half of them. `GOALS.` is also the prefix
+        // anybody reading the record will want to grep out: these are bookkeeping rows.
+        EventKind.GoalsFormed => "GOALS.FORMED",
+        EventKind.GoalsEnded => "GOALS.ENDED",
+
         _ => kind.ToString().ToUpperInvariant(),
     };
 

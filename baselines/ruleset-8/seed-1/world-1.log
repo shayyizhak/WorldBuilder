@@ -1,0 +1,491 @@
+# 437 of 760 events. The other 323 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.MARRIAGE               Naenddaem Houllteind (a:8) marries Thris Pou (a:19) at Broldtemoor (p:3)  e:36
+[Y0002]       LIFE.MARRIAGE               Diska Louth (a:13) marries Taelsoll Dein (a:17) at Reswoumark (p:4)  e:37
+[Y0002]       CONFLICT.CONQUEST           the Wougate Crown (f:1) occupies Thu Pits (p:8), which no one held  e:45
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      House Wem (f:2) demands tribute of the Wougate Crown (f:1) and is refused  e:46
+[Y0002]       DIPLO.ALLIANCE_FORMED       House Wem (f:2) seeks an alliance with the Reswoumark Crown (f:3) and is turned away  e:47
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Reswoumark Crown (f:3) demands tribute of the Wougate Crown (f:1) and is refused  e:48
+
+[Y0003]       LIFE.MARRIAGE               Krim Groum (a:2) marries Pampei Robum (a:12), binding the Wougate Crown (f:1) to House Wem (f:2)  e:51
+[Y0003]       LIFE.MARRIAGE               Deathder Grun (a:14) marries Rerntear Drestoll (a:20) at Reswoumark (p:4)  e:52
+[Y0003]       LIFE.BIRTH                  Bith Southmei (a:21) is born to Krim Groum (a:2) at Wougate (p:2)  <= e:51  e:53
+[Y0003]       DIPLO.INSULT                House Wem (f:2) publicly slights the Wougate Crown (f:1)  e:57
+
+[Y0004]       LIFE.DEATH_NATURAL          Thremlould Thiholl (a:16), retainer of the Reswoumark Crown (f:3), dies at 60 in Reswoumark (p:4)  e:59
+[Y0004]       LIFE.DEATH_NATURAL          Rerntear Drestoll (a:20), commoner of the Reswoumark Crown (f:3), dies at 47 in Reswoumark (p:4)  e:60
+[Y0004]       LIFE.MARRIAGE               Wealdaern Leasha (a:9) marries Thrirnum Skou (a:10) at Broldtemoor (p:3)  e:61
+[Y0004]       LIFE.BIRTH                  Lea Dae (a:22) is born to Krim Groum (a:2) at Wougate (p:2)  <= e:51  e:62
+[Y0004] w:1   ECONOMY.FAMINE              famine at Wei Seam (p:7): 6 dead, grain short by 2  e:65
+[Y0004] w:2   POLITY.COUP_PLOTTED         Fornhir Threi (a:18) begins conspiring against Diska Louth (a:13) of the Reswoumark Crown (f:3)  [secret]  <= e:65  e:68
+
+[Y0005]       LIFE.MARRIAGE               Sus Waernthaeld (a:1) marries Thrir Pondsurn (a:3) at Wougate (p:2)  e:70
+[Y0005]       LIFE.MARRIAGE               Skobas Frul (a:6) marries Bae Raer (a:7), binding the Wougate Crown (f:1) to House Wem (f:2)  e:71
+[Y0005]       LIFE.BIRTH                  Haepin Maerba (a:25) is born to Diska Louth (a:13) at Reswoumark (p:4)  <= e:37  e:73
+[Y0005] w:1   ECONOMY.FAMINE              famine at Wei Seam (p:7), year 2: 13 dead, 31 abandon the place  <= e:65  e:75
+[Y0005] w:3   ECONOMY.FAMINE              famine at Thu Pits (p:8): 22 dead, grain short by 8  e:76
+[Y0005]       POLITY.COURTS_SUPPORT       Fornhir Threi (a:18) wins Thris Pou (a:19) away from the ruler of the Reswoumark Crown (f:3)  <= e:65  e:79
+[Y0005] w:4   DIPLO.WAR_DECLARED          the Wougate Crown (f:1) declares war on the Reswoumark Crown (f:3) for Wei Seam (p:7)  e:80
+[Y0005]       ECONOMY.TRADE_PACT          the Wougate Crown (f:1) buys 30 grain from House Wem (f:2) for 60 silver  <= e:76  e:81
+[Y0005] w:4   CONFLICT.BATTLE             the Wougate Crown (f:1) and its allies defeat the Reswoumark Crown (f:3) at Wei Seam (p:7) (29 dead)  <= e:80,e:51  e:82
+[Y0005] w:4   CONFLICT.CONQUEST           the Wougate Crown (f:1) takes Wei Seam (p:7) from the Reswoumark Crown (f:3)  <= e:82  e:83
+
+[Y0006]       LIFE.DEATH_NATURAL          Fum Wol (a:5), captain of the Wougate Crown (f:1), dies at 57 in Wougate (p:2)  e:85
+[Y0006]       LIFE.DEATH_NATURAL          Paer Derthi (a:15), retainer of the Reswoumark Crown (f:3), dies at 61 in Reswoumark (p:4)  e:86
+[Y0006]       LIFE.DEATH_NATURAL          Taelsoll Dein (a:17), retainer of the Reswoumark Crown (f:3), dies at 39 in Reswoumark (p:4)  e:87
+[Y0006]       LIFE.BIRTH                  Sillmaem Freith (a:26) is born to Skobas Frul (a:6) at Wougate (p:2)  <= e:71  e:88
+[Y0006]       LIFE.BIRTH                  Greandoul Krean (a:27) is born to Naenddaem Houllteind (a:8) at Broldtemoor (p:3)  <= e:36  e:89
+[Y0006]       POLITY.COURTS_SUPPORT       Naenddaem Houllteind (a:8) wins Tin Kaes (a:24) away from the ruler of House Wem (f:2)  <= e:46  e:94
+[Y0006] w:2   CONFLICT.ASSASSINATION      Fornhir Threi (a:18) has Diska Louth (a:13) murdered at Reswoumark (p:4)  <= e:65  e:95
+[Y0006]       LIFE.DEATH_VIOLENT          Diska Louth (a:13), ruler of the Reswoumark Crown (f:3), is killed by Fornhir Threi (a:18) at Reswoumark (p:4)  <= e:95  e:96
+[Y0006]       ECONOMY.TRADE_PACT          the Wougate Crown (f:1) and House Wem (f:2) agree terms of trade  <= e:76  e:98
+[Y0006] w:4   CONFLICT.BATTLE             the Wougate Crown (f:1) and its allies defeat the Reswoumark Crown (f:3) at Reswoumark (p:4) (198 dead)  <= e:80,e:51  e:99
+[Y0006] w:4   CONFLICT.CONQUEST           the Wougate Crown (f:1) takes Reswoumark (p:4) from the Reswoumark Crown (f:3)  <= e:99  e:100
+[Y0006]       POLITY.COLLAPSE             the Reswoumark Crown (f:3) is finished — landless, its last 4 followers scatter  <= e:100  e:101
+[Y0006] w:3   ECONOMY.FAMINE_ENDS         the hunger at Thu Pits (p:8) passes after 1 years  <= e:76  e:104
+
+[Y0007]       LIFE.BIRTH                  Tommarn Ri (a:29) is born to Krim Groum (a:2) at Wougate (p:2)  <= e:51  e:106
+[Y0007]       LIFE.BIRTH                  Kraeth Weageir (a:30) is born to Naenddaem Houllteind (a:8) at Broldtemoor (p:3)  <= e:36  e:107
+[Y0007]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Wei Seam (p:7) (129% of usual)  e:110
+[Y0007]       POLITY.COURTS_SUPPORT       Naenddaem Houllteind (a:8) wins Kraeth Weageir (a:30) away from the ruler of House Wem (f:2)  <= e:46  e:114
+[Y0007]       ECONOMY.TRADE_PACT          the Wougate Crown (f:1) and House Wem (f:2) agree terms of trade  e:115
+[Y0007] w:4   DIPLO.PEACE_SIGNED          the Wougate Crown (f:1) and the Reswoumark Crown (f:3) make peace after 2 years, after the collapse of the Reswoumark Crown  <= e:80  e:117
+[Y0007] w:1   ECONOMY.FAMINE_ENDS         the hunger at Wei Seam (p:7) passes after 3 years  <= e:65  e:119
+
+[Y0008]       LIFE.BIRTH                  Kros Ranu (a:31) is born to Skobas Frul (a:6) at Wougate (p:2)  <= e:71  e:120
+[Y0008]       LIFE.BIRTH                  Lo Leand (a:32) is born to Naenddaem Houllteind (a:8) at Broldtemoor (p:3)  <= e:36  e:121
+[Y0008] w:6   ECONOMY.FAMINE              famine at Thu Pits (p:8): 28 dead, grain short by 12  e:125
+[Y0008] w:7   POLITY.COUP_PLOTTED         Naenddaem Houllteind (a:8) begins conspiring against Bae Raer (a:7) of House Wem (f:2)  [secret]  <= e:46  e:128
+[Y0008]       POLITY.COURTS_SUPPORT       Deathder Grun (a:14) wins Fornhir Threi (a:18) away from the ruler of the Wougate Crown (f:1)  <= e:125  e:129
+
+[Y0009]       LIFE.BIRTH                  Neildpoun Porn (a:34) is born to Krim Groum (a:2) at Wougate (p:2)  <= e:51  e:131
+[Y0009] w:6   ECONOMY.FAMINE              famine at Thu Pits (p:8), year 2: 22 dead, 54 abandon the place  <= e:125  e:135
+[Y0009] w:7   CONFLICT.ASSASSINATION      Naenddaem Houllteind (a:8)'s attempt on Bae Raer (a:7) fails and is traced back  <= e:46  e:137
+[Y0009]       POLITY.EXILE                Naenddaem Houllteind (a:8) is cast out of House Wem (f:2) — attempted murder  <= e:137  e:138
+[Y0009]       POLITY.COURTS_SUPPORT       Deathder Grun (a:14) wins Neildpoun Porn (a:34) away from the ruler of the Wougate Crown (f:1)  <= e:125  e:139
+[Y0009] w:7   POLITY.COUP_RESOLVED        Naenddaem Houllteind (a:8)'s conspiracy against Bae Raer (a:7) is uncovered after 1 years  <= e:128  e:140
+[Y0009]       POLITY.EXILE                Naenddaem Houllteind (a:8), who had already left, is declared outlaw by House Wem (f:2) — conspiracy against the seat  <= e:140  e:141
+
+[Y0010] w:6   ECONOMY.FAMINE              famine at Thu Pits (p:8), year 3: 9 dead, 31 abandon the place  <= e:125  e:146
+[Y0010]       POLITY.COURTS_SUPPORT       Deathder Grun (a:14) wins Thris Pou (a:19) away from the ruler of the Wougate Crown (f:1)  <= e:125  e:149
+[Y0010]       CONFLICT.RAID               House Wem (f:2) raids Wougate (p:2), carrying off 51 grain and killing 52  e:150
+
+[Y0011]       LIFE.BIRTH                  Pondfern Lull (a:35) is born to Skobas Frul (a:6) at Wougate (p:2)  <= e:71  e:152
+[Y0011] w:6   ECONOMY.FAMINE              famine at Thu Pits (p:8), year 4: 8 dead, 29 abandon the place  <= e:125  e:155
+[Y0011]       POLITY.COURTS_SUPPORT       Deathder Grun (a:14) wins Bith Southmei (a:21) away from the ruler of the Wougate Crown (f:1)  <= e:125  e:158
+[Y0011]       POLITY.APPOINTMENT          Krim Groum (a:2) is raised to steward of the Wougate Crown (f:1)  <= e:155  e:159
+[Y0011]       CONFLICT.RAID               House Wem (f:2) raids Haelabarrow (p:5), carrying off 32 grain and killing 50  e:160
+[Y0011] w:5   ECONOMY.PLAGUE_ENDS         the pestilence at Wei Seam (p:7) burns out after 4 years  e:162
+[Y0011] w:8   ECONOMY.FAMINE_ENDS         the hunger at Wei Seam (p:7) passes after 2 years and 28 return to the fields  e:163
+
+[Y0012]       LIFE.DEATH_NATURAL          Sus Waernthaeld (a:1), ruler of the Wougate Crown (f:1), dies at 53 in Wougate (p:2)  e:164
+[Y0012]       LIFE.BIRTH                  Kurnsa Bealldo (a:37) is born to Skobas Frul (a:6) at Wougate (p:2)  <= e:71  e:165
+[Y0012] w:9   ECONOMY.FAMINE              famine at Wougate (p:2): 181 dead, grain short by 17  e:167
+[Y0012] w:6   ECONOMY.FAMINE              famine at Thu Pits (p:8), year 5: 6 dead, 24 abandon the place  <= e:125  e:168
+[Y0012]       POLITY.SUCCESSION           Thris Pou (a:19) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:164  e:170
+[Y0012]       POLITY.REVOLT               Haelabarrow (p:5) rises against the Wougate Crown (f:1), whose standing had fallen very low  <= e:168  e:172
+
+[Y0013] w:9   ECONOMY.FAMINE              famine at Wougate (p:2), year 2: 54 dead, 229 abandon the place  <= e:167  e:174
+[Y0013] w:10  ECONOMY.FAMINE              famine at Haelabarrow (p:5): 75 dead, grain short by 4  e:175
+[Y0013]       POLITY.CHALLENGE            Krim Groum (a:2) challenges Thris Pou (a:19) openly for the Wougate Crown (f:1), wins, and takes the seat from Thris Pou (a:19)  e:179
+[Y0013]       POLITY.EXILE                Thris Pou (a:19) is cast out of the Wougate Crown (f:1) — the losing side of an open challenge  <= e:179  e:181
+[Y0013]       POLITY.COURTS_SUPPORT       Wealdaern Leasha (a:9) wins Kraeth Weageir (a:30) away from the ruler of House Wem (f:2)  <= e:141  e:182
+[Y0013]       CONFLICT.RAID               the Wougate Crown (f:1) raids Broldtemoor (p:3), carrying off 45 grain and killing 56  e:183
+[Y0013]       POLITY.LEGITIMACY_CRISIS    the Wougate Crown (f:1) spends 50 silver buying goodwill for the first time, and is not believed  <= e:155  e:184
+[Y0013]       CONFLICT.RAID               House Wem (f:2)'s raid on Reswoumark (p:4) is beaten off  <= e:183  e:185
+
+[Y0014]       LIFE.BIRTH                  Voun Woldlom (a:38) is born to Skobas Frul (a:6) at Wougate (p:2)  <= e:71  e:187
+[Y0014] w:11  ECONOMY.FAMINE              famine at Broldtemoor (p:3): 197 dead, grain short by 18  e:189
+[Y0014] w:13  POLITY.COUP_PLOTTED         Wealdaern Leasha (a:9) begins conspiring against Bae Raer (a:7) of House Wem (f:2)  [secret]  <= e:141  e:193
+[Y0014] w:14  POLITY.COUP_PLOTTED         Thrirnum Skou (a:10) begins conspiring against Bae Raer (a:7) of House Wem (f:2)  [secret]  <= e:189  e:194
+[Y0014] w:15  POLITY.COUP_PLOTTED         Pund Hundoul (a:11) begins conspiring against Bae Raer (a:7) of House Wem (f:2)  [secret]  <= e:189  e:195
+[Y0014]       POLITY.CHALLENGE            Deathder Grun (a:14) challenges Krim Groum (a:2) openly for the Wougate Crown (f:1), wins, and takes the seat from Krim Groum (a:2)  <= e:125  e:196
+[Y0014]       POLITY.EXILE                Krim Groum (a:2) is cast out of the Wougate Crown (f:1) — the losing side of an open challenge  <= e:196  e:198
+[Y0014]       POLITY.EXILE_RETURN         Thris Pou (a:19) returns from exile and takes service with House Wem (f:2)  <= e:181  e:199
+[Y0014]       POLITY.APPOINTMENT          Skobas Frul (a:6) is raised to heir of the Wougate Crown (f:1)  <= e:155  e:200
+[Y0014]       CONFLICT.RAID               House Wem (f:2)'s raid on Wei Seam (p:7) is beaten off  e:201
+[Y0014] w:2   POLITY.PLOT_LAPSES          Fornhir Threi (a:18)'s conspiracy against Diska Louth (a:13) lapses after 10 years — nothing came of it  [secret]  <= e:68  e:202
+[Y0014] w:9   ECONOMY.FAMINE_ENDS         the hunger at Wougate (p:2) passes after 2 years and 300 return to the fields  <= e:167  e:204
+[Y0014] w:10  ECONOMY.FAMINE_ENDS         the hunger at Haelabarrow (p:5) passes after 1 years and 292 return to the fields  <= e:175  e:205
+
+[Y0015]       LIFE.DEATH_NATURAL          Fornhir Threi (a:18), commoner of the Wougate Crown (f:1), dies at 59 in Reswoumark (p:4)  e:207
+[Y0015] w:13  CONFLICT.ASSASSINATION      Wealdaern Leasha (a:9) has Bae Raer (a:7) murdered at Broldtemoor (p:3)  <= e:141  e:211
+[Y0015]       LIFE.DEATH_VIOLENT          Bae Raer (a:7), ruler of House Wem (f:2), is killed by Wealdaern Leasha (a:9) at Broldtemoor (p:3)  <= e:211  e:212
+[Y0015]       POLITY.APPOINTMENT          Thrir Pondsurn (a:3) is raised to steward of the Wougate Crown (f:1)  <= e:155  e:213
+[Y0015]       CONFLICT.RAID               the Wougate Crown (f:1) raids Rucrag (p:6), carrying off 29 grain and killing 35  e:214
+[Y0015]       POLITY.SUCCESSION           Pampei Robum (a:12) takes the seat of House Wem (f:2) (by election)  <= e:212  e:215
+[Y0015] w:6   ECONOMY.FAMINE_ENDS         the hunger at Thu Pits (p:8) passes after 7 years and 51 return to the fields  <= e:125  e:217
+[Y0015] w:11  ECONOMY.FAMINE_ENDS         the hunger at Broldtemoor (p:3) passes after 1 years and 140 return to the fields  <= e:189  e:218
+[Y0015] w:12  ECONOMY.FAMINE_ENDS         the hunger at Wei Seam (p:7) passes after 1 years and 36 return to the fields  e:219
+
+[Y0016]       LIFE.BIRTH                  Thraellgul Thalgin (a:39) is born to Deathder Grun (a:14) at Reswoumark (p:4)  <= e:52  e:221
+[Y0016]       POLITY.EXILE_RETURN         Naenddaem Houllteind (a:8) returns from exile and takes service with the Wougate Crown (f:1)  <= e:141  e:225
+[Y0016] w:14  CONFLICT.ASSASSINATION      Thrirnum Skou (a:10) has Pampei Robum (a:12) murdered at Broldtemoor (p:3)  <= e:189  e:226
+[Y0016]       LIFE.DEATH_VIOLENT          Pampei Robum (a:12), ruler of House Wem (f:2), is killed by Thrirnum Skou (a:10) at Broldtemoor (p:3)  <= e:226  e:227
+[Y0016]       POLITY.APPOINTMENT          Naenddaem Houllteind (a:8) is raised to steward of the Wougate Crown (f:1)  <= e:198  e:228
+[Y0016]       POLITY.SUCCESSION           Wealdaern Leasha (a:9) takes the seat of House Wem (f:2) (by election)  <= e:227  e:229
+
+[Y0017]       LIFE.DEATH_NATURAL          Pund Hundoul (a:11), retainer of House Wem (f:2), dies at 59 in Broldtemoor (p:3)  e:231
+[Y0017]       POLITY.EXILE_RETURN         Krim Groum (a:2) returns from exile and takes service with House Wem (f:2)  <= e:198  e:234
+[Y0017]       POLITY.APPOINTMENT          Fouth Throurn (a:4) is raised to steward of the Wougate Crown (f:1)  <= e:198  e:235
+[Y0017]       CONFLICT.RAID               House Wem (f:2)'s raid on Thu Pits (p:8) is beaten off  <= e:189  e:236
+[Y0017] w:13  POLITY.PLOT_LAPSES          Wealdaern Leasha (a:9)'s conspiracy against Bae Raer (a:7) lapses after 3 years — its author took the seat by other means  [secret]  <= e:193  e:237
+[Y0017] w:15  POLITY.PLOT_DIES_WITH_PLOTTER  Pund Hundoul (a:11)'s conspiracy against Bae Raer (a:7) dies with them, 3 years in  [secret]  <= e:195,e:231  e:238
+
+[Y0018]       LIFE.BIRTH                  Drithne Draend (a:40) is born to Deathder Grun (a:14) at Reswoumark (p:4)  <= e:52  e:240
+[Y0018]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Broldtemoor (p:3) (147% of usual)  e:243
+[Y0018]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Wei Seam (p:7) (143% of usual)  e:244
+[Y0018]       POLITY.COURTS_SUPPORT       Thrir Pondsurn (a:3) wins Thraellgul Thalgin (a:39) away from the ruler of the Wougate Crown (f:1)  <= e:198  e:247
+[Y0018]       POLITY.COURTS_SUPPORT       Naenddaem Houllteind (a:8) wins Thraellgul Thalgin (a:39) away from the ruler of the Wougate Crown (f:1)  <= e:225  e:248
+[Y0018] w:14  POLITY.COUP_RESOLVED        Thrirnum Skou (a:10)'s conspiracy against Wealdaern Leasha (a:9) is uncovered after 4 years  <= e:194  e:249
+[Y0018] w:14  LIFE.DEATH_VIOLENT          Thrirnum Skou (a:10) is put to death — executed for conspiracy  <= e:249  e:250
+
+[Y0019]       LIFE.BIRTH                  Naerream Thrurei (a:41) is born to Krim Groum (a:2) at Broldtemoor (p:3)  <= e:51  e:253
+[Y0019]       POLITY.COURTS_SUPPORT       Thrir Pondsurn (a:3) wins Kros Ranu (a:31) away from the ruler of the Wougate Crown (f:1)  <= e:198  e:256
+[Y0019] w:16  POLITY.COUP_PLOTTED         Naenddaem Houllteind (a:8) begins conspiring against Deathder Grun (a:14) of the Wougate Crown (f:1)  [secret]  <= e:225  e:257
+[Y0019]       POLITY.APPOINTMENT          Bith Southmei (a:21) is raised to steward of the Wougate Crown (f:1)  <= e:198  e:258
+[Y0019]       CONFLICT.RAID               House Wem (f:2)'s raid on Wougate (p:2) is beaten off  e:259
+[Y0019]       POLITY.REVOLT               Wei Seam (p:7) rises against the Wougate Crown (f:1), whose standing had fallen to nothing  <= e:256  e:261
+
+[Y0020] w:17  POLITY.COUP_PLOTTED         Thrir Pondsurn (a:3) begins conspiring against Deathder Grun (a:14) of the Wougate Crown (f:1)  [secret]  <= e:198  e:268
+[Y0020]       POLITY.APPOINTMENT          Lea Dae (a:22) is raised to steward of the Wougate Crown (f:1)  <= e:261  e:269
+[Y0020] w:16  POLITY.COUP_RESOLVED        Naenddaem Houllteind (a:8)'s conspiracy against Deathder Grun (a:14) is uncovered after 1 years  <= e:257  e:270
+[Y0020]       POLITY.EXILE                Naenddaem Houllteind (a:8) is cast out of the Wougate Crown (f:1) — conspiracy against the seat  <= e:270  e:271
+
+[Y0021] w:17  CONFLICT.ASSASSINATION      Thrir Pondsurn (a:3) has Deathder Grun (a:14) murdered at Reswoumark (p:4)  <= e:198  e:277
+[Y0021]       LIFE.DEATH_VIOLENT          Deathder Grun (a:14), ruler of the Wougate Crown (f:1), is killed by Thrir Pondsurn (a:3) at Reswoumark (p:4)  <= e:277  e:278
+[Y0021]       CONFLICT.RAID               House Wem (f:2)'s raid on Haelabarrow (p:5) is beaten off  <= e:189  e:279
+[Y0021]       DIPLO.TRIBUTE_DEMANDED      House Wem (f:2) demands tribute of the Wougate Crown (f:1) and is refused  e:280
+[Y0021] w:18  POLITY.SUCCESSION_DISPUTED  Lea Dae (a:22) contests the claim of Skobas Frul (a:6), the named heir, to the Wougate Crown (f:1) (decided by primogeniture)  <= e:278  e:282
+[Y0021] w:18  POLITY.SUCCESSION           Lea Dae (a:22) takes the seat of the Wougate Crown (f:1), setting aside the claim of the named heir Skobas Frul (a:6)  <= e:282  e:283
+[Y0021] w:18  POLITY.PARTITION            the Wougate Crown (f:1) is divided: Skobas Frul (a:6) carries off 2 place(s) as the Second Crown of Reswoumark  <= e:282  e:284
+[Y0021]       POLITY.REVOLT               Rucrag (p:6) rises against House Wem (f:2), whose standing had fallen very low  <= e:280  e:286
+
+[Y0022]       LIFE.DEATH_NATURAL          Bith Southmei (a:21), steward of the Wougate Crown (f:1), dies at 19 in Wougate (p:2)  e:287
+[Y0022]       POLITY.COURTS_SUPPORT       Tin Kaes (a:24) wins Naerream Thrurei (a:41) away from the ruler of House Wem (f:2)  <= e:286  e:294
+[Y0022]       ECONOMY.TRADE_PACT          the Wougate Crown (f:1) and the Second Crown of Reswoumark (f:4) agree terms of trade  e:295
+[Y0022]       POLITY.LEGITIMACY_CRISIS    the Wougate Crown (f:1) spends 95 silver to buy back goodwill  <= e:261  e:296
+[Y0022]       ECONOMY.TRADE_PACT          House Wem (f:2) and the Second Crown of Reswoumark (f:4) agree terms of trade  <= e:189  e:297
+[Y0022] w:19  DIPLO.WAR_DECLARED          House Wem (f:2) declares war on the Wougate Crown (f:1) over long-standing grievance  e:298
+[Y0022]       DIPLO.ALLIANCE_BROKEN       House Wem (f:2) breaks its alliance with the Wougate Crown (f:1)  <= e:298,e:51  e:299
+[Y0022]       ECONOMY.TRADE_COLLAPSE      trade between House Wem (f:2) and the Wougate Crown (f:1) breaks down  <= e:298,e:81  e:300
+[Y0022]       DIPLO.ALLIANCE_FORMED       the Second Crown of Reswoumark (f:4) seeks an alliance with the Wougate Crown (f:1) and is turned away  <= e:295  e:301
+[Y0022] w:17  POLITY.COUP_RESOLVED        Thrir Pondsurn (a:3) challenges Lea Dae (a:22) for the Wougate Crown (f:1) and wins  <= e:268  e:302
+[Y0022] w:17  POLITY.SUCCESSION           Thrir Pondsurn (a:3) takes the seat of the Wougate Crown (f:1) (coup)  <= e:302  e:303
+[Y0022]       POLITY.EXILE                Lea Dae (a:22) is cast out of the Wougate Crown (f:1) — the losing side of a coup  <= e:302  e:304
+[Y0022] w:19  CONFLICT.BATTLE             the Wougate Crown (f:1) defeats House Wem (f:2) at Thu Pits (p:8) (24 dead)  <= e:298  e:305
+[Y0022]       POLITY.SECESSION            Rucrag (p:6) breaks from House Wem (f:2) as the Sworn Men of Rucrag, with Difearn Kaerheald (a:42) taking its seat  <= e:305  e:308
+
+[Y0023]       LIFE.DEATH_NATURAL          Krim Groum (a:2), captain of House Wem (f:2), dies at 44 in Broldtemoor (p:3)  e:310
+[Y0023]       LIFE.MARRIAGE               Tin Kaes (a:24) marries Rein Ga (a:28) at Broldtemoor (p:3)  e:313
+[Y0023]       POLITY.COURTS_SUPPORT       Thris Pou (a:19) wins Naerream Thrurei (a:41) away from the ruler of House Wem (f:2)  <= e:308  e:317
+[Y0023]       POLITY.CHALLENGE            Tin Kaes (a:24) challenges Wealdaern Leasha (a:9) openly for House Wem (f:2), wins, and takes the seat from Wealdaern Leasha (a:9)  <= e:286  e:318
+[Y0023]       POLITY.EXILE                Wealdaern Leasha (a:9) is cast out of House Wem (f:2) — the losing side of an open challenge  <= e:318  e:320
+[Y0023]       POLITY.APPOINTMENT          Sillmaem Freith (a:26) is raised to heir of the Wougate Crown (f:1)  <= e:261  e:321
+[Y0023]       CONFLICT.ASSASSINATION      Thrir Pondsurn (a:3)'s attempt on Tin Kaes (a:24) fails and is traced back  e:322
+[Y0023]       POLITY.EXILE                Thrir Pondsurn (a:3) is cast out of the Wougate Crown (f:1) — attempted murder  <= e:322  e:323
+[Y0023] w:19  CONFLICT.BATTLE             the Wougate Crown (f:1) defeats House Wem (f:2) at Thu Pits (p:8) (20 dead)  <= e:298  e:324
+[Y0023] w:20  POLITY.SUCCESSION_DISPUTED  Tommarn Ri (a:29) contests the claim of Haepin Maerba (a:25), the named heir, to the Wougate Crown (f:1) (decided by primogeniture)  <= e:323  e:325
+[Y0023] w:20  POLITY.SUCCESSION           Tommarn Ri (a:29) takes the seat of the Wougate Crown (f:1), setting aside the claim of the named heir Haepin Maerba (a:25)  <= e:325  e:326
+[Y0023]       POLITY.EXILE                Haepin Maerba (a:25) is cast out of the Wougate Crown (f:1) — the losing claim  <= e:325  e:327
+
+[Y0024]       LIFE.MARRIAGE               Sir Tintoull (a:23) marries Tommarn Ri (a:29), binding House Wem (f:2) to the Wougate Crown (f:1)  e:333
+[Y0024]       LIFE.MARRIAGE               Kraeth Weageir (a:30) marries Difearn Kaerheald (a:42), binding House Wem (f:2) to the Sworn Men of Rucrag (f:5)  e:334
+[Y0024] w:21  ECONOMY.PLAGUE              plague breaks out at Haelabarrow (p:5) and takes 304  e:336
+[Y0024]       POLITY.EXILE_RETURN         Naenddaem Houllteind (a:8) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:271  e:339
+[Y0024] w:22  POLITY.COUP_PLOTTED         Thris Pou (a:19) begins conspiring against Tin Kaes (a:24) of House Wem (f:2)  [secret]  <= e:308  e:340
+[Y0024]       POLITY.EXILE_RETURN         Lea Dae (a:22) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:304  e:341
+[Y0024] w:23  POLITY.COUP_PLOTTED         Kros Ranu (a:31) begins conspiring against Tommarn Ri (a:29) of the Wougate Crown (f:1)  [secret]  <= e:327  e:342
+[Y0024]       CONFLICT.ASSASSINATION      Tommarn Ri (a:29)'s attempt on Tin Kaes (a:24) fails and is traced back  e:343
+[Y0024]       POLITY.EXILE                Tommarn Ri (a:29) is cast out of the Wougate Crown (f:1) — attempted murder  <= e:343  e:344
+[Y0024]       ECONOMY.TRADE_PACT          House Wem (f:2) and the Second Crown of Reswoumark (f:4) agree terms of trade  <= e:189  e:345
+[Y0024] w:19  CONFLICT.BATTLE             House Wem (f:2) and its allies defeat the Wougate Crown (f:1) at Thu Pits (p:8) (16 dead)  <= e:298,e:334  e:346
+[Y0024] w:19  CONFLICT.CONQUEST           House Wem (f:2) takes Thu Pits (p:8) from the Wougate Crown (f:1)  <= e:346  e:347
+[Y0024]       POLITY.SUCCESSION           Sillmaem Freith (a:26) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:344,e:88,e:321  e:348
+
+[Y0025]       LIFE.MARRIAGE               Greandoul Krean (a:27) marries Kros Ranu (a:31), binding House Wem (f:2) to the Wougate Crown (f:1)  e:351
+[Y0025]       LIFE.BIRTH                  Me Skae (a:43) is born to Tin Kaes (a:24) at Broldtemoor (p:3)  <= e:313  e:352
+[Y0025] w:21  ECONOMY.PLAGUE              plague at Haelabarrow (p:5), year 2: 96 dead and 200 flee  <= e:336  e:354
+[Y0025]       POLITY.EXILE_RETURN         Thrir Pondsurn (a:3) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:323  e:357
+[Y0025]       POLITY.EXILE_RETURN         Wealdaern Leasha (a:9) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:320  e:358
+[Y0025]       POLITY.CHALLENGE            Thris Pou (a:19) challenges Tin Kaes (a:24) openly for House Wem (f:2), loses, and Tin Kaes (a:24) keeps the seat  <= e:308  e:359
+[Y0025]       LIFE.DEATH_VIOLENT          Thris Pou (a:19), captain of House Wem (f:2), is killed by Tin Kaes (a:24) at Broldtemoor (p:3)  <= e:359  e:360
+[Y0025]       POLITY.EXILE_RETURN         Tommarn Ri (a:29) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:344  e:361
+[Y0025]       POLITY.COURTS_SUPPORT       Kros Ranu (a:31) wins Fouth Throurn (a:4) away from the ruler of the Wougate Crown (f:1)  <= e:327  e:362
+[Y0025]       CONFLICT.ASSASSINATION      Sillmaem Freith (a:26) has Tin Kaes (a:24) murdered at Broldtemoor (p:3)  e:363
+[Y0025]       LIFE.DEATH_VIOLENT          Tin Kaes (a:24), ruler of House Wem (f:2), is killed by Sillmaem Freith (a:26) at Broldtemoor (p:3)  <= e:363  e:364
+[Y0025]       POLITY.APPOINTMENT          Kros Ranu (a:31) is raised to heir of the Wougate Crown (f:1)  <= e:327  e:365
+[Y0025] w:19  CONFLICT.BATTLE             House Wem (f:2) and its allies defeat the Wougate Crown (f:1) at Wei Seam (p:7) (15 dead)  <= e:298,e:334  e:366
+[Y0025] w:19  CONFLICT.CONQUEST           House Wem (f:2) takes Wei Seam (p:7) from the Wougate Crown (f:1)  <= e:366  e:367
+[Y0025] w:22  POLITY.PLOT_DIES_WITH_PLOTTER  Thris Pou (a:19)'s conspiracy against Tin Kaes (a:24) dies with them, 1 years in  [secret]  <= e:340,e:360  e:368
+[Y0025] w:24  POLITY.SUCCESSION_DISPUTED  Goul Geall (a:33) contests the claim of Lo Leand (a:32), the named heir, to House Wem (f:2) (decided by election)  <= e:364  e:369
+[Y0025] w:24  POLITY.SUCCESSION           Goul Geall (a:33) takes the seat of House Wem (f:2), setting aside the claim of the named heir Lo Leand (a:32)  <= e:369  e:370
+[Y0025]       POLITY.EXILE                Lo Leand (a:32) is cast out of House Wem (f:2) — the losing claim  <= e:369  e:371
+
+[Y0026]       LIFE.MARRIAGE               Lea Dae (a:22) marries Goul Geall (a:33), binding the Sworn Men of Rucrag (f:5) to House Wem (f:2)  e:373
+[Y0026]       POLITY.EXILE_RETURN         Haepin Maerba (a:25) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:327  e:378
+[Y0026]       POLITY.COURTS_SUPPORT       Kros Ranu (a:31) wins Neildpoun Porn (a:34) away from the ruler of the Wougate Crown (f:1)  <= e:327  e:379
+[Y0026]       POLITY.EXILE_RETURN         Lo Leand (a:32) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:371  e:380
+[Y0026]       POLITY.APPOINTMENT          Neildpoun Porn (a:34) is raised to steward of the Wougate Crown (f:1)  <= e:327  e:381
+[Y0026]       CONFLICT.ASSASSINATION      Sillmaem Freith (a:26) has Goul Geall (a:33) murdered at Broldtemoor (p:3)  e:382
+[Y0026]       LIFE.DEATH_VIOLENT          Goul Geall (a:33), ruler of House Wem (f:2), is killed by Sillmaem Freith (a:26) at Broldtemoor (p:3)  <= e:382  e:383
+[Y0026] w:19  DIPLO.PEACE_SIGNED          House Wem (f:2) and the Wougate Crown (f:1) make peace after 4 years, both sides exhausted  <= e:298  e:384
+[Y0026] w:23  POLITY.COUP_RESOLVED        Kros Ranu (a:31)'s conspiracy against Sillmaem Freith (a:26) is uncovered after 2 years  <= e:342  e:385
+[Y0026] w:23  LIFE.DEATH_VIOLENT          Kros Ranu (a:31) is put to death — executed for conspiracy  <= e:385  e:386
+[Y0026]       POLITY.SUCCESSION           Rein Ga (a:28) takes the seat of House Wem (f:2) (by election)  <= e:383  e:387
+[Y0026] w:21  ECONOMY.PLAGUE_ENDS         the pestilence at Haelabarrow (p:5) burns out after 2 years  <= e:336  e:389
+
+[Y0027]       LIFE.DEATH_NATURAL          Wealdaern Leasha (a:9), captain of the Sworn Men of Rucrag (f:5), dies at 58 in Rucrag (p:6)  e:390
+[Y0027]       LIFE.MARRIAGE               Haepin Maerba (a:25) marries Neildpoun Porn (a:34), binding the Sworn Men of Rucrag (f:5) to the Wougate Crown (f:1)  e:393
+[Y0027] w:25  POLITY.COUP_PLOTTED         Haepin Maerba (a:25) begins conspiring against Difearn Kaerheald (a:42) of the Sworn Men of Rucrag (f:5)  [secret]  <= e:378  e:397
+[Y0027]       POLITY.COURTS_SUPPORT       Tommarn Ri (a:29) wins Haepin Maerba (a:25) away from the ruler of the Sworn Men of Rucrag (f:5)  <= e:361  e:398
+[Y0027]       POLITY.APPOINTMENT          Pondfern Lull (a:35) is raised to heir of the Wougate Crown (f:1)  <= e:327  e:399
+[Y0027]       CONFLICT.ASSASSINATION      Sillmaem Freith (a:26) has Rein Ga (a:28) murdered at Broldtemoor (p:3)  e:400
+[Y0027]       LIFE.DEATH_VIOLENT          Rein Ga (a:28), ruler of House Wem (f:2), is killed by Sillmaem Freith (a:26) at Broldtemoor (p:3)  <= e:400  e:401
+[Y0027] w:26  POLITY.SUCCESSION_DISPUTED  Kraeth Weageir (a:30) contests the claim of Greandoul Krean (a:27), the named heir, to House Wem (f:2) (decided by election)  <= e:401  e:402
+[Y0027] w:26  POLITY.SUCCESSION           Kraeth Weageir (a:30) takes the seat of House Wem (f:2), setting aside the claim of the named heir Greandoul Krean (a:27)  <= e:402  e:403
+[Y0027]       POLITY.EXILE                Greandoul Krean (a:27) is cast out of House Wem (f:2) — the losing claim  <= e:402  e:404
+[Y0027]       POLITY.REVOLT               Wei Seam (p:7) rises against House Wem (f:2), whose standing had fallen to nothing  <= e:404  e:406
+
+[Y0028]       LIFE.DEATH_NATURAL          Haepin Maerba (a:25), captain of the Sworn Men of Rucrag (f:5), dies at 23 in Rucrag (p:6)  e:408
+[Y0028]       LIFE.MARRIAGE               Pondfern Lull (a:35) marries Koldfaem Trir (a:36), binding the Wougate Crown (f:1) to House Wem (f:2)  e:410
+[Y0028] w:27  ECONOMY.PLAGUE              plague breaks out at Wougate (p:2) and takes 95  e:412
+[Y0028]       POLITY.COURTS_SUPPORT       Tommarn Ri (a:29) wins Thrir Pondsurn (a:3) away from the ruler of the Sworn Men of Rucrag (f:5)  <= e:361  e:415
+[Y0028]       POLITY.APPOINTMENT          Kurnsa Bealldo (a:37) is raised to steward of the Wougate Crown (f:1)  <= e:412  e:416
+[Y0028]       DIPLO.INSULT                the Wougate Crown (f:1) publicly slights House Wem (f:2)  e:417
+[Y0028] w:25  POLITY.PLOT_DIES_WITH_PLOTTER  Haepin Maerba (a:25)'s conspiracy against Difearn Kaerheald (a:42) dies with them, 1 years in  [secret]  <= e:397,e:408  e:418
+
+[Y0029]       LIFE.DEATH_NATURAL          Fouth Throurn (a:4), steward of the Wougate Crown (f:1), dies at 53 in Wougate (p:2)  e:420
+[Y0029]       LIFE.DEATH_NATURAL          Lo Leand (a:32), captain of the Sworn Men of Rucrag (f:5), dies at 21 in Rucrag (p:6)  e:421
+[Y0029]       LIFE.MARRIAGE               Sillmaem Freith (a:26) marries Kurnsa Bealldo (a:37) at Wougate (p:2)  e:422
+[Y0029]       LIFE.BIRTH                  Halweill Tu (a:45) is born to Sillmaem Freith (a:26) at Wougate (p:2)  <= e:422  e:423
+[Y0029] w:27  ECONOMY.PLAGUE              plague at Wougate (p:2), year 2: 195 dead and 187 flee  <= e:412  e:425
+[Y0029]       POLITY.COURTS_SUPPORT       Sir Tintoull (a:23) wins Naerream Thrurei (a:41) away from the ruler of House Wem (f:2)  e:429
+[Y0029]       POLITY.EXILE_RETURN         Greandoul Krean (a:27) returns from exile and takes service with the Sworn Men of Rucrag (f:5)  <= e:404  e:430
+[Y0029] w:29  POLITY.COUP_PLOTTED         Tommarn Ri (a:29) begins conspiring against Difearn Kaerheald (a:42) of the Sworn Men of Rucrag (f:5)  [secret]  <= e:361  e:431
+[Y0029]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Thu Pits (p:8) is beaten off  e:432
+[Y0029]       DIPLO.ALLIANCE_FORMED       the Second Crown of Reswoumark (f:4) and the Wougate Crown (f:1) swear an alliance  <= e:295  e:433
+[Y0029]       POLITY.LEGITIMACY_CRISIS    the Second Crown of Reswoumark (f:4) spends 50 silver to buy back goodwill  <= e:354  e:434
+
+[Y0030]       LIFE.DEATH_NATURAL          Thrir Pondsurn (a:3), captain of the Sworn Men of Rucrag (f:5), dies at 54 in Rucrag (p:6)  e:437
+[Y0030]       LIFE.DEATH_NATURAL          Skobas Frul (a:6), ruler of the Second Crown of Reswoumark (f:4), dies at 62 in Reswoumark (p:4)  e:438
+[Y0030]       LIFE.BIRTH                  Threihoull Thild (a:46) is born to Lea Dae (a:22) at Rucrag (p:6)  <= e:373  e:440
+[Y0030]       POLITY.CHALLENGE            Sir Tintoull (a:23) challenges Kraeth Weageir (a:30) openly for House Wem (f:2), wins, and takes the seat from Kraeth Weageir (a:30)  e:445
+[Y0030]       LIFE.DEATH_VIOLENT          Kraeth Weageir (a:30), ruler of House Wem (f:2), is killed by Sir Tintoull (a:23) at Broldtemoor (p:3)  <= e:445  e:447
+[Y0030]       POLITY.CHALLENGE            Tommarn Ri (a:29) challenges Difearn Kaerheald (a:42) openly for the Sworn Men of Rucrag (f:5), wins, and takes the seat from Difearn Kaerheald (a:42)  <= e:361  e:448
+[Y0030]       POLITY.EXILE                Difearn Kaerheald (a:42) is cast out of the Sworn Men of Rucrag (f:5) — the losing side of an open challenge  <= e:448  e:450
+[Y0030] w:30  POLITY.COUP_PLOTTED         Kurnsa Bealldo (a:37) begins conspiring against Sillmaem Freith (a:26) of the Wougate Crown (f:1)  [secret]  <= e:432  e:451
+[Y0030]       POLITY.APPOINTMENT          Voun Woldlom (a:38) is raised to steward of the Wougate Crown (f:1)  <= e:412  e:452
+[Y0030]       DIPLO.TRIBUTE_DEMANDED      the Wougate Crown (f:1) demands tribute of House Wem (f:2) and is refused  e:453
+[Y0030]       POLITY.LEGITIMACY_CRISIS    House Wem (f:2) spends 50 silver to buy back goodwill  e:454
+[Y0030] w:29  POLITY.PLOT_LAPSES          Tommarn Ri (a:29)'s conspiracy against Difearn Kaerheald (a:42) lapses after 1 years — its author took the seat by other means  [secret]  <= e:431  e:455
+[Y0030]       POLITY.SUCCESSION           Mith Thres (a:47) takes the seat of the Second Crown of Reswoumark (f:4) (raised from reswoumark, no claimant remaining)  <= e:438  e:457
+[Y0030] w:27  ECONOMY.PLAGUE_ENDS         the pestilence at Wougate (p:2) burns out after 2 years  <= e:412  e:459
+
+[Y0031]       LIFE.BIRTH                  Skove Pull (a:48) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:460
+[Y0031] w:30  CONFLICT.ASSASSINATION      Kurnsa Bealldo (a:37) has Sillmaem Freith (a:26) murdered at Wougate (p:2)  <= e:432  e:464
+[Y0031]       LIFE.DEATH_VIOLENT          Sillmaem Freith (a:26), ruler of the Wougate Crown (f:1), is killed by Kurnsa Bealldo (a:37) at Wougate (p:2)  <= e:464  e:465
+[Y0031]       ECONOMY.TRADE_PACT          House Wem (f:2) buys 30 grain from the Second Crown of Reswoumark (f:4) for 60 silver  <= e:189,e:345  e:466
+[Y0031]       POLITY.APPOINTMENT          Koldfaem Trir (a:36) is raised to heir of House Wem (f:2)  e:467
+[Y0031]       POLITY.APPOINTMENT          Naenddaem Houllteind (a:8) is raised to heir of the Sworn Men of Rucrag (f:5)  <= e:450  e:468
+[Y0031]       POLITY.SUCCESSION           Neildpoun Porn (a:34) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:465,e:131,e:381  e:469
+[Y0031] w:28  ECONOMY.FAMINE_ENDS         the hunger at Wei Seam (p:7) passes after 2 years and 16 return to the fields  e:471
+
+[Y0032]       LIFE.DEATH_NATURAL          Pondfern Lull (a:35), heir of the Wougate Crown (f:1), dies at 21 in Wougate (p:2)  e:473
+[Y0032]       LIFE.MARRIAGE               Voun Woldlom (a:38) marries Mith Thres (a:47), binding the Wougate Crown (f:1) to the Second Crown of Reswoumark (f:4)  <= e:433  e:475
+[Y0032]       LIFE.BIRTH                  Steaskaes Ve (a:49) is born to Pondfern Lull (a:35) at Wougate (p:2)  <= e:410  e:476
+[Y0032]       POLITY.LEGITIMACY_CRISIS    the Wougate Crown (f:1) spends 140 silver buying goodwill for the third time, and is not believed  <= e:412  e:480
+[Y0032]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Wei Seam (p:7) is beaten off  e:481
+[Y0032]       POLITY.LEGITIMACY_CRISIS    the Sworn Men of Rucrag (f:5) spends 50 silver to buy back goodwill  <= e:450  e:482
+
+[Y0033]       LIFE.BIRTH                  Bi Binseall (a:50) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:484
+[Y0033] w:31  POLITY.COUP_PLOTTED         Lea Dae (a:22) begins conspiring against Tommarn Ri (a:29) of the Sworn Men of Rucrag (f:5)  [secret]  <= e:450  e:488
+[Y0033]       POLITY.APPOINTMENT          Thraellgul Thalgin (a:39) is raised to heir of the Wougate Crown (f:1)  <= e:412  e:489
+[Y0033]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Broldtemoor (p:3) is beaten off  e:490
+[Y0033]       DIPLO.INSULT                the Second Crown of Reswoumark (f:4) publicly slights House Wem (f:2)  e:491
+[Y0033]       POLITY.APPOINTMENT          Greandoul Krean (a:27) is raised to steward of the Sworn Men of Rucrag (f:5)  <= e:450  e:492
+[Y0033]       CONFLICT.RAID               the Sworn Men of Rucrag (f:5)'s raid on Thu Pits (p:8) is beaten off  e:493
+
+[Y0034]       POLITY.COURTS_SUPPORT       Lea Dae (a:22) wins Bi Binseall (a:50) away from the ruler of the Sworn Men of Rucrag (f:5)  <= e:450  e:500
+[Y0034] w:32  POLITY.COUP_PLOTTED         Koldfaem Trir (a:36) begins conspiring against Sir Tintoull (a:23) of House Wem (f:2)  [secret]  e:501
+[Y0034]       POLITY.COURTS_SUPPORT       Thraellgul Thalgin (a:39) wins Halweill Tu (a:45) away from the ruler of the Wougate Crown (f:1)  <= e:490  e:502
+[Y0034]       CONFLICT.ASSASSINATION      an attempt on Sir Tintoull (a:23) fails at Broldtemoor (p:3), unattributed  [secret]  e:503
+[Y0034]       POLITY.APPOINTMENT          Drithne Draend (a:40) is raised to steward of the Wougate Crown (f:1)  <= e:490  e:504
+[Y0034]       DIPLO.TRIBUTE_DEMANDED      the Second Crown of Reswoumark (f:4) demands tribute of House Wem (f:2) and is refused  e:505
+[Y0034]       DIPLO.INSULT                the Sworn Men of Rucrag (f:5) publicly slights House Wem (f:2)  e:506
+[Y0034]       ECONOMY.TRADE_PACT          the Sworn Men of Rucrag (f:5) and the Second Crown of Reswoumark (f:4) agree terms of trade  e:507
+[Y0034] w:30  POLITY.COUP_RESOLVED        Kurnsa Bealldo (a:37)'s conspiracy against Neildpoun Porn (a:34) is uncovered after 4 years  <= e:451  e:508
+[Y0034]       POLITY.EXILE                Kurnsa Bealldo (a:37) is cast out of the Wougate Crown (f:1) — conspiracy against the seat  <= e:508  e:509
+[Y0034]       POLITY.REVOLT               Thu Pits (p:8) rises against House Wem (f:2), whose standing had fallen very low  e:511
+
+[Y0035]       LIFE.BIRTH                  Fulthea Bourn (a:51) is born to Lea Dae (a:22) at Rucrag (p:6)  <= e:373  e:514
+[Y0035]       LIFE.BIRTH                  Lath Rem (a:52) is born to Voun Woldlom (a:38) at Wougate (p:2)  <= e:475  e:515
+[Y0035] w:31  CONFLICT.ASSASSINATION      Lea Dae (a:22) has Tommarn Ri (a:29) murdered at Rucrag (p:6)  <= e:450  e:524
+[Y0035]       LIFE.DEATH_VIOLENT          Tommarn Ri (a:29), ruler of the Sworn Men of Rucrag (f:5), is killed by Lea Dae (a:22) at Rucrag (p:6)  <= e:524  e:525
+[Y0035] w:32  CONFLICT.ASSASSINATION      Koldfaem Trir (a:36) has Sir Tintoull (a:23) murdered at Broldtemoor (p:3)  e:526
+[Y0035]       LIFE.DEATH_VIOLENT          Sir Tintoull (a:23), ruler of House Wem (f:2), is killed by Koldfaem Trir (a:36) at Broldtemoor (p:3)  <= e:526  e:527
+[Y0035]       POLITY.CHALLENGE            Thraellgul Thalgin (a:39) challenges Neildpoun Porn (a:34) openly for the Wougate Crown (f:1), wins, and takes the seat from Neildpoun Porn (a:34)  <= e:490  e:528
+[Y0035]       LIFE.DEATH_VIOLENT          Neildpoun Porn (a:34), ruler of the Wougate Crown (f:1), is killed by Thraellgul Thalgin (a:39) at Wougate (p:2)  <= e:528  e:530
+[Y0035] w:33  POLITY.SUCCESSION_DISPUTED  Lea Dae (a:22) contests the claim of Naenddaem Houllteind (a:8), the named heir, to the Sworn Men of Rucrag (f:5) (decided by election)  <= e:525  e:531
+[Y0035] w:33  POLITY.SUCCESSION           Naenddaem Houllteind (a:8), the named heir, takes the seat of the Sworn Men of Rucrag (f:5); the rival claim of Lea Dae (a:22) is rejected  <= e:531  e:532
+[Y0035]       POLITY.EXILE                Lea Dae (a:22) is cast out of the Sworn Men of Rucrag (f:5) — the losing claim  <= e:531  e:533
+[Y0035]       POLITY.SUCCESSION           Koldfaem Trir (a:36) takes the seat of House Wem (f:2) (by election)  <= e:527,e:467  e:534
+
+[Y0036]       LIFE.MARRIAGE               Thraellgul Thalgin (a:39) marries Naerream Thrurei (a:41), binding the Wougate Crown (f:1) to House Wem (f:2)  e:536
+[Y0036]       LIFE.BIRTH                  No Thei (a:53) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:537
+[Y0036]       POLITY.EXILE_RETURN         Difearn Kaerheald (a:42) returns from exile and takes service with the Second Crown of Reswoumark (f:4)  <= e:450  e:541
+[Y0036]       POLITY.APPOINTMENT          Naerream Thrurei (a:41) is raised to heir of House Wem (f:2)  e:542
+[Y0036]       CONFLICT.RAID               House Wem (f:2) raids Reswoumark (p:4), carrying off 59 grain and killing 22  e:543
+[Y0036]       CONFLICT.RAID               the Second Crown of Reswoumark (f:4)'s raid on Thu Pits (p:8) is beaten off  <= e:543  e:544
+[Y0036]       CONFLICT.ASSASSINATION      Naenddaem Houllteind (a:8)'s attempt on Koldfaem Trir (a:36) fails and is traced back  e:545
+[Y0036]       POLITY.EXILE                Naenddaem Houllteind (a:8) is cast out of the Sworn Men of Rucrag (f:5) — attempted murder  <= e:545  e:546
+[Y0036] w:32  POLITY.PLOT_LAPSES          Koldfaem Trir (a:36)'s conspiracy against Sir Tintoull (a:23) lapses after 2 years — its author took the seat by other means  [secret]  <= e:501  e:547
+[Y0036]       POLITY.SUCCESSION           Greandoul Krean (a:27) takes the seat of the Sworn Men of Rucrag (f:5) (by election)  <= e:546,e:492  e:548
+
+[Y0037] w:34  ECONOMY.PLAGUE              plague breaks out at Rucrag (p:6) and takes 121  e:552
+[Y0037]       POLITY.EXILE_RETURN         Kurnsa Bealldo (a:37) returns from exile and takes service with the Second Crown of Reswoumark (f:4)  <= e:509  e:555
+[Y0037]       CONFLICT.RAID               the Second Crown of Reswoumark (f:4)'s raid on Wei Seam (p:7) is beaten off  e:556
+[Y0037]       DIPLO.TRIBUTE_DEMANDED      the Sworn Men of Rucrag (f:5) demands tribute of House Wem (f:2) and is refused  e:557
+
+[Y0038]       LIFE.BIRTH                  Fei Kougruld (a:54) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:559
+[Y0038]       POLITY.EXILE_RETURN         Lea Dae (a:22) returns from exile and takes service with House Wem (f:2)  <= e:533  e:562
+[Y0038]       CONFLICT.ASSASSINATION      Thraellgul Thalgin (a:39)'s attempt on Koldfaem Trir (a:36) fails and is traced back  e:563
+[Y0038]       POLITY.EXILE                Thraellgul Thalgin (a:39) is cast out of the Wougate Crown (f:1) — attempted murder  <= e:563  e:564
+[Y0038]       CONFLICT.RAID               House Wem (f:2) raids Wougate (p:2), carrying off 33 grain and killing 28  <= e:563  e:565
+[Y0038]       POLITY.APPOINTMENT          Lea Dae (a:22) is raised to steward of House Wem (f:2)  <= e:527  e:566
+[Y0038]       CONFLICT.RAID               the Second Crown of Reswoumark (f:4)'s raid on Broldtemoor (p:3) is beaten off  e:567
+[Y0038]       CONFLICT.RAID               the Sworn Men of Rucrag (f:5)'s raid on Wei Seam (p:7) is beaten off  e:568
+[Y0038]       CONFLICT.RAID               the Sworn Men of Rucrag (f:5)'s raid on Haelabarrow (p:5) is beaten off  e:569
+[Y0038] w:31  POLITY.COUP_RESOLVED        Lea Dae (a:22)'s conspiracy against Greandoul Krean (a:27) is uncovered after 5 years  <= e:488  e:570
+[Y0038]       POLITY.EXILE                Lea Dae (a:22), who had already left, is declared outlaw by the Sworn Men of Rucrag (f:5) — conspiracy against the seat  <= e:570  e:571
+[Y0038]       POLITY.SUCCESSION           Voun Woldlom (a:38) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:564,e:187,e:452  e:572
+[Y0038] w:34  ECONOMY.PLAGUE_ENDS         the pestilence at Rucrag (p:6) burns out after 1 years  <= e:552  e:574
+
+[Y0039]       LIFE.BIRTH                  Beager Go (a:55) is born to Lea Dae (a:22) at Broldtemoor (p:3)  <= e:373  e:575
+[Y0039]       LIFE.BIRTH                  Kouldbol Dril (a:56) is born to Voun Woldlom (a:38) at Wougate (p:2)  <= e:475  e:576
+[Y0039]       CONFLICT.ASSASSINATION      Lea Dae (a:22) has Naenddaem Houllteind (a:8) murdered at Rucrag (p:6)  e:580
+[Y0039]       LIFE.DEATH_VIOLENT          Naenddaem Houllteind (a:8), exile, is killed by Lea Dae (a:22) at Rucrag (p:6)  <= e:580  e:581
+[Y0039]       ECONOMY.TRADE_PACT          House Wem (f:2) and the Wougate Crown (f:1) agree terms of trade  e:582
+[Y0039]       CONFLICT.ASSASSINATION      Greandoul Krean (a:27) has Koldfaem Trir (a:36) murdered at Broldtemoor (p:3)  e:583
+[Y0039]       LIFE.DEATH_VIOLENT          Koldfaem Trir (a:36), ruler of House Wem (f:2), is killed by Greandoul Krean (a:27) at Broldtemoor (p:3)  <= e:583  e:584
+[Y0039]       ECONOMY.TRADE_PACT          the Sworn Men of Rucrag (f:5) buys 30 grain from the Wougate Crown (f:1) for 60 silver  e:585
+[Y0039]       POLITY.SUCCESSION           Lea Dae (a:22) takes the seat of House Wem (f:2) (by election)  <= e:584,e:566  e:586
+
+[Y0040]       LIFE.BIRTH                  Braern Leld (a:57) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:589
+[Y0040]       POLITY.EXILE_RETURN         Thraellgul Thalgin (a:39) returns from exile and takes service with the Second Crown of Reswoumark (f:4)  <= e:564  e:594
+[Y0040]       POLITY.LEGITIMACY_CRISIS    House Wem (f:2) spends 95 silver to buy back goodwill  <= e:527  e:595
+[Y0040]       CONFLICT.RAID               House Wem (f:2) raids Haelabarrow (p:5), carrying off 21 grain and killing 35  e:596
+[Y0040]       CONFLICT.ASSASSINATION      Mith Thres (a:47)'s attempt on Lea Dae (a:22) fails and is traced back  e:597
+[Y0040]       POLITY.EXILE                Mith Thres (a:47) is cast out of the Second Crown of Reswoumark (f:4) — attempted murder  <= e:597  e:598
+[Y0040]       ECONOMY.TRADE_PACT          the Sworn Men of Rucrag (f:5) buys 30 grain from the Second Crown of Reswoumark (f:4) for 60 silver  <= e:507  e:599
+[Y0040] w:36  POLITY.SUCCESSION_DISPUTED  Kurnsa Bealldo (a:37) contests the claim of Difearn Kaerheald (a:42), the named heir, to the Second Crown of Reswoumark (f:4) (decided by primogeniture)  <= e:598  e:600
+[Y0040] w:36  POLITY.SUCCESSION           Difearn Kaerheald (a:42), the named heir, takes the seat of the Second Crown of Reswoumark (f:4); the rival claim of Kurnsa Bealldo (a:37) is rejected  <= e:600  e:601
+[Y0040]       POLITY.EXILE                Kurnsa Bealldo (a:37) is cast out of the Second Crown of Reswoumark (f:4) — the losing claim  <= e:600  e:602
+
+[Y0041]       LIFE.BIRTH                  Wil Skind (a:58) is born to Thraellgul Thalgin (a:39) at Reswoumark (p:4)  <= e:536  e:605
+[Y0041]       POLITY.EXILE_RETURN         Kurnsa Bealldo (a:37) returns from exile and takes service with House Wem (f:2)  <= e:602  e:609
+[Y0041]       POLITY.APPOINTMENT          Kurnsa Bealldo (a:37) is raised to steward of House Wem (f:2)  <= e:527  e:610
+[Y0041]       POLITY.LEGITIMACY_CRISIS    the Second Crown of Reswoumark (f:4) spends 95 silver buying goodwill for the second time, and is not believed  <= e:602  e:611
+[Y0041]       POLITY.LEGITIMACY_CRISIS    the Sworn Men of Rucrag (f:5) spends 59 silver buying goodwill for the second time, and is not believed  <= e:571  e:612
+
+[Y0042]       LIFE.DEATH_NATURAL          Me Skae (a:43), retainer of House Wem (f:2), dies at 17 in Broldtemoor (p:3)  e:615
+[Y0042]       LIFE.BIRTH                  Galkund Dea (a:59) is born to Thraellgul Thalgin (a:39) at Reswoumark (p:4)  <= e:536  e:617
+[Y0042]       POLITY.COURTS_SUPPORT       Kurnsa Bealldo (a:37) wins Naerream Thrurei (a:41) away from the ruler of House Wem (f:2)  <= e:609  e:622
+[Y0042]       CONFLICT.ASSASSINATION      Kurnsa Bealldo (a:37) has Difearn Kaerheald (a:42) murdered at Reswoumark (p:4)  e:623
+[Y0042]       LIFE.DEATH_VIOLENT          Difearn Kaerheald (a:42), ruler of the Second Crown of Reswoumark (f:4), is killed by Kurnsa Bealldo (a:37) at Reswoumark (p:4)  <= e:623  e:624
+[Y0042]       POLITY.LEGITIMACY_CRISIS    the Wougate Crown (f:1) spends 137 silver buying goodwill for the fourth time, and is not believed  <= e:490  e:625
+[Y0042]       ECONOMY.TRADE_PACT          House Wem (f:2) and the Wougate Crown (f:1) agree terms of trade  e:626
+[Y0042] w:37  DIPLO.WAR_DECLARED          House Wem (f:2) declares war on the Wougate Crown (f:1) over long-standing grievance  e:627
+[Y0042]       DIPLO.ALLIANCE_BROKEN       House Wem (f:2) breaks its alliance with the Wougate Crown (f:1)  <= e:627,e:333  e:628
+[Y0042]       ECONOMY.TRADE_COLLAPSE      trade between House Wem (f:2) and the Wougate Crown (f:1) breaks down  <= e:627,e:582  e:629
+[Y0042]       CONFLICT.RAID               the Sworn Men of Rucrag (f:5) raids Wougate (p:2), carrying off 53 grain and killing 27  e:630
+[Y0042] w:37  CONFLICT.BATTLE             House Wem (f:2) defeats the Wougate Crown (f:1) at Wougate (p:2) (180 dead)  <= e:627  e:631
+[Y0042]       POLITY.SUCCESSION           Thraellgul Thalgin (a:39) takes the seat of the Second Crown of Reswoumark (f:4) (by right of birth)  <= e:624,e:221,e:489  e:632
+[Y0042]       ECONOMY.TRADE_COLLAPSE      trade between the Wougate Crown (f:1) and the Second Crown of Reswoumark (f:4) breaks down  <= e:295  e:634
+[Y0042]       POLITY.REVOLT               Haelabarrow (p:5) rises against the Second Crown of Reswoumark (f:4), whose standing had fallen to nothing  <= e:624  e:635
+
+[Y0043]       LIFE.BIRTH                  Fomgour Tros (a:60) is born to Lea Dae (a:22) at Broldtemoor (p:3)  <= e:373  e:636
+[Y0043]       LIFE.BIRTH                  Foun Thael (a:61) is born to Voun Woldlom (a:38) at Wougate (p:2)  <= e:475  e:637
+[Y0043]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Wei Seam (p:7) (132% of usual)  e:640
+[Y0043] w:38  POLITY.COUP_PLOTTED         Kurnsa Bealldo (a:37) begins conspiring against Lea Dae (a:22) of House Wem (f:2)  [secret]  <= e:609  e:643
+[Y0043]       POLITY.COURTS_SUPPORT       Naerream Thrurei (a:41) wins Fomgour Tros (a:60) away from the ruler of House Wem (f:2)  e:644
+[Y0043]       CONFLICT.ASSASSINATION      Voun Woldlom (a:38)'s attempt on Lea Dae (a:22) fails and is traced back  e:645
+[Y0043]       POLITY.EXILE                Voun Woldlom (a:38) is cast out of the Wougate Crown (f:1) — attempted murder  <= e:645  e:646
+[Y0043] w:37  CONFLICT.BATTLE             House Wem (f:2) defeats the Wougate Crown (f:1) at Wougate (p:2) (150 dead)  <= e:627  e:647
+[Y0043] w:37  CONFLICT.CONQUEST           House Wem (f:2) takes Wougate (p:2) from the Wougate Crown (f:1)  <= e:647  e:648
+[Y0043]       POLITY.SUCCESSION           Drithne Draend (a:40) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:646,e:240,e:504  e:649
+[Y0043] w:35  ECONOMY.FAMINE_ENDS         the hunger at Wei Seam (p:7) passes after 3 years and 21 return to the fields  e:651
+
+[Y0044]       LIFE.BIRTH                  Haesmeirn Limend (a:62) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:653
+[Y0044] w:38  CONFLICT.ASSASSINATION      Kurnsa Bealldo (a:37) has Lea Dae (a:22) murdered at Broldtemoor (p:3)  <= e:609  e:657
+[Y0044]       LIFE.DEATH_VIOLENT          Lea Dae (a:22), ruler of House Wem (f:2), is killed by Kurnsa Bealldo (a:37) at Broldtemoor (p:3)  <= e:657  e:658
+[Y0044]       POLITY.EXILE_RETURN         Voun Woldlom (a:38) returns from exile and takes service with the Second Crown of Reswoumark (f:4)  <= e:646  e:659
+[Y0044]       POLITY.EXILE_RETURN         Mith Thres (a:47) returns from exile and takes service with House Wem (f:2)  <= e:598  e:660
+[Y0044]       POLITY.APPOINTMENT          Voun Woldlom (a:38) is raised to heir of the Second Crown of Reswoumark (f:4)  <= e:602  e:661
+[Y0044]       CONFLICT.RAID               the Sworn Men of Rucrag (f:5)'s raid on Broldtemoor (p:3) is beaten off  e:662
+[Y0044] w:37  DIPLO.PEACE_SIGNED          House Wem (f:2) and the Wougate Crown (f:1) make peace after 2 years, after the collapse of the Wougate Crown  <= e:627  e:663
+[Y0044]       POLITY.SUCCESSION           Kurnsa Bealldo (a:37) takes the seat of House Wem (f:2) (by election)  <= e:658,e:610  e:664
+
+[Y0045]       LIFE.BIRTH                  Thrunpi Deandwim (a:63) is born to Voun Woldlom (a:38) at Reswoumark (p:4)  <= e:475  e:667
+[Y0045]       POLITY.CHALLENGE            Naerream Thrurei (a:41) challenges Kurnsa Bealldo (a:37) openly for House Wem (f:2), loses, and Kurnsa Bealldo (a:37) keeps the seat  e:670
+[Y0045]       LIFE.DEATH_VIOLENT          Naerream Thrurei (a:41), heir of House Wem (f:2), is killed by Kurnsa Bealldo (a:37) at Broldtemoor (p:3)  <= e:670  e:671
+[Y0045]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Thu Pits (p:8) is beaten off  e:672
+[Y0045] w:38  POLITY.PLOT_LAPSES          Kurnsa Bealldo (a:37)'s conspiracy against Lea Dae (a:22) lapses after 2 years — its author took the seat by other means  [secret]  <= e:643  e:674
+
+[Y0046]       LIFE.MARRIAGE               Drithne Draend (a:40) marries Feald Keim (a:44), binding the Wougate Crown (f:1) to House Wem (f:2)  e:677
+[Y0046]       LIFE.BIRTH                  Markol Mollfal (a:64) is born to Voun Woldlom (a:38) at Reswoumark (p:4)  <= e:475  e:678
+[Y0046]       CONFLICT.ASSASSINATION      Drithne Draend (a:40)'s attempt on Kurnsa Bealldo (a:37) fails and is traced back  e:682
+[Y0046]       POLITY.EXILE                Drithne Draend (a:40) is cast out of the Wougate Crown (f:1) — attempted murder  <= e:682  e:683
+[Y0046]       DIPLO.TRIBUTE_DEMANDED      House Wem (f:2) extracts 55 silver in tribute from the Sworn Men of Rucrag (f:5)  e:684
+[Y0046]       CONFLICT.RAID               the Second Crown of Reswoumark (f:4)'s raid on Wougate (p:2) is beaten off  e:685
+[Y0046]       POLITY.APPOINTMENT          Threihoull Thild (a:46) is raised to heir of the Sworn Men of Rucrag (f:5)  <= e:571  e:686
+[Y0046]       POLITY.SUCCESSION           Halweill Tu (a:45) takes the seat of the Wougate Crown (f:1) (by right of birth)  <= e:683,e:423  e:687
+
+[Y0047]       LIFE.BIRTH                  Faesnern Hithlaern (a:65) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:691
+[Y0047]       LIFE.BIRTH                  Sour Mu (a:66) is born to Voun Woldlom (a:38) at Reswoumark (p:4)  <= e:475  e:692
+[Y0047]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Reswoumark (p:4) (145% of usual)  e:694
+[Y0047]       POLITY.EXILE_RETURN         Drithne Draend (a:40) returns from exile and takes service with House Wem (f:2)  <= e:683  e:698
+[Y0047]       CONFLICT.RAID               House Wem (f:2) raids Rucrag (p:6) and kills 27, but takes nothing  e:699
+[Y0047]       CONFLICT.ASSASSINATION      Thraellgul Thalgin (a:39)'s attempt on Kurnsa Bealldo (a:37) fails and is traced back  e:700
+[Y0047]       POLITY.EXILE                Thraellgul Thalgin (a:39) is cast out of the Second Crown of Reswoumark (f:4) — attempted murder  <= e:700  e:701
+[Y0047]       POLITY.APPOINTMENT          Skove Pull (a:48) is raised to steward of the Sworn Men of Rucrag (f:5)  <= e:571  e:702
+[Y0047]       POLITY.SUCCESSION           Voun Woldlom (a:38) takes the seat of the Second Crown of Reswoumark (f:4) (by right of birth)  <= e:701,e:187,e:661  e:703
+
+[Y0048]       LIFE.MARRIAGE               Halweill Tu (a:45) marries Threihoull Thild (a:46), binding the Wougate Crown (f:1) to the Sworn Men of Rucrag (f:5)  e:707
+[Y0048]       LIFE.BIRTH                  Thrald Ster (a:67) is born to Greandoul Krean (a:27) at Rucrag (p:6)  <= e:351  e:708
+[Y0048]       DIPLO.INSULT                the Wougate Crown (f:1) publicly slights House Wem (f:2)  e:712
+[Y0048] w:39  DIPLO.WAR_DECLARED          House Wem (f:2) declares war on the Sworn Men of Rucrag (f:5) over long-standing grievance  e:713
+[Y0048]       DIPLO.ALLIANCE_BROKEN       House Wem (f:2) breaks its alliance with the Sworn Men of Rucrag (f:5)  <= e:713,e:334  e:714
+[Y0048]       CONFLICT.ASSASSINATION      Greandoul Krean (a:27)'s attempt on Kurnsa Bealldo (a:37) fails and is traced back  e:715
+[Y0048]       POLITY.EXILE                Greandoul Krean (a:27) is cast out of the Sworn Men of Rucrag (f:5) — attempted murder  <= e:715  e:716
+[Y0048] w:39  CONFLICT.BATTLE             House Wem (f:2) defeats the Sworn Men of Rucrag (f:5) at Rucrag (p:6) (178 dead)  <= e:713  e:717
+[Y0048]       POLITY.SUCCESSION           Threihoull Thild (a:46) takes the seat of the Sworn Men of Rucrag (f:5) (by election)  <= e:716,e:686  e:718
+
+[Y0049]       POLITY.EXILE_RETURN         Greandoul Krean (a:27) returns from exile and takes service with the Second Crown of Reswoumark (f:4)  <= e:716  e:724
+[Y0049]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Wei Seam (p:7) is beaten off  e:725
+[Y0049] w:39  CONFLICT.ASSASSINATION      Kurnsa Bealldo (a:37) has Threihoull Thild (a:46) murdered at Rucrag (p:6)  e:726
+[Y0049]       LIFE.DEATH_VIOLENT          Threihoull Thild (a:46), ruler of the Sworn Men of Rucrag (f:5), is killed by Kurnsa Bealldo (a:37) at Rucrag (p:6)  <= e:726  e:727
+[Y0049]       DIPLO.INSULT                the Second Crown of Reswoumark (f:4) publicly slights House Wem (f:2)  e:728
+[Y0049] w:39  CONFLICT.BATTLE             House Wem (f:2) defeats the Sworn Men of Rucrag (f:5) at Rucrag (p:6) (148 dead)  <= e:713  e:729
+[Y0049]       POLITY.SUCCESSION           Skove Pull (a:48) takes the seat of the Sworn Men of Rucrag (f:5) (by election)  <= e:727,e:702  e:730
+
+[Y0050]       LIFE.MARRIAGE               Steaskaes Ve (a:49) marries Bi Binseall (a:50), binding the Wougate Crown (f:1) to the Sworn Men of Rucrag (f:5)  e:733
+[Y0050]       CONFLICT.RAID               the Wougate Crown (f:1)'s raid on Wougate (p:2) is beaten off  e:737
+[Y0050]       CONFLICT.ASSASSINATION      Kurnsa Bealldo (a:37) has Skove Pull (a:48) murdered at Rucrag (p:6)  e:738
+[Y0050]       LIFE.DEATH_VIOLENT          Skove Pull (a:48), ruler of the Sworn Men of Rucrag (f:5), is killed by Kurnsa Bealldo (a:37) at Rucrag (p:6)  <= e:738  e:739
+[Y0050] w:39  DIPLO.PEACE_SIGNED          House Wem (f:2) and the Sworn Men of Rucrag (f:5) make peace after 2 years, both sides exhausted  <= e:713  e:740
+[Y0050]       POLITY.SUCCESSION           Bi Binseall (a:50) takes the seat of the Sworn Men of Rucrag (f:5) (by election)  <= e:739  e:741
+
+[Y0051] w:40  POLITY.COUP_PLOTTED         Fulthea Bourn (a:51) begins conspiring against Bi Binseall (a:50) of the Sworn Men of Rucrag (f:5)  [secret]  <= e:739  e:750
+[Y0051]       CONFLICT.ASSASSINATION      an attempt on Kurnsa Bealldo (a:37) fails at Broldtemoor (p:3), unattributed  [secret]  e:751
+[Y0051] w:41  DIPLO.WAR_DECLARED          House Wem (f:2) declares war on the Second Crown of Reswoumark (f:4) over long-standing grievance  e:752
+[Y0051]       ECONOMY.TRADE_COLLAPSE      trade between House Wem (f:2) and the Second Crown of Reswoumark (f:4) breaks down  <= e:752,e:297  e:753
+[Y0051]       CONFLICT.ASSASSINATION      Voun Woldlom (a:38)'s attempt on Kurnsa Bealldo (a:37) fails and is traced back  e:754
+[Y0051]       POLITY.EXILE                Voun Woldlom (a:38) is cast out of the Second Crown of Reswoumark (f:4) — attempted murder  <= e:754  e:755
+[Y0051]       DIPLO.INSULT                the Sworn Men of Rucrag (f:5) publicly slights House Wem (f:2)  e:756
+[Y0051]       POLITY.APPOINTMENT          Fulthea Bourn (a:51) is raised to heir of the Sworn Men of Rucrag (f:5)  <= e:729  e:757
+[Y0051] w:41  CONFLICT.BATTLE             House Wem (f:2) defeats the Second Crown of Reswoumark (f:4) at Haelabarrow (p:5) (219 dead)  <= e:752  e:758
+[Y0051]       POLITY.SUCCESSION           Greandoul Krean (a:27) takes the seat of the Second Crown of Reswoumark (f:4) (by right of birth)  <= e:755,e:89,e:702  e:759

@@ -193,7 +193,7 @@ public static class EventReducer
         // The title is deliberately left alone. The dead keep the rank they died holding,
         // which is both truer and what lets the log say "Ruler of the Ironmark, dies at 63"
         // when it renders this event during replay.
-        state.Goals.RemoveAllFor(actor.Id);
+        state.Goals.RemoveAllFor(actor.Id, GoalEnd.OwnerDead, e.Id);
 
         if (!actor.Faction.IsNone)
         {
@@ -231,7 +231,7 @@ public static class EventReducer
 
         actor.Title = Title.Exile;
         actor.Faction = EntityId.None;
-        state.Goals.RemoveAllFor(actor.Id);
+        state.Goals.RemoveAllFor(actor.Id, GoalEnd.OwnerExiled, e.Id);
 
         if (!from.IsNone && state.FactionOf(from).Leader == actor.Id)
             state.FactionOf(from).Leader = EntityId.None;
@@ -252,7 +252,7 @@ public static class EventReducer
 
         actor.Faction = e.GetEntity("toFaction");
         actor.Title = Title.Retainer;
-        state.Goals.RemoveAllFor(actor.Id);
+        state.Goals.RemoveAllFor(actor.Id, GoalEnd.OwnerDefected, e.Id);
 
         if (!from.IsNone && state.FactionOf(from).Leader == actor.Id)
             state.FactionOf(from).Leader = EntityId.None;
@@ -283,7 +283,7 @@ public static class EventReducer
             leader.Faction = newFaction;
             leader.Title = Title.Ruler;
             state.FactionOf(newFaction).Leader = leader.Id;
-            state.Goals.RemoveAllFor(leader.Id);
+            state.Goals.RemoveAllFor(leader.Id, GoalEnd.OwnerTookASeat, e.Id);
         }
 
         // No arc: a secession is a moment, not a storyline. Opening one here left an arc that
@@ -315,7 +315,7 @@ public static class EventReducer
         claimant.Title = Title.Ruler;
         claimant.Place = e.Where;
         state.FactionOf(newFaction).Leader = claimant.Id;
-        state.Goals.RemoveAllFor(claimant.Id);
+        state.Goals.RemoveAllFor(claimant.Id, GoalEnd.OwnerTookASeat, e.Id);
     }
 
     private static void ApplyConquest(WorldState state, Event e)
@@ -487,7 +487,7 @@ public static class EventReducer
                     Actor a = state.ActorOf(Entity(parts, 1));
                     a.Faction = EntityId.None;
                     if (a.Title != Title.Exile) a.Title = Title.Commoner;
-                    state.Goals.RemoveAllFor(a.Id);
+                    state.Goals.RemoveAllFor(a.Id, GoalEnd.OwnerDisowned, e.Id);
                     break;
                 }
 
@@ -497,6 +497,62 @@ public static class EventReducer
                     EntityId to = Entity(parts, 3);
                     RelationKind kind = Enum.Parse<RelationKind>(parts[5], ignoreCase: true);
                     state.Relations.Remove(from, to, kind);
+                    break;
+                }
+
+                // ---- goals ----------------------------------------------------
+                //
+                // The four keys that put GoalBook inside the fold. Every one of them refuses rather
+                // than shrugs when the goal it names is not there: a fold whose book has drifted from
+                // the run that wrote the log produces a world that is internally consistent and about
+                // somebody else, and nothing downstream would look wrong.
+
+                case "goalAdd" when parts.Length == 2:
+                {
+                    string[] f = kv.Value.Split('|');
+                    if (f.Length != 5)
+                        throw new FormatException($"Bad goal payload '{kv.Value}' on {e.Id}.");
+
+                    state.Goals.Restore(
+                        owner: ParseEntity(f[0]),
+                        // A targetless goal — secure grain, restore legitimacy, come home from exile
+                        // — writes EntityId.None, which prints as "-" and is what the absent case
+                        // looks like on the wire for every other id in the log.
+                        kind: Enum.Parse<GoalKind>(f[1], ignoreCase: true),
+                        target: f[2] == "-" ? EntityId.None : ParseEntity(f[2]),
+                        createdYear: e.Year,
+                        expiresYear: Int(f[3]),
+                        cause: EventId.TryParse(f[4], out EventId cause) ? cause : EventId.None);
+                    break;
+                }
+
+                // Routed through the book rather than straight onto the Goal, so a watcher sees the
+                // same transitions on a fold that it sees live. That symmetry is the whole basis of
+                // comparing emission counts against the audit's census.
+                case "goalStep" when parts.Length == 2:
+                {
+                    string[] f = kv.Value.Split('|');
+                    if (f.Length != 2)
+                        throw new FormatException($"Bad goal step '{kv.Value}' on {e.Id}.");
+
+                    state.Goals.Advance(
+                        GoalOn(state, parts[1], e), Int(f[0]), Enum.Parse<GoalStep>(f[1], ignoreCase: true));
+                    break;
+                }
+
+                case "goalArc" when parts.Length == 2:
+                {
+                    state.Goals.Attach(
+                        GoalOn(state, parts[1], e),
+                        EntityId.TryParse(kv.Value, out EntityId arc) ? arc : EntityId.None);
+                    break;
+                }
+
+                case "goalEnd" when parts.Length == 2:
+                {
+                    state.Goals.Remove(
+                        GoalOn(state, parts[1], e),
+                        Enum.Parse<GoalEnd>(kv.Value, ignoreCase: true));
                     break;
                 }
             }
@@ -509,6 +565,30 @@ public static class EventReducer
         if (!EntityId.TryParse($"{parts[at]}:{parts[at + 1]}", out EntityId id))
             throw new FormatException($"Bad entity reference '{parts[at]}:{parts[at + 1]}' in event payload.");
         return id;
+    }
+
+    private static EntityId ParseEntity(string text)
+    {
+        if (!EntityId.TryParse(text, out EntityId id))
+            throw new FormatException($"Bad entity reference '{text}' in a goal payload.");
+        return id;
+    }
+
+    /// <summary>
+    /// The live goal a keyed transition names, or a refusal.
+    ///
+    /// <b>Never a silent skip.</b> A goal key naming a goal the book does not hold means the fold and
+    /// the run disagree about what the world wanted, and every later transition is then against the
+    /// wrong book. This is the loud half of the guard the phase-2 brief asks for; the compile-time
+    /// half is <see cref="Rules.GoalRecord"/>'s routing table.
+    /// </summary>
+    private static Goal GoalOn(WorldState state, string idText, Event e)
+    {
+        int id = (int)long.Parse(idText, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        return state.Goals.ById(id)
+               ?? throw new InvalidOperationException(
+                   $"{e.Id} names goal {idText}, which the book does not hold. The fold has diverged " +
+                   "from the run that wrote this log.");
     }
 
     private static int Int(string value) =>

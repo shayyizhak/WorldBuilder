@@ -100,6 +100,53 @@ public sealed class EventDraft(EventKind kind)
     public EventDraft RelDel(EntityId from, EntityId to, RelationKind kind) =>
         Set($"relDel:{from}:{to}:{kind}", 1);
 
+    // ---- goals ------------------------------------------------------------
+    //
+    // Goals travel as payload deltas for the same reason arcs do, and the comment on EndArc already
+    // states it: state changed in the rules layer is a change the log never saw, and the fold stops
+    // matching the live world. Goals were the last thing in WorldState still being changed that way.
+    //
+    // Fields are packed into the value rather than spread across the key because an EntityId prints
+    // as `a:14` — a key carrying an owner, a kind and a target would split into a variable number of
+    // tokens, and ApplyDeltas splits keys on ':'. The index in the key is an ordinal within the
+    // event and carries no meaning beyond keeping the keys distinct; the reducer assigns ids.
+
+    /// <summary>Forms a goal on the fold. The ordinal only has to be unique within this event.</summary>
+    public EventDraft GoalAdd(
+        int ordinal, EntityId owner, GoalKind kind, EntityId target, int expiresYear, EventId cause) =>
+        Set($"goalAdd:{ordinal}", $"{owner}|{kind}|{target}|{expiresYear}|{cause}");
+
+    /// <summary>Moves a goal's progress on the fold, naming what moved it.</summary>
+    public EventDraft GoalStep(Goal goal, int delta, GoalStep step) =>
+        Set($"goalStep:{goal.Id}", $"{delta}|{step}");
+
+    /// <summary>Binds a goal to the storyline it has just spawned.</summary>
+    public EventDraft GoalArc(Goal goal, EntityId arc) => Set($"goalArc:{goal.Id}", arc.ToString());
+
+    /// <summary>Ends a goal on the fold, naming why.</summary>
+    public EventDraft GoalEnd(Goal goal, GoalEnd why) => Set($"goalEnd:{goal.Id}", why.ToString());
+
+    /// <summary>
+    /// Writes a state delta, and never writes one of zero.
+    ///
+    /// The principle the world header follows: a field present and empty is not distinguishable from
+    /// a field that was lost.
+    ///
+    /// <b>A delta naming the null entity is not guarded here, and that is a known defect.</b> A
+    /// violent death writes <c>leg:-</c> where the victim belonged to no house — the site checks
+    /// <c>IsNone</c> two lines earlier for the grievance edge and for whether he was a leader, and not
+    /// for this — and the reducer drops it in silence, because <c>leg:-</c> splits into two tokens
+    /// where its case wants three and so matches nothing at all. Twice across the reference panel.
+    ///
+    /// It is the same emitting-and-ignoring shape ruleset 8 repaired for severances, and it is
+    /// deliberately *not* repaired with it: guarding here changes the log for every rule that writes
+    /// a delta, so reproducing ruleset 7 byte for byte would need this switchable too — and the
+    /// severance off-switch reaches the one rule that emits severances, not the eight that emit
+    /// deltas. Repairing it means putting the switch somewhere every draft passes, which is a wider
+    /// change than the one-site repair it was found during. Counted by
+    /// <see cref="Analysis.MutationAudit"/> under <see cref="Analysis.MutationVerdict.NoEntity"/> and
+    /// bounded by a test, so it cannot grow quietly while it waits.
+    /// </summary>
     private EventDraft Delta(string key, int delta) => delta == 0 ? this : Set(key, delta);
 }
 

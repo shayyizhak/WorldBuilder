@@ -46,6 +46,32 @@ public sealed class Tick(Chronicle chronicle, SimConfig config, NameForge forge,
     /// <summary>The random arm's schedule, or null on every run that is not that arm.</summary>
     public RandomTieSchedule? RandomTies { get; init; }
 
+    /// <summary>
+    /// Whether goal transitions go into the record. True on any real world.
+    ///
+    /// False is ruleset 7's off-switch: the rules mutate <see cref="GoalBook"/> directly, exactly as
+    /// ruleset 6 did, and the log comes back event for event and key for key. Same standing as a
+    /// proximity control or a termination arm — a world that ran with it off is a diagnostic artefact,
+    /// says so in its header and in its genesis event, and <c>wb baseline cut</c> refuses it.
+    /// </summary>
+    public bool RecordsGoals { get; init; } = true;
+
+    /// <summary>
+    /// Whether a severance is written only where the graph holds the tie. True on any real world.
+    ///
+    /// False is ruleset 8's off-switch: a declaration of war writes its two alliance <c>relDel</c>
+    /// keys unconditionally, exactly as ruleset 7 did, and the ruleset-7 log comes back key for key.
+    /// Same standing as the other switches — a world that ran with it off is a diagnostic artefact,
+    /// says so in its header and its genesis event, and <c>wb baseline cut</c> refuses it.
+    ///
+    /// <b>Here rather than only in the test, because the claim is what the switch is for.</b> Ruleset
+    /// 7's own note calls its off-switch the stronger claim: byte equality with the previous ruleset
+    /// says a change touched nothing outside its own rules, which no amount of checking the changed
+    /// keys can say. Without a switch, four standing byte-level properties against rulesets 5, 6 and
+    /// 7 would have had to be retired instead of re-proven.
+    /// </summary>
+    public bool GuardsSeverances { get; init; } = true;
+
     /// <summary>Whether one termination rule is switched on for this run.</summary>
     public bool Allows(TerminationArm rule) => (Arm & rule) != 0;
 
@@ -79,13 +105,25 @@ public sealed class Simulation
     /// world in which every distance came out exactly typical, which is the sort of quiet,
     /// plausible uniformity this project has learned to distrust.
     /// </summary>
+    /// <param name="recordGoals">
+    /// Whether goal transitions go into the record. A constructor parameter rather than an
+    /// <c>init</c> property because worldgen runs in this body and stamps the arm into the genesis
+    /// event — an object initialiser would set the flag afterwards, and the world would claim to be a
+    /// history while running as an arm.
+    /// </param>
+    /// <param name="guardSeverances">
+    /// Whether a severance is written only where the tie is live. Ruleset 8's off-switch, and a
+    /// constructor parameter for the same reason <paramref name="recordGoals"/> is.
+    /// </param>
     public Simulation(
         ulong seed,
         SimConfig? config = null,
         int startYear = 1,
         Board? board = null,
         ProximityControlKind control = ProximityControlKind.None,
-        TerminationArm arm = TerminationArm.All)
+        TerminationArm arm = TerminationArm.All,
+        bool recordGoals = true,
+        bool guardSeverances = true)
     {
         _config = config ?? SimConfig.Default;
         _forge = new NameForge(seed);
@@ -96,11 +134,14 @@ public sealed class Simulation
         StartYear = startYear;
         Control = control;
         Arm = arm;
+        RecordsGoals = recordGoals;
+        GuardsSeverances = guardSeverances;
 
         Board playing = board ?? Boards.Stored();
         State.Attach(playing);
 
-        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing, control, arm);
+        WorldGen.Generate(Chronicle, _forge, _config, startYear, playing, control, arm, recordGoals,
+            guardSeverances);
 
         // Attached after worldgen, because the empirical distribution it draws from is the set of
         // proximities this world's places present — which does not exist until they are sited.
@@ -137,6 +178,22 @@ public sealed class Simulation
     /// and in the genesis event, and <c>wb baseline cut</c> refuses it.
     /// </summary>
     public TerminationArm Arm { get; }
+
+    /// <summary>
+    /// Whether this run put its goal transitions into the record.
+    ///
+    /// False is ruleset 7's off-switch and makes the world a diagnostic artefact on the same footing
+    /// as an arm — marked in the header and the genesis event, refused by <c>wb baseline cut</c>.
+    /// </summary>
+    public bool RecordsGoals { get; }
+
+    /// <summary>
+    /// Whether this run wrote a severance only where the tie was live.
+    ///
+    /// False is ruleset 8's off-switch, on the same footing as the other two: marked in the header
+    /// and the genesis event, refused by <c>wb baseline cut</c>.
+    /// </summary>
+    public bool GuardsSeverances { get; }
 
     /// <summary>
     /// The schedule of random trade-tie removals, for the discriminating arm of the war-rule
@@ -217,6 +274,7 @@ public sealed class Simulation
         Tick tick = new(Chronicle, _config, _forge, year)
         {
             Ledger = Ledger, Probe = Probe, Arm = Arm, RandomTies = RandomTies,
+            RecordsGoals = RecordsGoals, GuardsSeverances = GuardsSeverances,
         };
 
         LifePhase.Run(tick);

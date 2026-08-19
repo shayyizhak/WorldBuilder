@@ -1,5 +1,6 @@
 using System.Text;
 using WorldBuilder.Core;
+using WorldBuilder.Core.Analysis;
 using WorldBuilder.Core.Rendering;
 using WorldBuilder.Core.Serialization;
 using Xunit;
@@ -13,26 +14,32 @@ namespace WorldBuilder.Tests;
 /// </summary>
 public class ReplayTests
 {
-    /// <summary>Everything about the world that a fold is supposed to reproduce.</summary>
+    /// <summary>
+    /// Components the fold is not expected to reproduce. <b>Empty, as of ruleset 7.</b>
+    ///
+    /// <b>Kept as an empty array rather than deleted, because the mechanism is the point.</b> At
+    /// ruleset 6 this held <c>goals.identity</c>, <c>goals.progress</c> and <c>goals.arc</c>, and the
+    /// theory below asserted that exactly those three differed — so that when the record started
+    /// carrying goals the test went red and said so, instead of the repair having to be remembered.
+    /// It did, and this is the other half of that change.
+    ///
+    /// <b>And the exclusion was named because it used to be invisible.</b> This file's fingerprint was
+    /// hand-written and read actors, places, factions, arcs and relation values: not goals, and also
+    /// not traits, yields, cells, succession rules, seats, arc sides or a relation's provenance. It
+    /// asserted "state is a fold over the log" while being unable to fail on two thirds of the state.
+    /// <see cref="WorldFingerprint"/> is exhaustive instead, so the next thing to fall out of the fold
+    /// fails a test rather than going unnoticed for a ruleset or two.
+    /// </summary>
+    private static readonly string[] NotFolded = [];
+
     private static string Fingerprint(WorldState state)
     {
         StringBuilder sb = new();
-
-        foreach (Actor a in state.Actors)
-            sb.Append($"{a.Id}|{a.Name}|{a.BirthYear}|{a.DeathYear}|{a.Title}|{a.Faction}|{a.Place}\n");
-
-        foreach (Place p in state.Places)
-            sb.Append($"{p.Id}|{p.Name}|{p.Population}|{p.Controller}|" +
-                      $"{p.Stockpile[0]},{p.Stockpile[1]},{p.Stockpile[2]}\n");
-
-        foreach (Faction f in state.Factions)
-            sb.Append($"{f.Id}|{f.Name}|{f.Leader}|{f.Legitimacy}|{f.Treasury}\n");
-
-        foreach (Arc arc in state.Arcs)
-            sb.Append($"{arc.Id}|{arc.Kind}|{arc.Name}|{arc.StartYear}|{arc.EndYear}\n");
-
-        foreach (Relation r in state.Relations.All)
-            sb.Append($"{r.Key.From}->{r.Key.To}:{r.Key.Kind}={r.Value}\n");
+        foreach ((string name, string value) in WorldFingerprint.Of(state))
+        {
+            if (Array.IndexOf(NotFolded, name) >= 0) continue;
+            sb.Append(name).Append('\n').Append(value);
+        }
 
         return sb.ToString();
     }
@@ -45,6 +52,40 @@ public class ReplayTests
 
         WorldState replayed = Replay.Fold(sim.Log, 42);
         Assert.Equal(Fingerprint(sim.State), Fingerprint(replayed));
+    }
+
+    /// <summary>
+    /// A fold reproduces every component of the world, goals included. <b>The ruleset-7 deliverable.</b>
+    ///
+    /// This is the property <see cref="WorldState"/> has claimed since v1 — "the fold of the event log"
+    /// — and that nothing enforced. At ruleset 6 it was false for three components out of twenty-seven,
+    /// and the version of this theory that ran then asserted that <i>exactly</i> those three differed,
+    /// so that closing the gap would fail a test rather than needing to be remembered. It did.
+    ///
+    /// It keeps the same shape now, comparing against an empty exclusion list, because the mechanism is
+    /// worth more than the current answer: whatever falls out of the fold next fails here.
+    /// </summary>
+    [Theory]
+    [InlineData(1UL)]
+    [InlineData(7UL)]
+    [InlineData(42UL)]
+    [InlineData(1234UL)]
+    [InlineData(2025UL)]
+    public void AFoldReproducesEveryComponentOfTheWorld(ulong seed)
+    {
+        Simulation sim = new(seed);
+        sim.Run(50);
+
+        WorldState replayed = Replay.Fold(sim.Log, seed, board: sim.State.Board);
+
+        Assert.Equal(
+            [.. NotFolded.Order(StringComparer.Ordinal)],
+            WorldFingerprint.Differences(sim.State, replayed));
+
+        // And the world actually has goals in it, so the assertion above is not satisfied by a panel
+        // that never formed one. This is the line that would have failed at ruleset 6 for a different
+        // reason than the one being fixed.
+        Assert.NotEmpty(replayed.Goals.Snapshot());
     }
 
     [Theory]

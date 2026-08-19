@@ -18,7 +18,9 @@ public static class WorldGen
     public static void Generate(
         Chronicle chronicle, NameForge forge, SimConfig config, int startYear, Board board,
         ProximityControlKind control = ProximityControlKind.None,
-        Rules.TerminationArm arm = Rules.TerminationArm.All)
+        Rules.TerminationArm arm = Rules.TerminationArm.All,
+        bool recordGoals = true,
+        bool guardSeverances = true)
     {
         WorldState state = chronicle.State;
         chronicle.BeginYear(startYear);
@@ -37,7 +39,8 @@ public static class WorldGen
             // Likewise for a world run under a subset of its own ruleset. An arm world is
             // internally consistent and about nowhere, and without this it would be
             // indistinguishable from a history by anything but its length.
-            .SetIf(arm != Rules.TerminationArm.All, "arm", Rules.TerminationArms.NameOf(arm))
+            .SetIf(arm != Rules.TerminationArm.All || !recordGoals || !guardSeverances, "arm",
+                Rules.TerminationArms.NameOf(arm, recordGoals, guardSeverances))
             .Weight(Significance.Bookkeeping));
 
         // Sited in one pass so every place is spread against every other, whatever kind it is.

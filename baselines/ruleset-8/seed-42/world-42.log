@@ -1,0 +1,600 @@
+# 546 of 954 events. The other 408 are bookkeeping — the yearly accounts — and are hidden here.
+# They are in the .jsonl, they carry causes and effects, and much of the
+# economy's influence on everything else runs through them. Counting causal
+# edges in this file measures the view, not the world: use `wb audit`.
+
+[Y0002]       LIFE.MARRIAGE               Searn Sisrill (a:7) marries Thulgea Bu (a:9) at Kebarrow (p:3)  e:36
+[Y0002]       LIFE.MARRIAGE               Deargund Keirem (a:11) marries Thold Valmaer (a:15), binding the Kebarrow Compact (f:2) to the Griwick Compact (f:3)  e:37
+[Y0002]       LIFE.BIRTH                  Krir Nur (a:21) is born to Searn Sisrill (a:7) at Kebarrow (p:3)  <= e:36  e:38
+[Y0002]       CONFLICT.CONQUEST           the Wurn League (f:1) occupies Threi Cut (p:8), which no one held  e:43
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Kebarrow Compact (f:2) demands tribute of the Wurn League (f:1) and is refused  e:44
+[Y0002]       DIPLO.TRIBUTE_DEMANDED      the Griwick Compact (f:3) demands tribute of the Wurn League (f:1) and is refused  e:45
+
+[Y0003]       LIFE.MARRIAGE               Witrou Breim (a:2) marries Beirn Naem (a:17), binding the Wurn League (f:1) to the Griwick Compact (f:3)  e:48
+[Y0003]       LIFE.MARRIAGE               Teapeall Heampim (a:5) marries Thra Bround (a:19), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:49
+[Y0003]       LIFE.BIRTH                  Sothkel Sald (a:23) is born to Witrou Breim (a:2) at Hadale (p:2)  <= e:48  e:50
+[Y0003]       DIPLO.INSULT                the Griwick Compact (f:3) publicly slights the Wurn League (f:1)  e:58
+
+[Y0004]       LIFE.MARRIAGE               Math Ham (a:3) marries Bu Rumpirn (a:18), binding the Wurn League (f:1) to the Griwick Compact (f:3)  e:60
+[Y0004]       LIFE.MARRIAGE               Trem Lolkoll (a:6) marries Turaer Danpa (a:14), binding the Wurn League (f:1) to the Griwick Compact (f:3)  e:61
+[Y0004] w:1   ECONOMY.FAMINE              famine at Vea Lode (p:7): 5 dead, grain short by 3  e:65
+[Y0004]       ECONOMY.TRADE_PACT          the Wurn League (f:1) buys 27 grain from the Kebarrow Compact (f:2) for 60 silver  e:68
+[Y0004]       DIPLO.INSULT                the Kebarrow Compact (f:2) publicly slights the Wurn League (f:1)  e:69
+[Y0004]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Laehiford (p:5), carrying off 29 grain and killing 29  e:70
+[Y0004]       CONFLICT.RAID               the Griwick Compact (f:3) raids Kebarrow (p:3), carrying off 43 grain and killing 28  <= e:65  e:71
+
+[Y0005]       LIFE.MARRIAGE               Reweld Wul (a:1) marries Nael War (a:8), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:73
+[Y0005]       LIFE.BIRTH                  Saern Meastouth (a:28) is born to Reweld Wul (a:1) at Hadale (p:2)  <= e:73  e:74
+[Y0005] w:1   ECONOMY.FAMINE              famine at Vea Lode (p:7), year 2: 8 dead, 23 abandon the place  <= e:65  e:78
+[Y0005]       ECONOMY.TRADE_PACT          the Wurn League (f:1) buys 30 grain from the Griwick Compact (f:3) for 60 silver  e:81
+[Y0005]       CONFLICT.RAID               the Wurn League (f:1) raids Kebarrow (p:3) and kills 27, but takes nothing  e:82
+[Y0005]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Threi Cut (p:8), carrying off 41 grain and killing 6  <= e:82  e:83
+[Y0005] w:2   DIPLO.WAR_DECLARED          the Griwick Compact (f:3) declares war on the Wurn League (f:1) for Threi Cut (p:8)  e:84
+[Y0005]       DIPLO.ALLIANCE_BROKEN       the Griwick Compact (f:3) breaks its alliance with the Wurn League (f:1)  <= e:84,e:48  e:85
+[Y0005]       ECONOMY.TRADE_COLLAPSE      trade between the Griwick Compact (f:3) and the Wurn League (f:1) breaks down  <= e:84,e:81  e:86
+[Y0005]       ECONOMY.TRADE_PACT          the Griwick Compact (f:3) and the Kebarrow Compact (f:2) agree terms of trade  <= e:65  e:87
+[Y0005] w:2   CONFLICT.BATTLE             the Wurn League (f:1) defeats the Griwick Compact (f:3) at Threi Cut (p:8) (45 dead)  <= e:84  e:88
+
+[Y0006]       LIFE.DEATH_NATURAL          Mae Moulvae (a:4), steward of the Wurn League (f:1), dies at 61 in Hadale (p:2)  e:91
+[Y0006]       LIFE.MARRIAGE               Pouldrir Ho (a:13) marries Kirn Dae (a:20), binding the Griwick Compact (f:3) to the Kebarrow Compact (f:2)  e:92
+[Y0006]       LIFE.BIRTH                  Neildvarn Tramern (a:32) is born to Trem Lolkoll (a:6) at Hadale (p:2)  <= e:61  e:94
+[Y0006] w:3   ECONOMY.FAMINE              famine at Threi Cut (p:8): 13 dead, grain short by 8  e:98
+[Y0006]       CONFLICT.RAID               the Wurn League (f:1) raids Meigate (p:6) and kills 30, but takes nothing  e:101
+[Y0006]       CONFLICT.RAID               the Kebarrow Compact (f:2)'s raid on Hadale (p:2) is beaten off  <= e:101  e:102
+[Y0006]       ECONOMY.TRADE_PACT          the Griwick Compact (f:3) and the Wurn League (f:1) agree terms of trade  <= e:65  e:103
+[Y0006] w:2   CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Threi Cut (p:8) (35 dead)  <= e:84  e:104
+
+[Y0007]       LIFE.BIRTH                  Thosruld Lul (a:34) is born to Witrou Breim (a:2) at Hadale (p:2)  <= e:48  e:107
+[Y0007]       ECONOMY.BUMPER_HARVEST      a heavy harvest at Threi Cut (p:8) (136% of usual)  e:113
+[Y0007]       POLITY.COURTS_SUPPORT       Witrou Breim (a:2) wins Paernrom Sir (a:24) away from the ruler of the Wurn League (f:1)  <= e:104  e:116
+[Y0007]       CONFLICT.ASSASSINATION      Reweld Wul (a:1)'s attempt on Searn Sisrill (a:7) fails and is traced back  e:117
+[Y0007]       POLITY.EXILE                Reweld Wul (a:1) is cast out of the Wurn League (f:1) — attempted murder  <= e:117  e:118
+[Y0007]       ECONOMY.TRADE_PACT          the Kebarrow Compact (f:2) and the Wurn League (f:1) agree terms of trade  e:119
+[Y0007]       CONFLICT.RAID               the Griwick Compact (f:3) raids Laehiford (p:5), carrying off 48 grain and killing 29  e:120
+[Y0007] w:2   CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Threi Cut (p:8) (29 dead)  <= e:84  e:121
+[Y0007] w:2   CONFLICT.CONQUEST           the Griwick Compact (f:3) takes Threi Cut (p:8) from the Wurn League (f:1)  <= e:121  e:122
+[Y0007] w:4   POLITY.SUCCESSION_DISPUTED  Math Ham (a:3) contests the claim of Witrou Breim (a:2), the named heir, to the Wurn League (f:1) (decided by primogeniture)  <= e:118  e:123
+[Y0007] w:4   POLITY.SUCCESSION           Math Ham (a:3) takes the seat of the Wurn League (f:1), setting aside the claim of the named heir Witrou Breim (a:2)  <= e:123  e:124
+[Y0007]       POLITY.EXILE                Witrou Breim (a:2) is cast out of the Wurn League (f:1) — the losing claim  <= e:123  e:125
+[Y0007] w:3   ECONOMY.FAMINE_ENDS         the hunger at Threi Cut (p:8) passes after 1 years  <= e:98  e:127
+
+[Y0008]       LIFE.BIRTH                  Tro Thath (a:36) is born to Pouldrir Ho (a:13) at Griwick (p:4)  <= e:92  e:129
+[Y0008] w:5   ECONOMY.FAMINE              famine at Threi Cut (p:8): 4 dead, grain short by 2  e:132
+[Y0008]       POLITY.EXILE_RETURN         Reweld Wul (a:1) returns from exile and takes service with the Kebarrow Compact (f:2)  <= e:118  e:135
+[Y0008]       POLITY.EXILE_RETURN         Witrou Breim (a:2) returns from exile and takes service with the Kebarrow Compact (f:2)  <= e:125  e:136
+[Y0008] w:6   POLITY.COUP_PLOTTED         Thulgea Bu (a:9) begins conspiring against Searn Sisrill (a:7) of the Kebarrow Compact (f:2)  [secret]  <= e:102  e:137
+[Y0008]       CONFLICT.ASSASSINATION      Math Ham (a:3) has Searn Sisrill (a:7) murdered at Kebarrow (p:3)  e:138
+[Y0008]       LIFE.DEATH_VIOLENT          Searn Sisrill (a:7), ruler of the Kebarrow Compact (f:2), is killed by Math Ham (a:3) at Kebarrow (p:3)  <= e:138  e:139
+[Y0008]       CONFLICT.RAID               the Wurn League (f:1) raids Griwick (p:4), carrying off 24 grain and killing 45  <= e:98  e:140
+[Y0008]       CONFLICT.RAID               the Griwick Compact (f:3) raids Hadale (p:2), carrying off 48 grain and killing 19  <= e:140  e:142
+[Y0008] w:2   CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Laehiford (p:5) (107 dead)  <= e:84  e:143
+[Y0008] w:2   CONFLICT.CONQUEST           the Griwick Compact (f:3) takes Laehiford (p:5) from the Wurn League (f:1)  <= e:143  e:144
+[Y0008]       POLITY.SUCCESSION           Reweld Wul (a:1) takes the seat of the Kebarrow Compact (f:2) (by election)  <= e:139  e:145
+
+[Y0009]       LIFE.BIRTH                  Heth Fal (a:37) is born to Reweld Wul (a:1) at Kebarrow (p:3)  <= e:73  e:147
+[Y0009]       LIFE.BIRTH                  Wilwound Ska (a:39) is born to Trem Lolkoll (a:6) at Hadale (p:2)  <= e:61  e:149
+[Y0009] w:6   CONFLICT.ASSASSINATION      an attempt on Reweld Wul (a:1) fails at Kebarrow (p:3), unattributed  [secret]  <= e:102  e:155
+[Y0009]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Vea Lode (p:7) is beaten off  <= e:98  e:156
+[Y0009]       POLITY.APPOINTMENT          Trem Lolkoll (a:6) is raised to heir of the Wurn League (f:1)  <= e:144  e:157
+[Y0009]       DIPLO.TRIBUTE_DEMANDED      the Kebarrow Compact (f:2) demands tribute of the Griwick Compact (f:3) and is refused  e:158
+[Y0009]       CONFLICT.RAID               the Kebarrow Compact (f:2)'s raid on Griwick (p:4) is beaten off  e:159
+[Y0009]       ECONOMY.TRADE_PACT          the Griwick Compact (f:3) and the Kebarrow Compact (f:2) agree terms of trade  e:160
+[Y0009]       CONFLICT.ASSASSINATION      Pouldrir Ho (a:13)'s attempt on Math Ham (a:3) fails and is traced back  e:161
+[Y0009]       POLITY.EXILE                Pouldrir Ho (a:13) is cast out of the Griwick Compact (f:3) — attempted murder  <= e:161  e:162
+[Y0009] w:2   CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Hadale (p:2) (101 dead)  <= e:84  e:163
+[Y0009] w:6   POLITY.COUP_RESOLVED        Thulgea Bu (a:9)'s conspiracy against Reweld Wul (a:1) is uncovered after 1 years  <= e:137  e:164
+[Y0009] w:6   LIFE.DEATH_VIOLENT          Thulgea Bu (a:9) is put to death — executed for conspiracy  <= e:164  e:165
+[Y0009] w:7   POLITY.SUCCESSION_DISPUTED  Kei Leassel (a:16) contests the claim of Turaer Danpa (a:14), the named heir, to the Griwick Compact (f:3) (decided by strongest)  <= e:162  e:166
+[Y0009] w:7   POLITY.SUCCESSION           Kei Leassel (a:16) takes the seat of the Griwick Compact (f:3), setting aside the claim of the named heir Turaer Danpa (a:14)  <= e:166  e:167
+[Y0009]       POLITY.EXILE                Turaer Danpa (a:14) is cast out of the Griwick Compact (f:3) — the losing claim  <= e:166  e:168
+[Y0009]       POLITY.REVOLT               Vea Lode (p:7) rises against the Griwick Compact (f:3), whose standing had fallen very low  <= e:168  e:170
+
+[Y0010] w:8   ECONOMY.FAMINE              famine at Meigate (p:6): 23 dead, grain short by 1  e:173
+[Y0010]       POLITY.APPOINTMENT          Teapeall Heampim (a:5) is raised to steward of the Wurn League (f:1)  <= e:144  e:177
+[Y0010]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Vea Lode (p:7) and kills 0, but takes nothing  e:178
+[Y0010]       CONFLICT.ASSASSINATION      Kei Leassel (a:16) has Math Ham (a:3) murdered at Hadale (p:2)  e:179
+[Y0010]       LIFE.DEATH_VIOLENT          Math Ham (a:3), ruler of the Wurn League (f:1), is killed by Kei Leassel (a:16) at Hadale (p:2)  <= e:179  e:180
+[Y0010] w:2   DIPLO.PEACE_SIGNED          the Griwick Compact (f:3) and the Wurn League (f:1) make peace after 5 years, both sides exhausted  <= e:84  e:181
+[Y0010]       POLITY.SUCCESSION           Trem Lolkoll (a:6) takes the seat of the Wurn League (f:1) (by right of birth)  <= e:180,e:157  e:182
+
+[Y0011] w:9   POLITY.COUP_PLOTTED         Witrou Breim (a:2) begins conspiring against Reweld Wul (a:1) of the Kebarrow Compact (f:2)  [secret]  <= e:136  e:189
+[Y0011]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Threi Cut (p:8) is beaten off  <= e:98  e:190
+[Y0011]       CONFLICT.RAID               the Griwick Compact (f:3) raids Meigate (p:6), carrying off 11 grain and killing 28  e:191
+[Y0011]       POLITY.APPOINTMENT          Beirn Naem (a:17) is raised to heir of the Griwick Compact (f:3)  e:192
+
+[Y0012]       LIFE.BIRTH                  Diweith Mound (a:42) is born to Witrou Breim (a:2) at Kebarrow (p:3)  <= e:48  e:194
+[Y0012]       POLITY.COURTS_SUPPORT       Witrou Breim (a:2) wins Nael War (a:8) away from the ruler of the Kebarrow Compact (f:2)  <= e:136  e:198
+[Y0012]       DIPLO.INSULT                the Kebarrow Compact (f:2) publicly slights the Griwick Compact (f:3)  e:199
+[Y0012]       POLITY.APPOINTMENT          Bu Rumpirn (a:18) is raised to steward of the Griwick Compact (f:3)  e:200
+[Y0012]       POLITY.REVOLT               Threi Cut (p:8) rises against the Griwick Compact (f:3), whose standing had fallen to nothing  e:202
+[Y0012] w:1   ECONOMY.FAMINE_ENDS         the hunger at Vea Lode (p:7) passes after 8 years and 18 return to the fields  <= e:65  e:203
+[Y0012] w:8   ECONOMY.FAMINE_ENDS         the hunger at Meigate (p:6) passes after 2 years and 108 return to the fields  <= e:173  e:204
+
+[Y0013]       LIFE.DEATH_NATURAL          Kirn Dae (a:20), commoner of the Kebarrow Compact (f:2), dies at 50 in Meigate (p:6)  e:205
+[Y0013]       POLITY.COURTS_SUPPORT       Witrou Breim (a:2) wins Thra Bround (a:19) away from the ruler of the Kebarrow Compact (f:2)  <= e:136  e:208
+[Y0013]       POLITY.EXILE_RETURN         Pouldrir Ho (a:13) returns from exile and takes service with the Kebarrow Compact (f:2)  <= e:162  e:209
+[Y0013]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Laehiford (p:5) is beaten off  <= e:98  e:210
+[Y0013]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Laehiford (p:5), carrying off 46 grain and killing 25  e:211
+[Y0013]       CONFLICT.RAID               the Griwick Compact (f:3) raids Kebarrow (p:3), carrying off 26 grain and killing 24  <= e:211  e:212
+[Y0013]       POLITY.LEGITIMACY_CRISIS    the Griwick Compact (f:3) spends 50 silver to buy back goodwill  e:213
+[Y0013] w:5   ECONOMY.FAMINE_ENDS         the hunger at Threi Cut (p:8) passes after 5 years and 26 return to the fields  <= e:132  e:215
+
+[Y0014] w:9   CONFLICT.ASSASSINATION      Witrou Breim (a:2) has Reweld Wul (a:1) murdered at Kebarrow (p:3)  <= e:136  e:221
+[Y0014]       LIFE.DEATH_VIOLENT          Reweld Wul (a:1), ruler of the Kebarrow Compact (f:2), is killed by Witrou Breim (a:2) at Kebarrow (p:3)  <= e:221  e:222
+[Y0014]       POLITY.LEGITIMACY_CRISIS    the Wurn League (f:1) spends 44 silver buying goodwill for the first time, and is not believed  <= e:144  e:223
+[Y0014]       POLITY.APPOINTMENT          Thold Valmaer (a:15) is raised to steward of the Griwick Compact (f:3)  <= e:202  e:224
+[Y0014]       POLITY.SUCCESSION           Witrou Breim (a:2) takes the seat of the Kebarrow Compact (f:2) (by election)  <= e:222  e:225
+
+[Y0015]       LIFE.DEATH_NATURAL          Deldmou Bur (a:12), captain of the Kebarrow Compact (f:2), dies at 63 in Kebarrow (p:3)  e:227
+[Y0015]       LIFE.BIRTH                  Le Vild (a:44) is born to Witrou Breim (a:2) at Kebarrow (p:3)  <= e:48  e:228
+[Y0015]       POLITY.CHALLENGE            Pouldrir Ho (a:13) challenges Witrou Breim (a:2) openly for the Kebarrow Compact (f:2), wins, and takes the seat from Witrou Breim (a:2)  <= e:209  e:233
+[Y0015]       POLITY.EXILE                Witrou Breim (a:2) is cast out of the Kebarrow Compact (f:2) — the losing side of an open challenge  <= e:233  e:235
+[Y0015]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Threi Cut (p:8) and kills 2, but takes nothing  e:236
+[Y0015] w:9   POLITY.COUP_RESOLVED        Witrou Breim (a:2)'s conspiracy against Pouldrir Ho (a:13) is uncovered after 4 years  <= e:189  e:237
+[Y0015]       POLITY.EXILE                Witrou Breim (a:2), who had already left, is declared outlaw by the Kebarrow Compact (f:2) — conspiracy against the seat  <= e:237  e:238
+[Y0015]       POLITY.REVOLT               Meigate (p:6) rises against the Kebarrow Compact (f:2), whose standing had fallen very low  <= e:238  e:240
+
+[Y0016]       LIFE.BIRTH                  Baeld Fea (a:46) is born to Trem Lolkoll (a:6) at Hadale (p:2)  <= e:61  e:242
+[Y0016] w:12  POLITY.COUP_PLOTTED         Nael War (a:8) begins conspiring against Pouldrir Ho (a:13) of the Kebarrow Compact (f:2)  [secret]  <= e:240  e:248
+[Y0016]       POLITY.LEGITIMACY_CRISIS    the Kebarrow Compact (f:2) spends 50 silver to buy back goodwill  <= e:240  e:249
+
+[Y0017]       LIFE.DEATH_NATURAL          Kol Brildpo (a:10), captain of the Kebarrow Compact (f:2), dies at 59 in Kebarrow (p:3)  e:251
+[Y0017]       LIFE.DEATH_NATURAL          Kei Leassel (a:16), ruler of the Griwick Compact (f:3), dies at 62 in Griwick (p:4)  e:252
+[Y0017]       POLITY.EXILE_RETURN         Witrou Breim (a:2) returns from exile and takes service with the Griwick Compact (f:3)  <= e:238  e:256
+[Y0017]       POLITY.COURTS_SUPPORT       Nael War (a:8) wins Weallhous Dreld (a:25) away from the ruler of the Kebarrow Compact (f:2)  <= e:240  e:257
+[Y0017]       POLITY.EXILE_RETURN         Turaer Danpa (a:14) returns from exile and takes service with the Kebarrow Compact (f:2)  <= e:168  e:258
+[Y0017]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Griwick (p:4) is beaten off  <= e:98  e:259
+[Y0017]       POLITY.APPOINTMENT          Turaer Danpa (a:14) is raised to steward of the Kebarrow Compact (f:2)  <= e:240  e:260
+[Y0017] w:12  POLITY.COUP_RESOLVED        Nael War (a:8)'s conspiracy against Pouldrir Ho (a:13) is uncovered after 1 years  <= e:248  e:261
+[Y0017]       POLITY.EXILE                Nael War (a:8) is cast out of the Kebarrow Compact (f:2) — conspiracy against the seat  <= e:261  e:262
+[Y0017] w:13  POLITY.SUCCESSION_DISPUTED  Beirn Naem (a:17) contests the claim of Witrou Breim (a:2), the named heir, to the Griwick Compact (f:3) (decided by strongest)  <= e:252  e:263
+[Y0017] w:13  POLITY.SUCCESSION           Witrou Breim (a:2), the named heir, takes the seat of the Griwick Compact (f:3); the rival claim of Beirn Naem (a:17) is rejected  <= e:263  e:264
+[Y0017]       POLITY.EXILE                Beirn Naem (a:17) is cast out of the Griwick Compact (f:3) — the losing claim  <= e:263  e:265
+
+[Y0018]       LIFE.BIRTH                  Thurnean Kourn (a:47) is born to Witrou Breim (a:2) at Griwick (p:4)  <= e:48  e:270
+[Y0018]       POLITY.EXILE_RETURN         Nael War (a:8) returns from exile and takes service with the Wurn League (f:1)  <= e:262  e:276
+[Y0018]       POLITY.APPOINTMENT          Nael War (a:8) is raised to heir of the Wurn League (f:1)  <= e:144  e:277
+[Y0018]       ECONOMY.TRADE_PACT          the Wurn League (f:1) and the Kebarrow Compact (f:2) agree terms of trade  <= e:98  e:278
+[Y0018]       POLITY.APPOINTMENT          Sou Dra (a:22) is raised to heir of the Kebarrow Compact (f:2)  <= e:240  e:279
+[Y0018] w:10  ECONOMY.FAMINE_ENDS         the hunger at Vea Lode (p:7) passes after 2 years and 15 return to the fields  e:281
+
+[Y0019]       LIFE.DEATH_NATURAL          Beirn Naem (a:17), exile, dies at 52 in Griwick (p:4)  e:283
+[Y0019]       LIFE.MARRIAGE               Krir Nur (a:21) marries Sou Dra (a:22) at Kebarrow (p:3)  e:287
+[Y0019] w:14  POLITY.COUP_PLOTTED         Turaer Danpa (a:14) begins conspiring against Pouldrir Ho (a:13) of the Kebarrow Compact (f:2)  [secret]  <= e:258  e:293
+[Y0019]       POLITY.COURTS_SUPPORT       Thra Bround (a:19) wins Le Vild (a:44) away from the ruler of the Kebarrow Compact (f:2)  <= e:262  e:294
+[Y0019]       POLITY.APPOINTMENT          Paernrom Sir (a:24) is raised to steward of the Wurn League (f:1)  <= e:259  e:295
+[Y0019]       CONFLICT.RAID               the Kebarrow Compact (f:2)'s raid on Vea Lode (p:7) is beaten off  <= e:173  e:296
+[Y0019]       POLITY.APPOINTMENT          Deargund Keirem (a:11) is raised to steward of the Kebarrow Compact (f:2)  <= e:262  e:297
+
+[Y0020]       LIFE.MARRIAGE               Paernrom Sir (a:24) marries Weallhous Dreld (a:25), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:301
+[Y0020]       LIFE.BIRTH                  Durnrin Drar (a:51) is born to Trem Lolkoll (a:6) at Hadale (p:2)  <= e:61  e:302
+[Y0020] w:14  CONFLICT.ASSASSINATION      Turaer Danpa (a:14) has Pouldrir Ho (a:13) murdered at Kebarrow (p:3)  <= e:258  e:306
+[Y0020]       LIFE.DEATH_VIOLENT          Pouldrir Ho (a:13), ruler of the Kebarrow Compact (f:2), is killed by Turaer Danpa (a:14) at Kebarrow (p:3)  <= e:306  e:307
+[Y0020]       POLITY.APPOINTMENT          Gatros Hearn (a:27) is raised to steward of the Wurn League (f:1)  <= e:259  e:308
+[Y0020]       CONFLICT.RAID               the Griwick Compact (f:3) raids Meigate (p:6), carrying off 22 grain and killing 29  e:309
+[Y0020]       POLITY.SUCCESSION           Sou Dra (a:22) takes the seat of the Kebarrow Compact (f:2) (by election)  <= e:307,e:279  e:310
+
+[Y0021]       POLITY.COURTS_SUPPORT       Nael War (a:8) wins Tharhith Beamma (a:49) away from the ruler of the Wurn League (f:1)  <= e:276  e:321
+[Y0021] w:16  POLITY.COUP_PLOTTED         Bu Rumpirn (a:18) begins conspiring against Witrou Breim (a:2) of the Griwick Compact (f:3)  [secret]  e:322
+[Y0021]       POLITY.CHALLENGE            Thra Bround (a:19) challenges Sou Dra (a:22) openly for the Kebarrow Compact (f:2), loses, and Sou Dra (a:22) keeps the seat  <= e:262  e:323
+[Y0021]       LIFE.DEATH_VIOLENT          Thra Bround (a:19), commoner of the Kebarrow Compact (f:2), is killed by Sou Dra (a:22) at Kebarrow (p:3)  <= e:323  e:324
+[Y0021] w:17  POLITY.COUP_PLOTTED         Befu Seirn (a:26) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:259  e:325
+[Y0021]       POLITY.COURTS_SUPPORT       Saern Meastouth (a:28) wins Sothkel Sald (a:23) away from the ruler of the Wurn League (f:1)  <= e:259  e:326
+[Y0021]       POLITY.APPOINTMENT          Saern Meastouth (a:28) is raised to steward of the Wurn League (f:1)  <= e:259  e:327
+[Y0021]       POLITY.APPOINTMENT          Theald Va (a:30) is raised to heir of the Kebarrow Compact (f:2)  <= e:262  e:328
+[Y0021]       ECONOMY.TRADE_PACT          the Griwick Compact (f:3) buys 23 grain from the Kebarrow Compact (f:2) for 60 silver  <= e:160  e:329
+
+[Y0022]       LIFE.DEATH_NATURAL          Deargund Keirem (a:11), steward of the Kebarrow Compact (f:2), dies at 47 in Kebarrow (p:3)  e:332
+[Y0022]       LIFE.MARRIAGE               Gatros Hearn (a:27) marries Heillvar Maer (a:29) at Hadale (p:2)  e:336
+[Y0022]       POLITY.COURTS_SUPPORT       Nael War (a:8) wins Sothkel Sald (a:23) away from the ruler of the Wurn League (f:1)  <= e:276  e:341
+[Y0022] w:18  POLITY.COUP_PLOTTED         Thold Valmaer (a:15) begins conspiring against Witrou Breim (a:2) of the Griwick Compact (f:3)  [secret]  e:342
+[Y0022]       POLITY.COURTS_SUPPORT       Bu Rumpirn (a:18) wins Thold Valmaer (a:15) away from the ruler of the Griwick Compact (f:3)  e:343
+[Y0022]       POLITY.COURTS_SUPPORT       Befu Seirn (a:26) wins Sothkel Sald (a:23) away from the ruler of the Wurn League (f:1)  <= e:259  e:344
+[Y0022]       POLITY.COURTS_SUPPORT       Saern Meastouth (a:28) wins Teillmol Lund (a:35) away from the ruler of the Wurn League (f:1)  <= e:259  e:345
+[Y0022]       POLITY.APPOINTMENT          Heillvar Maer (a:29) is raised to steward of the Wurn League (f:1)  <= e:326  e:346
+[Y0022]       POLITY.APPOINTMENT          Tor Nathgoull (a:33) is raised to steward of the Kebarrow Compact (f:2)  <= e:262  e:347
+[Y0022] w:17  POLITY.COUP_RESOLVED        Befu Seirn (a:26)'s conspiracy against Trem Lolkoll (a:6) is uncovered after 1 years  <= e:325  e:348
+[Y0022] w:17  LIFE.DEATH_VIOLENT          Befu Seirn (a:26) is put to death — executed for conspiracy  <= e:348  e:349
+[Y0022] w:15  ECONOMY.FAMINE_ENDS         the hunger at Vea Lode (p:7) passes after 1 years  e:351
+
+[Y0023]       LIFE.MARRIAGE               Saern Meastouth (a:28) marries Theald Va (a:30), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:355
+[Y0023] w:19  POLITY.COUP_PLOTTED         Nael War (a:8) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:276  e:359
+[Y0023]       POLITY.COURTS_SUPPORT       Thold Valmaer (a:15) wins Tro Thath (a:36) away from the ruler of the Griwick Compact (f:3)  e:360
+[Y0023] w:16  CONFLICT.ASSASSINATION      Bu Rumpirn (a:18) has Witrou Breim (a:2) murdered at Griwick (p:4)  e:361
+[Y0023]       LIFE.DEATH_VIOLENT          Witrou Breim (a:2), ruler of the Griwick Compact (f:3), is killed by Bu Rumpirn (a:18) at Griwick (p:4)  <= e:361  e:362
+[Y0023]       POLITY.COURTS_SUPPORT       Paernrom Sir (a:24) wins Sothkel Sald (a:23) away from the ruler of the Wurn League (f:1)  <= e:348  e:363
+[Y0023]       POLITY.COURTS_SUPPORT       Saern Meastouth (a:28) wins Mald Krend (a:55) away from the ruler of the Wurn League (f:1)  <= e:259  e:364
+[Y0023]       POLITY.APPOINTMENT          Neildvarn Tramern (a:32) is raised to steward of the Wurn League (f:1)  <= e:326  e:365
+[Y0023]       POLITY.APPOINTMENT          Weallhous Dreld (a:25) is raised to steward of the Kebarrow Compact (f:2)  <= e:323  e:366
+[Y0023]       POLITY.SUCCESSION           Thold Valmaer (a:15) takes the seat of the Griwick Compact (f:3) (by the strongest claim)  <= e:362,e:224  e:367
+[Y0023] w:11  ECONOMY.FAMINE_ENDS         the hunger at Threi Cut (p:8) passes after 7 years and 27 return to the fields  e:369
+
+[Y0024]       LIFE.MARRIAGE               Thosruld Lul (a:34) marries Teillmol Lund (a:35) at Hadale (p:2)  e:372
+[Y0024]       POLITY.COURTS_SUPPORT       Nael War (a:8) wins Baeld Fea (a:46) away from the ruler of the Wurn League (f:1)  <= e:276  e:376
+[Y0024]       POLITY.COURTS_SUPPORT       Sothkel Sald (a:23) wins Tharhith Beamma (a:49) away from the ruler of the Wurn League (f:1)  <= e:364  e:378
+[Y0024]       POLITY.COURTS_SUPPORT       Paernrom Sir (a:24) wins Tharhith Beamma (a:49) away from the ruler of the Wurn League (f:1)  <= e:348  e:379
+[Y0024]       POLITY.COURTS_SUPPORT       Saern Meastouth (a:28) wins Tharhith Beamma (a:49) away from the ruler of the Wurn League (f:1)  <= e:259  e:380
+[Y0024]       POLITY.LEGITIMACY_CRISIS    the Wurn League (f:1) spends 50 silver buying goodwill for the second time, and is not believed  <= e:326  e:381
+[Y0024]       POLITY.APPOINTMENT          Krir Nur (a:21) is raised to steward of the Kebarrow Compact (f:2)  <= e:323  e:382
+[Y0024]       CONFLICT.RAID               the Griwick Compact (f:3) raids Hadale (p:2), carrying off 34 grain and killing 16  e:383
+[Y0024]       POLITY.LEGITIMACY_CRISIS    the Griwick Compact (f:3) spends 95 silver buying goodwill for the second time, and is not believed  <= e:362  e:384
+[Y0024] w:16  POLITY.COUP_RESOLVED        Bu Rumpirn (a:18) challenges Thold Valmaer (a:15) for the Griwick Compact (f:3) and wins  <= e:322  e:385
+[Y0024] w:16  POLITY.SUCCESSION           Bu Rumpirn (a:18) takes the seat of the Griwick Compact (f:3) (coup)  <= e:385  e:386
+[Y0024]       POLITY.EXILE                Thold Valmaer (a:15) is cast out of the Griwick Compact (f:3) — the losing side of a coup  <= e:385  e:387
+[Y0024] w:18  POLITY.COUP_RESOLVED        Thold Valmaer (a:15) challenges Bu Rumpirn (a:18) for the Griwick Compact (f:3) and wins  <= e:342  e:388
+[Y0024] w:18  POLITY.SUCCESSION           Thold Valmaer (a:15) takes the seat of the Griwick Compact (f:3) (coup)  <= e:388  e:389
+[Y0024]       POLITY.EXILE                Bu Rumpirn (a:18) is cast out of the Griwick Compact (f:3) — the losing side of a coup  <= e:388  e:390
+
+[Y0025]       LIFE.MARRIAGE               Sothkel Sald (a:23) marries Tor Nathgoull (a:33), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:396
+[Y0025]       POLITY.COURTS_SUPPORT       Nael War (a:8) wins Teillmol Lund (a:35) away from the ruler of the Wurn League (f:1)  <= e:276  e:401
+[Y0025] w:20  POLITY.COUP_PLOTTED         Sothkel Sald (a:23) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:364  e:402
+[Y0025]       POLITY.COURTS_SUPPORT       Paernrom Sir (a:24) wins Teillmol Lund (a:35) away from the ruler of the Wurn League (f:1)  <= e:348  e:403
+[Y0025] w:21  POLITY.COUP_PLOTTED         Gatros Hearn (a:27) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:381  e:404
+[Y0025] w:22  POLITY.COUP_PLOTTED         Saern Meastouth (a:28) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:259  e:405
+[Y0025]       POLITY.APPOINTMENT          Wilwound Ska (a:39) is raised to steward of the Wurn League (f:1)  <= e:326  e:406
+[Y0025]       DIPLO.TRIBUTE_DEMANDED      the Wurn League (f:1) demands tribute of the Griwick Compact (f:3) and is refused  e:407
+[Y0025]       POLITY.LEGITIMACY_CRISIS    the Kebarrow Compact (f:2) spends 95 silver to buy back goodwill  <= e:323  e:408
+[Y0025]       CONFLICT.RAID               the Kebarrow Compact (f:2)'s raid on Griwick (p:4) is beaten off  <= e:173  e:409
+[Y0025]       POLITY.APPOINTMENT          Tro Thath (a:36) is raised to heir of the Griwick Compact (f:3)  <= e:362  e:410
+[Y0025] w:14  POLITY.COUP_RESOLVED        Turaer Danpa (a:14)'s conspiracy against Sou Dra (a:22) is uncovered after 6 years  <= e:293  e:411
+[Y0025] w:14  LIFE.DEATH_VIOLENT          Turaer Danpa (a:14) is put to death — executed for conspiracy  <= e:411  e:412
+[Y0025] w:19  POLITY.COUP_RESOLVED        Nael War (a:8)'s conspiracy against Trem Lolkoll (a:6) is uncovered after 2 years  <= e:359  e:413
+[Y0025]       POLITY.EXILE                Nael War (a:8) is cast out of the Wurn League (f:1) — conspiracy against the seat  <= e:413  e:414
+
+[Y0026]       LIFE.BIRTH                  Thres Thrild (a:57) is born to Krir Nur (a:21) at Kebarrow (p:3)  <= e:287  e:417
+[Y0026]       LIFE.BIRTH                  Voudreirn Wer (a:59) is born to Saern Meastouth (a:28) at Hadale (p:2)  <= e:355  e:419
+[Y0026] w:23  ECONOMY.PLAGUE              plague breaks out at Griwick (p:4) and takes 184  e:422
+[Y0026] w:24  ECONOMY.FAMINE              famine at Meigate (p:6): 34 dead, grain short by 2  e:423
+[Y0026]       POLITY.EXILE_RETURN         Nael War (a:8) returns from exile and takes service with the Griwick Compact (f:3)  <= e:414  e:426
+[Y0026]       POLITY.EXILE_RETURN         Bu Rumpirn (a:18) returns from exile and takes service with the Wurn League (f:1)  <= e:390  e:427
+[Y0026]       POLITY.COURTS_SUPPORT       Sothkel Sald (a:23) wins Teillmol Lund (a:35) away from the ruler of the Wurn League (f:1)  <= e:364  e:428
+[Y0026] w:25  POLITY.COUP_PLOTTED         Paernrom Sir (a:24) begins conspiring against Trem Lolkoll (a:6) of the Wurn League (f:1)  [secret]  <= e:348  e:429
+[Y0026]       POLITY.CHALLENGE            Gatros Hearn (a:27) challenges Trem Lolkoll (a:6) openly for the Wurn League (f:1), wins, and takes the seat from Trem Lolkoll (a:6)  <= e:381  e:430
+[Y0026]       POLITY.EXILE                Trem Lolkoll (a:6) is cast out of the Wurn League (f:1) — the losing side of an open challenge  <= e:430  e:432
+[Y0026]       POLITY.COURTS_SUPPORT       Theald Va (a:30) wins Sor Pean (a:54) away from the ruler of the Kebarrow Compact (f:2)  <= e:423  e:433
+[Y0026]       DIPLO.INSULT                the Wurn League (f:1) publicly slights the Griwick Compact (f:3)  e:434
+[Y0026]       ECONOMY.TRADE_PACT          the Wurn League (f:1) and the Griwick Compact (f:3) agree terms of trade  <= e:98  e:435
+[Y0026]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Laehiford (p:5), carrying off 44 grain and killing 25  <= e:173  e:436
+[Y0026]       CONFLICT.RAID               the Griwick Compact (f:3) raids Kebarrow (p:3), carrying off 47 grain and killing 23  <= e:436  e:437
+[Y0026] w:20  POLITY.COUP_RESOLVED        Sothkel Sald (a:23) challenges Gatros Hearn (a:27) for the Wurn League (f:1) and wins  <= e:402  e:438
+[Y0026] w:20  POLITY.SUCCESSION           Sothkel Sald (a:23) takes the seat of the Wurn League (f:1) (coup)  <= e:438  e:439
+[Y0026] w:20  LIFE.DEATH_VIOLENT          Gatros Hearn (a:27), ruler of the Wurn League (f:1), is killed by Sothkel Sald (a:23) at Hadale (p:2)  <= e:438  e:440
+[Y0026] w:21  POLITY.PLOT_DIES_WITH_PLOTTER  Gatros Hearn (a:27)'s conspiracy against Trem Lolkoll (a:6) dies with them, 1 years in  [secret]  <= e:404,e:440  e:441
+[Y0026] w:22  POLITY.COUP_RESOLVED        Saern Meastouth (a:28) challenges Sothkel Sald (a:23) for the Wurn League (f:1) and wins  <= e:405  e:442
+[Y0026] w:22  POLITY.SUCCESSION           Saern Meastouth (a:28) takes the seat of the Wurn League (f:1) (coup)  <= e:442  e:443
+[Y0026] w:22  LIFE.DEATH_VIOLENT          Sothkel Sald (a:23), ruler of the Wurn League (f:1), is killed by Saern Meastouth (a:28) at Hadale (p:2)  <= e:442  e:444
+
+[Y0027] w:23  ECONOMY.PLAGUE              plague at Griwick (p:4), year 2: 134 dead and 298 flee  <= e:422  e:451
+[Y0027]       POLITY.EXILE_RETURN         Trem Lolkoll (a:6) returns from exile and takes service with the Kebarrow Compact (f:2)  <= e:432  e:454
+[Y0027]       POLITY.COURTS_SUPPORT       Paernrom Sir (a:24) wins Tum Ga (a:61) away from the ruler of the Wurn League (f:1)  <= e:348  e:455
+[Y0027] w:26  POLITY.COUP_PLOTTED         Theald Va (a:30) begins conspiring against Sou Dra (a:22) of the Kebarrow Compact (f:2)  [secret]  <= e:423  e:456
+[Y0027]       POLITY.COURTS_SUPPORT       Tor Nathgoull (a:33) wins Sor Pean (a:54) away from the ruler of the Kebarrow Compact (f:2)  <= e:433  e:457
+[Y0027]       POLITY.COURTS_SUPPORT       Teillmol Lund (a:35) wins Drarka Draernthun (a:31) away from the ruler of the Wurn League (f:1)  <= e:414  e:458
+[Y0027]       POLITY.COURTS_SUPPORT       Stonand Ker (a:40) wins Draes Wild (a:56) away from the ruler of the Wurn League (f:1)  <= e:443  e:459
+[Y0027]       CONFLICT.ASSASSINATION      Saern Meastouth (a:28)'s attempt on Thold Valmaer (a:15) fails and is traced back  e:460
+[Y0027]       POLITY.EXILE                Saern Meastouth (a:28) is cast out of the Wurn League (f:1) — attempted murder  <= e:460  e:461
+[Y0027]       CONFLICT.RAID               the Kebarrow Compact (f:2) raids Threi Cut (p:8) and kills 2, but takes nothing  <= e:173  e:462
+[Y0027] w:27  DIPLO.WAR_DECLARED          the Kebarrow Compact (f:2) declares war on the Griwick Compact (f:3) over long-standing grievance  e:463
+[Y0027]       DIPLO.ALLIANCE_BROKEN       the Kebarrow Compact (f:2) breaks its alliance with the Griwick Compact (f:3)  <= e:463,e:37  e:464
+[Y0027]       ECONOMY.TRADE_COLLAPSE      trade between the Kebarrow Compact (f:2) and the Griwick Compact (f:3) breaks down  <= e:463,e:87  e:465
+[Y0027] w:27  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Kebarrow Compact (f:2) at Vea Lode (p:7) (57 dead)  <= e:463  e:466
+[Y0027]       POLITY.SUCCESSION           Teapeall Heampim (a:5) takes the seat of the Wurn League (f:1) (by right of birth)  <= e:461,e:177  e:467
+[Y0027] w:24  ECONOMY.FAMINE_ENDS         the hunger at Meigate (p:6) passes after 1 years and 92 return to the fields  <= e:423  e:469
+
+[Y0028]       LIFE.DEATH_NATURAL          Teapeall Heampim (a:5), ruler of the Wurn League (f:1), dies at 52 in Hadale (p:2)  e:471
+[Y0028]       LIFE.DEATH_NATURAL          Trem Lolkoll (a:6), captain of the Kebarrow Compact (f:2), dies at 54 in Kebarrow (p:3)  e:472
+[Y0028]       LIFE.MARRIAGE               Leimmil Theall (a:38) marries Beas Krouthea (a:41), binding the Wurn League (f:1) to the Kebarrow Compact (f:2)  e:474
+[Y0028] w:23  ECONOMY.PLAGUE              plague at Griwick (p:4), year 3: 159 dead and 212 flee  <= e:422  e:478
+[Y0028]       POLITY.COURTS_SUPPORT       Theald Va (a:30) wins Le Vild (a:44) away from the ruler of the Kebarrow Compact (f:2)  <= e:423  e:481
+[Y0028]       POLITY.COURTS_SUPPORT       Tor Nathgoull (a:33) wins Le Vild (a:44) away from the ruler of the Kebarrow Compact (f:2)  <= e:433  e:482
+[Y0028] w:27  CONFLICT.ASSASSINATION      Sou Dra (a:22) has Thold Valmaer (a:15) murdered at Griwick (p:4)  e:483
+[Y0028]       LIFE.DEATH_VIOLENT          Thold Valmaer (a:15), ruler of the Griwick Compact (f:3), is killed by Sou Dra (a:22) at Griwick (p:4)  <= e:483  e:484
+[Y0028] w:26  POLITY.COUP_RESOLVED        Theald Va (a:30)'s conspiracy against Sou Dra (a:22) is uncovered after 1 years  <= e:456  e:485
+[Y0028] w:26  LIFE.DEATH_VIOLENT          Theald Va (a:30) is put to death — executed for conspiracy  <= e:485  e:486
+[Y0028] w:27  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Kebarrow Compact (f:2) at Vea Lode (p:7) (48 dead)  <= e:463  e:487
+[Y0028] w:28  POLITY.SUCCESSION_DISPUTED  Paernrom Sir (a:24) contests the claim of Bu Rumpirn (a:18), the named heir, to the Wurn League (f:1) (decided by primogeniture)  <= e:471  e:488
+[Y0028] w:28  POLITY.SUCCESSION           Paernrom Sir (a:24) takes the seat of the Wurn League (f:1), setting aside the claim of the named heir Bu Rumpirn (a:18)  <= e:488  e:489
+[Y0028]       POLITY.EXILE                Bu Rumpirn (a:18) is cast out of the Wurn League (f:1) — the losing claim  <= e:488  e:490
+[Y0028]       POLITY.SUCCESSION           Nael War (a:8) takes the seat of the Griwick Compact (f:3) (by the strongest claim)  <= e:484,e:277  e:491
+
+[Y0029]       LIFE.DEATH_NATURAL          Krir Nur (a:21), steward of the Kebarrow Compact (f:2), dies at 27 in Kebarrow (p:3)  e:493
+[Y0029]       LIFE.DEATH_NATURAL          Saern Meastouth (a:28), exile, dies at 24 in Hadale (p:2)  e:494
+[Y0029]       LIFE.MARRIAGE               Tro Thath (a:36) marries Stonand Ker (a:40), binding the Griwick Compact (f:3) to the Wurn League (f:1)  e:495
+[Y0029]       LIFE.BIRTH                  Drearnvol Tedoul (a:65) is born to Paernrom Sir (a:24) at Hadale (p:2)  <= e:301  e:496
+[Y0029]       LIFE.BIRTH                  Drouldthas Stour (a:67) is born to Tro Thath (a:36) at Griwick (p:4)  <= e:495  e:498
+[Y0029]       POLITY.COURTS_SUPPORT       Weallhous Dreld (a:25) wins Sor Pean (a:54) away from the ruler of the Kebarrow Compact (f:2)  <= e:487  e:502
+[Y0029]       POLITY.COURTS_SUPPORT       Heillvar Maer (a:29) wins Mald Krend (a:55) away from the ruler of the Wurn League (f:1)  <= e:490  e:503
+[Y0029]       POLITY.CHALLENGE            Tor Nathgoull (a:33) challenges Sou Dra (a:22) openly for the Kebarrow Compact (f:2), wins, and takes the seat from Sou Dra (a:22)  <= e:433  e:504
+[Y0029]       POLITY.EXILE                Sou Dra (a:22) is cast out of the Kebarrow Compact (f:2) — the losing side of an open challenge  <= e:504  e:506
+[Y0029] w:29  POLITY.COUP_PLOTTED         Teillmol Lund (a:35) begins conspiring against Paernrom Sir (a:24) of the Wurn League (f:1)  [secret]  <= e:414  e:507
+[Y0029] w:30  POLITY.COUP_PLOTTED         Stonand Ker (a:40) begins conspiring against Paernrom Sir (a:24) of the Wurn League (f:1)  [secret]  <= e:443  e:508
+[Y0029]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Vea Lode (p:7) is beaten off  e:509
+[Y0029]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Laehiford (p:5) is beaten off  <= e:98  e:510
+[Y0029]       POLITY.APPOINTMENT          Diweith Mound (a:42) is raised to heir of the Kebarrow Compact (f:2)  <= e:487  e:511
+[Y0029]       ECONOMY.TRADE_PACT          the Griwick Compact (f:3) buys 30 grain from the Kebarrow Compact (f:2) for 60 silver  e:512
+[Y0029] w:25  POLITY.PLOT_LAPSES          Paernrom Sir (a:24)'s conspiracy against Trem Lolkoll (a:6) lapses after 3 years — its author took the seat by other means  [secret]  <= e:429  e:513
+[Y0029] w:27  DIPLO.PEACE_SIGNED          the Kebarrow Compact (f:2) and the Griwick Compact (f:3) make peace after 2 years, both sides exhausted  <= e:463  e:514
+[Y0029]       POLITY.SECESSION            Meigate (p:6) breaks from the Kebarrow Compact (f:2) as the Meigate Covenant, with Raes Go (a:68) taking its seat  <= e:506  e:517
+[Y0029]       POLITY.SECESSION            Vea Lode (p:7) breaks from the Griwick Compact (f:3) as the Vea Lode Covenant, with Mothgall Vafarn (a:69) taking its seat  <= e:484  e:519
+[Y0029] w:23  ECONOMY.PLAGUE_ENDS         the pestilence at Griwick (p:4) burns out after 3 years  <= e:422  e:520
+
+[Y0030]       LIFE.DEATH_NATURAL          Weallhous Dreld (a:25), steward of the Kebarrow Compact (f:2), dies at 27 in Kebarrow (p:3)  e:521
+[Y0030]       LIFE.MARRIAGE               Neildvarn Tramern (a:32) marries Wilwound Ska (a:39) at Hadale (p:2)  e:523
+[Y0030]       LIFE.MARRIAGE               Raes Go (a:68) marries Mothgall Vafarn (a:69), binding the Meigate Covenant (f:4) to the Vea Lode Covenant (f:5)  e:524
+[Y0030]       LIFE.BIRTH                  Ror Rim (a:70) is born to Paernrom Sir (a:24) at Hadale (p:2)  <= e:301  e:525
+[Y0030]       LIFE.BIRTH                  Hehum Skul (a:72) is born to Raes Go (a:68) at Meigate (p:6)  <= e:524  e:527
+[Y0030] w:31  ECONOMY.FAMINE              famine at Vea Lode (p:7): 11 dead, grain short by 6  e:529
+[Y0030]       POLITY.EXILE_RETURN         Bu Rumpirn (a:18) returns from exile and takes service with the Vea Lode Covenant (f:5)  <= e:490  e:532
+[Y0030]       POLITY.EXILE_RETURN         Sou Dra (a:22) returns from exile and takes service with the Vea Lode Covenant (f:5)  <= e:506  e:533
+[Y0030]       POLITY.COURTS_SUPPORT       Heillvar Maer (a:29) wins Lorn Waldhith (a:58) away from the ruler of the Wurn League (f:1)  <= e:490  e:534
+[Y0030]       POLITY.COURTS_SUPPORT       Teillmol Lund (a:35) wins Mald Krend (a:55) away from the ruler of the Wurn League (f:1)  <= e:414  e:535
+[Y0030] w:30  CONFLICT.ASSASSINATION      Stonand Ker (a:40) has Paernrom Sir (a:24) murdered at Hadale (p:2)  <= e:443  e:536
+[Y0030]       LIFE.DEATH_VIOLENT          Paernrom Sir (a:24), ruler of the Wurn League (f:1), is killed by Stonand Ker (a:40) at Hadale (p:2)  <= e:536  e:537
+[Y0030] w:32  POLITY.COUP_PLOTTED         Throll Kell (a:43) begins conspiring against Tor Nathgoull (a:33) of the Kebarrow Compact (f:2)  [secret]  <= e:517  e:538
+[Y0030]       POLITY.APPOINTMENT          Beas Krouthea (a:41) is raised to steward of the Kebarrow Compact (f:2)  <= e:487  e:539
+[Y0030]       ECONOMY.TRADE_PACT          the Meigate Covenant (f:4) and the Griwick Compact (f:3) agree terms of trade  e:540
+[Y0030]       DIPLO.ALLIANCE_FORMED       the Meigate Covenant (f:4) seeks an alliance with the Wurn League (f:1) and is turned away  <= e:144  e:541
+[Y0030]       ECONOMY.TRADE_PACT          the Vea Lode Covenant (f:5) and the Griwick Compact (f:3) agree terms of trade  <= e:529  e:542
+[Y0030]       DIPLO.ALLIANCE_FORMED       the Vea Lode Covenant (f:5) seeks an alliance with the Wurn League (f:1) and is turned away  <= e:144  e:543
+[Y0030]       POLITY.SUCCESSION           Heillvar Maer (a:29) takes the seat of the Wurn League (f:1) (by right of birth)  <= e:537,e:346  e:544
+[Y0030]       POLITY.REVOLT               Threi Cut (p:8) rises against the Griwick Compact (f:3), whose standing had fallen to nothing  <= e:519  e:546
+
+[Y0031]       LIFE.BIRTH                  Wea Thrandgo (a:75) is born to Tro Thath (a:36) at Griwick (p:4)  <= e:495  e:551
+[Y0031] w:31  ECONOMY.FAMINE              famine at Vea Lode (p:7), year 2: 13 dead, 32 abandon the place  <= e:529  e:555
+[Y0031]       POLITY.COURTS_SUPPORT       Thosruld Lul (a:34) wins Draes Wild (a:56) away from the ruler of the Wurn League (f:1)  <= e:537  e:560
+[Y0031]       POLITY.COURTS_SUPPORT       Teillmol Lund (a:35) wins Tum Ga (a:61) away from the ruler of the Wurn League (f:1)  <= e:414  e:561
+[Y0031]       POLITY.COURTS_SUPPORT       Throll Kell (a:43) wins Sor Pean (a:54) away from the ruler of the Kebarrow Compact (f:2)  <= e:517  e:562
+[Y0031]       CONFLICT.RAID               the Wurn League (f:1)'s raid on Threi Cut (p:8) is beaten off  e:563
+[Y0031]       POLITY.APPOINTMENT          Hollsan Troull (a:45) is raised to steward of the Kebarrow Compact (f:2)  <= e:487  e:564
+[Y0031]       CONFLICT.RAID               the Meigate Covenant (f:4)'s raid on Griwick (p:4) is beaten off  e:565
+[Y0031] w:29  POLITY.COUP_RESOLVED        Teillmol Lund (a:35)'s conspiracy against Heillvar Maer (a:29) is uncovered after 2 years  <= e:507  e:566
+[Y0031] w:29  LIFE.DEATH_VIOLENT          Teillmol Lund (a:35) is put to death — executed for conspiracy  <= e:566  e:567
+
+[Y0032]       LIFE.DEATH_NATURAL          Hollsan Troull (a:45), steward of the Kebarrow Compact (f:2), dies at 17 in Kebarrow (p:3)  e:570
+[Y0032]       LIFE.MARRIAGE               Heth Fal (a:37) marries Diweith Mound (a:42) at Kebarrow (p:3)  e:572
+[Y0032] w:31  ECONOMY.FAMINE              famine at Vea Lode (p:7), year 3: 9 dead, 22 abandon the place  <= e:529  e:574
+[Y0032] w:33  POLITY.COUP_PLOTTED         Sou Dra (a:22) begins conspiring against Mothgall Vafarn (a:69) of the Vea Lode Covenant (f:5)  [secret]  <= e:533  e:577
+[Y0032] w:34  POLITY.COUP_PLOTTED         Thosruld Lul (a:34) begins conspiring against Heillvar Maer (a:29) of the Wurn League (f:1)  [secret]  <= e:537  e:578
+[Y0032]       CONFLICT.ASSASSINATION      Heillvar Maer (a:29)'s attempt on Nael War (a:8) fails and is traced back  e:579
+[Y0032]       POLITY.EXILE                Heillvar Maer (a:29) is cast out of the Wurn League (f:1) — attempted murder  <= e:579  e:580
+[Y0032]       POLITY.APPOINTMENT          Heth Fal (a:37) is raised to steward of the Kebarrow Compact (f:2)  <= e:562  e:581
+[Y0032]       DIPLO.INSULT                the Kebarrow Compact (f:2) publicly slights the Griwick Compact (f:3)  e:582
+[Y0032] w:32  POLITY.COUP_RESOLVED        Throll Kell (a:43) challenges Tor Nathgoull (a:33) for the Kebarrow Compact (f:2) and wins  <= e:538  e:583
+[Y0032] w:32  POLITY.SUCCESSION           Throll Kell (a:43) takes the seat of the Kebarrow Compact (f:2) (coup)  <= e:583  e:584
+[Y0032]       POLITY.EXILE                Tor Nathgoull (a:33) is cast out of the Kebarrow Compact (f:2) — the losing side of a coup  <= e:583  e:585
+[Y0032]       POLITY.SUCCESSION           Drarka Draernthun (a:31) takes the seat of the Wurn League (f:1) (by right of birth)  <= e:580  e:586
+
+[Y0033] w:35  ECONOMY.PLAGUE              plague breaks out at Laehiford (p:5) and takes 85  e:591
+[Y0033] w:31  ECONOMY.FAMINE              famine at Vea Lode (p:7), year 4: 7 dead, 30 abandon the place  <= e:529  e:592
+[Y0033] w:33  CONFLICT.ASSASSINATION      Sou Dra (a:22) has Mothgall Vafarn (a:69) murdered at Vea Lode (p:7)  <= e:533  e:595
+[Y0033]       LIFE.DEATH_VIOLENT          Mothgall Vafarn (a:69), ruler of the Vea Lode Covenant (f:5), is killed by Sou Dra (a:22) at Vea Lode (p:7)  <= e:595  e:596
+[Y0033]       POLITY.EXILE_RETURN         Heillvar Maer (a:29) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:580  e:597
+[Y0033] w:34  CONFLICT.ASSASSINATION      an attempt on Drarka Draernthun (a:31) fails at Hadale (p:2), unattributed  [secret]  <= e:537  e:598
+[Y0033] w:36  POLITY.COUP_PLOTTED         Leimmil Theall (a:38) begins conspiring against Drarka Draernthun (a:31) of the Wurn League (f:1)  [secret]  <= e:580  e:599
+[Y0033]       POLITY.APPOINTMENT          Le Vild (a:44) is raised to steward of the Kebarrow Compact (f:2)  <= e:562  e:600
+[Y0033]       POLITY.LEGITIMACY_CRISIS    the Griwick Compact (f:3) spends 140 silver buying goodwill for the third time, and is not believed  <= e:362  e:601
+[Y0033] w:37  DIPLO.WAR_DECLARED          the Griwick Compact (f:3) declares war on the Wurn League (f:1) over long-standing grievance  e:602
+[Y0033]       DIPLO.ALLIANCE_BROKEN       the Griwick Compact (f:3) breaks its alliance with the Wurn League (f:1)  <= e:602,e:495  e:603
+[Y0033]       ECONOMY.TRADE_COLLAPSE      trade between the Griwick Compact (f:3) and the Wurn League (f:1) breaks down  <= e:602,e:103  e:604
+[Y0033]       CONFLICT.RAID               the Meigate Covenant (f:4)'s raid on Laehiford (p:5) is beaten off  e:605
+[Y0033] w:30  POLITY.COUP_RESOLVED        Stonand Ker (a:40) challenges Drarka Draernthun (a:31) for the Wurn League (f:1) and wins  <= e:508  e:606
+[Y0033] w:30  POLITY.SUCCESSION           Stonand Ker (a:40) takes the seat of the Wurn League (f:1) (coup)  <= e:606  e:607
+[Y0033]       POLITY.EXILE                Drarka Draernthun (a:31) is cast out of the Wurn League (f:1) — the losing side of a coup  <= e:606  e:608
+[Y0033] w:34  POLITY.COUP_RESOLVED        Thosruld Lul (a:34)'s conspiracy against Stonand Ker (a:40) is uncovered after 1 years  <= e:578  e:609
+[Y0033] w:34  LIFE.DEATH_VIOLENT          Thosruld Lul (a:34) is put to death — executed for conspiracy  <= e:609  e:610
+[Y0033] w:37  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Hadale (p:2) (58 dead)  <= e:602  e:611
+[Y0033]       POLITY.SUCCESSION           Sou Dra (a:22) takes the seat of the Vea Lode Covenant (f:5) (by election)  <= e:596,e:382  e:612
+
+[Y0034]       LIFE.MARRIAGE               Le Vild (a:44) marries Baeld Fea (a:46), binding the Kebarrow Compact (f:2) to the Wurn League (f:1)  e:617
+[Y0034]       POLITY.EXILE_RETURN         Drarka Draernthun (a:31) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:608  e:623
+[Y0034] w:36  CONFLICT.ASSASSINATION      Leimmil Theall (a:38)'s attempt on Stonand Ker (a:40) fails and is traced back  <= e:580  e:624
+[Y0034]       POLITY.EXILE                Leimmil Theall (a:38) is cast out of the Wurn League (f:1) — attempted murder  <= e:624  e:625
+[Y0034]       POLITY.COURTS_SUPPORT       Beas Krouthea (a:41) wins Thres Thrild (a:57) away from the ruler of the Kebarrow Compact (f:2)  <= e:585  e:626
+[Y0034]       CONFLICT.ASSASSINATION      Stonand Ker (a:40) has Nael War (a:8) murdered at Griwick (p:4)  e:627
+[Y0034]       LIFE.DEATH_VIOLENT          Nael War (a:8), ruler of the Griwick Compact (f:3), is killed by Stonand Ker (a:40) at Griwick (p:4)  <= e:627  e:628
+[Y0034]       POLITY.APPOINTMENT          Kondruth Tru (a:48) is raised to heir of the Wurn League (f:1)  <= e:611  e:629
+[Y0034]       POLITY.LEGITIMACY_CRISIS    the Kebarrow Compact (f:2) spends 140 silver buying goodwill for the third time, and is not believed  <= e:562  e:630
+[Y0034]       ECONOMY.TRADE_PACT          the Meigate Covenant (f:4) and the Griwick Compact (f:3) agree terms of trade  e:631
+[Y0034]       CONFLICT.RAID               the Vea Lode Covenant (f:5) raids Griwick (p:4), carrying off 36 grain and killing 20  <= e:529  e:632
+[Y0034] w:33  POLITY.PLOT_LAPSES          Sou Dra (a:22)'s conspiracy against Mothgall Vafarn (a:69) lapses after 2 years — its author took the seat by other means  [secret]  <= e:577  e:633
+[Y0034] w:36  POLITY.COUP_RESOLVED        Leimmil Theall (a:38)'s conspiracy against Stonand Ker (a:40) is uncovered after 1 years  <= e:599  e:634
+[Y0034]       POLITY.EXILE                Leimmil Theall (a:38), who had already left, is declared outlaw by the Wurn League (f:1) — conspiracy against the seat  <= e:634  e:635
+[Y0034] w:37  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Wurn League (f:1) at Hadale (p:2) (87 dead)  <= e:602  e:636
+[Y0034] w:37  CONFLICT.CONQUEST           the Griwick Compact (f:3) takes Hadale (p:2) from the Wurn League (f:1)  <= e:636  e:637
+[Y0034]       POLITY.COLLAPSE             the Wurn League (f:1) is finished — landless, its last 25 followers scatter  <= e:637  e:638
+[Y0034]       POLITY.SUCCESSION           Kondruth Tru (a:48) takes the seat of the Griwick Compact (f:3) (by the strongest claim)  <= e:628,e:629  e:640
+[Y0034] w:35  ECONOMY.PLAGUE_ENDS         the pestilence at Laehiford (p:5) burns out after 1 years  <= e:591  e:642
+
+[Y0035]       LIFE.MARRIAGE               Drarka Draernthun (a:31) marries Thurnean Kourn (a:47), binding the Meigate Covenant (f:4) to the Griwick Compact (f:3)  e:644
+[Y0035]       LIFE.BIRTH                  Bundtir Thri (a:78) is born to Tro Thath (a:36) at Griwick (p:4)  <= e:495  e:645
+[Y0035]       LIFE.BIRTH                  Raneith Meispol (a:79) is born to Heth Fal (a:37) at Kebarrow (p:3)  <= e:572  e:646
+[Y0035] w:38  POLITY.COUP_PLOTTED         Bu Rumpirn (a:18) begins conspiring against Sou Dra (a:22) of the Vea Lode Covenant (f:5)  [secret]  <= e:532  e:655
+[Y0035]       POLITY.EXILE_RETURN         Tor Nathgoull (a:33) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:585  e:656
+[Y0035]       POLITY.EXILE_RETURN         Leimmil Theall (a:38) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:635  e:657
+[Y0035]       POLITY.CHALLENGE            Beas Krouthea (a:41) challenges Throll Kell (a:43) openly for the Kebarrow Compact (f:2), wins, and takes the seat from Throll Kell (a:43)  <= e:585  e:658
+[Y0035]       POLITY.EXILE                Throll Kell (a:43) is cast out of the Kebarrow Compact (f:2) — the losing side of an open challenge  <= e:658  e:660
+[Y0035]       POLITY.APPOINTMENT          Paernmel Has (a:50) is raised to steward of the Kebarrow Compact (f:2)  <= e:562  e:661
+[Y0035]       CONFLICT.RAID               the Kebarrow Compact (f:2)'s raid on Hadale (p:2) is beaten off  e:662
+[Y0035]       POLITY.APPOINTMENT          Thurnean Kourn (a:47) is raised to steward of the Griwick Compact (f:3)  <= e:601  e:664
+[Y0035]       CONFLICT.RAID               the Vea Lode Covenant (f:5) raids Laehiford (p:5), carrying off 44 grain and killing 28  <= e:529  e:666
+[Y0035] w:37  DIPLO.PEACE_SIGNED          the Griwick Compact (f:3) and the Wurn League (f:1) make peace after 2 years, after the collapse of the Wurn League  <= e:602  e:668
+[Y0035] w:31  ECONOMY.FAMINE_ENDS         the hunger at Vea Lode (p:7) passes after 5 years  <= e:529  e:671
+
+[Y0036]       LIFE.DEATH_NATURAL          Tharhith Beamma (a:49), commoner of the Griwick Compact (f:3), dies at 17 in Hadale (p:2)  e:673
+[Y0036]       LIFE.BIRTH                  Stoulthoth Frorn (a:81) is born to Tro Thath (a:36) at Griwick (p:4)  <= e:495  e:676
+[Y0036]       LIFE.BIRTH                  Weth Bus (a:82) is born to Leimmil Theall (a:38) at Meigate (p:6)  <= e:474  e:677
+[Y0036] w:38  CONFLICT.ASSASSINATION      Bu Rumpirn (a:18) has Sou Dra (a:22) murdered at Vea Lode (p:7)  <= e:532  e:681
+[Y0036]       LIFE.DEATH_VIOLENT          Sou Dra (a:22), ruler of the Vea Lode Covenant (f:5), is killed by Bu Rumpirn (a:18) at Vea Lode (p:7)  <= e:681  e:682
+[Y0036]       POLITY.EXILE_RETURN         Throll Kell (a:43) returns from exile and takes service with the Griwick Compact (f:3)  <= e:660  e:683
+[Y0036]       POLITY.APPOINTMENT          Kou Peis (a:52) is raised to steward of the Kebarrow Compact (f:2)  <= e:662  e:684
+[Y0036]       DIPLO.ALLIANCE_FORMED       the Meigate Covenant (f:4) seeks an alliance with the Kebarrow Compact (f:2) and is turned away  <= e:637  e:685
+[Y0036]       POLITY.SUCCESSION           Bu Rumpirn (a:18) takes the seat of the Vea Lode Covenant (f:5) (by election)  <= e:682,e:200  e:687
+
+[Y0037]       LIFE.MARRIAGE               Paernmel Has (a:50) marries Kou Peis (a:52) at Kebarrow (p:3)  e:690
+[Y0037] w:39  POLITY.COUP_PLOTTED         Neildvarn Tramern (a:32) begins conspiring against Kondruth Tru (a:48) of the Griwick Compact (f:3)  [secret]  <= e:628  e:695
+[Y0037] w:40  POLITY.COUP_PLOTTED         Kou Peis (a:52) begins conspiring against Beas Krouthea (a:41) of the Kebarrow Compact (f:2)  [secret]  <= e:662  e:696
+[Y0037]       CONFLICT.ASSASSINATION      Beas Krouthea (a:41) has Kondruth Tru (a:48) murdered at Hadale (p:2)  e:697
+[Y0037]       LIFE.DEATH_VIOLENT          Kondruth Tru (a:48), ruler of the Griwick Compact (f:3), is killed by Beas Krouthea (a:41) at Hadale (p:2)  <= e:697  e:698
+[Y0037]       POLITY.APPOINTMENT          Sor Pean (a:54) is raised to steward of the Kebarrow Compact (f:2)  <= e:662  e:699
+[Y0037]       DIPLO.ALLIANCE_FORMED       the Vea Lode Covenant (f:5) seeks an alliance with the Kebarrow Compact (f:2) and is turned away  <= e:637  e:700
+[Y0037] w:38  POLITY.PLOT_LAPSES          Bu Rumpirn (a:18)'s conspiracy against Sou Dra (a:22) lapses after 2 years — its author took the seat by other means  [secret]  <= e:655  e:701
+[Y0037]       POLITY.SUCCESSION           Durnrin Drar (a:51) takes the seat of the Griwick Compact (f:3) (by the strongest claim)  <= e:698  e:703
+[Y0037]       POLITY.REVOLT               Laehiford (p:5) rises against the Griwick Compact (f:3), whose standing had fallen to nothing  <= e:698  e:705
+
+[Y0038]       LIFE.DEATH_NATURAL          Neildvarn Tramern (a:32), commoner of the Griwick Compact (f:3), dies at 32 in Hadale (p:2)  e:707
+[Y0038]       LIFE.DEATH_NATURAL          Baeld Fea (a:46), commoner of the Griwick Compact (f:3), dies at 22 in Hadale (p:2)  e:708
+[Y0038] w:41  ECONOMY.FAMINE              famine at Meigate (p:6): 61 dead, grain short by 7  e:712
+[Y0038] w:40  CONFLICT.ASSASSINATION      Kou Peis (a:52) has Beas Krouthea (a:41) murdered at Kebarrow (p:3)  <= e:662  e:715
+[Y0038]       LIFE.DEATH_VIOLENT          Beas Krouthea (a:41), ruler of the Kebarrow Compact (f:2), is killed by Kou Peis (a:52) at Kebarrow (p:3)  <= e:715  e:716
+[Y0038]       POLITY.APPOINTMENT          Tro Thath (a:36) is raised to steward of the Griwick Compact (f:3)  <= e:601  e:717
+[Y0038] w:42  DIPLO.WAR_DECLARED          the Griwick Compact (f:3) declares war on the Kebarrow Compact (f:2) over long-standing grievance  e:718
+[Y0038]       ECONOMY.TRADE_COLLAPSE      trade between the Griwick Compact (f:3) and the Kebarrow Compact (f:2) breaks down  <= e:718,e:512  e:719
+[Y0038] w:39  POLITY.PLOT_DIES_WITH_PLOTTER  Neildvarn Tramern (a:32)'s conspiracy against Kondruth Tru (a:48) dies with them, 1 years in  [secret]  <= e:695,e:707  e:720
+[Y0038] w:42  CONFLICT.BATTLE             the Griwick Compact (f:3) and its allies defeat the Kebarrow Compact (f:2) at Kebarrow (p:3) (142 dead)  <= e:718,e:644  e:721
+[Y0038]       POLITY.SUCCESSION           Diweith Mound (a:42) takes the seat of the Kebarrow Compact (f:2) (by election)  <= e:716,e:511  e:723
+
+[Y0039]       LIFE.DEATH_NATURAL          Bu Rumpirn (a:18), ruler of the Vea Lode Covenant (f:5), dies at 60 in Vea Lode (p:7)  e:725
+[Y0039]       LIFE.MARRIAGE               Sor Pean (a:54) marries Mald Krend (a:55), binding the Kebarrow Compact (f:2) to the Griwick Compact (f:3)  e:726
+[Y0039]       CONFLICT.ASSASSINATION      Diweith Mound (a:42)'s attempt on Durnrin Drar (a:51) fails and is traced back  e:731
+[Y0039]       POLITY.EXILE                Diweith Mound (a:42) is cast out of the Kebarrow Compact (f:2) — attempted murder  <= e:731  e:732
+[Y0039] w:42  CONFLICT.BATTLE             the Griwick Compact (f:3) and its allies defeat the Kebarrow Compact (f:2) at Kebarrow (p:3) (118 dead)  <= e:718,e:644  e:733
+[Y0039] w:42  CONFLICT.CONQUEST           the Griwick Compact (f:3) takes Kebarrow (p:3) from the Kebarrow Compact (f:2)  <= e:733  e:734
+[Y0039]       POLITY.COLLAPSE             the Kebarrow Compact (f:2) is finished — landless, its last 9 followers scatter  <= e:734  e:735
+[Y0039]       POLITY.COLLAPSE             the Vea Lode Covenant (f:5) comes to an end; its 1 place falls to no one  <= e:725  e:737
+[Y0039] w:41  ECONOMY.FAMINE_ENDS         the hunger at Meigate (p:6) passes after 1 years  <= e:712  e:739
+
+[Y0040] w:43  ECONOMY.PLAGUE              plague breaks out at Hadale (p:2) and takes 78  e:741
+[Y0040] w:44  POLITY.COUP_PLOTTED         Stonand Ker (a:40) begins conspiring against Durnrin Drar (a:51) of the Griwick Compact (f:3)  [secret]  <= e:741  e:744
+[Y0040]       CONFLICT.RAID               the Meigate Covenant (f:4)'s raid on Kebarrow (p:3) is beaten off  <= e:712  e:747
+[Y0040] w:42  DIPLO.PEACE_SIGNED          the Griwick Compact (f:3) and the Kebarrow Compact (f:2) make peace after 2 years, after the collapse of the Kebarrow Compact  <= e:718  e:748
+
+[Y0041]       LIFE.DEATH_NATURAL          Le Vild (a:44), commoner of the Griwick Compact (f:3), dies at 26 in Kebarrow (p:3)  e:750
+[Y0041]       POLITY.COURTS_SUPPORT       Heillvar Maer (a:29) wins Nourn Dem (a:84) away from the ruler of the Meigate Covenant (f:4)  <= e:747  e:754
+[Y0041] w:44  CONFLICT.ASSASSINATION      Stonand Ker (a:40) has Durnrin Drar (a:51) murdered at Hadale (p:2)  <= e:741  e:755
+[Y0041]       LIFE.DEATH_VIOLENT          Durnrin Drar (a:51), ruler of the Griwick Compact (f:3), is killed by Stonand Ker (a:40) at Hadale (p:2)  <= e:755  e:756
+[Y0041]       POLITY.EXILE_RETURN         Diweith Mound (a:42) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:732  e:757
+[Y0041]       CONFLICT.CONQUEST           the Meigate Covenant (f:4) occupies Vea Lode (p:7), which no one held  <= e:737  e:758
+[Y0041] w:45  POLITY.SUCCESSION_DISPUTED  Heth Fal (a:37) contests the claim of Sor Pean (a:54), the named heir, to the Griwick Compact (f:3) (decided by strongest)  <= e:756  e:760
+[Y0041] w:45  POLITY.SUCCESSION           Heth Fal (a:37) takes the seat of the Griwick Compact (f:3), setting aside the claim of the named heir Sor Pean (a:54)  <= e:760  e:761
+[Y0041]       POLITY.EXILE                Sor Pean (a:54) is cast out of the Griwick Compact (f:3) — the losing claim  <= e:760  e:762
+[Y0041] w:43  ECONOMY.PLAGUE_ENDS         the pestilence at Hadale (p:2) burns out after 1 years  <= e:741  e:764
+
+[Y0042]       LIFE.MARRIAGE               Throll Kell (a:43) marries Veillpea Dourn (a:53) at Griwick (p:4)  e:765
+[Y0042]       LIFE.BIRTH                  Kreand Geath (a:88) is born to Heth Fal (a:37) at Kebarrow (p:3)  <= e:572  e:767
+[Y0042]       POLITY.COURTS_SUPPORT       Heillvar Maer (a:29) wins Drarka Draernthun (a:31) away from the ruler of the Meigate Covenant (f:4)  <= e:747  e:772
+[Y0042]       CONFLICT.ASSASSINATION      Stonand Ker (a:40) has Leimmil Theall (a:38) murdered at Meigate (p:6)  e:773
+[Y0042]       LIFE.DEATH_VIOLENT          Leimmil Theall (a:38), captain of the Meigate Covenant (f:4), is killed by Stonand Ker (a:40) at Meigate (p:6)  <= e:773  e:774
+[Y0042]       POLITY.CHALLENGE            Throll Kell (a:43) challenges Heth Fal (a:37) openly for the Griwick Compact (f:3), wins, and takes the seat from Heth Fal (a:37)  <= e:683  e:775
+[Y0042]       POLITY.EXILE                Heth Fal (a:37) is cast out of the Griwick Compact (f:3) — the losing side of an open challenge  <= e:775  e:777
+[Y0042]       POLITY.LEGITIMACY_CRISIS    the Griwick Compact (f:3) spends 134 silver buying goodwill for the fourth time, and is not believed  <= e:601  e:778
+[Y0042]       CONFLICT.RAID               the Griwick Compact (f:3) raids Vea Lode (p:7), carrying off 33 ore and killing 2  e:779
+[Y0042]       CONFLICT.RAID               the Meigate Covenant (f:4) raids Hadale (p:2), carrying off 27 grain and killing 14  <= e:712,e:779  e:780
+
+[Y0043]       POLITY.CHALLENGE            Heillvar Maer (a:29) challenges Raes Go (a:68) openly for the Meigate Covenant (f:4), loses, and Raes Go (a:68) keeps the seat  <= e:747  e:788
+[Y0043]       POLITY.EXILE                Heillvar Maer (a:29) is cast out of the Meigate Covenant (f:4) — the losing side of an open challenge  <= e:788  e:789
+[Y0043] w:47  POLITY.COUP_PLOTTED         Diweith Mound (a:42) begins conspiring against Raes Go (a:68) of the Meigate Covenant (f:4)  [secret]  <= e:757  e:790
+[Y0043]       POLITY.COURTS_SUPPORT       Kou Peis (a:52) wins Thres Thrild (a:57) away from the ruler of the Griwick Compact (f:3)  <= e:762  e:791
+[Y0043]       POLITY.EXILE_RETURN         Sor Pean (a:54) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:762  e:792
+[Y0043] w:48  POLITY.COUP_PLOTTED         Lorn Waldhith (a:58) begins conspiring against Throll Kell (a:43) of the Griwick Compact (f:3)  [secret]  <= e:778  e:793
+[Y0043]       DIPLO.INSULT                the Griwick Compact (f:3) publicly slights the Meigate Covenant (f:4)  e:794
+[Y0043]       CONFLICT.RAID               the Meigate Covenant (f:4) raids Threi Cut (p:8), carrying off 2 grain and killing 1  <= e:712,e:794  e:795
+[Y0043]       DIPLO.TRIBUTE_DEMANDED      the Meigate Covenant (f:4) demands tribute of the Griwick Compact (f:3) and is refused  <= e:794  e:796
+
+[Y0044]       LIFE.MARRIAGE               Draes Wild (a:56) marries Herpeim Raern (a:62) at Hadale (p:2)  e:800
+[Y0044]       POLITY.CHALLENGE            Diweith Mound (a:42) challenges Raes Go (a:68) openly for the Meigate Covenant (f:4), wins, and takes the seat from Raes Go (a:68)  <= e:757  e:806
+[Y0044]       POLITY.EXILE                Raes Go (a:68) is cast out of the Meigate Covenant (f:4) — the losing side of an open challenge  <= e:806  e:808
+[Y0044]       POLITY.COURTS_SUPPORT       Kou Peis (a:52) wins Mald Krend (a:55) away from the ruler of the Griwick Compact (f:3)  <= e:762  e:809
+[Y0044] w:48  CONFLICT.ASSASSINATION      Lorn Waldhith (a:58) has Throll Kell (a:43) murdered at Griwick (p:4)  <= e:778  e:810
+[Y0044]       LIFE.DEATH_VIOLENT          Throll Kell (a:43), ruler of the Griwick Compact (f:3), is killed by Lorn Waldhith (a:58) at Griwick (p:4)  <= e:810  e:811
+[Y0044] w:47  POLITY.PLOT_LAPSES          Diweith Mound (a:42)'s conspiracy against Raes Go (a:68) lapses after 1 years — its author took the seat by other means  [secret]  <= e:790  e:812
+[Y0044]       POLITY.SUCCESSION           Tum Ga (a:61) takes the seat of the Griwick Compact (f:3) (by the strongest claim)  <= e:811  e:814
+
+[Y0045]       LIFE.MARRIAGE               Trurkeand Busi (a:60) marries Tum Ga (a:61) at Hadale (p:2)  e:817
+[Y0045]       LIFE.MARRIAGE               Viskeil Von (a:63) marries Stendpull Nour (a:64) at Hadale (p:2)  e:818
+[Y0045] w:49  POLITY.COUP_PLOTTED         Drarka Draernthun (a:31) begins conspiring against Diweith Mound (a:42) of the Meigate Covenant (f:4)  [secret]  e:827
+[Y0045]       POLITY.COURTS_SUPPORT       Kou Peis (a:52) wins Draes Wild (a:56) away from the ruler of the Griwick Compact (f:3)  <= e:762  e:828
+[Y0045]       POLITY.EXILE_RETURN         Raes Go (a:68) returns from exile and takes service with the Griwick Compact (f:3)  <= e:808  e:829
+[Y0045]       CONFLICT.RAID               the Griwick Compact (f:3) raids Meigate (p:6) and kills 29, but takes nothing  e:830
+[Y0045]       POLITY.APPOINTMENT          Drouldthas Stour (a:67) is raised to heir of the Griwick Compact (f:3)  <= e:791  e:831
+[Y0045] w:44  POLITY.COUP_RESOLVED        Stonand Ker (a:40) challenges Tum Ga (a:61) for the Griwick Compact (f:3) and wins  <= e:744  e:832
+[Y0045] w:44  POLITY.SUCCESSION           Stonand Ker (a:40) takes the seat of the Griwick Compact (f:3) (coup)  <= e:832  e:833
+[Y0045]       POLITY.EXILE                Tum Ga (a:61) is cast out of the Griwick Compact (f:3) — the losing side of a coup  <= e:832  e:834
+[Y0045] w:48  POLITY.COUP_RESOLVED        Lorn Waldhith (a:58)'s conspiracy against Stonand Ker (a:40) is uncovered after 2 years  <= e:793  e:835
+[Y0045]       POLITY.EXILE                Lorn Waldhith (a:58) is cast out of the Griwick Compact (f:3) — conspiracy against the seat  <= e:835  e:836
+[Y0045]       POLITY.REVOLT               Vea Lode (p:7) rises against the Meigate Covenant (f:4), whose standing had fallen to nothing  e:839
+
+[Y0046]       LIFE.DEATH_NATURAL          Stendpull Nour (a:64), commoner of the Griwick Compact (f:3), dies at 18 in Hadale (p:2)  e:841
+[Y0046]       LIFE.MARRIAGE               Fouthgo Souldsound (a:66) marries Drouldthas Stour (a:67) at Hadale (p:2)  e:843
+[Y0046]       POLITY.EXILE_RETURN         Heillvar Maer (a:29) returns from exile and takes service with the Griwick Compact (f:3)  <= e:789  e:850
+[Y0046]       POLITY.COURTS_SUPPORT       Drarka Draernthun (a:31) wins Kaes Rou (a:83) away from the ruler of the Meigate Covenant (f:4)  e:851
+[Y0046] w:50  POLITY.COUP_PLOTTED         Kou Peis (a:52) begins conspiring against Stonand Ker (a:40) of the Griwick Compact (f:3)  [secret]  <= e:762  e:852
+[Y0046]       CONFLICT.ASSASSINATION      Stonand Ker (a:40) has Diweith Mound (a:42) murdered at Meigate (p:6)  e:853
+[Y0046]       LIFE.DEATH_VIOLENT          Diweith Mound (a:42), ruler of the Meigate Covenant (f:4), is killed by Stonand Ker (a:40) at Meigate (p:6)  <= e:853  e:854
+[Y0046]       POLITY.APPOINTMENT          Heillvar Maer (a:29) is raised to steward of the Griwick Compact (f:3)  <= e:791  e:855
+[Y0046] w:51  POLITY.SUCCESSION_DISPUTED  Drarka Draernthun (a:31) contests the claim of Tor Nathgoull (a:33), the named heir, to the Meigate Covenant (f:4) (decided by election)  <= e:854  e:857
+[Y0046] w:51  POLITY.SUCCESSION           Drarka Draernthun (a:31) takes the seat of the Meigate Covenant (f:4), setting aside the claim of the named heir Tor Nathgoull (a:33)  <= e:857  e:858
+[Y0046]       POLITY.EXILE                Tor Nathgoull (a:33) is cast out of the Meigate Covenant (f:4) — the losing claim  <= e:857  e:859
+[Y0046] w:46  ECONOMY.FAMINE_ENDS         the hunger at Vea Lode (p:7) passes after 3 years and 6 return to the fields  e:861
+
+[Y0047]       LIFE.BIRTH                  Waevorn Drous (a:93) is born to Fouthgo Souldsound (a:66) at Hadale (p:2)  <= e:843  e:863
+[Y0047]       POLITY.COURTS_SUPPORT       Paernmel Has (a:50) wins Thres Thrild (a:57) away from the ruler of the Griwick Compact (f:3)  <= e:836  e:868
+[Y0047] w:50  CONFLICT.ASSASSINATION      Kou Peis (a:52) has Stonand Ker (a:40) murdered at Hadale (p:2)  <= e:762  e:869
+[Y0047]       LIFE.DEATH_VIOLENT          Stonand Ker (a:40), ruler of the Griwick Compact (f:3), is killed by Kou Peis (a:52) at Hadale (p:2)  <= e:869  e:870
+[Y0047]       POLITY.EXILE_RETURN         Lorn Waldhith (a:58) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:836  e:871
+[Y0047] w:52  DIPLO.WAR_DECLARED          the Meigate Covenant (f:4) declares war on the Griwick Compact (f:3) over long-standing grievance  e:872
+[Y0047]       DIPLO.ALLIANCE_BROKEN       the Meigate Covenant (f:4) breaks its alliance with the Griwick Compact (f:3)  <= e:872,e:644  e:873
+[Y0047]       ECONOMY.TRADE_COLLAPSE      trade between the Meigate Covenant (f:4) and the Griwick Compact (f:3) breaks down  <= e:872,e:540  e:874
+[Y0047]       CONFLICT.RAID               the Meigate Covenant (f:4) raids Griwick (p:4), carrying off 23 grain and killing 16  e:875
+[Y0047] w:40  POLITY.PLOT_LAPSES          Kou Peis (a:52)'s conspiracy against Beas Krouthea (a:41) lapses after 10 years — nothing came of it  [secret]  <= e:696  e:876
+[Y0047] w:49  POLITY.PLOT_LAPSES          Drarka Draernthun (a:31)'s conspiracy against Diweith Mound (a:42) lapses after 2 years — its author took the seat by other means  [secret]  <= e:827  e:877
+[Y0047] w:52  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Meigate Covenant (f:4) at Threi Cut (p:8) (12 dead)  <= e:872  e:878
+[Y0047] w:53  POLITY.SUCCESSION_DISPUTED  Drouldthas Stour (a:67) contests the claim of Thres Thrild (a:57), the named heir, to the Griwick Compact (f:3) (decided by strongest)  <= e:870  e:880
+[Y0047] w:53  POLITY.SUCCESSION           Thres Thrild (a:57), the named heir, takes the seat of the Griwick Compact (f:3); the rival claim of Drouldthas Stour (a:67) is rejected  <= e:880  e:881
+[Y0047]       POLITY.EXILE                Drouldthas Stour (a:67) is cast out of the Griwick Compact (f:3) — the losing claim  <= e:880  e:882
+
+[Y0048]       LIFE.DEATH_NATURAL          Ror Rim (a:70), commoner of the Griwick Compact (f:3), dies at 18 in Hadale (p:2)  e:884
+[Y0048]       LIFE.MARRIAGE               Brodall Rous (a:71) marries Theaki Houl (a:74) at Hadale (p:2)  e:885
+[Y0048]       LIFE.BIRTH                  Kal Feald (a:94) is born to Tro Thath (a:36) at Griwick (p:4)  <= e:495  e:886
+[Y0048]       POLITY.COURTS_SUPPORT       Paernmel Has (a:50) wins Mald Krend (a:55) away from the ruler of the Griwick Compact (f:3)  <= e:836  e:891
+[Y0048]       POLITY.COURTS_SUPPORT       Voudreirn Wer (a:59) wins Kal Feald (a:94) away from the ruler of the Griwick Compact (f:3)  <= e:882  e:892
+[Y0048]       POLITY.EXILE_RETURN         Tum Ga (a:61) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:834  e:893
+[Y0048] w:55  POLITY.COUP_PLOTTED         Raes Go (a:68) begins conspiring against Thres Thrild (a:57) of the Griwick Compact (f:3)  [secret]  <= e:829  e:894
+[Y0048]       POLITY.APPOINTMENT          Wea Thrandgo (a:75) is raised to heir of the Griwick Compact (f:3)  <= e:791  e:895
+[Y0048]       CONFLICT.ASSASSINATION      an attempt on Drarka Draernthun (a:31) fails at Meigate (p:6), unattributed  [secret]  e:896
+[Y0048] w:50  POLITY.COUP_RESOLVED        Kou Peis (a:52)'s conspiracy against Thres Thrild (a:57) is uncovered after 2 years  <= e:852  e:897
+[Y0048] w:50  LIFE.DEATH_VIOLENT          Kou Peis (a:52) is put to death — executed for conspiracy  <= e:897  e:898
+[Y0048] w:52  CONFLICT.BATTLE             the Griwick Compact (f:3) defeats the Meigate Covenant (f:4) at Threi Cut (p:8) (10 dead)  <= e:872  e:899
+
+[Y0049]       LIFE.DEATH_NATURAL          Lorn Waldhith (a:58), captain of the Meigate Covenant (f:4), dies at 23 in Meigate (p:6)  e:902
+[Y0049]       LIFE.MARRIAGE               Drearnvol Tedoul (a:65) marries Wea Thrandgo (a:75) at Hadale (p:2)  e:903
+[Y0049]       POLITY.EXILE_RETURN         Tor Nathgoull (a:33) returns from exile and takes service with the Griwick Compact (f:3)  <= e:859  e:907
+[Y0049] w:56  POLITY.COUP_PLOTTED         Paernmel Has (a:50) begins conspiring against Thres Thrild (a:57) of the Griwick Compact (f:3)  [secret]  <= e:836  e:908
+[Y0049]       POLITY.COURTS_SUPPORT       Voudreirn Wer (a:59) wins Mald Krend (a:55) away from the ruler of the Griwick Compact (f:3)  <= e:882  e:909
+[Y0049]       POLITY.COURTS_SUPPORT       Trurkeand Busi (a:60) wins Kal Feald (a:94) away from the ruler of the Griwick Compact (f:3)  <= e:897  e:910
+[Y0049]       POLITY.EXILE_RETURN         Drouldthas Stour (a:67) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:882  e:911
+[Y0049]       POLITY.COURTS_SUPPORT       Raes Go (a:68) wins Kal Feald (a:94) away from the ruler of the Griwick Compact (f:3)  <= e:829  e:912
+[Y0049]       POLITY.APPOINTMENT          Thurnean Kourn (a:47) is raised to steward of the Griwick Compact (f:3)  <= e:897  e:913
+[Y0049]       CONFLICT.RAID               the Meigate Covenant (f:4)'s raid on Laehiford (p:5) is beaten off  e:914
+[Y0049] w:52  DIPLO.PEACE_SIGNED          the Meigate Covenant (f:4) and the Griwick Compact (f:3) make peace after 2 years, both sides exhausted  <= e:872  e:915
+[Y0049] w:55  POLITY.COUP_RESOLVED        Raes Go (a:68) challenges Thres Thrild (a:57) for the Griwick Compact (f:3) and wins  <= e:894  e:916
+[Y0049] w:55  POLITY.SUCCESSION           Raes Go (a:68) takes the seat of the Griwick Compact (f:3) (coup)  <= e:916  e:917
+[Y0049]       POLITY.EXILE                Thres Thrild (a:57) is cast out of the Griwick Compact (f:3) — the losing side of a coup  <= e:916  e:918
+
+[Y0050]       LIFE.MARRIAGE               Hehum Skul (a:72) marries Ta Poveil (a:76), binding the Meigate Covenant (f:4) to the Griwick Compact (f:3)  e:921
+[Y0050]       LIFE.BIRTH                  Threarnvi Teas (a:95) is born to Drarka Draernthun (a:31) at Meigate (p:6)  <= e:644  e:922
+[Y0050]       POLITY.EXILE_RETURN         Heth Fal (a:37) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:777  e:927
+[Y0050]       POLITY.CHALLENGE            Paernmel Has (a:50) challenges Raes Go (a:68) openly for the Griwick Compact (f:3), wins, and takes the seat from Raes Go (a:68)  <= e:836  e:928
+[Y0050]       LIFE.DEATH_VIOLENT          Raes Go (a:68), ruler of the Griwick Compact (f:3), is killed by Paernmel Has (a:50) at Griwick (p:4)  <= e:928  e:930
+[Y0050]       POLITY.EXILE_RETURN         Thres Thrild (a:57) returns from exile and takes service with the Meigate Covenant (f:4)  <= e:918  e:931
+[Y0050]       POLITY.APPOINTMENT          Tor Nathgoull (a:33) is raised to steward of the Griwick Compact (f:3)  <= e:897  e:932
+[Y0050] w:56  POLITY.PLOT_LAPSES          Paernmel Has (a:50)'s conspiracy against Thres Thrild (a:57) lapses after 1 years — its author took the seat by other means  [secret]  <= e:908  e:933
+
+[Y0051]       LIFE.MARRIAGE               Visal Veill (a:73) marries Treild Haen (a:77) at Hadale (p:2)  e:937
+[Y0051]       LIFE.BIRTH                  Bon Rerngur (a:97) is born to Heth Fal (a:37) at Meigate (p:6)  <= e:572  e:938
+[Y0051]       LIFE.BIRTH                  Gim Raeldrol (a:98) is born to Paernmel Has (a:50) at Kebarrow (p:3)  <= e:690  e:939
+[Y0051] w:57  POLITY.COUP_PLOTTED         Thurnean Kourn (a:47) begins conspiring against Paernmel Has (a:50) of the Griwick Compact (f:3)  [secret]  e:946
+[Y0051]       POLITY.COURTS_SUPPORT       Voudreirn Wer (a:59) wins Bakrei Dea (a:96) away from the ruler of the Griwick Compact (f:3)  <= e:882  e:947
+[Y0051]       POLITY.COURTS_SUPPORT       Trurkeand Busi (a:60) wins Bakrei Dea (a:96) away from the ruler of the Griwick Compact (f:3)  <= e:897  e:948
+[Y0051]       POLITY.COURTS_SUPPORT       Ta Poveil (a:76) wins Bakrei Dea (a:96) away from the ruler of the Griwick Compact (f:3)  e:949
+[Y0051]       POLITY.LEGITIMACY_CRISIS    the Griwick Compact (f:3) spends 205 silver buying goodwill for the fifth time, and is not believed  <= e:897  e:950
+[Y0051]       CONFLICT.RAID               the Meigate Covenant (f:4) raids Hadale (p:2), carrying off 49 grain and killing 14  e:951

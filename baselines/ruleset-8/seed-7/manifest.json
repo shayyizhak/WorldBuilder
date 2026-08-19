@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-8-seed-7",
+  "created_utc": "2026-08-19T12:02:29Z",
+  "seed": 7,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "b0a6c4b47ba9e2c9381eff33b981b0ebfdd4e08f",
+  "ruleset_version": "8",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": ""
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 8 stops a declaration of war claiming it broke an alliance that was not there - 14 phantom relDel keys across the panel, on DIPLO.WAR_DECLARED, for edges the graph did not hold. A record change with no simulation change: against the sealed ruleset-7 baselines every event appears in the same order with the same shape, none added and none removed, every payload key present as an ordered subsequence, and the only omissions are those phantom severances; the live world equals the ruleset-7 fold on all 27 components of WorldState. The off-switch (--no-sever-guard) gives ruleset 7\u0027s emission back. Chronicle rendered with: wb book --factions all."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-7.md", "source_path": "out/ruleset-8/seed-7/chronicle-7.md", "sha256": "ae6befda31f381369f9e742474d2993d9d4507b611e3e129588d20abf22ed132", "bytes": 10755, "role": "artefact" },
+    { "filename": "chronicle-7.findings.json", "source_path": "out/ruleset-8/seed-7/chronicle-7.findings.json", "sha256": "b111c2bac9df47b7531cb8d48b0330fc896db03ffabc03419b8478f93257835a", "bytes": 30927, "role": "anchor" },
+    { "filename": "chronicle-7.unverified.md", "source_path": "out/ruleset-8/seed-7/chronicle-7.unverified.md", "sha256": "e12f7b56488382300d244f2d858f4011d01f989beceaabd6532e66f792be6f1a", "bytes": 3379, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-8/seed-7/renders.json", "sha256": "fff4251ca3f276e6d6921252e4511ca2f4227bb278daddbeb0685f2e7870bbe6", "bytes": 14361, "role": "artefact" },
+    { "filename": "world-7.jsonl", "source_path": "out/ruleset-8/seed-7/world-7.jsonl", "sha256": "c75fbf0adb144661b55d2434d45ae831bb8cece65d8ceff04930bba5768fb07d", "bytes": 311609, "role": "artefact" },
+    { "filename": "world-7.log", "source_path": "out/ruleset-8/seed-7/world-7.log", "sha256": "a2449e4593ac0afca0c30084766ced7174ef5fedc47fa0892cb0e418894e88fd", "bytes": 40839, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-8/seed-7/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}

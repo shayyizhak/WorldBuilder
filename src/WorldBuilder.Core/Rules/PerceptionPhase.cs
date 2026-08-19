@@ -3,21 +3,87 @@ namespace WorldBuilder.Core.Rules;
 /// <summary>
 /// Phase 3 — factions and actors notice their situation and form goals.
 ///
-/// This phase emits no events at all, which is the point. A goal carries the id of the event
-/// that produced it, so every action taken later cites that event as its cause: the causal
-/// chain survives without paying for it in log noise. Goals are also what stop the history
-/// reading as event soup — an actor who wants something for twelve years produces an arc,
-/// whereas an actor who rolls dice every year produces a list.
+/// A goal carries the id of the event that produced it, so every action taken later cites that event
+/// as its cause: the causal chain survives without paying for it in log noise. Goals are also what
+/// stop the history reading as event soup — an actor who wants something for twelve years produces an
+/// arc, whereas an actor who rolls dice every year produces a list.
+///
+/// <b>At ruleset 6 this phase emitted no events at all, "which is the point".</b> It was the wrong
+/// point, and it cost the project the claim its whole architecture rests on: a goal formed here and
+/// nowhere else meant a world replayed from its own record had no goals in it and could not decide
+/// anything. It now emits one bookkeeping row per year naming the goals it formed — invisible in the
+/// readable log, and the reason a fold reproduces the world.
 /// </summary>
 public static class PerceptionPhase
 {
+    /// <summary>
+    /// Notices, then proposes.
+    ///
+    /// <b>The phase decides; the reducer forms.</b> It used to add straight to
+    /// <see cref="GoalBook"/>, which is why a replayed world held no goals at all. What it does now
+    /// is collect what should exist and hand the list to <see cref="GoalRecord.Form"/>, which puts
+    /// it in the record; the reducer creating them is what makes the fold reproduce them.
+    ///
+    /// <b>The cap is still applied here, and has to be.</b> The book refuses an owner who already
+    /// holds two, 441 times across the panel, and a phase that proposed those anyway would be a
+    /// different simulation. So every site asks <see cref="GoalBook.WouldAdmit"/> — the same
+    /// question <c>Add</c> used to answer for itself — and only proposes when the answer is yes.
+    /// </summary>
     public static void Run(Tick tick)
     {
-        foreach (Faction faction in tick.State.Factions) FactionGoals(tick, faction);
-        foreach (Actor actor in tick.State.LivingActors()) ActorGoals(tick, actor);
+        List<GoalRecord.Proposal> forming = [];
+
+        foreach (Faction faction in tick.State.Factions) FactionGoals(tick, faction, forming);
+        foreach (Actor actor in tick.State.LivingActors()) ActorGoals(tick, actor, forming);
+
+        GoalRecord.Form(tick, forming);
     }
 
-    private static void FactionGoals(Tick tick, Faction faction)
+    /// <summary>
+    /// Proposes a goal if the book would take it.
+    ///
+    /// <b>Counts the proposal against the book as it will be, not as it is.</b> Nothing has been
+    /// created yet — the whole batch lands when the event is emitted — so a second proposal for the
+    /// same owner has to see the first one to be refused for space the way it would have been.
+    /// Without that, an owner with one goal already could be proposed two more, and the panel would
+    /// form goals the old code refused.
+    /// </summary>
+    private static void Propose(
+        Tick tick, List<GoalRecord.Proposal> forming,
+        EntityId owner, GoalKind kind, EntityId target, int lifespan, EventId cause)
+    {
+        GoalBook book = tick.State.Goals;
+
+        int pending = 0;
+        bool duplicate = false;
+        foreach (GoalRecord.Proposal p in forming)
+        {
+            if (p.Owner != owner) continue;
+            pending++;
+            if (p.Kind == kind && p.Target == target) duplicate = true;
+        }
+
+        // Full before duplicate, which is the order the old `Add` tested in. Either answer refuses
+        // the goal, so behaviour does not turn on it — but the census does, and a phase that reported
+        // a different mix of refusal reasons from the audit would look like a finding.
+        if (book.For(owner).Count + pending >= GoalBook.MaxPerOwner)
+        {
+            book.NoteRefusal(owner, kind, GoalRefusal.BookFull);
+            return;
+        }
+
+        if (duplicate)
+        {
+            book.NoteRefusal(owner, kind, GoalRefusal.AlreadyHeld);
+            return;
+        }
+
+        if (book.WouldAdmit(owner, kind, target) is not null) return;
+
+        forming.Add(new GoalRecord.Proposal(owner, kind, target, tick.Year + lifespan, cause));
+    }
+
+    private static void FactionGoals(Tick tick, Faction faction, List<GoalRecord.Proposal> forming)
     {
         WorldState state = tick.State;
         SimConfig config = tick.Config;
@@ -34,7 +100,7 @@ public static class PerceptionPhase
             // The famine if there has been one, otherwise the harvest that left them short.
             EventId cause = LatestCauseFor(tick, faction.Id, EventKind.EconomyFamine);
             if (cause.IsNone) cause = tick.YieldEvent;
-            goals.Add(faction.Id, GoalKind.SecureGrain, EntityId.None, tick.Year, 6, cause);
+            Propose(tick, forming, faction.Id, GoalKind.SecureGrain, EntityId.None, 6, cause);
         }
 
         if (faction.Legitimacy < config.LegitimacyCrisisThreshold && !goals.Has(faction.Id, GoalKind.RestoreLegitimacy))
@@ -42,7 +108,7 @@ public static class PerceptionPhase
             // Whatever most recently cost them standing — that is what they are answering.
             EventId cause = LastLegitimacyBlow(tick, faction.Id);
             if (cause.IsNone) cause = LatestCauseFor(tick, faction.Id, EventKind.PolityLegitimacyCrisis);
-            goals.Add(faction.Id, GoalKind.RestoreLegitimacy, EntityId.None, tick.Year, 8, cause);
+            Propose(tick, forming, faction.Id, GoalKind.RestoreLegitimacy, EntityId.None, 8, cause);
         }
 
         // Revenge, sourced. The grievance edge remembers which event created it, so a war
@@ -57,7 +123,7 @@ public static class PerceptionPhase
         }
 
         if (worst is not null && !goals.Has(faction.Id, GoalKind.Avenge))
-            goals.Add(faction.Id, GoalKind.Avenge, worst.Key.To, tick.Year, config.GoalLifespan, worst.LastCause);
+            Propose(tick, forming, faction.Id, GoalKind.Avenge, worst.Key.To, config.GoalLifespan, worst.LastCause);
 
         // The unclaimed mine. Every faction can see it, so somebody always moves.
         if (!goals.Has(faction.Id, GoalKind.ControlOre))
@@ -67,7 +133,7 @@ public static class PerceptionPhase
             {
                 // Cause is the mine's own genesis: the honest answer to "why does this faction
                 // want that place" is "because that place is there and it has ore in it".
-                goals.Add(faction.Id, GoalKind.ControlOre, prize.Id, tick.Year,
+                Propose(tick, forming, faction.Id, GoalKind.ControlOre, prize.Id,
                     config.GoalLifespan, tick.Log.OriginOf(prize.Id));
             }
         }
@@ -91,7 +157,7 @@ public static class PerceptionPhase
                         ? LatestCauseFor(tick, faction.Id, EventKind.DiploWarDeclared)
                         : LatestCauseFor(tick, hegemon, EventKind.ConflictConquest);
 
-                    goals.Add(faction.Id, GoalKind.FormAlliance, friend, tick.Year, 6, cause);
+                    Propose(tick, forming, faction.Id, GoalKind.FormAlliance, friend, 6, cause);
                 }
             }
         }
@@ -179,7 +245,7 @@ public static class PerceptionPhase
         return fallback;
     }
 
-    private static void ActorGoals(Tick tick, Actor actor)
+    private static void ActorGoals(Tick tick, Actor actor, List<GoalRecord.Proposal> forming)
     {
         WorldState state = tick.State;
         GoalBook goals = state.Goals;
@@ -191,7 +257,7 @@ public static class PerceptionPhase
             if (!goals.Has(actor.Id, GoalKind.ReturnFromExile))
             {
                 EventId cause = LatestCauseFor(tick, actor.Id, EventKind.PolityExile);
-                goals.Add(actor.Id, GoalKind.ReturnFromExile, EntityId.None, tick.Year, 25, cause);
+                Propose(tick, forming, actor.Id, GoalKind.ReturnFromExile, EntityId.None, 25, cause);
             }
             return;
         }
@@ -233,7 +299,7 @@ public static class PerceptionPhase
                 // Its founding is then the honest answer: there is a seat because that happened.
                 if (cause.IsNone) cause = tick.Log.OriginOf(faction.Id);
 
-                goals.Add(actor.Id, GoalKind.SeizeLeadership, faction.Id, tick.Year, tick.Config.GoalLifespan, cause);
+                Propose(tick, forming, actor.Id, GoalKind.SeizeLeadership, faction.Id, tick.Config.GoalLifespan, cause);
             }
         }
 
@@ -248,7 +314,7 @@ public static class PerceptionPhase
         }
 
         if (worst is not null && !goals.Has(actor.Id, GoalKind.Avenge))
-            goals.Add(actor.Id, GoalKind.Avenge, worst.Key.To, tick.Year, tick.Config.GoalLifespan, worst.LastCause);
+            Propose(tick, forming, actor.Id, GoalKind.Avenge, worst.Key.To, tick.Config.GoalLifespan, worst.LastCause);
     }
 
     /// <summary>

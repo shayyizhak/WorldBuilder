@@ -56,6 +56,24 @@ public enum TerminationArm
 
 public static class TerminationArms
 {
+    /// <summary>
+    /// The arm string a world's header and genesis event carry, over every rule switch a run has.
+    ///
+    /// One function rather than two fields on the header, for the reason the header's own comment
+    /// gives about <c>IsControl</c>: a second flag beside the first leaves every existing check
+    /// answering the older, narrower question and passing a diagnostic world as a history.
+    /// </summary>
+    public static string NameOf(TerminationArm arm, bool recordGoals, bool guardSeverances = true)
+    {
+        List<string> parts = [];
+
+        if (NameOf(arm) is { Length: > 0 } terminations) parts.Add(terminations);
+        if (!recordGoals) parts.Add(GoalRecord.OffArm);
+        if (!guardSeverances) parts.Add(RelationEnds.UnguardedArm);
+
+        return string.Join("+", parts);
+    }
+
     /// <summary>The name carried in the world header, and the empty string for a real world.</summary>
     public static string NameOf(TerminationArm arm) => arm switch
     {

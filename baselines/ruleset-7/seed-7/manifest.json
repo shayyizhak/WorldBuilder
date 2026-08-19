@@ -1,0 +1,37 @@
+{
+  "baseline_id": "ruleset-7-seed-7",
+  "created_utc": "2026-08-19T02:16:31Z",
+  "seed": 7,
+  "verification": "stability-anchor-only",
+  "engine_version": "1.2.0",
+  "engine_commit": "b0a6c4b47ba9e2c9381eff33b981b0ebfdd4e08f",
+  "ruleset_version": "7",
+  "checker_fingerprint": "60f5b325bf6a8a9728f5d817c963c47cd59c9fd04a47b78d5773fe670f221a03",
+  "checker_fingerprint_method": "For each path below, sha256 of the file content as stored in git at engine_commit (LF, checkout-independent). One line per file, \u0027path  sha256\\n\u0027, sorted by path. The fingerprint is the sha256 of that listing.",
+  "checker_fingerprint_inputs": [
+    { "path": "src/WorldBuilder.Inference/Claims.cs", "sha256": "70ca22ffc8d7183c16232aa41ed7877d5db2d74cf928ed23531b3b2152b68136" },
+    { "path": "src/WorldBuilder.Inference/Coverage.cs", "sha256": "04475289997bfcc1b56c82fa70211aaeea63421f3a291d2cda5d17903ec5e63f" },
+    { "path": "src/WorldBuilder.Inference/FabricationCheck.cs", "sha256": "ecab52a203515a122de171896abb481cae57a730bf5e8cce4561a1b0dfa9b23b" },
+    { "path": "src/WorldBuilder.Inference/RuleNames.cs", "sha256": "8fcc50fc0e392acca05351d2ce5400e1dfce854510dc31be297b6987bea3bad2" },
+    { "path": "src/WorldBuilder.Inference/SelfConsistency.cs", "sha256": "770c358d5b5e530631cfe1f314b8bb8163e2897b6628dc7b7b8531c5e85cf762" }
+  ],
+  "checker_rule_count": 16,
+  "checker_rules": ["action", "coined-term", "count-enumeration", "count-narration", "coverage", "date", "date-agreement", "departure", "naming", "outcome", "partition-sum", "quantity", "shape", "succession", "summary-body", "tenure"],
+  "inference": {
+    "runtime": "ollama",
+    "model": "qwen3.6:latest",
+    "model_digest": "07d35212591fc27746f0a317c975a6d68754fb38e9053d82e25f06057af28522"
+  },
+  "notes": [
+    "Machine baseline. Nobody has read this world: verification is stability-anchor-only. Ruleset 7 puts GoalBook into the fold - every goal transition is now in the record, and a world folded from its own log reproduces all 27 components of WorldState including its goals. A record change with no simulation change: the off-switch reproduces all five sealed ruleset-6 logs byte for byte, and the base event count is identical. Chronicle rendered with: wb book --factions all (the ruleset-6 set used the same, which the manifest did not record - recovered by diffing scope lists)."
+  ],
+  "artefacts": [
+    { "filename": "chronicle-7.md", "source_path": "out/ruleset-7/seed-7/chronicle-7.md", "sha256": "ae798311e47a83c622e96791910395c10d889ed5c1ca2c0c57684da1d25288b1", "bytes": 6390, "role": "artefact" },
+    { "filename": "chronicle-7.findings.json", "source_path": "out/ruleset-7/seed-7/chronicle-7.findings.json", "sha256": "b93a059a2d1384a0e3759a28a1a4d45cb9618dff843cba89a1c5fe46d5768965", "bytes": 31528, "role": "anchor" },
+    { "filename": "chronicle-7.unverified.md", "source_path": "out/ruleset-7/seed-7/chronicle-7.unverified.md", "sha256": "0e73c2efebf6526df9fa22332ffe0d0873011aa0c7d422a84e1e609eb4271cc8", "bytes": 8936, "role": "artefact" },
+    { "filename": "renders.json", "source_path": "out/ruleset-7/seed-7/renders.json", "sha256": "b673d9e064bae453090aba11ce7da4b7e74cf886f1d9197fd09a69a866d5929f", "bytes": 14719, "role": "artefact" },
+    { "filename": "world-7.jsonl", "source_path": "out/ruleset-7/seed-7/world-7.jsonl", "sha256": "67ef630af900b1ce715126c0bef5874cc98e98b97df64cf09a462f2b4d84968b", "bytes": 311669, "role": "artefact" },
+    { "filename": "world-7.log", "source_path": "out/ruleset-7/seed-7/world-7.log", "sha256": "a2449e4593ac0afca0c30084766ced7174ef5fedc47fa0892cb0e418894e88fd", "bytes": 40839, "role": "artefact" },
+    { "filename": "board.wbmap.json", "source_path": "out/ruleset-7/seed-7/board.wbmap.json", "sha256": "8eb0a9afe8da4c07e0e86a3f554ed07a0946ca3d74dea0b8cf91807ed72b93c2", "bytes": 36459, "role": "board" }
+  ]
+}

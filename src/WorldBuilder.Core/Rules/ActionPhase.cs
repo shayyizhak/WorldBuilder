@@ -92,7 +92,7 @@ public static class ActionPhase
         int grain = Math.Min(from.Stockpile[(int)Resource.Grain] / 2, silver / 2);
         if (grain <= 0) return;
 
-        tick.Emit(new EventDraft(EventKind.EconomyTradePact)
+        EventDraft bought = new EventDraft(EventKind.EconomyTradePact)
             .By(buyer.Id)
             .Object(seller.Id)
             .At(to.Id)
@@ -109,16 +109,17 @@ public static class ActionPhase
             // already had terms, that is why the grain could be bought rather than taken.
             .Because(Recent.LastOfKind(tick, from.Id, EventKind.EconomyBumperHarvest))
             .Because(state.Relations.Find(buyer.Id, seller.Id, RelationKind.Trade)?.LastCause ?? EventId.None)
-            .Weight(Significance.Minor));
+            .Weight(Significance.Minor);
 
-        goal.Progress += 60;
+        GoalRecord.Advance(tick, bought, goal, 60, GoalStep.GrainBought);
+        tick.Emit(bought);
     }
 
     private static void TradePact(Tick tick, Goal goal, Faction a, Faction b)
     {
         if (tick.State.Relations.ValueOf(a.Id, b.Id, RelationKind.Trade) > 40) return;
 
-        tick.Emit(new EventDraft(EventKind.EconomyTradePact)
+        EventDraft terms = new EventDraft(EventKind.EconomyTradePact)
             .By(a.Id)
             .Object(b.Id)
             .At(tick.State.FactionOf(b.Id).Seat)
@@ -126,9 +127,10 @@ public static class ActionPhase
             .RelBoth(a.Id, b.Id, RelationKind.Trade, 25)
             .Leg(a.Id, 2)
             .Because(goal.Cause)
-            .Weight(Significance.Minor));
+            .Weight(Significance.Minor);
 
-        goal.Progress += 40;
+        GoalRecord.Advance(tick, terms, goal, 40, GoalStep.PactSigned);
+        tick.Emit(terms);
     }
 
     private static void RestoreLegitimacy(Tick tick, Goal goal, Faction faction, Actor leader)
@@ -159,7 +161,7 @@ public static class ActionPhase
             Rng roll = tick.Rng(faction.Id, RngPurpose.Diplomacy).Branch(21);
             bool convinced = spend >= asking && roll.Chance(Math.Max(15, 85 - priorAttempts * 22));
 
-            tick.Emit(new EventDraft(EventKind.PolityLegitimacyCrisis)
+            EventDraft largesse = new EventDraft(EventKind.PolityLegitimacyCrisis)
                 .Subject(leader.Id)
                 .By(faction.Id)
                 .At(faction.Seat)
@@ -171,9 +173,10 @@ public static class ActionPhase
                 .Treas(faction.Id, -spend)
                 .Leg(faction.Id, convinced ? spend / 5 : -3)
                 .Because(goal.Cause)
-                .Weight(Significance.Minor));
+                .Weight(Significance.Minor);
 
-            goal.Progress += convinced ? 45 : 10;
+            GoalRecord.Advance(tick, largesse, goal, convinced ? 45 : 10, GoalStep.LargesseGiven);
+            tick.Emit(largesse);
             return;
         }
 
@@ -228,8 +231,8 @@ public static class ActionPhase
             appointment.Rel(other.Id, favourite.Id, RelationKind.Grievance, 8 + other.Traits.Ambition / 10);
         }
 
+        GoalRecord.Advance(tick, appointment, goal, 35, GoalStep.FavouriteElevated);
         tick.Emit(appointment);
-        goal.Progress += 35;
     }
 
     private static void FactionRevenge(Tick tick, Goal goal, Faction faction, Actor leader)
@@ -239,7 +242,7 @@ public static class ActionPhase
 
         // The enemy may have died since the grudge was formed. You cannot be avenged on a
         // house that no longer holds anything, so the goal lapses.
-        if (state.IsDefunct(goal.Target)) { state.Goals.Remove(goal); return; }
+        if (state.IsDefunct(goal.Target)) { GoalRecord.Lapse(tick, goal, GoalEnd.TargetDefunct); return; }
 
         Faction target = state.FactionOf(goal.Target);
         int grievance = state.Relations.ValueOf(faction.Id, target.Id, RelationKind.Grievance);
@@ -313,7 +316,7 @@ public static class ActionPhase
         // An insult does not settle the insulter's own grudge — an earlier version credited
         // the aggressor for venting, which quietly capped every grievance below the war
         // threshold and meant the engine produced almost no wars at all.
-        tick.Emit(new EventDraft(EventKind.DiploInsult)
+        EventDraft slight = new EventDraft(EventKind.DiploInsult)
             .By(from.Id)
             .Object(to.Id)
             .At(to.Seat)
@@ -322,9 +325,10 @@ public static class ActionPhase
             .Leg(from.Id, 1)
             .Because(goal.Cause)
             .Because(Spark(tick, from.Id, to.Id))
-            .Weight(Significance.Minor));
+            .Weight(Significance.Minor);
 
-        goal.Progress += 10;
+        GoalRecord.Advance(tick, slight, goal, 10, GoalStep.InsultGiven);
+        tick.Emit(slight);
     }
 
     private static void DemandTribute(Tick tick, Goal goal, Faction from, Faction to, Actor leader)
@@ -375,8 +379,8 @@ public static class ActionPhase
         else
             draft.Leg(from.Id, -2);
 
+        GoalRecord.Advance(tick, draft, goal, complies ? 35 : 12, GoalStep.TributeDemanded);
         tick.Emit(draft);
-        goal.Progress += complies ? 35 : 12;
     }
 
     /// <summary>
@@ -513,8 +517,8 @@ public static class ActionPhase
 
         if (!success) draft.Leg(raider.Id, -3);
 
+        GoalRecord.Advance(tick, draft, goal, success ? 30 : 8, GoalStep.RaidReturned);
         tick.Emit(draft);
-        goal.Progress += success ? 30 : 8;
     }
 
     private static void SendAssassin(Tick tick, Goal goal, Faction from, Faction to, Actor leader)
@@ -532,12 +536,12 @@ public static class ActionPhase
         if (goal.Target.Kind != EntityKind.Place) return;
 
         Place place = state.PlaceOf(goal.Target);
-        if (place.Controller == faction.Id) { state.Goals.Remove(goal); return; }
+        if (place.Controller == faction.Id) { GoalRecord.Lapse(tick, goal, GoalEnd.AlreadySatisfied); return; }
 
         // Unclaimed ground needs no war, only the nerve to walk onto it.
         if (place.Controller.IsNone)
         {
-            tick.Emit(new EventDraft(EventKind.ConflictConquest)
+            EventDraft occupied = new EventDraft(EventKind.ConflictConquest)
                 .Subject(leader.Id)
                 .By(faction.Id)
                 .At(place.Id)
@@ -548,9 +552,10 @@ public static class ActionPhase
                 // makes a collapse or a partition the reason the map was redrawn, rather than
                 // an ending that nothing followed from.
                 .Because(WhatFreedThePlace(tick, place.Id))
-                .Weight(Significance.Major));
+                .Weight(Significance.Major);
 
-            state.Goals.Remove(goal);
+            GoalRecord.End(tick, occupied, goal, GoalEnd.Achieved);
+            tick.Emit(occupied);
             return;
         }
 
@@ -626,12 +631,26 @@ public static class ActionPhase
             .Set("against", defender.Id)
             .Set("arcName", ArcNames.War(ref rng, overName, aggressor.Name, aggressor.Name))
             .Set("grievance", state.Relations.ValueOf(aggressor.Id, defender.Id, RelationKind.Grievance))
-            .Rel(defender.Id, aggressor.Id, RelationKind.Grievance, 15)
-            .RelDel(aggressor.Id, defender.Id, RelationKind.Alliance)
-            .RelDel(defender.Id, aggressor.Id, RelationKind.Alliance)
-            .InArc(arc)
-            .Because(goal.Cause)
-            .Weight(Significance.Major);
+            .Rel(defender.Id, aggressor.Id, RelationKind.Grievance, 15);
+
+        // A declaration severs an alliance only where there is one to sever.
+        //
+        // This was two unconditional `RelDel` keys, which is how a declaration in year 38 came to
+        // claim it broke a pact that had ended in year 27 — and nothing could see it, because the
+        // reducer drops a severance of an absent edge without complaint. Routed through
+        // `RelationEnds` so the check cannot be forgotten again by whatever emits the next one.
+        //
+        // <b>Emitted here, in the position the two unconditional keys occupied.</b> `EventDraft.Set`
+        // appends, so a declaration that does sever a live pact must write these keys in the same
+        // place as before or the payload has been reordered rather than shortened — and the
+        // key-level property against the sealed ruleset-7 baselines is a subsequence walk, which
+        // reordering fails and shortening does not.
+        RelationEnds.Into(draft, state, aggressor.Id, defender.Id, RelationKind.Alliance,
+            tick.GuardsSeverances);
+
+        draft.InArc(arc)
+             .Because(goal.Cause)
+             .Weight(Significance.Major);
 
         if (!over.IsNone) draft.Set("over", over);
 
@@ -643,6 +662,12 @@ public static class ActionPhase
 
         // Read before the declaration is folded in, because the declaration is what deletes it.
         Relation? pact = state.Relations.Find(aggressor.Id, defender.Id, RelationKind.Alliance);
+
+        // Onto the declaration rather than after it. The two calls below emit further events and
+        // neither reads the book, so the transition lands in the same tick either way — and the
+        // declaration is the event that caused it.
+        GoalRecord.Attach(tick, draft, goal, arc);
+        GoalRecord.Advance(tick, draft, goal, 25, GoalStep.WarDeclared);
 
         Event war = tick.Emit(draft);
         RecordBrokenAlliance(tick, aggressor, defender, pact, war.Id);
@@ -660,8 +685,6 @@ public static class ActionPhase
                 RelationEnds.War, war.Id);
         }
 
-        goal.Arc = arc;
-        goal.Progress += 25;
     }
 
     /// <summary>
@@ -713,8 +736,8 @@ public static class ActionPhase
     {
         WorldState state = tick.State;
         if (goal.Target.Kind != EntityKind.Faction) return;
-        if (state.Relations.Has(faction.Id, goal.Target, RelationKind.Alliance)) { state.Goals.Remove(goal); return; }
-        if (state.IsDefunct(goal.Target)) { state.Goals.Remove(goal); return; }
+        if (state.Relations.Has(faction.Id, goal.Target, RelationKind.Alliance)) { GoalRecord.Lapse(tick, goal, GoalEnd.AlreadySatisfied); return; }
+        if (state.IsDefunct(goal.Target)) { GoalRecord.Lapse(tick, goal, GoalEnd.TargetDefunct); return; }
         if (Recent.Did(tick, faction.Id, EventKind.DiploAllianceFormed, goal.Target, 6)) return;
 
         Faction other = state.FactionOf(goal.Target);
@@ -770,7 +793,7 @@ public static class ActionPhase
         // terminal announcements into the groundwork for what follows.
         Relation? commerce = state.Relations.Find(faction.Id, other.Id, RelationKind.Trade);
 
-        tick.Emit(new EventDraft(EventKind.DiploAllianceFormed)
+        EventDraft answer = new EventDraft(EventKind.DiploAllianceFormed)
             .Subject(leader.Id)
             .By(faction.Id)
             .Object(other.Id)
@@ -780,10 +803,12 @@ public static class ActionPhase
             .Because(goal.Cause)
             .Because(commerce?.LastCause ?? EventId.None)
             .Because(Recent.LastOfKind(tick, faction.Id, EventKind.DiploPeaceSigned))
-            .Weight(accepted ? Significance.Major : Significance.Minor));
+            .Weight(accepted ? Significance.Major : Significance.Minor);
 
-        if (accepted) state.Goals.Remove(goal);
-        else goal.Progress += 20;
+        if (accepted) GoalRecord.End(tick, answer, goal, GoalEnd.Achieved);
+        else GoalRecord.Advance(tick, answer, goal, 20, GoalStep.AllianceRefused);
+
+        tick.Emit(answer);
     }
 
     // ---- people -----------------------------------------------------------
@@ -806,10 +831,10 @@ public static class ActionPhase
     private static void SeizeLeadership(Tick tick, Goal goal, Actor actor)
     {
         WorldState state = tick.State;
-        if (actor.Faction.IsNone) { state.Goals.Remove(goal); return; }
+        if (actor.Faction.IsNone) { GoalRecord.Lapse(tick, goal, GoalEnd.OwnerLeftFaction); return; }
 
         Faction faction = state.FactionOf(actor.Faction);
-        if (faction.Leader == actor.Id) { state.Goals.Remove(goal); return; }
+        if (faction.Leader == actor.Id) { GoalRecord.Lapse(tick, goal, GoalEnd.AlreadySatisfied); return; }
         if (faction.Leader.IsNone) return; // the succession machinery will settle it
 
         // One upheaval per seat per year. Without this a faction could take a coup, a counter-
@@ -872,7 +897,7 @@ public static class ActionPhase
 
         if (won is null || best < 110) return;
 
-        tick.Emit(new EventDraft(EventKind.PolityCourtsSupport)
+        EventDraft courted = new EventDraft(EventKind.PolityCourtsSupport)
             .Subject(actor.Id)
             .Object(won.Id)
             .By(faction.Id)
@@ -882,9 +907,10 @@ public static class ActionPhase
             .Rel(won.Id, ruler.Id, RelationKind.Fealty, -12)
             .Leg(faction.Id, -2)
             .Because(goal.Cause)
-            .Weight(Significance.Minor));
+            .Weight(Significance.Minor);
 
-        goal.Progress += 20;
+        GoalRecord.Advance(tick, courted, goal, 20, GoalStep.SupportCourted);
+        tick.Emit(courted);
     }
 
     private static void FormPlot(Tick tick, Goal goal, Actor actor, Faction faction, Actor ruler)
@@ -892,7 +918,7 @@ public static class ActionPhase
         EntityId arc = tick.Chronicle.ReserveArc();
         Rng rng = tick.Rng(actor.Id, RngPurpose.Coup);
 
-        tick.Emit(new EventDraft(EventKind.PolityCoupPlotted)
+        EventDraft plotted = new EventDraft(EventKind.PolityCoupPlotted)
             .Subject(actor.Id)
             .Object(ruler.Id)
             .By(faction.Id)
@@ -901,10 +927,11 @@ public static class ActionPhase
             .Set("arcName", ArcNames.Plot(ref rng, actor.Name, ruler.Name))
             .InArc(arc)
             .Because(goal.Cause)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
-        goal.Arc = arc;
-        goal.Progress += 30;
+        GoalRecord.Attach(tick, plotted, goal, arc);
+        GoalRecord.Advance(tick, plotted, goal, 30, GoalStep.PlotFormed);
+        tick.Emit(plotted);
 
         tick.Ledger?.Opened(arc, tick.Year);
     }
@@ -926,7 +953,7 @@ public static class ActionPhase
         // Its own event type, and no arc. Sharing POLITY.COUP_RESOLVED with plot outcomes made
         // open bids look like resolved conspiracies — a plot appeared settled by an event that
         // never referred to it, so "what became of the plot against Y" had no answer at all.
-        Event resolved = tick.Emit(new EventDraft(EventKind.PolityChallenge)
+        EventDraft challenge = new EventDraft(EventKind.PolityChallenge)
             .Subject(actor.Id)
             .Object(ruler.Id)
             .By(faction.Id)
@@ -935,19 +962,33 @@ public static class ActionPhase
             .Resolved(won ? Outcome.Succeeded : Outcome.Failed)
             .Leg(faction.Id, won ? -12 : -4)
             .Because(goal.Cause)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
+        // The ambition ends on the challenge, not after the settlement.
+        //
+        // <b>This moves the transition earlier in the tick, and it is the one place in this change
+        // that does.</b> The removal used to run after `SettleCoup`, which kills or exiles the loser —
+        // so a challenger who lost had his book cleared by the reducer first, and this line then
+        // removed a goal that was already gone. Fifteen times across the panel; the §1 audit counted
+        // all fifteen as `Spent` endings and they were not endings at all.
+        //
+        // State is unchanged either way: the goal leaves the book in the same tick, and nothing
+        // between the two points reads the book. What changes is which label the fifteen carry, and
+        // `Spent` on the challenge is the truthful one — the man stopped wanting the seat because he
+        // lost the contest for it. The exile is what followed.
+        GoalRecord.End(tick, challenge, goal, GoalEnd.Spent);
+
+        Event resolved = tick.Emit(challenge);
         SettleCoup(tick, faction, winner: won ? actor : ruler, loser: won ? ruler : actor, resolved);
-        state.Goals.Remove(goal);
     }
 
     private static void PersonalRevenge(Tick tick, Goal goal, Actor actor)
     {
         WorldState state = tick.State;
-        if (goal.Target.Kind != EntityKind.Actor) { state.Goals.Remove(goal); return; }
+        if (goal.Target.Kind != EntityKind.Actor) { GoalRecord.Lapse(tick, goal, GoalEnd.TargetInvalid); return; }
 
         Actor target = state.ActorOf(goal.Target);
-        if (!target.IsAlive) { state.Goals.Remove(goal); return; }
+        if (!target.IsAlive) { GoalRecord.Lapse(tick, goal, GoalEnd.TargetDead); return; }
 
         Span<int> weights =
         [
@@ -981,7 +1022,7 @@ public static class ActionPhase
         }
         if (to.IsNone) return;
 
-        tick.Emit(new EventDraft(EventKind.IntrigueBetrayal)
+        EventDraft turned = new EventDraft(EventKind.IntrigueBetrayal)
             .Subject(actor.Id)
             .Object(because.Id)
             .By(from)
@@ -990,9 +1031,20 @@ public static class ActionPhase
             .Rel(from, to, RelationKind.Grievance, 12)
             .Leg(from, -5)
             .Because(goal.Cause)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
-        state.Goals.Remove(goal);
+        // No goal key on this event, and the reducer is why.
+        //
+        // `ApplyDefection` clears a defector's whole book when it folds `INTRIGUE.BETRAYAL`, and the
+        // structural cases run before the payload deltas — so a `goalEnd` key here names a goal that
+        // the same event has already taken out, and the fold refuses the log. The ending is
+        // reducer-owned (`OwnerDefected`) and recording it a second time as `Spent` is the
+        // double-recording §1.1 forbids.
+        //
+        // Under ruleset 6 the `Spent` removal ran here anyway and quietly did nothing: the book had
+        // already lost the goal, so it was one of the fifteen removals the §1 audit counted as
+        // endings that were not endings.
+        tick.Emit(turned);
     }
 
     private static void ReturnFromExile(Tick tick, Goal goal, Actor actor)
@@ -1014,16 +1066,17 @@ public static class ActionPhase
 
         if (host.IsNone || rng.Chance(55)) return;
 
-        tick.Emit(new EventDraft(EventKind.PolityExileReturn)
+        EventDraft home = new EventDraft(EventKind.PolityExileReturn)
             .Subject(actor.Id)
             .By(host)
             .At(state.FactionOf(host).Seat)
             .Set("title", Title.Captain)
             .Rel(actor.Id, host, RelationKind.Fealty, 25)
             .Because(goal.Cause)
-            .Weight(Significance.Major));
+            .Weight(Significance.Major);
 
-        state.Goals.Remove(goal);
+        GoalRecord.End(tick, home, goal, GoalEnd.Achieved);
+        tick.Emit(home);
     }
 
     // ---- shared -----------------------------------------------------------
@@ -1072,7 +1125,7 @@ public static class ActionPhase
         {
             bool wasLeader = !victim.Faction.IsNone && state.FactionOf(victim.Faction).Leader == victim.Id;
 
-            Event death = tick.Emit(new EventDraft(EventKind.LifeDeathViolent)
+            EventDraft killing = new EventDraft(EventKind.LifeDeathViolent)
                 .Subject(victim.Id)
                 .Object(killer.Id)
                 .By(victim.Faction)
@@ -1081,10 +1134,12 @@ public static class ActionPhase
                 .Set("wasLeader", wasLeader ? 1 : 0)
                 .Leg(victim.Faction, -8)
                 .Because(attempt.Id)
-                .Weight(Significance.Major));
+                .Weight(Significance.Major);
 
+            if (goal is not null) GoalRecord.End(tick, killing, goal, GoalEnd.Achieved);
+
+            Event death = tick.Emit(killing);
             if (wasLeader) tick.PendingSuccessions.Add((victim.Faction, death.Id));
-            if (goal is not null) state.Goals.Remove(goal);
             return;
         }
 

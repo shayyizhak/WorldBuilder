@@ -578,6 +578,28 @@ public sealed class QueryEngine(ILlmClient client, WorldView view)
     /// withheld record and a missing one look identical from the retrieved set — which is the
     /// whole reason the four collapsed into one answer in the first place.
     /// </summary>
+    /// <summary>
+    /// Why a plan found nothing, and the sentence the layer would say about it.
+    ///
+    /// <b>Exposed so the absent-versus-withheld distinction can be measured without a model call and
+    /// without reimplementing it.</b> The v3 epistemic layer's whole premise is that not-known and
+    /// not-true are different, so whether the query path can express that is a property somebody has
+    /// to be able to check — and the one way to check it wrongly is to write a second copy of this
+    /// logic in the checker, which is how Layer 4 came to read three field names the engine never
+    /// wrote. Takes a plan rather than a question so it needs no planner, which also makes it
+    /// deterministic: the planner is the one part of this path that is not.
+    ///
+    /// Reads nothing a caller could not already get from <see cref="Retrieve"/>: no id, no
+    /// description and no participant of a secret record escapes here, only the reason and the
+    /// sentence.
+    /// </summary>
+    public (EmptyReason Why, string Sentence) Explain(QueryPlan plan)
+    {
+        QueryPlan grounded = plan.Entity.IsNone ? Ground(plan) : plan;
+        EmptyReason why = WhyEmpty(grounded);
+        return (why, Nothing(grounded, why));
+    }
+
     private EmptyReason WhyEmpty(QueryPlan plan)
     {
         if (plan.Entity.IsNone) return EmptyReason.NoSuchEntity;

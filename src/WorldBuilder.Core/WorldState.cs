@@ -7,6 +7,12 @@ namespace WorldBuilder.Core;
 /// only ever called from <see cref="EventReducer"/>: rules read this and propose events, the
 /// reducer applies them. That discipline is what makes "state is a fold over the log" true
 /// rather than aspirational, and it is what lets v2 re-fold history after a retcon.
+///
+/// <b>It was aspirational until ruleset 7, and this comment was the evidence.</b> <see cref="Goals"/>
+/// was mutated directly by four rule phases, so the claim above was false for the one piece of state
+/// that decides what everybody does — and a world folded from its own record could not decide anything.
+/// Nothing checked the claim, which is why it survived six rulesets. It is now asserted, field by field
+/// across all 27 components, by <c>ReplayTests.AFoldReproducesEveryComponentOfTheWorld</c>.
 /// </summary>
 public sealed class WorldState
 {

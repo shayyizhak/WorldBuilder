@@ -27,9 +27,25 @@ public class RelationTerminationTests
         return data;
     }
 
+    /// <summary>
+    /// A ruleset-6 world, for comparison against the ruleset-5 seal.
+    ///
+    /// <b>Goal recording is switched off, and that is what keeps this file about relations.</b> These
+    /// theories anchor on the *ruleset-5* baselines, so every mechanics change since then has to be off
+    /// for the comparison to isolate the three termination rules. Ruleset 7 records goal transitions,
+    /// which inserts bookkeeping rows the ruleset-5 log cannot have — so with recording left on, these
+    /// would fail for a reason that has nothing to do with terminations, which is exactly the confound
+    /// the null arm exists to rule out.
+    ///
+    /// The off-switches composing like this is the point of having them per-mechanic rather than
+    /// one "previous ruleset" flag: each later ruleset adds a switch, and a comparison reaches back as
+    /// far as the switches it turns off. Ruleset 8 added the third — a severance is now written only
+    /// where the tie is live, which drops keys the ruleset-5 log does have — so it is off here too,
+    /// and the file stays about relations.
+    /// </summary>
     private static EventLog Fresh(ulong seed)
     {
-        Simulation sim = new(seed);
+        Simulation sim = new(seed, recordGoals: false, guardSeverances: false);
         sim.Run(50);
         return sim.Log;
     }
@@ -57,7 +73,8 @@ public class RelationTerminationTests
     [MemberData(nameof(Seeds))]
     public void NothingMovesBeforeTheFirstTermination(ulong seed)
     {
-        Divergence.Report report = Divergence.Between(Sealed("ruleset-5", seed), Fresh(seed), seed);
+        Divergence.Report report = Divergence.Between(
+            Sealed("ruleset-5", seed), Divergence.WithoutArmMarker(Fresh(seed)), seed);
 
         Assert.True(report.FirstTermination >= 0,
             $"seed {seed} never terminates a relation, so there is nothing to anchor divergence to");
@@ -232,7 +249,10 @@ public class RelationTerminationTests
     [MemberData(nameof(Seeds))]
     public void TurningTheTerminationRulesOffGivesBackTheOldRuleset(ulong seed)
     {
-        Simulation sim = new(seed, arm: TerminationArm.None);
+        // Every switch off: ruleset 5 is three record-or-mechanics changes back, so reaching it means
+        // turning off the termination rules, goal recording *and* the severance guard. See Fresh.
+        Simulation sim = new(seed, arm: TerminationArm.None, recordGoals: false,
+            guardSeverances: false);
         sim.Run(50);
 
         EventLog baseline = Sealed("ruleset-5", seed);

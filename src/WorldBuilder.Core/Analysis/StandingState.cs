@@ -57,23 +57,23 @@ public static class StandingState
     /// <summary>
     /// Standing state this instrument cannot see, and why — named rather than omitted.
     ///
-    /// <b><see cref="GoalBook"/> is not a fold of the log.</b> <see cref="WorldState"/>'s own
-    /// summary says it is "the fold of the event log" and every mutation lives behind an internal
-    /// surface only <see cref="EventReducer"/> calls. Goals are the exception: they are created by
-    /// the perception phase directly, and the reducer touches them at exactly one point — a
-    /// <c>disown</c> key clears an actor's. So a world replayed from its record has no goals in it
-    /// at all, and a sweep that replays the record reported "live goals: never present" for state
-    /// that drives the entire action phase.
+    /// <b>Empty as of ruleset 7, and kept because a named list is the honest form of the answer.</b>
     ///
-    /// Reported here rather than measured badly. A zero from an instrument that cannot see the
-    /// thing is the absent-versus-unknown conflation with a number attached, and this file is
-    /// supposed to be the one that does not make that mistake.
+    /// At ruleset 6 it named <see cref="GoalBook"/>. Goals were created by the perception phase
+    /// directly and by no event, so a world replayed from its record held none — and a sweep that
+    /// replays the record duly reported "live goals: never present" for state that drives the entire
+    /// action phase. That is the absent-versus-unknown conflation with a number attached, and naming it
+    /// here instead of scoring it was the point. Ruleset 7 put every goal transition into the record,
+    /// so this sweep can see them and the list is empty; <c>docs/goalbook-phase-2-report.md</c>.
+    ///
+    /// The next piece of state that turns out to live outside the fold goes here, rather than being
+    /// quietly swept as a zero.
+    ///
+    /// <b>Two things this comment used to assert and both were wrong</b>, corrected by measuring rather
+    /// than by rereading: the reducer touched goals at six points and not the one it claimed, and it
+    /// was removal that was half-folded while creation was entirely outside.
     /// </summary>
-    public static readonly string[] OutsideTheFold =
-    [
-        "live goals — GoalBook is created by the rules, not by the reducer, so a replayed world holds none",
-        "goal progress — same",
-    ];
+    public static readonly string[] OutsideTheFold = [];
 
     /// <summary>
     /// Walks a panel and reports, for every piece of standing state, whether it was ever seen to
@@ -225,7 +225,14 @@ public static class StandingState
         foreach (Resource r in Resources.All)
             yield return ("scalars", Resources.Name(r) + " in store (summed)", stock[(int)r]);
 
-        // Goals are deliberately absent. See OutsideTheFold.
+        // Goals, swept like everything else as of ruleset 7. They were named in OutsideTheFold and
+        // omitted here until the record carried them, because a fold that creates no goals reports
+        // "never present" for the state that drives the whole action phase.
+        yield return ("collections", "live goals", state.Goals.Snapshot().Count);
+
+        int goalProgress = 0;
+        foreach (Goal g in state.Goals.Snapshot()) goalProgress += g.Progress;
+        yield return ("scalars", "goal progress (summed)", goalProgress);
 
         int openArcs = 0;
         foreach (Arc a in state.Arcs) if (a.IsOpen) openArcs++;
@@ -285,8 +292,17 @@ public static class StandingState
                   "are read off the rules and asserted by a person; counts cannot make them.");
 
         lines.Add("");
-        lines.Add("Standing state this sweep cannot see, named rather than scored:");
-        foreach (string note in OutsideTheFold) lines.Add($"  - {note}");
+        if (OutsideTheFold.Length == 0)
+        {
+            lines.Add("Standing state this sweep cannot see: **none**. Every piece of state is folded " +
+                      "from the log, so a zero here means the panel never held the thing rather than " +
+                      "that the instrument could not look.");
+        }
+        else
+        {
+            lines.Add("Standing state this sweep cannot see, named rather than scored:");
+            foreach (string note in OutsideTheFold) lines.Add($"  - {note}");
+        }
 
         return lines;
     }

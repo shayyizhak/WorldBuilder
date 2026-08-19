@@ -134,5 +134,84 @@ public static class Ruleset
     /// moved what `ProposeAlliance` scores against in every year of every world, which is a diffuse
     /// behavioural change riding inside a step whose subject is whether a tie exists at all.
     /// </summary>
-    public const string Version = "6";
+    /// <summary>
+    /// <b>7</b> — <c>GoalBook</c> enters the fold. <b>A record change with no simulation change</b>, and
+    /// the second bump of this counter that is one.
+    ///
+    /// Goals were the only piece of <see cref="WorldState"/> not folded from the log: created by the
+    /// perception phase directly, removed from four phases and from the reducer, and named by no event
+    /// anywhere. So a world replayed from its own record held no goals and could not decide anything —
+    /// which breaks "world state is a fold over the log", the principle Stage 3's resolution rests on,
+    /// rather than merely losing a field. `docs/goal-lifecycle-audit.md` has the measurement: 505 goals
+    /// formed across the reference panel, 0 reproduced.
+    ///
+    /// Every transition now travels in the record. Creation, advance, arc attachment and the endings
+    /// that have a causing event ride that event as payload keys; the endings with no host — the
+    /// retirement sweep and the action-phase guards whose target has gone — get a <c>GOALS.ENDED</c> row
+    /// carrying the count and the reasons, and creation gets a <c>GOALS.FORMED</c> row per year for the
+    /// same reason. Both are <see cref="Significance.Bookkeeping"/>, carry no participants and no arc,
+    /// and are invisible in the readable log.
+    ///
+    /// <b>Not additive-only, and the distinction is the interesting part.</b> Ruleset 5 could claim
+    /// "the diff is insertions only" because <c>DIPLO.ALLIANCE_BROKEN</c> was a new event beside
+    /// unchanged ones. Here transitions ride existing events as new keys, so existing events change
+    /// content and that form of the claim is unavailable. What replaces it is stated at the level of
+    /// keys and is carried by <c>GoalRecordTests</c>: against every sealed ruleset-6 baseline, the same
+    /// events appear in the same order, every payload key the baseline carried is present and equal as
+    /// an ordered subsequence, new keys may be added, and the only new events are the two goal kinds.
+    ///
+    /// <b>And the off-switch is the stronger claim.</b> <c>TurningGoalRecordingOffGivesBackRuleset6</c>
+    /// runs with recording off and gets all five sealed ruleset-6 logs back byte for byte, arm marker
+    /// aside. Forty-six call sites were restructured, the perception phase now applies the book's cap
+    /// itself in order to decide what to propose, and one transition moved earlier within its tick;
+    /// that theory is what says none of it touched the world.
+    ///
+    /// <b>Two counts moved against the §1 audit, and neither is a simulation change.</b> Fifteen
+    /// removals across the panel named a goal something else had already cleared — the audit counted
+    /// them as endings, and `GoalBook.Remove` notified its watcher whether or not the book held the
+    /// goal. Ten of those were a challenger who lost an open challenge and now ends as <c>Spent</c> on
+    /// the challenge instead of being cleared by his own exile; five were a defector whose ending the
+    /// reducer already owned and which is no longer recorded twice. Endings: 477 as audited, 462 real.
+    /// </summary>
+    /// <summary>
+    /// <b>8</b> — a declaration of war stops claiming it broke an alliance that was not there.
+    /// <b>A record change with no simulation change</b>, and the third bump of this counter that is
+    /// one. The log loses keys; the world does not move.
+    ///
+    /// <c>DeclareWar</c> had carried two unconditional <c>relDel</c> keys for the alliance since
+    /// alliances existed, so a declaration between houses that had never been allied — or had stopped
+    /// being allied eleven years earlier — wrote two claims into the log about an edge the graph did
+    /// not hold. Fourteen such keys across the reference panel, on seven declarations. The reducer's
+    /// <c>RelationGraph.Remove</c> drops a severance of an absent edge without complaint, which is
+    /// exactly why it survived: the world was right and only the record was wrong, so nothing
+    /// downstream of the fold could see it.
+    ///
+    /// <b>The third instance of one family, so the deliverable was the audit.</b>
+    /// <c>GoalBook.Remove</c> notified its watcher whether or not the book held the goal and produced
+    /// fifteen phantom endings in 477; the relation graph then did the same thing with severances.
+    /// <see cref="Analysis.MutationAudit"/> probes every payload key the reducer applies against the
+    /// state on both sides of its own event — 25,435 keys across the panel — and reports which of
+    /// them moved anything. It found this site and no other with an absent referent, so the family
+    /// is now measured rather than reasoned about, and `wb mutations` exits non-zero on a fourth.
+    ///
+    /// The guard lives in <c>RelationEnds</c> beside the other two severance shapes rather than at
+    /// the call site, because the call site is what forgot it. Each direction is checked on its own:
+    /// an alliance is written both ways and should be live both ways, and "should be" is precisely
+    /// what the unguarded version assumed.
+    ///
+    /// <b>What makes "no simulation change" more than an assertion.</b> Against every sealed
+    /// ruleset-7 baseline, <c>PhantomMutationTests</c> holds that the same events appear in the same
+    /// order with the same shape, none added and none removed, every payload key present as an
+    /// ordered subsequence, and every key the baseline carried and this one does not is a
+    /// <c>relDel</c> for an alliance the graph did not hold. And the live ruleset-8 world equals the
+    /// fold of the sealed ruleset-7 log on all 27 components of <see cref="WorldState"/>.
+    ///
+    /// <b>The four-arm panel does not move, measured rather than argued.</b> Its ties-ended figure
+    /// counts <c>Trade</c> terminations by state diff, and the phantom keys were all alliances that
+    /// deleted nothing — so it could not have moved, and the panel was re-run under both emissions
+    /// anyway: every figure identical per seed on all four arms across the 84 of 90 seeds the
+    /// harness can currently run. The other six crash on a ruleset-7 defect in the goal fold that
+    /// predates this change and is reported rather than fixed here.
+    /// </summary>
+    public const string Version = "8";
 }

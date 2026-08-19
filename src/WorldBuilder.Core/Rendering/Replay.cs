@@ -18,6 +18,19 @@ public static class Replay
     public static WorldState Fold(EventLog log, ulong seed, int? untilYear = null, Board? board = null)
     {
         WorldState state = new() { Seed = seed };
+        FoldInto(state, log, board, untilYear);
+        return state;
+    }
+
+    /// <summary>
+    /// Folds a log into a state the caller already holds.
+    ///
+    /// Exists so a caller can attach a sink to the state <i>before</i> the first event is applied.
+    /// The goal audit needs to see the transitions the reducer performs, and by the time
+    /// <see cref="Fold"/> has returned every one of them is in the past. Same loop, same reducer.
+    /// </summary>
+    public static void FoldInto(WorldState state, EventLog log, Board? board = null, int? untilYear = null)
+    {
         Attach(state, log, board);
 
         foreach (Event e in log.Events)
@@ -26,8 +39,6 @@ public static class Replay
             state.Year = e.Year;
             EventReducer.Apply(state, e);
         }
-
-        return state;
     }
 
     /// <summary>
@@ -35,19 +46,41 @@ public static class Replay
     /// applied. Used by the formatter so every line is rendered against the state as it stood
     /// at that moment rather than against the end of history.
     /// </summary>
-    public static WorldState Walk(EventLog log, ulong seed, Action<WorldState, Event> visit, Board? board = null)
+    /// <param name="before">
+    /// Called with the same state <i>immediately before</i> the event is applied, where a caller
+    /// needs both sides of one event.
+    ///
+    /// Asking whether a payload key changed anything is a question about the difference, and the
+    /// difference is not recoverable from either side alone — a <c>relDel</c> naming no live edge
+    /// and one naming an edge look identical once the fold has run. Nothing here mutates: the
+    /// reducer is still the only writer, and the instrumentation-invariance tests hold because a
+    /// reader attached to this cannot move the world.
+    /// </param>
+    public static WorldState Walk(EventLog log, ulong seed, Action<WorldState, Event> visit,
+        Board? board = null, Action<WorldState, Event>? before = null)
     {
         WorldState state = new() { Seed = seed };
+        WalkInto(state, log, visit, board, before);
+        return state;
+    }
+
+    /// <summary>
+    /// Walks a log into a state the caller already holds, for the same reason as
+    /// <see cref="FoldInto"/>: a sink has to be attached before the first event is applied.
+    /// </summary>
+    public static void WalkInto(
+        WorldState state, EventLog log, Action<WorldState, Event> visit, Board? board = null,
+        Action<WorldState, Event>? before = null)
+    {
         Attach(state, log, board);
 
         foreach (Event e in log.Events)
         {
             state.Year = e.Year;
+            before?.Invoke(state, e);
             EventReducer.Apply(state, e);
             visit(state, e);
         }
-
-        return state;
     }
 
     /// <summary>

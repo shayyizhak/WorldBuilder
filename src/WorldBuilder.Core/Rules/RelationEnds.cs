@@ -38,6 +38,15 @@ namespace WorldBuilder.Core.Rules;
 /// </summary>
 public static class RelationEnds
 {
+    /// <summary>
+    /// The arm marker a world carries when ruleset 8's severance guard is switched off.
+    ///
+    /// Such a world writes a severance whether or not the tie is live, which is ruleset 7's
+    /// behaviour and is what lets the ruleset-7 log be reproduced key for key. A diagnostic
+    /// artefact, on the same footing as a proximity control or a termination arm.
+    /// </summary>
+    public const string UnguardedArm = "sever-unguarded";
+
     /// <summary>A border closed by a declaration of war.</summary>
     public const string War = "war";
 
@@ -155,6 +164,42 @@ public static class RelationEnds
             .Weight(Significance.Minor);
 
         return tick.Emit(draft);
+    }
+
+    /// <summary>
+    /// Carries the severance of one tie into an event already being emitted, in both directions, and
+    /// <b>only where there is a tie to sever</b>. Returns whether anything was written.
+    ///
+    /// <b>The guard is here rather than at the call site because the call site forgot it.</b>
+    /// <c>DeclareWar</c> carried two <c>relDel</c> keys for an alliance whether or not one existed, so
+    /// a declaration between two houses that had never been allied — or had stopped being allied
+    /// eleven years earlier — wrote two claims into the log about an edge the graph did not hold.
+    /// A key in the log is a claim about the world, and the audit that found this found the identical
+    /// shape in <c>GoalBook.Remove</c> a phase earlier: notify first, check never.
+    ///
+    /// <b>Each direction is checked on its own.</b> An alliance is written both ways and should be
+    /// live both ways, but "should be" is what the unguarded version assumed. Asking twice costs a
+    /// dictionary lookup and cannot produce a half-true pair of keys.
+    ///
+    /// <b>Refuses to emit rather than emitting and being ignored.</b> The reducer's
+    /// <see cref="RelationGraph.Remove"/> already shrugs at an absent edge, which is what made the
+    /// defect survive: the world was right and only the record was wrong, so nothing downstream of
+    /// the fold could see it.
+    /// </summary>
+    /// <param name="guarded">
+    /// False restores ruleset 7's unconditional emission — the off-switch, so the previous ruleset's
+    /// record can be reproduced key for key. Threaded rather than read from a static, because a
+    /// world's switches belong to the world.
+    /// </param>
+    public static bool Into(EventDraft draft, WorldState state, EntityId a, EntityId b,
+        RelationKind kind, bool guarded = true)
+    {
+        bool wrote = false;
+
+        if (!guarded || state.Relations.Has(a, b, kind)) { draft.RelDel(a, b, kind); wrote = true; }
+        if (!guarded || state.Relations.Has(b, a, kind)) { draft.RelDel(b, a, kind); wrote = true; }
+
+        return wrote;
     }
 
     /// <summary>

@@ -4,14 +4,45 @@ using System.Text;
 namespace WorldBuilder.Core.Analysis;
 
 /// <summary>One person's hold on one seat, as the record has it.</summary>
-public sealed record SeatSpell(EntityId Ruler, int From, int To, string Ended);
+/// <param name="Ended">
+/// How the hold ended, in the vocabulary <see cref="ReferenceSet.StillHolding"/>,
+/// <see cref="ReferenceSet.FactionEnded"/>, <c>killed</c>, <c>died</c>, <c>cast out</c> and
+/// <c>replaced</c> — and no other string.
+/// </param>
+public sealed record SeatSpell(EntityId Ruler, int From, int To, string Ended)
+{
+    /// <summary>Whether this hold ran to the last year of the record with nobody taking it.</summary>
+    public bool Open => Ended == ReferenceSet.StillHolding;
+}
 
-/// <summary>Every assassination record naming one person, split by the two things that decide the count.</summary>
+/// <summary>
+/// Every assassination record naming one person, split by the two things that decide the count.
+///
+/// <b>Four columns, because the sponsor's side splits on outcome exactly as the target's does.</b>
+/// It used to be three: attempts on this person that failed, the one that killed him, and
+/// everything he sponsored — and that third column pooled a killing with a botched attempt. The
+/// three columns did partition the record count, so the arithmetic was right and the label was not:
+/// for nine of seed 42's twenty-eight people the only sponsorship was a failed attempt, so
+/// <i>how many killings did Reweld Wul order?</i> read 1 from the table when the answer is 0.
+///
+/// That is the section's own cited lesson half-applied. Role and outcome both decide the count; the
+/// first two columns split on outcome and the third did not.
+/// </summary>
 /// <param name="FailedAgainst">Attempts on this person that failed. The v1 sheet's "four failed attempts".</param>
 /// <param name="KilledBy">The one that succeeded, where there was one.</param>
-/// <param name="Ordered">Killings this person carried out — a record of something done to someone
-/// else, never added to the two above.</param>
-public sealed record AttemptTally(EntityId Actor, int FailedAgainst, int KilledBy, int Ordered, int Records);
+/// <param name="Ordered">Killings this person sponsored that succeeded — somebody else died.</param>
+/// <param name="OrderedFailed">Attempts this person sponsored that failed — nobody died.</param>
+public sealed record AttemptTally(
+    EntityId Actor, int FailedAgainst, int KilledBy, int Ordered, int OrderedFailed, int Records)
+{
+    /// <summary>
+    /// Whether the four columns account for every record naming this person.
+    ///
+    /// The property the split has to preserve, and the reason the third column's mislabelling
+    /// survived: a partition that adds up is not a partition whose parts are named correctly.
+    /// </summary>
+    public bool Partitions => FailedAgainst + KilledBy + Ordered + OrderedFailed == Records;
+}
 
 /// <summary>
 /// The smallest set of facts a human has to establish about a new world, staged for reading.
@@ -159,7 +190,8 @@ public static class ReferenceSet
             lines.Add($"- {Label(state, tally.Actor)} — {tally.Records} assassination record(s): " +
                       $"{tally.FailedAgainst} failed attempt(s) on them, " +
                       $"{tally.KilledBy} successful killing(s) of them, " +
-                      $"{tally.Ordered} killing(s) they carried out");
+                      $"{tally.Ordered} killing(s) they ordered, " +
+                      $"{tally.OrderedFailed} attempt(s) they ordered that failed");
         }
 
         lines.Add("");
@@ -177,7 +209,7 @@ public static class ReferenceSet
             if (history.Count == 0) { lines.Add($"- {f.Name} ({f.Id}) — no recorded holder"); continue; }
 
             lines.Add($"- {f.Name} ({f.Id}): " + string.Join(", ", history.Select(h =>
-                $"{state.NameOf(h.Ruler)} {h.From}–{(h.Ended == "still holding" ? "" : h.To.ToString(CultureInfo.InvariantCulture))} ({h.Ended})")));
+                $"{state.NameOf(h.Ruler)} {h.From}–{(h.Open ? "" : h.To.ToString(CultureInfo.InvariantCulture))} ({h.Ended})")));
         }
 
         lines.Add("");
@@ -358,13 +390,14 @@ public static class ReferenceSet
         // a person is not a record of something they did, which is the single most-repeated
         // fabrication of the render rounds.
         AttemptTally? notable = Attempts(view)
-            .FirstOrDefault(static t => t.Ordered > 0 && t.FailedAgainst + t.KilledBy > 0);
+            .FirstOrDefault(static t => t.Ordered + t.OrderedFailed > 0 && t.FailedAgainst + t.KilledBy > 0);
 
         if (notable is not null)
         {
             Slot(lines, ++slot, "Answerable",
                 $"How many times was {state.NameOf(notable.Actor)} the target of a failed attempt?",
-                $"{notable.FailedAgainst} — not the {notable.Ordered} killing(s) they carried out, and not " +
+                $"{notable.FailedAgainst} — not the {notable.Ordered} killing(s) they ordered, not the " +
+                $"{notable.OrderedFailed} attempt(s) they ordered that failed, and not " +
                 $"the {notable.KilledBy} successful one(s) against them. " +
                 $"{notable.Records} assassination records name them; the role decides which count.",
                 [.. view.Log.Events
@@ -432,7 +465,7 @@ public static class ReferenceSet
         }
 
         Faction? lasting = state.Factions.FirstOrDefault(f =>
-            SeatHistory(view, f.Id) is { Count: > 0 } h && h[^1].Ended == "still holding");
+            SeatHistory(view, f.Id) is { Count: > 0 } h && h[^1].Open);
 
         if (lasting is not null)
         {
@@ -655,11 +688,43 @@ public static class ReferenceSet
 
     // ---- derivations ------------------------------------------------------
 
+    /// <summary>A hold that ran to the end of the record with the house still standing.</summary>
+    public const string StillHolding = "still holding";
+
+    /// <summary>
+    /// A hold that ended because the seat stopped existing.
+    ///
+    /// <b>The vocabulary had no term for it and needed one.</b> Cast out, killed, died and still
+    /// holding all say something about the person; three of this world's five seats ended because
+    /// the house under them collapsed, which says nothing about the holder at all. Reaching for one
+    /// of the other four there is a claim about a man's fate made out of a fact about his faction.
+    /// </summary>
+    public const string FactionEnded = "faction ended";
+
+    /// <summary>
+    /// The year a house came to an end, or null where it never did.
+    ///
+    /// Read from <c>POLITY.COLLAPSE</c> rather than from <c>WorldState.IsDefunct</c>, because the
+    /// end state says a house is gone and not when — and a tenure needs the year.
+    /// </summary>
+    public static int? CollapseYear(WorldView view, EntityId faction)
+    {
+        foreach (Event e in view.Log.Events)
+            if (e.Kind == EventKind.PolityCollapse && e.Faction == faction) return e.Year;
+
+        return null;
+    }
+
     /// <summary>
     /// Everyone who held a seat, in order, with how their hold ended.
     ///
     /// Three sources, and the third was missed until round 8: a secession names the founding holder
     /// of the house it creates, so a list built from successions alone leaves every founder out.
+    ///
+    /// <b>A tenure ends when the faction does.</b> The terminal hold used to close at the last year
+    /// of the record whatever had happened to the house, so three of seed 42's five seats claimed a
+    /// holder for a decade after the house collapsed — the Vea Lode Covenant's last ruler was shown
+    /// holding twelve years past the death that the collapse record itself cites as its cause.
     /// </summary>
     public static List<SeatSpell> SeatHistory(WorldView view, EntityId faction)
     {
@@ -687,32 +752,62 @@ public static class ReferenceSet
 
         List<SeatSpell> spells = [];
 
+        // Where the house ended, the last hold ends with it. A seat nobody can hold is not a seat
+        // somebody is still holding, and the branch is here rather than in the general rule because
+        // the surviving houses' terminals were right all along.
+        int? collapsed = CollapseYear(view, faction);
+
         for (int i = 0; i < distinct.Count; i++)
         {
+            bool last = i + 1 == distinct.Count;
             int from = distinct[i].Year;
-            int to = i + 1 < distinct.Count ? distinct[i + 1].Year : view.LastYear;
+            int to = last
+                ? Math.Max(from, collapsed ?? view.LastYear)
+                : distinct[i + 1].Year;
 
             spells.Add(new SeatSpell(distinct[i].Ruler, from, to,
-                HowItEnded(view, faction, distinct[i].Ruler, from, to, last: i + 1 == distinct.Count)));
+                HowItEnded(view, faction, distinct[i].Ruler, from, to,
+                    last: last, collapsed: last && collapsed is not null)));
         }
 
         return spells;
     }
 
+    /// <summary>
+    /// How one hold ended, resolved against person <b>and</b> faction, inside the hold's own years.
+    ///
+    /// <b>All three clauses are load-bearing and two were added after a defect.</b> Searching the
+    /// person's whole life let one death record close two holds: Stonand Ker was killed in year 47
+    /// while leading the Griwick Compact, and that record was read as the end of a Wurn League
+    /// tenure which had stopped in 34 — one event, two seats, right once. Naming the faction is what
+    /// separates them, and the window is what stops a record from before or after the hold speaking
+    /// for it.
+    ///
+    /// The rule is checked by the two holds it does <i>not</i> change: Bu Rumpirn's natural death
+    /// and Diweith Mound's exile both name their own house inside their own years, so both keep the
+    /// term they already had. A rule that repaired all three would be indistinguishable from one
+    /// that simply blanked the column.
+    /// </summary>
+    /// <param name="collapsed">
+    /// Whether this hold ends at the collapse of the house. Only consulted as a fall-through: a
+    /// holder who was killed or cast out in the collapse year is described by what happened to him,
+    /// and <see cref="FactionEnded"/> is for the case where nothing in the record says.
+    /// </param>
     private static string HowItEnded(
-        WorldView view, EntityId faction, EntityId ruler, int from, int to, bool last)
+        WorldView view, EntityId faction, EntityId ruler, int from, int to, bool last, bool collapsed)
     {
         foreach (Event e in view.Log.Events)
         {
             if (e.Year < from || e.Year > to) continue;
             if (e.Subject != ruler) continue;
+            if (e.Faction != faction) continue;
 
             if (e.Kind == EventKind.LifeDeathViolent) return "killed";
-            if (e.Kind == EventKind.PolityExile && e.Faction == faction) return "cast out";
+            if (e.Kind == EventKind.PolityExile) return "cast out";
             if (e.Kind == EventKind.LifeDeathNatural) return "died";
         }
 
-        return last ? "still holding" : "replaced";
+        return collapsed ? FactionEnded : last ? StillHolding : "replaced";
     }
 
     /// <summary>Every record that put someone on a seat, so a ruler-list answer can cite its sources.</summary>
@@ -746,7 +841,7 @@ public static class ReferenceSet
     /// </summary>
     public static List<AttemptTally> Attempts(WorldView view)
     {
-        Dictionary<EntityId, (int Failed, int Killed, int Ordered, int Records)> tally = [];
+        Dictionary<EntityId, (int Failed, int Killed, int Ordered, int Botched, int Records)> tally = [];
 
         foreach (Event e in view.Log.Events)
         {
@@ -754,21 +849,28 @@ public static class ReferenceSet
 
             if (!e.Object.IsNone && e.Object.Kind == EntityKind.Actor)
             {
-                (int failed, int killed, int ordered, int records) = tally.GetValueOrDefault(e.Object);
+                (int failed, int killed, int ordered, int botched, int records) =
+                    tally.GetValueOrDefault(e.Object);
+
                 tally[e.Object] = e.Outcome == Outcome.Succeeded
-                    ? (failed, killed + 1, ordered, records + 1)
-                    : (failed + 1, killed, ordered, records + 1);
+                    ? (failed, killed + 1, ordered, botched, records + 1)
+                    : (failed + 1, killed, ordered, botched, records + 1);
             }
 
             if (e.Subject.IsNone || e.Subject.Kind != EntityKind.Actor) continue;
 
-            (int f2, int k2, int o2, int r2) = tally.GetValueOrDefault(e.Subject);
-            tally[e.Subject] = (f2, k2, o2 + 1, r2 + 1);
+            (int f2, int k2, int o2, int b2, int r2) = tally.GetValueOrDefault(e.Subject);
+
+            // The sponsor's side splits on the same outcome the target's side does. Pooling them
+            // made "killings he ordered" true of nine people for whom it was one botched attempt.
+            tally[e.Subject] = e.Outcome == Outcome.Succeeded
+                ? (f2, k2, o2 + 1, b2, r2 + 1)
+                : (f2, k2, o2, b2 + 1, r2 + 1);
         }
 
         List<AttemptTally> tallies =
             [.. tally.Select(kv => new AttemptTally(kv.Key, kv.Value.Failed, kv.Value.Killed,
-                kv.Value.Ordered, kv.Value.Records))];
+                kv.Value.Ordered, kv.Value.Botched, kv.Value.Records))];
 
         tallies.Sort(static (a, b) => a.Records != b.Records
             ? b.Records.CompareTo(a.Records)
@@ -783,7 +885,15 @@ public static class ReferenceSet
     /// rather than three of whichever the record happens to offer most of — three questions of the
     /// same shape test one thing three times.
     /// </param>
-    public sealed record FalsePremise(string Shape, string Fact, string Question, IReadOnlyList<EventId> Records);
+/// <param name="About">
+/// The entity the question's subject names, so a caller can build a retrieval plan for it.
+///
+/// Needed because the premise is false and the *subject* is not: the person exists, they simply never
+/// held the seat, and their records come back. A plan with no entity retrieves nothing at all, which
+/// made every one of these look `classification-sensitive` when what it actually was was unaskable.
+/// </param>
+    public sealed record FalsePremise(
+        string Shape, string Fact, string Question, IReadOnlyList<EventId> Records, EntityId About);
 
     /// <summary>
     /// True facts a false question can be built from.
@@ -825,7 +935,8 @@ public static class ReferenceSet
                 [.. view.Log.Events
                     .Where(e => e.Participants.Any(p => p.Id == actor))
                     .Take(6)
-                    .Select(static e => e.Id)]));
+                    .Select(static e => e.Id)],
+                actor));
         }
 
         // An heir whose claim was set aside. Never ruled, and named as the successor, which is the
@@ -840,7 +951,8 @@ public static class ReferenceSet
                 $"{state.NameOf(e.Subject)} ({e.Subject}) was a named claimant in Y{e.Year} whose claim " +
                 "was set aside, and never ruled",
                 $"Why did {state.NameOf(e.Subject)}'s reign end?",
-                [e.Id]));
+                [e.Id],
+                e.Subject));
             break;
         }
 
@@ -873,7 +985,8 @@ public static class ReferenceSet
                 $"{other.Name} never held it at all. Every house that ever took " +
                 $"{state.NameOf(e.Where)}: " + string.Join(", ", everTook.Select(f => state.NameOf(f))),
                 $"When did {other.Name} conquer {state.NameOf(e.Where)}?",
-                [e.Id]));
+                [e.Id],
+                other.Id));
             break;
         }
 
@@ -926,22 +1039,45 @@ public static class ReferenceSet
     /// </summary>
     public static List<(EntityId Where, List<Event> Run)> Runs(WorldView view, EventKind kind)
     {
-        Dictionary<EntityId, List<Event>> byPlace = [];
+        // Grouped by (place, arc), not by place.
+        //
+        // <b>This used to group every occurrence at a place, whatever the gaps.</b> The v1 plague ran
+        // Y26–28 without a break, so the figure came out right and the defect stayed invisible; the
+        // first famine it was pointed at summed nineteen records spread over forty-seven years into
+        // "118 died in the famine at Meigate, Y10–Y38" and staged it as one claim. That is a wrong
+        // engine figure, which this project holds to be worse than a wrong model figure precisely
+        // because nothing questions it.
+        //
+        // The arc is the engine's own answer to "which famine": `ApplyArcOpened` opens one for
+        // ECONOMY.FAMINE and ECONOMY.PLAGUE and `CloseFinishedArcs` ends it when a year passes
+        // without the place being touched. Grouping by it means the boundary comes from the same
+        // place the world's own notion of an episode does, rather than from a gap threshold invented
+        // here. An event with no arc is its own run, which is the honest reading of a record that
+        // does not say it belongs with anything.
+        Dictionary<(EntityId Where, EntityId Arc), List<Event>> byEpisode = [];
+        List<(EntityId, List<Event>)> loose = [];
 
         foreach (Event e in view.Log.Events)
         {
             if (e.Kind != kind || e.Where.IsNone) continue;
 
-            if (!byPlace.TryGetValue(e.Where, out List<Event>? run)) byPlace[e.Where] = run = [];
+            if (e.Arc.IsNone) { loose.Add((e.Where, [e])); continue; }
+
+            (EntityId, EntityId) key = (e.Where, e.Arc);
+            if (!byEpisode.TryGetValue(key, out List<Event>? run)) byEpisode[key] = run = [];
             run.Add(e);
         }
 
-        List<(EntityId, List<Event>)> runs = [.. byPlace.Select(static kv => (kv.Key, kv.Value))];
+        List<(EntityId, List<Event>)> runs =
+            [.. byEpisode.Select(static kv => (kv.Key.Where, kv.Value)), .. loose];
 
         runs.Sort(static (a, b) =>
         {
             int dead = b.Item2.Sum(static e => e.GetInt("deaths")).CompareTo(a.Item2.Sum(static e => e.GetInt("deaths")));
-            return dead != 0 ? dead : a.Item1.CompareTo(b.Item1);
+            if (dead != 0) return dead;
+
+            int where = a.Item1.CompareTo(b.Item1);
+            return where != 0 ? where : a.Item2[0].Year.CompareTo(b.Item2[0].Year);
         });
 
         return runs;

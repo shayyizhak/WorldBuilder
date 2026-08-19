@@ -65,6 +65,29 @@ public enum EventKind
 
     IntrigueBetrayal,
     IntrigueGrievanceSettled,
+
+    /// <summary>
+    /// The goals formed this year, so a fold can form them too. Bookkeeping.
+    ///
+    /// <b>Its own event rather than a key on the event each goal cites</b>, which is what the phase-2
+    /// brief's §1.1 assumed. A goal cites an event that already happened — often years earlier — and
+    /// the log is append-only with immutable records, so there is no host to ride. Perception emits
+    /// nothing else, so creation is an orphan in exactly the sense §1.2 defines and takes §1.2's
+    /// shape: one event per occurrence, carrying the count, the breakdown by kind, and one key per
+    /// goal.
+    /// </summary>
+    GoalsFormed,
+
+    /// <summary>
+    /// Goals that ended with nothing else to say so. Bookkeeping.
+    ///
+    /// Two sites reach this: the yearly retirement sweep, and the guards in the action phase that
+    /// drop a goal whose target has become unreachable. <b>The brief attributes all 189 silent
+    /// endings to the sweep; 35 of them are the action-phase guards</b> — `AlreadySatisfied` 18,
+    /// `TargetDefunct` 13, `TargetDead` 4 — which have no host event either and would otherwise have
+    /// been left out of the record by a design that only covered the sweep.
+    /// </summary>
+    GoalsEnded,
 }
 
 /// <summary>How loudly an event should be reported. The readable log prints Minor and above.</summary>
