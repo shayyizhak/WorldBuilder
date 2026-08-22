@@ -224,6 +224,19 @@ public static class ContextPackBuilder
     /// </summary>
     public static bool IsRetrievable(Event e) => e.Scope != Visibility.Secret;
 
+    /// <summary>
+    /// The world coming into existence: a place sited, a house founded, a person born into the
+    /// opening cast.
+    ///
+    /// <b>A stopping condition rather than an explanation.</b> These rows have no causes of their
+    /// own — nothing precedes the world — so a causal walk that steps into one has reached the end
+    /// of what the record can say, and reporting the genesis row as the answer dresses that up as a
+    /// finding. *Because the place exists* is not why a war was declared over it.
+    /// </summary>
+    public static bool IsGenesis(Event e) => e.Kind
+        is EventKind.GenesisWorld or EventKind.GenesisPlace
+        or EventKind.GenesisFaction or EventKind.GenesisActor;
+
     public static ContextPack Single(WorldView view, EventId id)
     {
         Event e = view.Log.Get(id);
@@ -417,6 +430,18 @@ public static class ContextPackBuilder
     /// Secret events end a branch rather than being stepped over. Seeing through a secret cause
     /// to its own causes is how a hidden thing leaks: the conclusion arrives without the link,
     /// and the reader can infer what was removed from the shape of what is left.
+    ///
+    /// <b>Genesis rows end a branch too, and are not included.</b> This walk keeps bookkeeping,
+    /// which is what makes "why was there a famine" answerable from the harvest — but a genesis row
+    /// is bookkeeping of a different sort: it is the world beginning, it has no causes of its own,
+    /// and returning it as the last link presents a stopping condition as an explanation. Two of
+    /// seed 42's four staged causal questions walked back to <c>GENESIS.PLACE</c> — Threi Cut coming
+    /// into existence — and answered *why was war declared over it* with *because it is there*.
+    ///
+    /// Dropped from the retrieval rather than from the record. The edge is true: the war was fought
+    /// in pursuit of a goal formed because that place existed, and <c>PerceptionPhase</c> says so
+    /// deliberately. What is wrong is offering it as an answer, so the fix belongs where the chain
+    /// is read and not where it is written.
     /// </summary>
     public static List<EventId> Trace(WorldView view, EventId tip, int maxDepth = 24)
     {
@@ -433,6 +458,11 @@ public static class ContextPackBuilder
 
             Event e = view.Log.Get(id);
             if (!IsRetrievable(e)) return;
+
+            // The tip itself is what was asked about, so it is kept even where it is a genesis row —
+            // "when did Threi Cut come into existence" is a fair question with a real answer. It is
+            // only as a *cause* that a genesis row says nothing.
+            if (id != tip && IsGenesis(e)) return;
 
             ordered.Add(id);
             foreach (EventId cause in e.Causes) Walk(cause);

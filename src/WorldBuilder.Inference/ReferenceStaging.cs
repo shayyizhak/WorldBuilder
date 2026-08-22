@@ -1076,14 +1076,27 @@ public static class ReferenceStaging
                 EntityId about = e.Faction.IsNone ? e.Where : e.Faction;
                 if (about.IsNone) continue;
 
+                // A genesis row is not a cause, so it is not offered as one. Two of seed 42's four
+                // causal questions used to answer *why was war declared over Threi Cut* with the
+                // record of Threi Cut coming into existence, which is where the walk stopped rather
+                // than what it found. Same rule as `ContextPackBuilder.Trace`, applied to the same
+                // records, so the staged answer and the retrieval path agree about what a cause is.
+                List<EventId> causes =
+                    [.. e.Causes.Where(c => view.Log.TryGet(c, out Event at) &&
+                                            !ContextPackBuilder.IsGenesis(at))];
+
                 made.Add(Make(engine, view, heldOut,
                     $"Why did {Describe(state, kind, e)} in year {N(e.Year)}?",
-                    e.Causes.Count == 0
-                        ? "the record names no cause for it, and the honest answer says so"
-                        : "the recorded causes, walked back: " + string.Join(", ", e.Causes.Select(static c => c.ToString())),
-                    [e.Id, .. e.Causes],
-                    "a motive nobody recorded, or the ancestry of a different event of the same kind " +
-                    "in another decade",
+                    Because(view, e, causes),
+                    [e.Id, .. causes],
+                    causes.Count == 0
+                        ? "any reason at all. The record gives none, so a confident answer here is " +
+                          "invented whatever it says — and an answer citing the world's own genesis " +
+                          "is the same mistake the derivation used to make"
+                        : "a motive nobody recorded, or the ancestry of a different event of the " +
+                          "same kind in another decade. **Naming the record without the reason is " +
+                          "also wrong**: the id is the citation, not the answer, and a response that " +
+                          "cites it while describing the wrong event has not answered the question",
                     Ordinary, turnsOnAYear: true, about, [Family(kind)]));
 
                 break;   // one per kind is enough; the shape repeats
@@ -1214,6 +1227,35 @@ public static class ReferenceStaging
         }
 
         return made;
+    }
+
+    /// <summary>
+    /// The answer to a why-question, in words, with the record beside it rather than instead of it.
+    ///
+    /// <b>An id is a lookup instruction, not an answer.</b> These four candidates used to read
+    /// <c>the recorded causes, walked back: e:506</c>, which nothing can be held against: any
+    /// response mentioning `e:506` satisfies it, and one naming the wrong person while citing the
+    /// right record passes. Every other category in the file states its answer in words, and the
+    /// field that makes a question able to fail — *what would a wrong answer look like* — cannot be
+    /// written at all for an answer that is a pointer.
+    ///
+    /// So the cause is described: *because Sou Dra was exiled from the Kebarrow Compact (`e:506`)*
+    /// is a claim a reader can hold against the record and watch fail.
+    /// </summary>
+    private static string Because(WorldView view, Event e, IReadOnlyList<EventId> causes)
+    {
+        if (causes.Count == 0)
+        {
+            return e.Causes.Count == 0
+                ? "the record names no cause for it, and the honest answer says so"
+                : "the record names no cause for it beyond the world's own genesis, which is where " +
+                  "the walk stops rather than what it found — so the honest answer says so";
+        }
+
+        // Not truncated. This is the answer a reader checks the layer against, and half a sentence
+        // is a different claim from the one the record makes.
+        return "because " + string.Join("; and because ", causes.Select(c =>
+            $"{view.Describe(c)} (`{c}`)"));
     }
 
     /// <summary>

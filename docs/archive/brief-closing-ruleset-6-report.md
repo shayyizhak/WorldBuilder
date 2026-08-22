@@ -1,5 +1,16 @@
 # Report — closing ruleset 6
 
+> **One halt condition below is void, retired 2026-08-22.** *"The ruleset-6 holdout rate unlike
+> ruleset 5's — held, 36% against 33%"* compared two draws from a distribution nobody had
+> characterised. The ruleset 7 → 8 cut settled it: the panel rate moved 34.5% → 44.8% on worlds that
+> are byte-identical apart from fourteen payload keys nothing reads, because a cold cut has no render
+> cache and a non-deterministic model rewrites every section. The gate happened to clear and would
+> have cleared or failed at roughly random. **Nothing else in this report depends on it** — the
+> ruleset-6 disposition rests on the runaway-year contrast, not on the holdout rate — and the
+> counter-shape findings stand, because they were about code structure rather than rate comparisons.
+> Doctrine in §4 of the project reference; evidence in `docs/facts-sheet-second-reader-part-3.md` and
+> `docs/phantom-mutations-report.md` §5.1.
+
 Run against `docs/brief-closing-ruleset-6.md`. **All six items complete. No halt condition fired.**
 
 **Entry state:** 613 green, 18 failing, 2 skipped, ruleset 6 uncut.
@@ -219,7 +230,7 @@ and the reason seed 99 left the panel.
 |---|---|
 | A per-seed shape floor that makes seed 7 pass | **held** — seed 7 fails at 45 against a floor of 60 |
 | `seized` failing to fire on any reference seed after a seed swap | **held** — 1, 2, 8, 7, 2 |
-| The ruleset-6 holdout rate unlike ruleset 5's | **held** — 36% against 33%, spread 25 against 27 |
+| The ruleset-6 holdout rate unlike ruleset 5's | ~~**held** — 36% against 33%, spread 25 against 27~~ **void**, see the note at the head of this report |
 | Suite not green after §1 and §2, other than §3's two changes | **held** — 617 green, 0 failing; the only Layer 1 failures are the two known shape floors |
 | Reference-seed criteria not written before candidate worlds examined | **held** — committed at `f422181`, candidates screened afterwards |
 

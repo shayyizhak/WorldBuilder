@@ -14,6 +14,8 @@ Read from the stored sidecars. 26 held-out scope(s) of 58 across 5 seeds.
 
 Per-seed holdout rate range=[25, 53] width=28, in percentage points.
 
+> **The rate is a draw, not a measurement, and is retired as a halt condition.** A cut with no render cache to inherit has its prose written again by a non-deterministic model, and a different half of the chronicle falls out of canon: ruleset 7 → 8 moved the panel rate 34.5% → 44.8% on worlds byte-identical apart from fourteen payload keys nothing reads. Every cross-ruleset cut is cold, so rates from different rulesets are independent draws rather than a series. Compare across warm cuts; never as a gate. **What the rest of this file says about rules — which fire, which have floors, which extract nothing — is structural and unaffected.**
+
 ## Every held-out scope
 
 | seed | scope | rules | blocking | fatal |

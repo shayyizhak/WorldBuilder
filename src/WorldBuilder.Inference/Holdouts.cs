@@ -445,6 +445,19 @@ public static class Holdouts
         lines.Add("");
         lines.Add($"Per-seed holdout rate {report.RateRange}, in percentage points.");
         lines.Add("");
+
+        // Said here rather than left to whoever reads the table, because the number is the first
+        // thing anyone reaches for and it is the one thing in this file that will not bear weight.
+        lines.Add("> **The rate is a draw, not a measurement, and is retired as a halt condition.** " +
+                  "A cut with no render cache to inherit has its prose written again by a " +
+                  "non-deterministic model, and a different half of the chronicle falls out of " +
+                  "canon: ruleset 7 → 8 moved the panel rate 34.5% → 44.8% on worlds byte-identical " +
+                  "apart from fourteen payload keys nothing reads. Every cross-ruleset cut is cold, " +
+                  "so rates from different rulesets are independent draws rather than a series. " +
+                  "Compare across warm cuts; never as a gate. **What the rest of this file says " +
+                  "about rules — which fire, which have floors, which extract nothing — is " +
+                  "structural and unaffected.**");
+        lines.Add("");
         lines.Add("## Every held-out scope");
         lines.Add("");
         lines.Add("| seed | scope | rules | blocking | fatal |");

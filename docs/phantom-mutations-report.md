@@ -382,6 +382,9 @@ relation, 18 suite-eligible — every requirement still met and every count unch
 |---|---|---|
 | `NoEventClaimsAChangeTheStateDoesNotHold` | no mutation key names something the state does not hold | 5 |
 | `TheOnlyKeysNamingNobodyAreTheTwoAlreadyKnown` | the unrepaired `leg:-` site stays at exactly two keys | 5 |
+| `ACausalTraceNeverWalksBackIntoTheWorldsGenesis` | no causal trace returns a genesis row except as the tip | 5 |
+| `NoStagedCausalAnswerIsABareRecordId` | every causal answer is words, or declines; none cites a genesis row | 5 |
+| `TheStagedCausesAndTheTraceAgree` | the two rules for "what is a cause" give the same answer | 1 |
 | `EverySealsCommitContainsTheRulesetItSeals` | every manifest's commit contains the ruleset it claims | all sets |
 | `TheUnrepairableSetsAreTheTwoRulesetsThatWereNeverCommitted` | the exception list is exactly the two that cannot be repaired | — |
 | `TheAuditProbesEveryKeyFamilyTheReducerApplies` | the audit's coverage list matches the reducer's own `switch` | 1 |
@@ -421,6 +424,74 @@ diagnosis; the contrast it was there to protect is answered by the A/B instead.
 `wb test` reports 2 failures in layers 1 and 3 — `distinct deep-chain shapes: 58, expected >= 60`. The
 same two fire against the sealed **ruleset-7** world, so they predate this change and are not its. Layer
 5 itself is clean at 0 failed, 15 noted.
+
+---
+
+## 9a. Three findings from the second reader's part 3, acted on
+
+`docs/facts-sheet-second-reader-part-3.md`. Both substantive findings held; one supporting claim in it
+did not, and is noted at the end.
+
+### A genesis row is not a cause
+
+Two of the four staged causal questions answered *why was war declared over Threi Cut* with `e:9` —
+the record of Threi Cut coming into existence. A stopping condition presented as a finding.
+
+**Fixed in the reading, not in the record.** The edge is true: the war was fought in pursuit of a goal
+formed because that place exists, and `PerceptionPhase` writes it deliberately — *"the honest answer
+to why does this faction want that place is because that place is there and it has ore in it."* That
+is a fair answer about a **goal** and not about a **war**, and the war inherits the goal's cause
+wholesale through `.Because(goal.Cause)`. Deleting the edge would destroy a true provenance fact and
+cost a ruleset bump; the defect is offering it as an answer.
+
+So `ContextPackBuilder.Trace` now ends a branch at a genesis row rather than including it — the same
+shape as the rule already beside it for secrets. **This was a product defect, not only a staging
+one:** `QueryEngine` retrieves through `Trace` for every question the planner calls causal, so the
+genesis row was reaching the model as the last link in the chain. 51 cause edges across the panel
+point at a genesis row; 18 events would be left with no cause at all if the edges were removed from
+the log, which is the measurement that argued against doing so.
+
+### A causal answer states its cause in words
+
+All four read `the recorded causes, walked back: e:506`, which nothing can be held against: any
+response mentioning that id satisfies it, including one naming the wrong person. Every other category
+in the file answers in words, and the *what would a wrong answer look like* field cannot be written at
+all for a pointer.
+
+They now read `because Sou Dra (a:22) is cast out of the Kebarrow Compact (f:2) — the losing side of
+an open challenge (e:506)`, and the wrong-answer field says naming the record without the reason is
+also wrong. The two that bottomed out on genesis now decline: *the record names no cause for it beyond
+the world's own genesis, which is where the walk stops rather than what it found.*
+
+**One question left the suite because of it, and that is the finding underneath the finding.**
+Suite-eligible went 18 → 17: *Why did the Wurn League take Threi Cut in year 2?* was eligible only
+because the **genesis row** came back under causal retrieval. With `e:9` gone from its supporting
+records, the conquest record itself is not reached by that path — which was always true and was being
+masked by the row that should never have been cited.
+
+### The holdout rate is retired as a halt condition
+
+Doctrine in §4 of the project reference, a void-note at the head of
+`docs/archive/brief-closing-ruleset-6-report.md` where the gate was cleared, and `wb holdouts` now
+prints the caveat above its own scope table, since the rate is the first number anyone reaches for.
+
+The evidence is §5.1: 34.5% → 44.8% on worlds byte-identical apart from fourteen payload keys nothing
+reads, with the warm re-cut as the control at zero movement. What survives untouched is everything
+`wb holdouts` says about code structure — call sites, floors, which rules extract nothing — because
+none of that was ever a rate comparison.
+
+### One claim in part 3 that does not hold
+
+It says `e:9` is in `record-bookkeeping.md`, and concludes the split rule and the causal trace disagree
+about what belongs to the history. **`e:9` is in `record-history.md`** — zero occurrences in the
+bookkeeping file, one in history. The split rule is `Significance == Bookkeeping` **and names nobody**,
+and `e:9` names `subject=Threi Cut (p:8)`. It is one of the 164 quiet rows §2 already documents as
+staying in the history file for exactly that reason, so there is no disagreement. The finding stands
+without it.
+
+Two smaller slips: the role/outcome split has **four** staged questions, not three — Stonand Ker
+(1 failed on him / 1 killed him / **5 ordered** / 0 failed orders) is missing from the list, and he is
+the largest case. And the cuts are 33 hours apart, not "three weeks".
 
 ---
 
